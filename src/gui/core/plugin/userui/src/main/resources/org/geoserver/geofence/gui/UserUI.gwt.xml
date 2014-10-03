@@ -1,0 +1,40 @@
+
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
+<module>
+	<inherits name='com.google.gwt.user.User' />
+	<inherits name='com.extjs.gxt.ui.GXT' />
+	<inherits name='org.geoserver.geofence.gui.Resources' />
+
+	<entry-point class='org.geoserver.geofence.gui.client.UserUI' />
+
+	  <!-- Specify the paths for translatable code                    -->
+	  <source path='client'/>
+	  <source path='shared'/>
+	  <inherits name="com.extjs.gxt.ui.GXT"/>
+
+	<servlet path="/LoginRemoteService"
+		class="org.geoserver.geofence.gui.server.gwt.LoginRemoteServiceImpl" />
+
+	<servlet path="/GsUsersManagerRemoteService"
+		class="org.geoserver.geofence.gui.server.gwt.GsUsersManagerServiceImpl" />
+		
+	<servlet path="/ProfilesManagerRemoteService"
+		class="org.geoserver.geofence.gui.server.gwt.ProfilesManagerServiceImpl" />
+	
+	<servlet path="/InstancesManagerRemoteService"
+		class="org.geoserver.geofence.gui.server.gwt.InstancesManagerRemoteServiceImpl" />
+		
+	<servlet path="/RulesManagerRemoteService"
+		class="org.geoserver.geofence.gui.server.gwt.RulesManagerServiceImpl" />
+	
+	<servlet path="/WorkspacesManagerRemoteService"
+		class="org.geoserver.geofence.gui.server.gwt.WorkspacesManagerServiceImpl" />
+		
+</module>

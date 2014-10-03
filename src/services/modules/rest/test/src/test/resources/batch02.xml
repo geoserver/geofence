@@ -1,0 +1,70 @@
+
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
+<batch>
+<!--
+  <operation type="delete" service="groups" name="group1001"/>
+  <operation type="delete" service="groups" name="group1002"/>
+  <operation type="delete" service="groups" name="group1003"/>
+
+  <operation type="delete" service="instances" name="sample_instance_01"/>
+-->
+<!--  <operation type="delete" service="groups" name="group____"/> -->
+
+  <operation type="insert" service="groups">
+    <userGroup enabled="true">
+      <name>group1001</name>
+    </userGroup>
+  </operation>
+
+  <operation type="insert" service="groups">
+    <userGroup>
+      <name>group1002</name>
+    </userGroup>
+  </operation>
+
+  <operation type="insert" service="groups">
+    <userGroup>
+      <name>group1003</name>
+      <extId>_1003</extId>
+    </userGroup>
+  </operation>
+
+  <operation type="insert" service="instances">
+	<instance>
+	    <name>sample_instance_01</name>
+	    <description>sample descr</description>
+	    <baseURL>http://yourgeoserver/geoserver</baseURL>
+	    <username>admin</username>
+	    <password>clearpw</password>
+	</instance>
+  </operation>
+
+  <operation type="insert" service="users">
+	<user enabled="true" admin="false">
+	   <extId>ext_zz</extId>
+	   <name>user_01</name>
+	   <password>pw_01</password>
+	   <fullName>fullname_01</fullName>
+	   <emailAddress>email_01</emailAddress>
+	   <groups>
+	       <group>
+		    <name>group1001</name>
+	       </group>
+	       <group>
+		    <name>group1002</name>
+	       </group>
+	   </groups>
+	</user>
+  </operation>
+
+  <operation type="addGroup" service="users" userName="user_01" groupName="group1003"/>
+  <operation type="delGroup" service="users" userName="user_01" groupName="group1002"/>
+
+</batch>

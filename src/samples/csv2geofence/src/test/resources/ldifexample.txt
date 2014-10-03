@@ -1,0 +1,3 @@
+cn,changetype,givenName,mpsPreferredName,sn,initials,mpsExtensionNumber,pager,telephoneNumber,mobile,facsimileTelephoneNumber,mpsDepartmentBorough,mpsBranchOCU,description,mpsEmployeeType,mail,postalAddress,postalCode,mpsAstriumGISLiveRole
+rnicoll,add,Richard,Richard,Nicoll,,,,,,,,,,,richard.nicoll@infoterra-global.com,,,"ASTRIUM_ADMIN_VIEW,ASTRIUM_ADMIN_UPLOAD,APPLICATIONMPS,APPLICATIONOLYMPICS,APPLICATIONTORCH,APPLICATIONNOCC,FUNCTIONADMINISTRATOR
+knorek,modify,Konrad,Konrad,Norek,,,,,,,,,,,konrad.norek@infoterrra-global.com,,,"ASTRIUM_ADMIN_VIEW,ASTRIUM_ADMIN_UPLOAD,APPLICATIONMPS,APPLICATIONOLYMPICS,APPLICATIONTORCH,APPLICATIONNOCC,FUNCTIONADMINISTRATOR

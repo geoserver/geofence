@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
+
+<web-app id="WebApp_ID" version="2.4"
+	xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+
+	<!-- pick up all spring application contexts -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+            classpath*:/applicationContext-common.xml
+            classpath*:applicationContext.xml
+        </param-value>
+	</context-param>
+
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>file:${dgws.config.dir}/dgwatch/log4j.xml</param-value>
+    </context-param>
+
+
+	<!-- spring context loader -->
+    <listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+<!--	<servlet>
+		<servlet-name>ConfigurationRemote</servlet-name>
+		<servlet-class>org.geoserver.geofence.gui.server.gwt.ConfigurationRemoteImpl</servlet-class>
+        <load-on-startup>1</load-on-startup>
+	</servlet>-->
+
+<!--	<servlet-mapping>
+		<servlet-name>ConfigurationRemote</servlet-name>
+		<url-pattern>/dgwatch/ConfigurationRemote</url-pattern>
+	</servlet-mapping>-->
+
+
+<!--	<servlet>
+		<servlet-name>LoginRemote</servlet-name>
+		<servlet-class>org.geoserver.geofence.gui.server.gwt.LoginRemoteServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LoginRemote</servlet-name>
+		<url-pattern>/dgwatch/LoginRemote</url-pattern>
+	</servlet-mapping>-->
+
+<!--	<servlet>
+		<servlet-name>QuartzRemote</servlet-name>
+		<servlet-class>org.geoserver.geofence.gui.server.gwt.QuartzRemoteImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>QuartzRemote</servlet-name>
+		<url-pattern>/dgwatch/QuartzRemote</url-pattern>
+	</servlet-mapping>-->
+
+<!--	<servlet>
+		<servlet-name>MembersRemote</servlet-name>
+		<servlet-class>org.geoserver.geofence.gui.server.gwt.MembersRemoteImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>MembersRemote</servlet-name>
+		<url-pattern>/dgwatch/MembersRemote</url-pattern>
+	</servlet-mapping>-->
+	
+<!--	<servlet>
+		<servlet-name>AOIServiceRemote</servlet-name>
+		<servlet-class>org.geoserver.geofence.gui.server.gwt.AOIRemoteImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AOIServiceRemote</servlet-name>
+		<url-pattern>/dgwatch/AOIServiceRemote</url-pattern>
+	</servlet-mapping>-->
+
+<!--	<servlet>
+		<servlet-name>FilterServiceRemote</servlet-name>
+		<servlet-class>org.geoserver.geofence.gui.server.gwt.FilterRemoteImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>FilterServiceRemote</servlet-name>
+		<url-pattern>/dgwatch/FilterServiceRemote</url-pattern>
+	</servlet-mapping>-->
+
+<!--	<servlet>
+		<servlet-name>FeatureServiceRemote</servlet-name>
+		<servlet-class>org.geoserver.geofence.gui.server.gwt.FeatureServiceRemoteImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>FeatureServiceRemote</servlet-name>
+		<url-pattern>/dgwatch/FeatureServiceRemote</url-pattern>
+	</servlet-mapping>-->
+
+<!--	<servlet>
+		<servlet-name>uploadServlet</servlet-name>
+		<servlet-class>org.geoserver.geofence.gui.server.UploadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>uploadServlet</servlet-name>
+		<url-pattern>/dgwatch/upload</url-pattern>
+	</servlet-mapping>-->
+
+	<!-- Open proxy to circumvent cross-domain XmlHTTPRequest restrictions. -->
+<!--	<servlet>
+		<servlet-name>GwtOpenlayersProxy</servlet-name>
+		<servlet-class>
+			org.gwtopenmaps.openlayers.server.GwtOpenLayersProxyServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GwtOpenlayersProxy</servlet-name>
+		<url-pattern>/gwtOpenLayersProxy/*</url-pattern>
+	</servlet-mapping>-->
+
+	<!-- CXF Servlet -->
+	<servlet>
+		<servlet-name>CXFServlet</servlet-name>
+		<servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>CXFServlet</servlet-name>
+		<url-pattern>/serv/*</url-pattern>
+	</servlet-mapping>
+	
+	<!--servlet> 
+    <servlet-name>remoteLoggingServiceImpl</servlet-name> 
+    <servlet-class>com.google.gwt.logging.server.RemoteLoggingServiceImpl</servlet-class> 
+	</servlet> 
+	<servlet-mapping> 
+    <servlet-name>remoteLoggingServiceImpl</servlet-name> 
+    <url-pattern>/dgwatch/logging</url-pattern> 
+	</servlet-mapping-->
+
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>Application.html</welcome-file>
+	</welcome-file-list>
+
+</web-app>

@@ -1,0 +1,755 @@
+
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.geoserver.geofence</groupId>
+    <artifactId>geofence-gui-root</artifactId>
+    <version>2.2-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>GeoFence - GUI</name>
+
+    <properties>
+        <module.name>geofence-gui</module.name>
+        <geofence-version>2.2-SNAPSHOT</geofence-version>
+        <gsmanager-version>1.3.3</gsmanager-version>
+        <gt-version>8.4</gt-version>
+        <geogwt-version>0.2-SNAPSHOT</geogwt-version>
+        <spring.version>3.1.1.RELEASE</spring.version>
+        <spring.security.version>3.1.0.RELEASE</spring.security.version>
+        <commonsFileuploadVersion>1.2.1</commonsFileuploadVersion>
+        <commonsIoVersion>1.4</commonsIoVersion>
+        <jaxws-version>2.1</jaxws-version>
+        <cxf-version>2.3.2</cxf-version>
+
+        <persistence-version>1.0</persistence-version>
+        <hibernate-version>3.3.2.GA</hibernate-version>
+        <hibernate-spatial-version>1.0</hibernate-spatial-version>
+        <hibernate-annotations-version>3.3.1.GA</hibernate-annotations-version>
+        <hibernate-commons-annotations-version>3.3.0.ga</hibernate-commons-annotations-version>
+        <hibernate-generic-dao-version>0.5.1</hibernate-generic-dao-version>
+        <asm-version>2.2.3</asm-version>
+        <cglib-version>2.1_3</cglib-version>
+
+        <javassist-version>3.8.0.GA</javassist-version>
+	        
+        <gwt.version>2.4.0</gwt.version>
+        <extjs.version>2.2.5-gwt22</extjs.version>
+    </properties>
+
+    <modules>
+        <module>core</module>
+        <module>web</module>
+    </modules>
+
+    <organization>
+        <name>GeoSolutions</name>
+        <url>http://www.geo-solutions.it</url>
+    </organization>
+    <inceptionYear>2011</inceptionYear>
+
+    <repositories>
+        <repository>
+            <id>geosolutions</id>
+            <name>GeoSolutions Repository</name>
+            <url>http://maven.geo-solutions.it</url>
+        </repository>
+        <repository>
+            <id>gwt-maven</id>
+            <url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo</url>
+        </repository>
+        <repository>
+            <id>maven2</id>
+            <url>http://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>ibiblio</id>
+            <url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
+        </repository>
+        <repository>
+            <id>osgeo-geotools</id>
+            <url>http://download.osgeo.org/webdav/geotools/</url>
+        </repository>
+        <repository>
+            <id>boundless</id>
+            <name>Boundless Maven Repository</name>
+            <url>http://repo.boundlessgeo.com/main/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>osgeo</id>
+            <name>Open Source Geospatial Foundation Repository</name>
+            <url>http://download.osgeo.org/webdav/geotools/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>maven-restlet</id>
+            <name>Restlet Maven Repository</name>
+            <url>http://maven.restlet.org</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>ucdavis</id>
+            <name>Univ of California Maven Repository</name>
+            <url>http://maven.ucdavis.edu/maven2</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>hibspat</id>
+            <name>Hibernate Spatial</name>
+            <url>http://www.hibernatespatial.org/repository</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+  </repositories>
+    
+
+    <mailingLists>
+        <mailingList>
+            <name>DEV</name>
+            <post>mailto:geofence@geo-solutions.it</post>
+        </mailingList>
+    </mailingLists>
+    
+    <issueManagement />
+
+	<!-- This for Hudson -->
+    <ciManagement />
+
+    <distributionManagement>
+      <downloadUrl>http://maven.geo-solutions.it</downloadUrl>
+
+      <!-- use the following if you're not using a snapshot version. -->
+      <repository>
+         <id>geosolutions</id>
+         <name>GeoSolutions maven repo</name>
+         <url>ftp://maven.geo-solutions.it/</url>
+         <uniqueVersion>true</uniqueVersion>
+      </repository>
+      <!-- use the following if you ARE using a snapshot version. -->
+      <snapshotRepository>
+         <id>geosolutions</id>
+         <name>GeoSolutions maven repo</name>
+         <url>ftp://maven.geo-solutions.it/</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+      <site>
+         <id>demo.geosolutions</id>
+         <url>scp://demo.geo-solutions.it/var/www/share/javadoc/geofence/${project.version}</url>
+      </site>
+    </distributionManagement>
+
+
+    <dependencyManagement>
+        <dependencies>
+
+	    <!-- =========================================================== -->
+	    <!--     GeoFence GUI MODULES                                     -->
+	    <!-- =========================================================== -->
+            <dependency>
+                <groupId>org.geoserver.geofence</groupId>
+                <artifactId>geofence-gui-core</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geoserver.geofence</groupId>
+                <artifactId>geofence-gui-resources</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geoserver.geofence</groupId>
+                <artifactId>geofence-gui-plugin</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geoserver.geofence</groupId>
+                <artifactId>geofence-gui-userui</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geoserver.geofence</groupId>
+                <artifactId>geofence-gui-mapsui</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geoserver.geofence</groupId>
+                <artifactId>geofence-gui-fullweb</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+			
+
+
+	    <!-- =========================================================== -->
+	    <!--     GeoFence MODULES                                         -->
+	    <!-- =========================================================== -->
+            <dependency>
+                <groupId>org.geoserver.geofence</groupId>
+                <artifactId>geofence-model-internal</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.geoserver.geofence</groupId>
+                <artifactId>geofence-persistence</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.geoserver.geofence</groupId>
+                <artifactId>geofence-services-api</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.geoserver.geofence</groupId>
+                <artifactId>geofence-services-impl</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.geoserver.geofence</groupId>
+                <artifactId>geofence-login-api</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.geoserver.geofence</groupId>
+                <artifactId>geofence-login-impl</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.geoserver.geofence</groupId>
+                <artifactId>geofence-generic-api</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.geoserver.geofence</groupId>
+                <artifactId>geofence-rest-impl</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+			
+			<dependency>
+                <groupId>org.geoserver.geofence</groupId>
+                <artifactId>geofence-ldap</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+
+		<!-- =========================================================== -->
+		<!--     GeoGWT                                                  -->
+		<!-- =========================================================== -->
+
+            <dependency>
+                <groupId>it.geosolutions.geogwt.core</groupId>
+                <artifactId>geogwt-resources</artifactId>
+                <version>${geogwt-version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>it.geosolutions.geogwt.widgets.map</groupId>
+                <artifactId>maptoolbar</artifactId>
+                <version>${geogwt-version}</version>
+            </dependency>
+
+		<!-- =========================================================== -->
+		<!--     GeoServer Manager                                       -->
+		<!-- =========================================================== -->
+			<dependency>
+				<groupId>it.geosolutions</groupId>
+				<artifactId>geoserver-manager</artifactId>
+				<version>${gsmanager-version}</version>
+			</dependency>
+
+		<!-- =========================================================== -->
+	    <!--     Spring                                                  -->
+	    <!-- =========================================================== -->
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aop</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-asm</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-orm</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-expression</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-acl</artifactId>
+                <version>${spring.security.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-expression</artifactId>
+					</exclusion>
+				</exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-core</artifactId>
+                <version>${spring.security.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-expression</artifactId>
+					</exclusion>
+				</exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-taglibs</artifactId>
+                <version>${spring.security.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-expression</artifactId>
+					</exclusion>
+				</exclusions>
+            </dependency>
+
+			<!-- SCOPE TEST -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring.version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-collections</groupId>
+                        <artifactId>commons-collections</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>xerces</groupId>
+                        <artifactId>xercesImpl</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+			<!-- GWT -->
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-user</artifactId>
+				<version>${gwt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-servlet</artifactId>
+				<version>${gwt.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+
+			<!-- dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-incubator</artifactId>
+				<version>2.0.1</version>
+			</dependency -->
+
+			<!-- GXT -->
+			<dependency>
+				<groupId>com.extjs</groupId>
+				<artifactId>gxt</artifactId>
+				<version>${extjs.version}</version>
+			</dependency>
+
+			<!-- GeoAPI and its dependencies -->
+            <dependency>
+                <groupId>org.opengis</groupId>
+                <artifactId>geoapi</artifactId>
+                <version>2.3-M1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opengis</groupId>
+                <artifactId>geoapi-dummy-pending</artifactId>
+                <version>2.3-M1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opengis</groupId>
+                <artifactId>geoapi-pending</artifactId>
+                <version>2.3-M1</version>
+            </dependency>
+            <dependency>
+                <groupId>net.java.dev.jsr-275</groupId>
+                <artifactId>jsr-275</artifactId>
+                <version>1.0-beta-2</version>
+            </dependency>
+			
+	    <!-- =========================================================== -->
+	    <!--     GEOTOOLS                                                -->
+	    <!-- =========================================================== -->			
+	        <dependency>
+	            <groupId>org.geotools</groupId>
+	            <artifactId>gt-main</artifactId>
+	            <version>${gt-version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.geotools</groupId>
+	            <artifactId>gt-api</artifactId>
+	            <version>${gt-version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.geotools</groupId>
+	            <artifactId>gt-referencing</artifactId>
+	            <version>${gt-version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.geotools</groupId>
+	            <artifactId>gt-metadata</artifactId>
+	            <version>${gt-version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.geotools</groupId>
+	            <artifactId>gt-shapefile</artifactId>
+	            <version>${gt-version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.geotools</groupId>
+	            <artifactId>gt-epsg-extension</artifactId>
+	            <version>${gt-version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.geotools</groupId>
+	            <artifactId>gt-epsg-wkt</artifactId>
+	            <version>${gt-version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.geotools</groupId>
+	            <artifactId>gt-epsg-hsql</artifactId>
+	            <version>${gt-version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.geotools</groupId>
+	            <artifactId>gt-epsg-h2</artifactId>
+	            <version>${gt-version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.geotools</groupId>
+	            <artifactId>gt-wms</artifactId>
+	            <version>${gt-version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.geotools</groupId>
+	            <artifactId>gt-wfs</artifactId>
+	            <version>${gt-version}</version>
+	        </dependency>
+
+
+		    <!-- =========================================================== -->
+		    <!--     APACHE COMMONS                                          -->
+		    <!-- =========================================================== -->
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>2.3</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>1.4</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-dbcp</groupId>
+                <artifactId>commons-dbcp</artifactId>
+                <version>1.2.2</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>1.7.0</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>3.2</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.4</version>
+            </dependency>
+
+		    <!-- =========================================================== -->
+		    <!--     APACHE CXF                                              -->
+		    <!-- =========================================================== -->
+            <dependency>
+                <groupId>javax.xml.ws</groupId>
+                <artifactId>jaxws-api</artifactId>
+                <version>${jaxws-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.jws</groupId>
+                        <artifactId>jsr181-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-bindings-http</artifactId>
+                <version>${cxf-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-transports-http</artifactId>
+                <version>${cxf-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-transports-http-jetty</artifactId>
+                <version>${cxf-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-frontend-jaxws</artifactId>
+                <version>${cxf-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.geronimo.specs</groupId>
+                        <artifactId>geronimo-annotation_1.0_spec</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.geronimo.specs</groupId>
+                        <artifactId>geronimo-javamail_1.4_spec</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-bindings-soap</artifactId>
+                <version>${cxf-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.geronimo.specs</groupId>
+                        <artifactId>geronimo-javamail_1.4_spec</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-databinding-aegis</artifactId>
+                <version>${cxf-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+                <version>${cxf-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-ws-security</artifactId>
+                <version>${cxf-version}</version>
+            </dependency>
+
+		    <!-- =========================================================== -->
+		    <!--     HIBERNATE-GENERIC-DAO                                   -->
+		    <!-- =========================================================== -->
+            <dependency>
+                <groupId>com.trg</groupId>
+                <artifactId>trg-dao</artifactId>
+                <version>${hibernate-generic-dao-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.trg</groupId>
+                <artifactId>trg-search</artifactId>
+                <version>${hibernate-generic-dao-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.trg</groupId>
+                <artifactId>trg-search-hibernate</artifactId>
+                <version>${hibernate-generic-dao-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.trg</groupId>
+                <artifactId>trg-search-jpa-hibernate</artifactId>
+                <version>${hibernate-generic-dao-version}</version>
+            </dependency>
+
+		    <!-- =========================================================== -->
+		    <!--     POSTGRES- POSTGIS                                       -->
+		    <!-- =========================================================== -->
+            <dependency>
+                <groupId>org.postgis</groupId>
+                <artifactId>postgis-jdbc</artifactId>
+                <version>1.3.3</version>
+            </dependency>
+            <dependency>
+                <groupId>postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>8.4-702.jdbc3</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vividsolutions</groupId>
+                <artifactId>jts</artifactId>
+                <version>1.10</version>
+            </dependency>
+	    
+		    <!-- =========================================================== -->
+		    <!--     4J                                                      -->
+		    <!-- =========================================================== -->
+<!--            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>1.2.14</version>
+            </dependency>-->
+            <dependency>
+                <groupId>dom4j</groupId>
+                <artifactId>dom4j</artifactId>
+                <version>1.6.1</version>
+            </dependency>
+<!--            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>1.5.8</version>
+            </dependency>-->
+
+		    <!-- =========================================================== -->
+		    <!--     Logging                                                 -->
+		    <!-- =========================================================== -->
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>2.0-beta7</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>2.0-beta7</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>2.0-beta7</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-web</artifactId>
+                <version>2.0-beta7</version>
+            </dependency>
+
+		    <!-- =========================================================== -->
+		    <!--     JAVAX SERVLET                                           -->
+		    <!-- =========================================================== -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>2.5</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- ================================================================-->
+
+            <dependency>
+                <groupId>org.codehaus.jettison</groupId>
+                <artifactId>jettison</artifactId>
+                <version>1.2</version>
+            </dependency>
+            <!-- =========================================================== -->
+		    <!--     HIBERNATE-SPATIAL                                       -->
+		    <!-- =========================================================== -->
+            <dependency>
+                <groupId>org.hibernatespatial</groupId>
+                <artifactId>hibernate-spatial-postgis</artifactId>
+                <version>1.1.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernatespatial</groupId>
+                <artifactId>hibernate-spatial-oracle</artifactId>
+                <version>1.1.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernatespatial</groupId>
+                <artifactId>hibernate-spatial-h2-geodb</artifactId>
+                <version>1.1.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <!-- ======================================================== -->
+        <!--              Extensions settings for Deployment          -->
+        <!-- ======================================================== -->
+        <extensions>
+        <!--.............................................-->
+        <!--       geo-solutions (using wagon ftp)       -->
+        <!--.............................................-->
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ftp</artifactId>
+                <version>2.3</version>
+            </extension>
+        </extensions>
+    </build>
+	
+</project>

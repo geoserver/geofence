@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+  http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.geoserver.geofences</groupId>
+    <artifactId>geofence</artifactId>
+    <version>2.2-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Master GeoFence POM</name>
+    <description>GeoFence is a java web application that handles authorization rules, integrating with GeoServer using the interface described in GSIP 57.</description>
+    <url>https://github.com/geoserver/geofence</url>
+    <inceptionYear>2011</inceptionYear>
+
+    <organization>
+        <name>GeoSolutions</name>
+        <url>http://www.geo-solutions.it</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>etj</id>
+            <name>Emanuele Tajariol</name>
+            <organization>GeoSolutions</organization>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/geosolutions-it/geofence/issues</url>
+    </issueManagement>
+
+    <scm>
+        <connection>scm:git:git@github.com:geoserver/geofence.git</connection>
+        <tag>master</tag>
+        <url>https://github.com/geoserver/geofence</url>
+    </scm>
+
+    <ciManagement>
+        <system>jenkins</system>
+        <url>http://build.geo-solutions.it/jenkins</url>
+    </ciManagement>
+    
+    <distributionManagement>
+      <downloadUrl>http://maven.geo-solutions.it</downloadUrl>
+
+      <!-- use the following if you're not using a snapshot version. -->
+      <repository>
+         <id>geosolutions</id>
+         <name>GeoSolutions maven repo</name>
+         <url>ftp://maven.geo-solutions.it/</url>
+         <uniqueVersion>true</uniqueVersion>
+      </repository>
+      <!-- use the following if you ARE using a snapshot version. -->
+      <snapshotRepository>
+         <id>geosolutions</id>
+         <name>GeoSolutions maven repo</name>
+         <url>ftp://maven.geo-solutions.it/</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+      <site>
+         <id>demo.geosolutions</id>
+         <url>scp://demo.geo-solutions.it/var/www/share/javadoc/geofence/${project.version}</url>
+      </site>
+    </distributionManagement>
+
+    <modules>
+        <module>services</module>
+        <module>gui</module>        
+    </modules>
+
+
+    <build>
+<!--        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+            </plugin>
+        </plugins>-->
+
+        <!-- ======================================================== -->
+        <!--              Extensions settings for Deployment          -->
+        <!-- ======================================================== -->
+        <extensions>
+        <!--.............................................-->
+        <!--       geo-solutions (using wagon ftp)       -->
+        <!--.............................................-->
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ftp</artifactId>
+                <version>2.6</version>
+            </extension>
+        </extensions>
+    </build>
+
+</project>

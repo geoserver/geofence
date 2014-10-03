@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.geoserver.geofence</groupId>
+        <artifactId>geofence-root</artifactId>
+        <version>2.2-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.geoserver.geofence</groupId>
+    <artifactId>geofence-modules</artifactId>
+    <packaging>pom</packaging>
+    <name>GeoFence - Modules - 0 Root</name>
+
+    <modules>
+        <module>login</module>
+        <module>generic-api</module>
+        <module>rest</module>
+        <module>ldap</module>
+    </modules>
+
+</project>

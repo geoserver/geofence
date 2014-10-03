@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+    <!--
+        ====================================================================
+    -->
+    <!-- Property config files -->
+    <!-- Any customization should go in the property file -->
+    <!--
+        ====================================================================
+    -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <!--<property name="ignoreResourceNotFound" value="true" />-->
+        <property name="properties">
+            <props>
+                <prop key="geofence-ovr">dummy_ovr</prop>
+                <prop key="geofence.dir">dummy_dir</prop>
+            </props>
+        </property>
+        <!--        <property name="locations">
+            <list>
+                <value>classpath*:geofence-datasource.properties</value>
+                <value>classpath:geofence-externalize-aux.properties</value>
+            </list>
+        </property>-->
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath*:geofence-datasource-ovr.properties</value>
+                <value>file:${geofence.dir}/geofence-datasource-ovr.properties</value>
+            </list>
+        </property>
+        <property name="ignoreResourceNotFound" value="true"/>        
+    </bean>
+
+    <!--
+        ====================================================================
+    -->
+
+    <bean id="geofenceDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.h2.Driver" />
+        <property name="url" value="jdbc:h2:mem:geofence" />
+        <property name="username" value="sa" />
+        <property name="password" value="sa" />
+    </bean>
+
+    <bean id="geofenceEntityManagerFactory"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="geofence" />
+        <!--<property name="persistenceXmlLocation" value="classpath:META-INF/geofence-persistence.xml" />-->
+        <property name="dataSource" ref="geofenceDataSource" />
+        <property name="loadTimeWeaver">
+            <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver" />
+        </property>
+        <property name="jpaVendorAdapter" ref="geofenceVendorAdapter" />
+        <property name="packagesToScan" value="org.geoserver.geofence.core.model" />
+        <property name="jpaPropertyMap">
+            <map>
+                <entry key="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider" />
+                <entry key="hibernate.cache.provider_configuration_file_resource_path"
+                       value="geofence-ehcache.xml" />
+                <!-- hibernate.hbm2ddl.auto should not be enabled by default             -->
+                <!--   * update, create and create-drop should not be used in production -->
+                <!--   * validate will not work with oracle spatial                      -->
+                <!-- <entry key="hibernate.hbm2ddl.auto" value="validate"/> -->
+                <entry key="hibernate.cache.use_second_level_cache" value="true" />
+                <entry key="hibernate.connection.autocommit" value="false" />
+                <entry key="hibernate.generate_statistics" value="false" />
+                <entry key="hibernate.default_schema" value="public" />
+                <entry key="hibernate.validator.apply_to_ddl" value="false" />
+				<entry key="hibernate.validator.autoregister_listeners" value="false" />  
+            </map>
+        </property>
+    </bean>
+
+    <bean id="geofenceVendorAdapter"
+          class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="databasePlatform" value="org.hibernatespatial.geodb.GeoDBDialect" />
+        <property name="showSql" value="false" />
+        <property name="generateDdl" value="false" />
+    </bean>
+
+    <bean id="geofenceTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="geofenceEntityManagerFactory" />
+    </bean>
+
+    <bean
+        class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+    <tx:annotation-driven />
+
+</beans>
+
+

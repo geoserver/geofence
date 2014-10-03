@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.geoserver.geofence</groupId>
+        <artifactId>geofence-core</artifactId>
+        <version>2.2-SNAPSHOT</version>
+    </parent>
+  
+    <groupId>org.geoserver.geofence</groupId>
+    <artifactId>geofence-model</artifactId>
+    <packaging>jar</packaging>
+    <name>GeoFence - Core - Model external</name>
+    <description>Model used for external deps, cleaned from JPA annotations</description>
+  
+    <dependencies>
+  
+        <dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.8</version>
+
+                <executions>
+                    <execution>
+                        <id>unpack-model</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                
+                <configuration>
+                    <artifactItems>
+                        <artifactItem>
+                            <groupId>org.geoserver.geofence</groupId>
+                            <artifactId>geofence-model-internal</artifactId>
+                            <!--<version>[ version ]</version>-->
+                            <type>jar</type>
+                            <classifier>sources</classifier>
+                            <overWrite>true</overWrite>
+                            <outputDirectory>${project.build.directory}/generated-sources/original</outputDirectory>
+                            <includes>**/*.java, **/*.xml</includes>
+                            <!--<excludes>[ comma separated list of file filters ]</excludes>-->
+                        </artifactItem>
+                    </artifactItems>
+                    <!--<includes>**/*.java, **/*.xml</includes>-->
+                    <!-- other configurations here -->
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <target>
+                                <replaceregexp byline="true" replace="">
+                                    <regexp pattern="import javax\.persistence\..*"/>
+                                    <fileset dir="${project.build.directory}/generated-sources/original">
+                                        <include name="**/*.java"/>
+                                    </fileset>
+                                </replaceregexp>
+
+                                <replaceregexp byline="true">
+                                    <regexp pattern="import org\.hibernate\.annotations\..*"/>
+                                    <substitution expression="" />
+                                    <fileset dir="${project.build.directory}/generated-sources/original">
+                                        <include name="**/*.java"/>
+                                    </fileset>
+                                </replaceregexp>
+
+                                <replaceregexp byline="true" replace="">
+                                    <regexp pattern="(@Entity|@Cache|@Table|@org.hibernate.annotations.CollectionOfElements|@Fetch|@Index|@Embedded|@Embeddable|@Check).*"/>
+                                    <fileset dir="${project.build.directory}/generated-sources/original">
+                                        <include name="**/*.java"/>
+                                    </fileset>
+                                </replaceregexp>
+
+                                <replaceregexp byline="true" replace="">
+                                    <regexp pattern="(@Id|@GeneratedValue|@Enumerated|@Column|@Type|@Temporal|@OneToOne|@ManyToOne|@ManyToMany|@ForeignKey|@UniqueConstraint|@AttributeOverride|@JoinTable).*"/>
+                                    <fileset dir="${project.build.directory}/generated-sources/original">
+                                        <include name="**/*.java"/>
+                                    </fileset>
+                                </replaceregexp>
+
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.9</version>
+
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/original</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Attach sources ============================================ -->
+            <plugin>
+                <inherited>true</inherited>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <attach>true</attach>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

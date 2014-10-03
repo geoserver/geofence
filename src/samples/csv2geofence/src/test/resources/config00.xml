@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
+
+<configuration>
+    <geofenceConfig>
+        <restUrl>http://localhost:9191/geofence/rest</restUrl>
+        <username>admin</username>
+        <password>admin</password>
+    </geofenceConfig>
+
+    <ruleFileConfig>
+        <fieldSeparator>,</fieldSeparator>
+
+        <layerNameIndex>1</layerNameIndex>
+        <validLayernameRegEx>[A-Z0-9]*</validLayernameRegEx>
+
+        <group><index>2</index></group>
+        <group><index>3</index></group>
+        <group><index>4</index></group>
+        <group><index>5</index></group>
+        <group><index>6</index></group>
+        <group><index>7</index></group>
+        <group><index>8</index></group>
+
+        <offsetFromBottom>0</offsetFromBottom>
+
+        <ruleMapping>
+            <mapping key="F">
+                <rule grant="allow" service="WMS"/>
+                <rule grant="allow" service="WFS"/>
+            </mapping>
+            <mapping key="V">
+                <rule grant="allow" service="WMS"/>
+                <rule grant="deny" request="Transaction" service="WFS"/>
+                <rule grant="deny" request="LockFeature" service="WFS"/>
+                <rule grant="allow" service="WFS"/>
+            </mapping>
+            <mapping key="N">
+            </mapping>
+        </ruleMapping>
+
+    </ruleFileConfig>
+
+    <userFileConfig>
+        <fieldSeparator>,</fieldSeparator>
+        <stringSeparator>34</stringSeparator>
+        <hasHeaders>true</hasHeaders>
+
+        <userNameIndex>2</userNameIndex>
+        <validUsernameRegEx>[A-Z0-9]*</validUsernameRegEx>
+
+        <operationTypeIndex>3</operationTypeIndex>
+
+        <groupNameIndex>9</groupNameIndex>
+        <validGroupRegEx>ASTRIUM.*|DATA.*</validGroupRegEx>
+
+    </userFileConfig>
+</configuration>
