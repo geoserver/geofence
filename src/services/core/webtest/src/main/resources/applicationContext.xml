@@ -1,0 +1,87 @@
+
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+
+	   xmlns:cxf="http://cxf.apache.org/core"
+	   xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://cxf.apache.org/jaxws                     http://cxf.apache.org/schemas/jaxws.xsd
+            http://cxf.apache.org/jaxrs                     http://cxf.apache.org/schemas/jaxrs.xsd
+            http://cxf.apache.org/core                      http://cxf.apache.org/schemas/core.xsd
+            http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+       default-autowire="byName">
+
+    <context:annotation-config />
+
+<!--    <context:property-override location="classpath*:xxxxx_dao.properties"
+            ignore-resource-not-found="true"
+            ignore-unresolvable="false"/>-->
+
+   <!-- ================================================================ -->
+   <!-- === CLIENT ===================================================== -->
+   <!-- ================================================================ -->
+
+    <bean name="testService" class="org.geoserver.geofence.servicetest.MainTest"  >
+        <property name="userAdminService" ref="userAdminService" />
+        <property name="userGroupAdminService" ref="userGroupAdminService" />
+        <property name="instanceAdminService" ref="instanceAdminService" />
+        <property name="ruleAdminService" ref="ruleAdminService" />
+
+<!--        <property name="ruleReaderService" ref="remoteRuleReaderProxy" />-->
+
+    </bean>
+
+    <bean id="remoteRuleReaderProxy" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" lazy-init="true">
+
+        <property name="serviceUrl" value="http://localhost:9191/geofence/remoting/RuleReader"/>
+        <property name="serviceInterface" value="org.geoserver.geofence.services.RuleReaderService"/>
+    </bean>
+
+    <!--       <context:annotation-config />-->
+
+
+   <!-- === CXF ======================================================== -->
+   
+	<!-- Load CXF modules from cxf.jar -->
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
+
+    <!-- ====================================================================-->
+    <!-- === REST Services ==================================================-->
+    <!-- ====================================================================-->
+
+<!--    <jaxrs:server id="webgisREST" address="/webgis">
+        <jaxrs:serviceBeans>
+          <ref bean="webgisService"/>
+          <ref bean="tocService"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:features>
+             <cxf:logging/>
+        </jaxrs:features>
+
+    </jaxrs:server>-->
+
+    <!-- ====================================================================-->
+    <!-- === Spring remoting Services =======================================-->
+    <!-- ====================================================================-->
+
+<!--    <bean name="/RuleReader" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+        <property name="service" ref="ruleReaderService"/>
+        <property name="serviceInterface" value="org.geoserver.geofence.services.RuleReaderService"/>
+    </bean>-->
+
+</beans>

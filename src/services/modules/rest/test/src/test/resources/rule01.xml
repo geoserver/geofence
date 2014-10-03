@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
+
+<rule grant="ALLOW">
+   <position value="0" position="offsetFromBottom"/>
+   <user>
+       <name>user_01</name>
+   </user>
+<!--   <group>
+       <name>grp_02</name>
+   </group>-->
+<!--   <instance>
+       <id>1538</id>
+   </instance> -->
+   <service>WMS_02</service>
+   <request>getMap_02</request>
+   <workspace>wsp_02</workspace>
+   <layer>layer_02</layer>
+   <constraints>
+       <type>VECTOR</type>
+       <defaultStyle>Style_02</defaultStyle>
+       <cqlFilterRead>CQL_READ_SAMPLE</cqlFilterRead>
+       <cqlFilterWrite>CQL_WRITE_SAMPLE</cqlFilterWrite>
+<!--       <restrictedAreaWkt>wkt_02</restrictedAreaWkt> -->
+       <allowedStyles>
+           <style>teststyle2</style>
+           <style>teststyle1</style>
+           <style>Style_02</style>
+       </allowedStyles>
+       <attributes>
+           <attribute access="NONE">
+               <datatype>java.lang.String</datatype>
+               <name>attr1</name>
+           </attribute>
+           <attribute access="READONLY">
+               <datatype>java.lang.String</datatype>
+               <name>attr2</name>
+           </attribute>
+           <attribute access="READWRITE">
+               <datatype>java.lang.String</datatype>
+               <name>attr3</name>
+           </attribute>
+       </attributes>
+   </constraints>
+</rule>

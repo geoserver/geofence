@@ -1,0 +1,65 @@
+/** Add css rules here for your application. */
+
+.x-loading-status {   
+  background-image: url(geofence/resources/images/loading.gif);
+}
+.x-status-ok {   
+  background-image: url(geofence/resources/images/ok.png);
+}
+.x-status-not-ok {   
+  background-image: url(geofence/resources/images/not_found.png);
+}
+.x-status-error {   
+  background-image: url(geofence/resources/images/error.png);
+}
+.x-geofence-cancel {
+  background-image: url(geofence/resources/images/cancel.png);
+}
+.x-geofence-update {
+  background-image: url(geofence/resources/images/icon_update.png);
+}
+.x-geofence-reset {
+  background-image: url(geofence/resources/images/reset.png);
+}
+.x-geofence-save {
+  background-image: url(geofence/resources/images/save.png);
+}
+.x-geofence-submit {
+  background-image: url(geofence/resources/images/submit.png);
+}
+.x-geofence-login {
+  background-image: url(geofence/resources/images/login.png);
+}
+.x-geofence-select {
+  background-image: url(geofence/resources/images/select.png);
+}
+.x-geofence-unshare {
+  background-image: url(geofence/resources/images/unshare.png);
+}
+.x-geofence-filter {
+  background-image: url(geofence/resources/images/filter_ogc.png);
+}
+.x-geofence-features {
+  background-image: url(geofence/resources/images/show_features.png);
+}
+.x-geofence-clear {
+  background-image: url(geofence/resources/images/eraser_minus.png);
+}
+.x-geofence-quartz {
+  background-image: url(geofence/resources/images/quartz.png);
+}
+.x-geofence-clock {   
+  background-image: url(geofence/resources/images/Clock-Icon.png);
+}
+.x-geofence-add {
+  background-image: url(geofence/resources/images/email_add.png);
+  background-position:center; 
+}
+.x-geofence-delete {
+  background-image: url(geofence/resources/images/email_delete.png);
+  background-position:center; 
+}
+.x-geofence-edit {
+  background-image: url(geofence/resources/images/email_edit.png);
+  background-position:center; 
+}

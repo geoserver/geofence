@@ -1,0 +1,97 @@
+/*
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ * 
+ *  GPLv3 + Classpath exception
+ * 
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ * 
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ * 
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.geoserver.geofence.services.rest.model.util;
+
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ *
+ * @author ETj (etj at geo-solutions.it)
+ */
+@XmlRootElement(name = "identifier")
+public class Identifier {
+    public enum Type{name,id};
+
+    private  Type type;
+    private  String name;
+    private  Long id;
+
+    public Identifier(String name) {
+        setName(name);
+    }
+
+    public Identifier(Long id) {
+        setId(id);
+    }
+
+    @XmlElement
+    public Long getId() {
+        return id;
+    }
+
+    @XmlElement
+    public String getName() {
+        return name;
+    }
+
+//    @XmlAttribute
+    public Type getType() {
+        return type;
+    }
+
+    /**
+     * Needed for marshalling / unmarshalling
+     */
+    protected Identifier() {
+    }
+
+    /**
+     * Needed for marshalling / unmarshalling
+     */
+    public void setId(Long id) {
+        if(id == null)
+            throw new NullPointerException("id is null");
+        this.id = id;
+        this.name = null;
+        type = Type.id;
+    }
+
+    /**
+     * Needed for marshalling / unmarshalling
+     */
+    public void setName(String name) {
+        if(name == null)
+            throw new NullPointerException("Name is null");
+        this.name = name;
+        this.id=null;
+        type = Type.name;
+    }
+
+    /**
+     * Needed for marshalling / unmarshalling
+     */
+    protected void setType(Type type) {
+        this.type = type;
+    }
+    
+
+}

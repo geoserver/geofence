@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:bean="http://servicemix.apache.org/bean/1.0"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+        http://servicemix.apache.org/bean/1.0  http://servicemix.apache.org/schema/servicemix-bean-2009.02-20090404.052411-9.xsd">
+
+    <!--=====================================================================-->
+	<!-- Services -->
+    <!--=====================================================================-->
+
+    <bean id="sessionManager" class="org.geoserver.geofence.login.util.SessionManager">
+    </bean>
+
+    <bean id="mainLoginService" class="org.geoserver.geofence.login.LoginServiceImpl">
+        <property name="sessionManager" ref="sessionManager"/> 
+	</bean>
+
+</beans>

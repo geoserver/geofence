@@ -1,0 +1,24 @@
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+package org.geoserver.geofence.core.model.enums;
+
+/**
+ * The Enum ValueType.
+ */
+public enum ValueType {
+    
+    /** The BOOL. */
+    BOOL,
+    
+    /** The INT. */
+    INT,
+    
+    /** The STRING. */
+    STRING,
+    
+    /** The STRINGLIST. */
+    STRINGLIST
+}

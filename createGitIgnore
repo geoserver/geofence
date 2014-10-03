@@ -1,0 +1,42 @@
+#!/bin/bash
+
+OUTFILE=gitignore
+
+cat >$OUTFILE <<EOF
+##
+## This file has been automatically generated.
+## Any edit to this file will be lost on next update.
+## If you need to add static paths to the ignore list, please edit the createGitIgnore script.
+##
+## - ETj
+
+nb*.xml
+.classpath
+.project
+.settings
+*~
+
+src/gui/core/plugin/mapsui/gwt-unitCache/
+src/gui/core/plugin/mapsui/war/
+src/gui/core/plugin/userui/gwt-unitCache/
+src/gui/core/plugin/userui/war/
+src/gui/web/gwt-unitCache/
+src/gui/web/war/WEB-INF/deploy/
+src/gui/web/war/WEB-INF/classes/
+src/gui/web/war/WEB-INF/lib/
+src/gui/web/war/geofence/
+src/geoserver21x/web-app/src/main/webapp/data/
+src/geoserver22x/web-app/src/main/webapp/data/
+
+EOF
+
+for pom in $(find -name "pom.xml" | sort)
+do 
+	path=${pom%*pom.xml}
+	path=${path#\./*}
+	echo ${path}target >>$OUTFILE
+done
+
+echo New file $OUTFILE has been created. You may now want to replace your original .gitignore file.
+echo mv $OUTFILE .gitignore
+echo

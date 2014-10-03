@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xsi:schemaLocation="
+	    	http://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-2.5.xsd
+			http://www.springframework.org/schema/aop       http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
+       default-autowire="byName">
+
+	<context:annotation-config />
+	
+<!--	<aop:aspectj-autoproxy proxy-target-class="true"/>	-->
+
+    <!--=====================================================================-->
+    <!-- DB related stuff -->
+    <!--=====================================================================-->
+
+    <import resource="applicationContext-geofenceDatasource.xml"/>
+
+    <!--=====================================================================-->
+	<!--
+		Need one search processor and one metadata util per persistence unit
+		(i.e. EntityManagerFactory). We're wiring these to the Generic DAOs
+		using an autowire annotation in BaseDAO.
+	-->
+	<bean id="geofenceSearchProcessor" class="com.googlecode.genericdao.search.jpa.JPASearchProcessor">
+		<constructor-arg ref="geofenceMetadataUtil" />
+	</bean>
+
+	<bean id="geofenceMetadataUtil" class="com.googlecode.genericdao.search.jpa.hibernate.HibernateMetadataUtil"
+		factory-method="getInstanceForEntityManagerFactory">
+		<constructor-arg ref="geofenceEntityManagerFactory" />
+	</bean>
+	
+    <!--=====================================================================-->
+    <!-- DAOs -->
+    <!--=====================================================================-->
+
+	<bean id="gsUserDAO" class="org.geoserver.geofence.core.dao.impl.GSUserDAOImpl">
+		<property name="searchProcessor" ref="geofenceSearchProcessor" />
+	</bean>
+	
+	<bean id="gfUserDAO" class="org.geoserver.geofence.core.dao.impl.GFUserDAOImpl" >
+		<property name="searchProcessor" ref="geofenceSearchProcessor" />
+	</bean>
+	
+	<bean id="userGroupDAO" class="org.geoserver.geofence.core.dao.impl.UserGroupDAOImpl" >
+		<property name="searchProcessor" ref="geofenceSearchProcessor" />
+	</bean>
+	
+	<bean id="instanceDAO" class="org.geoserver.geofence.core.dao.impl.GSInstanceDAOImpl" >
+		<property name="searchProcessor" ref="geofenceSearchProcessor" />
+	</bean>
+	
+	<bean id="ruleDAO" class="org.geoserver.geofence.core.dao.impl.RuleDAOImpl" >
+		<property name="searchProcessor" ref="geofenceSearchProcessor" />
+	</bean>
+	
+	<bean id="ruleLimitsDAO" class="org.geoserver.geofence.core.dao.impl.RuleLimitsDAOImpl" >
+		<property name="searchProcessor" ref="geofenceSearchProcessor" />
+	</bean>
+	
+	<bean id="layerDetailsDAO" class="org.geoserver.geofence.core.dao.impl.LayerDetailsDAOImpl" >
+		<property name="searchProcessor" ref="geofenceSearchProcessor" />
+	</bean>
+	
+</beans>
