@@ -63,8 +63,11 @@
 ################################################################################
 ## Configure map base layer
 
-#geofenceGlobalConfiguration.baseLayerURL=http://demo1.geo-solutions.it/geoserver-enterprise/wms
-#geofenceGlobalConfiguration.baseLayerName=GeoSolutions:ne_shaded
-#geofenceGlobalConfiguration.baseLayerTitle=GeoSolutions Natural Earth
-#geofenceGlobalConfiguration.baseLayerFormat=image/jpeg
+#geofenceGlobalConfiguration.baseLayerURL=http://vmap0.tiles.osgeo.org/wms/vmap0
+#geofenceGlobalConfiguration.baseLayerName=Vmap0
+#geofenceGlobalConfiguration.baseLayerTitle=OSGeo base map
+#geofenceGlobalConfiguration.baseLayerFormat=image/png
 #geofenceGlobalConfiguration.baseLayerStyle=
+#geofenceGlobalConfiguration.mapCenterLon=0
+#geofenceGlobalConfiguration.mapCenterLat=0
+#geofenceGlobalConfiguration.mapZoom=2
