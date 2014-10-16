@@ -11,6 +11,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.geoserver.geofence</groupId>
+        <artifactId>geofence</artifactId>
+        <version>2.2-SNAPSHOT</version>
+    </parent>
+    
     <groupId>org.geoserver.geofence</groupId>
     <artifactId>geofence-gui-root</artifactId>
     <version>2.2-SNAPSHOT</version>
@@ -119,44 +125,7 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
-  </repositories>
-    
-
-    <mailingLists>
-        <mailingList>
-            <name>DEV</name>
-            <post>mailto:geofence@geo-solutions.it</post>
-        </mailingList>
-    </mailingLists>
-    
-    <issueManagement />
-
-	<!-- This for Hudson -->
-    <ciManagement />
-
-    <distributionManagement>
-      <downloadUrl>http://maven.geo-solutions.it</downloadUrl>
-
-      <!-- use the following if you're not using a snapshot version. -->
-      <repository>
-         <id>geosolutions</id>
-         <name>GeoSolutions maven repo</name>
-         <url>ftp://maven.geo-solutions.it/</url>
-         <uniqueVersion>true</uniqueVersion>
-      </repository>
-      <!-- use the following if you ARE using a snapshot version. -->
-      <snapshotRepository>
-         <id>geosolutions</id>
-         <name>GeoSolutions maven repo</name>
-         <url>ftp://maven.geo-solutions.it/</url>
-         <uniqueVersion>false</uniqueVersion>
-      </snapshotRepository>
-      <site>
-         <id>demo.geosolutions</id>
-         <url>scp://demo.geo-solutions.it/var/www/share/javadoc/geofence/${project.version}</url>
-      </site>
-    </distributionManagement>
-
+  </repositories>    
 
     <dependencyManagement>
         <dependencies>
