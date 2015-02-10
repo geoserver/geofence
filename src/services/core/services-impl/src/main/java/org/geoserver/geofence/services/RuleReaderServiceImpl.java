@@ -546,6 +546,8 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             //  2) user has not been found
             if(filterGroup != null) {
                 finalGroupFilter.add(filterGroup);
+            } else if(filter.getUser().getType() != FilterType.ANY) {
+                filter.setUserGroup(SpecialFilterType.DEFAULT);
             } else {
                 // group is ANY, DEFAULT or not found:
                 // no grouping, use requested filtering
