@@ -5,15 +5,6 @@
 
 package org.geoserver.geofence.gui.server.service.impl;
 
-import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.UserGroup;
-import org.geoserver.geofence.gui.client.model.data.ProfileCustomProps;
-import org.geoserver.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
-import org.geoserver.geofence.gui.server.service.IProfilesManagerService;
-import org.geoserver.geofence.gui.service.GeofenceRemoteService;
-import org.geoserver.geofence.services.dto.ShortGroup;
-import org.geoserver.geofence.services.exception.NotFoundServiceEx;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,6 +13,14 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.geoserver.geofence.gui.client.ApplicationException;
+import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.data.ProfileCustomProps;
+import org.geoserver.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
+import org.geoserver.geofence.gui.server.service.IProfilesManagerService;
+import org.geoserver.geofence.gui.service.GeofenceRemoteService;
+import org.geoserver.geofence.services.dto.ShortGroup;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

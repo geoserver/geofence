@@ -5,29 +5,6 @@
 
 package org.geoserver.geofence.gui.server.service.impl;
 
-import org.geoserver.geofence.core.model.LayerAttribute;
-import org.geoserver.geofence.core.model.LayerDetails;
-import org.geoserver.geofence.core.model.RuleLimits;
-import org.geoserver.geofence.core.model.enums.AccessType;
-import org.geoserver.geofence.core.model.enums.GrantType;
-import org.geoserver.geofence.core.model.enums.LayerType;
-import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.GSInstance;
-import org.geoserver.geofence.gui.client.model.GSUser;
-import org.geoserver.geofence.gui.client.model.Rule;
-import org.geoserver.geofence.gui.client.model.UserGroup;
-import org.geoserver.geofence.gui.client.model.data.LayerAttribUI;
-import org.geoserver.geofence.gui.client.model.data.LayerCustomProps;
-import org.geoserver.geofence.gui.client.model.data.LayerDetailsInfo;
-import org.geoserver.geofence.gui.client.model.data.LayerLimitsInfo;
-import org.geoserver.geofence.gui.client.model.data.LayerStyle;
-import org.geoserver.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
-import org.geoserver.geofence.gui.server.service.IRulesManagerService;
-import org.geoserver.geofence.gui.service.GeofenceRemoteService;
-import org.geoserver.geofence.services.dto.RuleFilter;
-import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
-import org.geoserver.geofence.services.dto.ShortRule;
-import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.decoder.RESTFeatureType;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
@@ -41,9 +18,37 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.geoserver.geofence.core.model.IPAddressRange;
+import org.geoserver.geofence.core.model.LayerAttribute;
+import org.geoserver.geofence.core.model.LayerDetails;
+import org.geoserver.geofence.core.model.RuleLimits;
+import org.geoserver.geofence.core.model.enums.AccessType;
+import org.geoserver.geofence.core.model.enums.CatalogMode;
+import org.geoserver.geofence.core.model.enums.GrantType;
+import org.geoserver.geofence.core.model.enums.LayerType;
+import org.geoserver.geofence.gui.client.ApplicationException;
+import org.geoserver.geofence.gui.client.model.GSInstance;
+import org.geoserver.geofence.gui.client.model.GSUser;
+import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.data.ClientCatalogMode;
+import org.geoserver.geofence.gui.client.model.data.LayerAttribUI;
+import org.geoserver.geofence.gui.client.model.data.LayerCustomProps;
+import org.geoserver.geofence.gui.client.model.data.LayerDetailsInfo;
+import org.geoserver.geofence.gui.client.model.data.LayerLimitsInfo;
+import org.geoserver.geofence.gui.client.model.data.LayerStyle;
+import org.geoserver.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
+import org.geoserver.geofence.gui.server.service.IRulesManagerService;
+import org.geoserver.geofence.gui.service.GeofenceRemoteService;
+import org.geoserver.geofence.services.dto.RuleFilter;
+import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
+import org.geoserver.geofence.services.dto.ShortRule;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
+import org.geoserver.geofence.services.util.IPUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
@@ -53,11 +58,6 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
-import org.geoserver.geofence.core.model.IPAddressRange;
-import org.geoserver.geofence.core.model.enums.CatalogMode;
-import org.geoserver.geofence.gui.client.model.data.ClientCatalogMode;
-import org.geoserver.geofence.services.util.IPUtils;
-import org.springframework.dao.DuplicateKeyException;
 
 /**
  * The Class RulesManagerServiceImpl.
