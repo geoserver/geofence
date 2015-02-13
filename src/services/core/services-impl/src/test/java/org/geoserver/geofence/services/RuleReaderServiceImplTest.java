@@ -721,5 +721,57 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
         assertEquals(0, ruleReaderService.getMatchingRules("*","*","*","BAD",  "*", "*","*","*").size());
     }
+    
+    @Test
+    public void testGetRulesForUserOnly() {
+        RuleFilter filter;
+
+        filter = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
+        assertEquals(0, ruleAdminService.count(filter));
+
+        UserGroup g1 = createUserGroup("p1");
+        UserGroup g2 = createUserGroup("p2");
+
+        GSUser user1 = new GSUser();
+        user1.setName("TestUser1");
+        user1.getGroups().add(g1);
+
+        GSUser user2 = new GSUser();
+        user2.setName("TestUser2");
+        user2.getGroups().add(g2);
+
+        UserGroup g3a = createUserGroup("g3a");
+        UserGroup g3b = createUserGroup("g3b");
+        GSUser user3 = new GSUser();
+        user3.setName("TestUser3");
+        user3.getGroups().add(g3a);
+        user3.getGroups().add(g3b);
+
+        userAdminService.insert(user1);
+        userAdminService.insert(user2);
+        userAdminService.insert(user3);
+
+        ruleAdminService.insert(new Rule(10, user1, g1, null, null,     "s1", "r1", "w1", "l1", GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(20, user2, g2, null, null,     "s1", "r2", "w2", "l2", GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(30, user1, g1, null, null,     "s3", "r3", "w3", "l3", GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(40, user1, g1, null, null,     null, null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(50, null,  g3a, null,null,      null, null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(60, null,  g3b, null,null,      null, null, null, null, GrantType.ALLOW));
+
+        filter = createFilter(user1.getId(), null, null);
+        assertEquals(3, ruleReaderService.getMatchingRules(filter).size());
+
+        filter = createFilter(user1.getName(), null, null);
+        assertEquals(3, ruleReaderService.getMatchingRules(filter).size());
+
+        filter = createFilter(user1.getId(), null, "s1");
+        assertEquals(2, ruleReaderService.getMatchingRules(filter).size());
+
+        filter = createFilter(user1.getId(), null, "s3");
+        assertEquals(2, ruleReaderService.getMatchingRules(filter).size());
+        
+        filter = createFilter("anonymous", null, null);
+        assertEquals(0, ruleReaderService.getMatchingRules(filter).size());
+    }
 
 }
