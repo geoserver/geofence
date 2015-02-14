@@ -5,16 +5,6 @@
 
 package org.geoserver.geofence.gui.server.service.impl;
 
-import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.GSInstance;
-import org.geoserver.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
-import org.geoserver.geofence.gui.server.service.IInstancesManagerService;
-import org.geoserver.geofence.gui.service.GeofenceRemoteService;
-import org.geoserver.geofence.services.dto.ShortInstance;
-import org.geoserver.geofence.services.exception.BadRequestServiceEx;
-import org.geoserver.geofence.services.exception.NotFoundServiceEx;
-import it.geosolutions.geoserver.rest.GeoServerRESTReader;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
@@ -31,6 +21,13 @@ import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
+import org.geoserver.geofence.gui.client.ApplicationException;
+import org.geoserver.geofence.gui.client.model.GSInstance;
+import org.geoserver.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
+import org.geoserver.geofence.gui.server.service.IInstancesManagerService;
+import org.geoserver.geofence.gui.service.GeofenceRemoteService;
+import org.geoserver.geofence.services.dto.ShortInstance;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
