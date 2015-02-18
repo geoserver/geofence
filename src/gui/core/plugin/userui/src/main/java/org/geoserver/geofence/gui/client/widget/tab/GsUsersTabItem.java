@@ -57,6 +57,10 @@ public class GsUsersTabItem extends TabItem
         add(getUserManagementWidget());
 
         getUserManagementWidget().getUsersInfo().getLoader().load(0, org.geoserver.geofence.gui.client.Constants.DEFAULT_PAGESIZE);
+		
+		//Deactivate the "User Management" tab as configured in the activateTabs.property (Use Case geostoreIntegration)  
+        TabUtils.deactivateTabIfNeeded(gsManagerServiceRemote, this);
+
     }
 
     /**
