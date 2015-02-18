@@ -67,5 +67,13 @@ public interface GsUsersManagerRemoteService extends RemoteService
      * @throws ApplicationException
      */
     public UserLimitsInfo saveUserLimitsInfo(UserLimitsInfo userLimitInfo) throws ApplicationException;
+	
+	/**
+     * This service returns to the client the information about the need for load the users and group management tabs
+     * 
+     * @return true if the tab must be loaded, false otherwise
+     * @throws ApplicationException
+     */
+    public boolean activateUserGroupTabs() throws ApplicationException;
 
 }

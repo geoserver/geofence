@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 
 import org.geoserver.geofence.gui.client.Constants;
 import org.geoserver.geofence.gui.client.Resources;
+import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.widget.ProfileManagementWidget;
 
@@ -45,7 +46,7 @@ public class ProfilesTabItem extends TabItem
      *            the profiles manager service remote
      */
     public ProfilesTabItem(String tabItemId,
-        ProfilesManagerRemoteServiceAsync profilesManagerServiceRemote)
+        ProfilesManagerRemoteServiceAsync profilesManagerServiceRemote, GsUsersManagerRemoteServiceAsync gsManagerServiceRemote)
     {
         this(tabItemId);
         setScrollMode(Scroll.NONE);
@@ -57,6 +58,9 @@ public class ProfilesTabItem extends TabItem
 
         getProfileManagementWidget().getProfilesInfo().getLoader().load(0,
             org.geoserver.geofence.gui.client.Constants.DEFAULT_PAGESIZE);
+
+		//Deactivate the "Groups" tab as configured in the activateTabs.property (Use Case geostoreIntegration)  
+        TabUtils.deactivateTabIfNeeded(gsManagerServiceRemote, this);
 
     }
 
