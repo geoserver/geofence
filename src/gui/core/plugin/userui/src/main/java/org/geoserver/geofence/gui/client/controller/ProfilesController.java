@@ -13,6 +13,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.view.ProfilesView;
 import org.geoserver.geofence.gui.client.widget.ProfileGridWidget;
@@ -29,6 +30,10 @@ public class ProfilesController extends Controller
 
     /** The Constant PROFILES_TAB_ITEM_ID. */
     private static final String PROFILES_TAB_ITEM_ID = "ProfilesTabItem";
+
+	/** The gs manager service remote. */
+	private GsUsersManagerRemoteServiceAsync gsManagerServiceRemote =
+		GsUsersManagerRemoteServiceAsync.Util.getInstance();
 
     /** The profiles manager service remote. */
     private ProfilesManagerRemoteServiceAsync profilesManagerServiceRemote =
@@ -124,7 +129,7 @@ public class ProfilesController extends Controller
         if (tabWidget == null)
         {
             tabWidget = (TabWidget) event.getData();
-            tabWidget.add(new ProfilesTabItem(PROFILES_TAB_ITEM_ID, profilesManagerServiceRemote));
+            tabWidget.add(new ProfilesTabItem(PROFILES_TAB_ITEM_ID, profilesManagerServiceRemote, gsManagerServiceRemote));
         }
     }
 

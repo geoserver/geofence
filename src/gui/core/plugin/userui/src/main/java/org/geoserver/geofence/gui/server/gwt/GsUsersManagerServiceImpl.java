@@ -82,4 +82,13 @@ public class GsUsersManagerServiceImpl extends RemoteServiceServlet implements G
     {
         return gsUserManagerService.saveUserLimitsInfo(userLimitInfo);
     }
+	
+    /* (non-Javadoc)
+     * @see org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteService#activateUserGroupTabs()
+     */
+    public boolean activateUserGroupTabs() throws ApplicationException 
+    {
+        return gsUserManagerService.activateUserGroupTabs();
+    }
+
 }

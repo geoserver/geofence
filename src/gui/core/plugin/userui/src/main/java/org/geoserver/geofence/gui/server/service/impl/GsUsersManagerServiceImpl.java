@@ -5,6 +5,14 @@
 
 package org.geoserver.geofence.gui.server.service.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+
 import org.geoserver.geofence.gui.client.ApplicationException;
 import org.geoserver.geofence.gui.client.model.GSUser;
 import org.geoserver.geofence.gui.client.model.UserGroup;
@@ -14,12 +22,6 @@ import org.geoserver.geofence.gui.server.service.IGsUsersManagerService;
 import org.geoserver.geofence.gui.service.GeofenceRemoteService;
 import org.geoserver.geofence.services.dto.ShortUser;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -295,5 +297,33 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
 //        }
 
         return userLimitInfo;
+    }
+	
+    /* (non-Javadoc)
+     * @see org.geoserver.geofence.gui.server.service.IGsUsersManagerService#activateUserGroupTabs()
+     */
+    public boolean activateUserGroupTabs() throws ApplicationException {
+        Properties property = new Properties();
+        InputStream in = getClass().getResourceAsStream("activateTabs.properties");
+        try {
+            property.load(in);
+            String outcome = property.getProperty("activateUserGroupTab");
+            if(outcome.equalsIgnoreCase("true")){
+                return true;
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            logger.error(e.getMessage(), e);
+            throw new ApplicationException(e.getMessage(), e);
+        }
+        finally{
+            try {
+                in.close();
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+                throw new ApplicationException(e.getMessage(), e);
+            }
+        }
+        return false;
     }
 }
