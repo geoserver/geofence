@@ -30,7 +30,7 @@ Once you have downloaded the resources you need, please follow the instructions 
 Documentation
 ==================================================
 * [How to install GeoFence](https://github.com/geoserver/geofence/wiki/GeoFence-installation)
-* [How to configure GeoFence](https://github.com/geoserver/geofence/wiki/WebApps-configuration)
+* [How to configure GeoFence](https://github.com/geoserver/geofence/wiki/GeoFence-configuration)
 * [How to build GeoFence](https://github.com/geoserver/geofence/wiki/Building-instructions)
 * [Documentation Index](https://github.com/geoserver/geofence/wiki/Documentation-index)
 
