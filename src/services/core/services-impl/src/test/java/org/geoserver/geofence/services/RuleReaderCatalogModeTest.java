@@ -40,16 +40,16 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
     public void testCatalogModeBothNull() throws NotFoundServiceEx {
         assertEquals(0, ruleAdminService.getCountAll());
 
-        UserGroup g1 = createUserGroup("g1");
-        UserGroup g2 = createUserGroup("g2");
-        UserGroup g3 = createUserGroup("g3");
-        UserGroup g4 = createUserGroup("g4");
+        UserGroup g1 = createRole("g1");
+        UserGroup g2 = createRole("g2");
+        UserGroup g3 = createRole("g3");
+        UserGroup g4 = createRole("g4");
 
         GSUser u1 = createUser("u1", g1, g2, g3, g4);
 
 
-        insertRule(new Rule(20, u1, null, null,null,      null, null, null, "l1", GrantType.LIMIT), null);
-        insertRule(new Rule(20, null, g1, null,null,      null, null, null, "l1", GrantType.ALLOW), null);
+        insertRule(new Rule(20, "u1", null, null,null,      null, null, null, "l1", GrantType.LIMIT), null);
+        insertRule(new Rule(20, null, "g1", null,null,      null, null, null, "l1", GrantType.ALLOW), null);
 
         LOGGER.info("SETUP ENDED, STARTING TESTS========================================");
 
@@ -68,16 +68,16 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
     public void testCatalogModeOneNull() throws NotFoundServiceEx {
         assertEquals(0, ruleAdminService.getCountAll());
 
-        UserGroup g1 = createUserGroup("g1");
-        UserGroup g2 = createUserGroup("g2");
-        UserGroup g3 = createUserGroup("g3");
-        UserGroup g4 = createUserGroup("g4");
+        UserGroup g1 = createRole("g1");
+        UserGroup g2 = createRole("g2");
+        UserGroup g3 = createRole("g3");
+        UserGroup g4 = createRole("g4");
 
         GSUser u1 = createUser("u1", g1, g2, g3, g4);
 
 
-        insertRule(new Rule(20, u1, null, null,null,      null, null, null, "l1", GrantType.LIMIT), null);
-        insertRule(new Rule(20, null, g1, null,null,      null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
+        insertRule(new Rule(20, "u1", null, null,null,      null, null, null, "l1", GrantType.LIMIT), null);
+        insertRule(new Rule(20, null, "g1", null,null,      null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
 
         LOGGER.info("SETUP ENDED, STARTING TESTS========================================");
 
@@ -96,16 +96,16 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
     public void testCatalogModeNoNull() throws NotFoundServiceEx {
         assertEquals(0, ruleAdminService.getCountAll());
 
-        UserGroup g1 = createUserGroup("g1");
-        UserGroup g2 = createUserGroup("g2");
-        UserGroup g3 = createUserGroup("g3");
-        UserGroup g4 = createUserGroup("g4");
+        UserGroup g1 = createRole("g1");
+        UserGroup g2 = createRole("g2");
+        UserGroup g3 = createRole("g3");
+        UserGroup g4 = createRole("g4");
 
         GSUser u1 = createUser("u1", g1, g2, g3, g4);
 
 
-        insertRule(new Rule(20, u1, null, null, null,     null, null, null, "l1", GrantType.LIMIT), CatalogMode.HIDE);
-        insertRule(new Rule(20, null, g1, null, null,     null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
+        insertRule(new Rule(20, "u1", null, null, null,     null, null, null, "l1", GrantType.LIMIT), CatalogMode.HIDE);
+        insertRule(new Rule(20, null, "g1", null, null,     null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
 
         LOGGER.info("SETUP ENDED, STARTING TESTS========================================");
 
@@ -123,16 +123,16 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
     public void testCatalogModeTwoGroups() throws NotFoundServiceEx {
         assertEquals(0, ruleAdminService.getCountAll());
 
-        UserGroup g1 = createUserGroup("g1");
-        UserGroup g2 = createUserGroup("g2");
-        UserGroup g3 = createUserGroup("g3");
-        UserGroup g4 = createUserGroup("g4");
+        UserGroup g1 = createRole("g1");
+        UserGroup g2 = createRole("g2");
+        UserGroup g3 = createRole("g3");
+        UserGroup g4 = createRole("g4");
 
         GSUser u1 = createUser("u1", g1, g2, g3, g4);
 
 
-        insertRule(new Rule(20, null, g2, null, null,  null, null, null, "l1", GrantType.ALLOW), CatalogMode.HIDE);
-        insertRule(new Rule(20, null, g1, null, null,  null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
+        insertRule(new Rule(20, null, "g2", null, null,  null, null, null, "l1", GrantType.ALLOW), CatalogMode.HIDE);
+        insertRule(new Rule(20, null, "g1", null, null,  null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
 
         LOGGER.info("SETUP ENDED, STARTING TESTS========================================");
 

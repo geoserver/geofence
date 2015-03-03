@@ -15,8 +15,7 @@ import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.services.dto.ShortGroup;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
-import java.util.HashMap;
-import java.util.Map;
+import org.junit.Ignore;
 
 /**
  *
@@ -38,17 +37,19 @@ public class UserGroupAdminServiceImplTest extends ServiceTestBase {
     @Test
     public void testInsertDelete() throws NotFoundServiceEx {
 
-        UserGroup p = createUserGroup(getName());
+        UserGroup p = createRole(getName());
         userGroupAdminService.get(p.getId()); // will throw if not found
         assertTrue("Could not delete group", userGroupAdminService.delete(p.getId()));
     }
 
-    @Test
-    public void testDeleteCascadeGroup() throws NotFoundServiceEx {
+//    @Test
+    @Ignore
+    // ignored as rule have no longer fk to roles and users
+    public void NOtestDeleteCascadeGroup() throws NotFoundServiceEx {
 
-        UserGroup group = createUserGroup(getName());
+        UserGroup group = createRole(getName());
         Rule rule = new Rule();
-        rule.setUserGroup(group);
+        rule.setRolename(getName());
         rule.setAccess(GrantType.ALLOW);
         ruleAdminService.insert(rule);
 
@@ -73,7 +74,7 @@ public class UserGroupAdminServiceImplTest extends ServiceTestBase {
     public void testUpdate() throws Exception {
         removeAllUserGroups();
 
-        UserGroup group = createUserGroup("u1");
+        UserGroup group = createRole("u1");
 
         boolean oldEnabled;
 
@@ -101,9 +102,9 @@ public class UserGroupAdminServiceImplTest extends ServiceTestBase {
     public void testGetAll() {
         assertEquals(0, userGroupAdminService.getList(null,null,null).size());
 
-        createUserGroup("u1");
-        createUserGroup("u2");
-        createUserGroup("u3");
+        createRole("u1");
+        createRole("u2");
+        createRole("u3");
 
         assertEquals(3, userGroupAdminService.getList(null,null,null).size());
     }
@@ -112,10 +113,10 @@ public class UserGroupAdminServiceImplTest extends ServiceTestBase {
     public void testGetCount() {
         assertEquals(0, userGroupAdminService.getCount(null));
 
-        createUserGroup("u10");
-        createUserGroup("u20");
-        createUserGroup("u30");
-        UserGroup u99 = createUserGroup("u99");
+        createRole("u10");
+        createRole("u20");
+        createRole("u30");
+        UserGroup u99 = createRole("u99");
 
         assertEquals(4, userGroupAdminService.getCount(null));
         assertEquals(4, userGroupAdminService.getCount("u%"));

@@ -164,7 +164,7 @@ public class ServiceTestBase extends TestCase {
         return user;
     }
 
-    protected UserGroup createUserGroup(String base) {
+    protected UserGroup createRole(String base) {
 
         ShortGroup sgroup = new ShortGroup();
         sgroup.setName(base);
@@ -178,7 +178,7 @@ public class ServiceTestBase extends TestCase {
 
     protected GSUser createUserAndGroup(String base) {
 
-        UserGroup group = createUserGroup(base);
+        UserGroup group = createRole(base);
         return createUser(base, group);
     }
 
