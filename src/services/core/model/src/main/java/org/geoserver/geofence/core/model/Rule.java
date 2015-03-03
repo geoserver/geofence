@@ -6,8 +6,6 @@
 package org.geoserver.geofence.core.model;
 
 import org.geoserver.geofence.core.model.adapter.FKGSInstanceAdapter;
-import org.geoserver.geofence.core.model.adapter.FKUserGroupAdapter;
-import org.geoserver.geofence.core.model.adapter.FKUserAdapter;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import java.io.Serializable;
 import javax.persistence.AttributeOverride;
@@ -64,10 +62,10 @@ import org.hibernate.annotations.Index;
  */
 @Entity(name = "Rule")
 @Table(name = "gf_rule", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"gsuser_id", "usergroup_id", "instance_id", "service", "request", "workspace", "layer"})})
+        @UniqueConstraint(columnNames = {"username", "rolename", "instance_id", "service", "request", "workspace", "layer"})})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Rule")
 @XmlRootElement(name = "Rule")
-@XmlType(propOrder={"id","priority","gsuser","userGroup","instance","addressRange","service","request","workspace","layer","access","layerDetails","ruleLimits"})
+@XmlType(propOrder={"id","priority","username","rolename","instance","addressRange","service","request","workspace","layer","access","layerDetails","ruleLimits"})
 public class Rule implements Identifiable, Serializable {
 
     private static final long serialVersionUID = -5127129225384707164L;
@@ -83,13 +81,11 @@ public class Rule implements Identifiable, Serializable {
     @Index(name = "idx_rule_priority")
     private long priority;
 
-    @ManyToOne(optional = true, fetch = FetchType.EAGER)
-    @ForeignKey(name = "fk_rule_user")
-    private GSUser gsuser;
+    @Column(name = "username", nullable = true)
+    private String username;
 
-    @ManyToOne(optional = true, fetch = FetchType.EAGER)
-    @ForeignKey(name = "fk_rule_usergroup")
-    private UserGroup userGroup;
+    @Column(name = "rolename", nullable = true)
+    private String rolename;
 
     @ManyToOne(optional = true, fetch = FetchType.EAGER)
     @ForeignKey(name = "fk_rule_instance")
@@ -133,14 +129,11 @@ public class Rule implements Identifiable, Serializable {
     public Rule() {
     }
 
-//    public Rule(long priority, GSUser gsuser, UserGroup userGroup, GSInstance instance, String service, String request, String workspace, String layer, GrantType access) {
-//    }
-
-    public Rule(long priority, GSUser gsuser, UserGroup userGroup, GSInstance instance, IPAddressRange addressRange,
+    public Rule(long priority, String username, String rolename, GSInstance instance, IPAddressRange addressRange,
                                String service, String request, String workspace, String layer, GrantType access) {
         this.priority = priority;
-        this.gsuser = gsuser;
-        this.userGroup = userGroup;
+        this.username = username;
+        this.rolename = rolename;
         this.instance = instance;
         this.addressRange = addressRange;
         this.service = service;
@@ -174,23 +167,22 @@ public class Rule implements Identifiable, Serializable {
         this.priority = priority;
     }
 
-    @XmlJavaTypeAdapter(FKUserAdapter.class)
-    public GSUser getGsuser() {
-        return gsuser;
+    public String getUsername() {
+        return username;
     }
 
-    public void setGsuser(GSUser gsuser) {
-        this.gsuser = gsuser;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    @XmlJavaTypeAdapter(FKUserGroupAdapter.class)
-    public UserGroup getUserGroup() {
-        return userGroup;
+    public String getRolename() {
+        return rolename;
     }
 
-    public void setUserGroup(UserGroup userGroup) {
-        this.userGroup = userGroup;
+    public void setRolename(String rolename) {
+        this.rolename = rolename;
     }
+
 
     @XmlJavaTypeAdapter(FKGSInstanceAdapter.class)
     public GSInstance getInstance() {
@@ -270,14 +262,12 @@ public class Rule implements Identifiable, Serializable {
                 .append("[id:").append(id)
                 .append(" pri:").append(priority);
 
-        if (gsuser != null) {
-            sb.append(" uId:").append(gsuser.getId());
-            sb.append(" uName:").append(prepare(gsuser.getName()));
+        if (username != null) {
+            sb.append(" user:").append(prepare(username));
         }
 
-        if (userGroup != null) {
-            sb.append(" gId:").append(userGroup.getId());
-            sb.append(" gName:").append(prepare(userGroup.getName()));
+        if (rolename != null) {
+            sb.append(" role:").append(prepare(rolename));
         }
 
         if (instance != null) {
