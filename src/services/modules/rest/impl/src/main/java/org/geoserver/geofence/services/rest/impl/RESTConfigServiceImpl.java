@@ -143,12 +143,11 @@ public class RESTConfigServiceImpl implements RESTConfigService {
             input.setGrant(rule.getAccess());
             input.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.fixedPriority, rule.getPriority()));
 
-            if(rule.getUserGroup() != null)
-                input.setGroupName(rule.getUserGroup().getName());
-            if(rule.getGsuser() != null)
-                input.setUserName(rule.getGsuser().getName());
             if(rule.getInstance() != null)
                 input.setInstanceName(rule.getInstance().getName());
+
+            input.setRolename(rule.getRolename());
+            input.setUsername(rule.getUsername());
 
             input.setService(rule.getService());
             input.setRequest(rule.getRequest());
@@ -341,14 +340,6 @@ public class RESTConfigServiceImpl implements RESTConfigService {
                 Long oldId = rule.getId();
                 rule.setId(null);
 
-                if ( rule.getUserGroup() != null ) {
-                    rule.setUserGroup(groupCache.get(rule.getUserGroup().getId()));
-                }
-
-                if ( rule.getGsuser() != null ) {
-                    rule.setGsuser(userCache.get(rule.getGsuser().getId()));
-                }
-
                 if ( rule.getInstance() != null ) {
                     rule.setInstance(instanceCache.get(rule.getInstance().getId()));
                 }
@@ -507,25 +498,9 @@ public class RESTConfigServiceImpl implements RESTConfigService {
                 out.setAccess(in.getGrant());
                 out.setPriority(in.getPriority());
 
-                if (in.getGroup() != null) {
-                    String name = in.getGroup().getName();
-                    UserGroup ug = groups.get(name);
-                    if(ug == null) {
-                        ug = userGroupAdminService.get(name);
-                        groups.put(name, ug);
-                    }
-                    out.setUserGroup(ug);
-                }
+                out.setUsername(in.getUsername());
 
-                if (in.getUser() != null) {
-                    String name = in.getUser().getName();
-                    GSUser user = users .get(name);
-                    if(user == null) {
-                        user = userAdminService.get(name);
-                        users.put(name, user);
-                    }
-                    out.setGsuser(user);
-                }
+                out.setRolename(in.getRolename());
 
                 if (in.getInstance()!= null) {
                     String name = in.getInstance().getName();

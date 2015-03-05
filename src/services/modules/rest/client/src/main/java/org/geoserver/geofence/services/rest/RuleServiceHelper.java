@@ -27,13 +27,13 @@ public class RuleServiceHelper {
 
     public long count(RuleFilter ruleFilter) {
         return count(
-                ruleFilter.getUser(), ruleFilter.getUserGroup(), ruleFilter.getInstance(),
+                ruleFilter.getUser(), ruleFilter.getRole(), ruleFilter.getInstance(),
                 ruleFilter.getService(), ruleFilter.getRequest(),
                 ruleFilter.getWorkspace(), ruleFilter.getLayer());
     }
 
 
-    public long count(RuleFilter.IdNameFilter userFilter, RuleFilter.IdNameFilter groupFilter, RuleFilter.IdNameFilter instanceFilter,
+    public long count(RuleFilter.TextFilter userFilter, RuleFilter.TextFilter ruleFilter, RuleFilter.IdNameFilter instanceFilter,
                 RuleFilter.TextFilter serviceFilter, RuleFilter.TextFilter requestFilter,
                 RuleFilter.TextFilter workspaceFilter, RuleFilter.TextFilter layerFilter) {
 
@@ -41,12 +41,12 @@ public class RuleServiceHelper {
 //                userFilter==null?null:userFilter.getType()==RuleFilter.FilterType.IDVALUE?userFilter.getId():null,
 //                userFilter==null?null:userFilter.getType()==RuleFilter.FilterType.NAMEVALUE?userFilter.getName():null,
 //                userFilter==null?null: (userFilter.isIncludeDefault() || userFilter.getType() == RuleFilter.FilterType.DEFAULT),
-                getFilterId(userFilter), getFilterName(userFilter), getFilterDefault(userFilter),
+                getFilterName(userFilter), getFilterDefault(userFilter),
 
 //                groupFilter==null?null:groupFilter.getType()==RuleFilter.FilterType.IDVALUE?groupFilter.getId():null,
 //                groupFilter==null?null:groupFilter.getType()==RuleFilter.FilterType.NAMEVALUE?groupFilter.getName():null,
 //                groupFilter==null?null:groupFilter.isIncludeDefault(),
-                getFilterId(groupFilter), getFilterName(groupFilter), getFilterDefault(groupFilter),
+                getFilterName(ruleFilter), getFilterDefault(ruleFilter),
 
 //                instanceFilter==null?null:instanceFilter.getType()==RuleFilter.FilterType.IDVALUE?instanceFilter.getId():null,
 //                instanceFilter==null?null:instanceFilter.getType()==RuleFilter.FilterType.NAMEVALUE?instanceFilter.getName():null,
@@ -110,20 +110,20 @@ public class RuleServiceHelper {
     public RESTOutputRuleList get(Integer page, Integer entries, boolean full, RuleFilter ruleFilter) {
         return get(
                 page, entries, full,
-                ruleFilter.getUser(), ruleFilter.getUserGroup(), ruleFilter.getInstance(),
+                ruleFilter.getUser(), ruleFilter.getRole(), ruleFilter.getInstance(),
                 ruleFilter.getService(), ruleFilter.getRequest(),
                 ruleFilter.getWorkspace(), ruleFilter.getLayer());
     }
 
     public RESTOutputRuleList get(
                 Integer page, Integer entries, boolean full,
-                RuleFilter.IdNameFilter userFilter, RuleFilter.IdNameFilter groupFilter, RuleFilter.IdNameFilter instanceFilter,
+                RuleFilter.TextFilter userFilter, RuleFilter.TextFilter ruleFilter, RuleFilter.IdNameFilter instanceFilter,
                 RuleFilter.TextFilter serviceFilter, RuleFilter.TextFilter requestFilter,
                 RuleFilter.TextFilter workspaceFilter, RuleFilter.TextFilter layerFilter) {
 
         return ruleService.get(page,entries,full,
-                getFilterId(userFilter),      getFilterName(userFilter),     getFilterDefault(userFilter),
-                getFilterId(groupFilter),     getFilterName(groupFilter),    getFilterDefault(groupFilter),
+                getFilterName(userFilter),    getFilterDefault(userFilter),
+                getFilterName(ruleFilter),    getFilterDefault(ruleFilter),
                 getFilterId(instanceFilter),  getFilterName(instanceFilter), getFilterDefault(instanceFilter),
                 getFilterName(serviceFilter), getFilterDefault(serviceFilter),
                 getFilterName(requestFilter), getFilterDefault(requestFilter),

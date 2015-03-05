@@ -171,20 +171,20 @@ public class RESTBatchServiceImpl
 
             case update:
                 ensurePayload(op);
-                if(op.getId() != null)
-                    restUserGroupService.update(op.getId(), (RESTInputGroup)op.getPayload());
-                else if(op.getName() != null)
+                if(op.getName() != null)
                     restUserGroupService.update(op.getName(), (RESTInputGroup)op.getPayload());
+                else if(op.getId() != null)
+                    throw new BadRequestRestEx("Bad identifier for op " + op);
                 else
                     throw new BadRequestRestEx("Missing identifier for op " + op);
                 break;
 
             case delete:
                 boolean cascade = op.getCascade()==null? false: op.getCascade().booleanValue();
-                if(op.getId() != null)
-                    restUserGroupService.delete(op.getId(), cascade);
-                else if(op.getName() != null)
+                if(op.getName() != null)
                     restUserGroupService.delete(op.getName(), cascade);
+                else if(op.getId() != null)
+                    throw new BadRequestRestEx("Bad identifier for op " + op);
                 else
                     throw new BadRequestRestEx("Missing identifier for op " + op);
                 break;
@@ -213,27 +213,23 @@ public class RESTBatchServiceImpl
 
             case delete:
                 boolean cascade = op.getCascade()==null? false: op.getCascade().booleanValue();
-                if(op.getId() != null)
-                    restUserService.delete(op.getId(), cascade);
-                else if(op.getName() != null)
+                if(op.getName() != null)
                     restUserService.delete(op.getName(), cascade);
+                else if(op.getId() != null)
+                    throw new BadRequestRestEx("Bad identifier for op " + op);
                 else
                     throw new BadRequestRestEx("Missing identifier for op " + op);
                 break;
 
             case addGroup:
                 {
-                    IdName userId = new IdName(op.getUserId(), op.getUserName());
-                    IdName groupId = new IdName(op.getGroupId(), op.getGroupName());
-                    restUserService.addIntoGroup(userId, groupId);
+                    restUserService.addIntoGroup(op.getUserName(), op.getGroupName());
                 }
                 break;
 
             case delgroup:
                 {
-                    IdName userId = new IdName(op.getUserId(), op.getUserName());
-                    IdName groupId = new IdName(op.getGroupId(), op.getGroupName());
-                    restUserService.removeFromGroup(userId, groupId);
+                    restUserService.removeFromGroup(op.getUserName(), op.getGroupName());
                 }
                 break;
 

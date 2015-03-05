@@ -47,7 +47,7 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
         Long id = (Long)userResp.getEntity();
 
         {
-            RESTOutputUser out = restUserService.get(id);
+            RESTOutputUser out = restUserService.get("user0");
             assertNotNull(out);
             assertEquals("user0", out.getName());            
         }
@@ -103,11 +103,12 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
         }
 
         Long uid;
+        final String USERNAME = "user0";
 
 
         { // insert user
             RESTInputUser user = new RESTInputUser();
-            user.setName("user0");
+            user.setName(USERNAME);
             user.setEnabled(Boolean.TRUE);
             user.setGroups(new ArrayList<IdName>());
             user.getGroups().add(new IdName("g1"));
@@ -117,7 +118,7 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
         }
 
         { // check user
-            RESTOutputUser out = restUserService.get(uid);
+            RESTOutputUser out = restUserService.get(USERNAME);
             assertNotNull(out);
             assertEquals("user0", out.getName());
             assertTrue(out.isEnabled());
@@ -131,10 +132,10 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
             restUserService.update(uid, user);
         }
         { // check user
-            RESTOutputUser out = restUserService.get(uid);
+            RESTOutputUser out = restUserService.get(USERNAME);
             assertNotNull(out);
             assertFalse(out.isEnabled());
-            assertEquals("user0", out.getName());
+            assertEquals(USERNAME, out.getName());
             assertEquals(1, out.getGroups().size());
             assertEquals("g1", out.getGroups().get(0).getName());
         }
@@ -146,9 +147,9 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
             restUserService.update(uid, user);
         }
         { // check user
-            RESTOutputUser out = restUserService.get(uid);
+            RESTOutputUser out = restUserService.get(USERNAME);
             assertNotNull(out);
-            assertEquals("user0", out.getName());
+            assertEquals(USERNAME, out.getName());
             assertEquals(1, out.getGroups().size());
             assertEquals("g2", out.getGroups().get(0).getName());
         }
@@ -161,9 +162,9 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
             restUserService.update(uid, user);
         }
         { // check user
-            RESTOutputUser out = restUserService.get(uid);
+            RESTOutputUser out = restUserService.get(USERNAME);
             assertNotNull(out);
-            assertEquals("user0", out.getName());
+            assertEquals(USERNAME, out.getName());
             assertEquals(2, out.getGroups().size());
             Set<String> set = new HashSet<String>();
             for (IdName idName : out.getGroups()) {

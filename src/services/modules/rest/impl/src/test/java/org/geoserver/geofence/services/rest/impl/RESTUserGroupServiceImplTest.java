@@ -42,7 +42,7 @@ public class RESTUserGroupServiceImplTest extends RESTBaseTest {
         Long id = (Long)userResp.getEntity();
 
         {
-            RESTOutputUser out = restUserService.get(id);
+            RESTOutputUser out = restUserService.get("user0");
             assertNotNull(out);
             assertEquals("user0", out.getName());            
         }

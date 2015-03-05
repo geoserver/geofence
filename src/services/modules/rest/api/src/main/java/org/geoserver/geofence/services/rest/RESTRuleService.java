@@ -64,11 +64,9 @@ public interface RESTRuleService
         @QueryParam("entries") Integer entries,
         @QueryParam("full")@DefaultValue("false")  boolean full,
 
-        @QueryParam("userId")   Long userId,
         @QueryParam("userName") String userName,
         @QueryParam("userAny")  Boolean userAny,
 
-        @QueryParam("groupId")   Long groupId,
         @QueryParam("groupName") String groupName,
         @QueryParam("groupAny")  Boolean groupAny,
 
@@ -92,11 +90,9 @@ public interface RESTRuleService
     @GET
     @Path("/count")
     long count(
-        @QueryParam("userId")   Long userId,
         @QueryParam("userName") String userName,
         @QueryParam("userAny")  Boolean userAny,
 
-        @QueryParam("groupId")   Long groupId,
         @QueryParam("groupName") String groupName,
         @QueryParam("groupAny")  Boolean groupAny,
 

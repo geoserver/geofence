@@ -122,14 +122,12 @@ public class RESTRuleServiceImpl
             boolean isRuleUpdated = false;
             boolean isDetailUpdated = false;
 
-            if (rule.getUser() != null) {
-                IdName idname = rule.getUser();
-                old.setGsuser(idname.getId() == null && idname.getName() == null ? null : getUser(idname));
+            if (rule.getUsername()!= null) {
+                old.setUsername(rule.getUsername().isEmpty()? null : rule.getUsername());
                 isRuleUpdated = true;
             }
-            if (rule.getGroup() != null) {
-                IdName idname = rule.getGroup();
-                old.setUserGroup(idname.getId() == null && idname.getName() == null ? null : getUserGroup(idname));
+            if (rule.getRolename() != null) {
+                old.setRolename(rule.getRolename().isEmpty()? null : rule.getRolename());
                 isRuleUpdated = true;
             }
             if (rule.getInstance() != null) {
@@ -157,7 +155,6 @@ public class RESTRuleServiceImpl
                 old.setLayer(rule.getLayer().isEmpty() ? null : rule.getLayer());
                 isRuleUpdated = true;
             }
-
 
             LayerDetails detailsOld = null;
             if (rule.getConstraints() != null) {
@@ -330,8 +327,8 @@ public class RESTRuleServiceImpl
     @Override
     public RESTOutputRuleList get(Integer page, Integer entries,
             boolean full,
-            Long userId, String userName, Boolean userDefault,
-            Long groupId, String groupName, Boolean groupDefault,
+            String userName, Boolean userDefault,
+            String roleName, Boolean roleDefault,
             Long instanceId, String instanceName, Boolean instanceDefault,
             String serviceName, Boolean serviceDefault,
             String requestName, Boolean requestDefault,
@@ -340,8 +337,8 @@ public class RESTRuleServiceImpl
             throws BadRequestRestEx, InternalErrorRestEx {
 
         RuleFilter filter = buildFilter(
-                userId, userName, userDefault,
-                groupId, groupName, groupDefault,
+                userName, userDefault,
+                roleName, roleDefault,
                 instanceId, instanceName, instanceDefault,
                 serviceName, serviceDefault,
                 requestName, requestDefault,
@@ -358,8 +355,8 @@ public class RESTRuleServiceImpl
     }
 
     protected RuleFilter buildFilter(
-            Long userId, String userName, Boolean userDefault,
-            Long groupId, String groupName, Boolean groupDefault,
+            String userName, Boolean userDefault,
+            String roleName, Boolean groupDefault,
             Long instanceId, String instanceName, Boolean instanceDefault,
             String serviceName, Boolean serviceDefault,
             String requestName, Boolean requestDefault,
@@ -368,8 +365,8 @@ public class RESTRuleServiceImpl
 
         RuleFilter filter = new RuleFilter(SpecialFilterType.ANY, true);
 
-        setFilter(filter.getUser(), userId, userName, userDefault);
-        setFilter(filter.getUserGroup(), groupId, groupName, groupDefault);
+        setFilter(filter.getUser(), userName, userDefault);
+        setFilter(filter.getRole(), roleName, groupDefault);
         setFilter(filter.getInstance(), instanceId, instanceName, instanceDefault);
         setFilter(filter.getService(), serviceName, serviceDefault);
         setFilter(filter.getRequest(), requestName, requestDefault);
@@ -421,8 +418,8 @@ public class RESTRuleServiceImpl
 
     @Override
     public long count(
-            Long userId, String userName, Boolean userDefault,
-            Long groupId, String groupName, Boolean groupDefault,
+            String userName, Boolean userDefault,
+            String roleName, Boolean groupDefault,
             Long instanceId, String instanceName, Boolean instanceDefault,
             String serviceName, Boolean serviceDefault,
             String requestName, Boolean requestDefault,
@@ -431,8 +428,8 @@ public class RESTRuleServiceImpl
             throws BadRequestRestEx, InternalErrorRestEx {
 
         RuleFilter filter = buildFilter(
-                userId, userName, userDefault,
-                groupId, groupName, groupDefault,
+                userName, userDefault,
+                roleName, groupDefault,
                 instanceId, instanceName, instanceDefault,
                 serviceName, serviceDefault,
                 requestName, requestDefault,
@@ -464,12 +461,8 @@ public class RESTRuleServiceImpl
         out.setPriority(rule.getPriority());
         out.setGrant(rule.getAccess());
 
-        if (rule.getGsuser() != null) {
-            out.setUser(new IdName(rule.getGsuser().getId(), rule.getGsuser().getName()));
-        }
-        if (rule.getUserGroup() != null) {
-            out.setGroup(new IdName(rule.getUserGroup().getId(), rule.getUserGroup().getName()));
-        }
+        out.setUsername(rule.getUsername());
+        out.setRolename(rule.getRolename());
         if (rule.getInstance() != null) {
             out.setInstance(new IdName(rule.getInstance().getId(), rule.getInstance().getName()));
         }
@@ -510,14 +503,9 @@ public class RESTRuleServiceImpl
 
         rule.setAccess(in.getGrant());
 
-        if (in.getUser() != null) {
-            rule.setGsuser(getUser(in.getUser()));
-        }
-
-        if (in.getGroup() != null) {
-            rule.setUserGroup(getUserGroup(in.getGroup()));
-        }
-
+        rule.setUsername(in.getUsername());
+        rule.setRolename(in.getRolename());
+        
         if (in.getInstance() != null) {
             rule.setInstance(getInstance(in.getInstance()));
         }

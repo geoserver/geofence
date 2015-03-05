@@ -70,19 +70,6 @@ public interface RESTUserService {
     /**
      * Returns a single user.
      *
-     * @param id The id of the user.
-     *
-     * @throws NotFoundRestEx (HTTP code 404) if no user with given id exists
-     * @throws InternalErrorRestEx (HTTP code 500)
-     */
-    @GET
-    @Path("/id/{id}")
-    @Produces(MediaType.APPLICATION_XML)
-    RESTOutputUser get(@PathParam("id") Long id) throws NotFoundRestEx, InternalErrorRestEx;
-
-    /**
-     * Returns a single user.
-     *
      * @param name The userName
      *
      * @throws NotFoundRestEx (HTTP code 404) if no user with given name exists
@@ -142,23 +129,6 @@ public interface RESTUserService {
     /**
      * Deletes a GSUser.
      *
-     * @param id The id of the user to delete
-     * @param cascade When true, also delete all the Rules referring to that user
-     *
-     * @throws BadRequestRestEx (HTTP code 400) if parameters are illegal
-     * @throws NotFoundRestEx (HTTP code 404) if the user is not found
-     * @throws if the user is used in a rule and cascade is false
-     * @throws InternalErrorRestEx (HTTP code 500)
-     */
-    @DELETE
-    @Path("/id/{id}")
-    Response delete(
-            @PathParam("id") Long id,
-            @QueryParam("cascade") @DefaultValue("false") boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx;
-
-    /**
-     * Deletes a GSUser.
-     *
      * @param name The name of the user to delete
      * @param cascade When true, also delete all the Rules referring to that user
      *
@@ -177,43 +147,6 @@ public interface RESTUserService {
     //=== Group association stuff
     //=========================================================================
 
-    void addIntoGroup(IdName userId, IdName groupId)
-            throws InternalErrorRestEx, BadRequestRestEx, NotFoundRestEx;
-
-    /**
-     * Adds a user into a userGroup
-     *
-     * @param userId The id of the user to assign
-     * @param groupName The name of the group the user should be added into
-     *
-     * @throws BadRequestRestEx (HTTP code 400) if parameters are illegal
-     * @throws NotFoundRestEx (HTTP code 404) if the user or the group are not found
-     * @throws InternalErrorRestEx (HTTP code 500)
-     */
-    @PUT
-    @Path("/id/{userId}/group/name/{groupName}")
-    void addIntoGroup(
-            @PathParam("userId") Long userId,
-            @PathParam("groupName") String groupName)
-            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
-
-    /**
-     * Adds a user into a userGroup
-     *
-     * @param userId The id of the user to assign
-     * @param groupId The id of the group the user should be added into
-     *
-     * @throws BadRequestRestEx (HTTP code 400) if parameters are illegal
-     * @throws NotFoundRestEx (HTTP code 404) if the user or the group are not found
-     * @throws InternalErrorRestEx (HTTP code 500)
-     */
-    @PUT
-    @Path("/id/{userId}/group/id/{groupId}")
-    void addIntoGroup(
-            @PathParam("userId") Long userId,
-            @PathParam("groupId") Long groupId)
-            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
-
     /**
      * Adds a user into a userGroup
      *
@@ -229,66 +162,12 @@ public interface RESTUserService {
     void addIntoGroup(
             @PathParam("userName") String userName,
             @PathParam("groupName") String groupName)
-            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
-
-    /**
-     * Adds a user into a userGroup
-     *
-     * @param userName The name of the user to assign
-     * @param groupId The id of the group the user should be added into
-     *
-     * @throws BadRequestRestEx (HTTP code 400) if parameters are illegal
-     * @throws NotFoundRestEx (HTTP code 404) if the user or the group are not found
-     * @throws InternalErrorRestEx (HTTP code 500)
-     */
-    @PUT
-    @Path("/name/{userName}/group/id/{groupId}")
-    void addIntoGroup(
-            @PathParam("userName") String userName,
-            @PathParam("groupId") Long groupId)
             throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     //=========================================================================
     //=== Group removal stuff
     //=========================================================================
 
-    void removeFromGroup(IdName userId, IdName groupId)
-            throws InternalErrorRestEx, BadRequestRestEx, NotFoundRestEx;
-
-    /**
-     * Remove a user from a userGroup
-     *
-     * @param userId The id of the user
-     * @param groupName The name of the group the user should be removed from
-     *
-     * @throws BadRequestRestEx (HTTP code 400) if parameters are illegal
-     * @throws NotFoundRestEx (HTTP code 404) if the user or the group are not found
-     * @throws InternalErrorRestEx (HTTP code 500)
-     */
-    @DELETE
-    @Path("/id/{userId}/group/name/{groupName}")
-    void removeFromGroup(
-            @PathParam("userId") Long userId,
-            @PathParam("groupName") String groupName)
-            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
-
-    /**
-     * Remove a user from a userGroup
-     *
-     * @param userId The id of the user
-     * @param groupId The id of the group the user should be removed from
-     *
-     * @throws BadRequestRestEx (HTTP code 400) if parameters are illegal
-     * @throws NotFoundRestEx (HTTP code 404) if the user or the group are not found
-     * @throws InternalErrorRestEx (HTTP code 500)
-     */
-    @DELETE
-    @Path("/id/{userId}/group/id/{groupId}")
-    void removeFromGroup(
-            @PathParam("userId") Long userId,
-            @PathParam("groupId") Long groupId)
-            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
-
     /**
      * Remove a user from a userGroup
      *
@@ -304,22 +183,5 @@ public interface RESTUserService {
     void removeFromGroup(
             @PathParam("userName") String userName,
             @PathParam("groupName") String groupName)
-            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
-
-    /**
-     * Remove a user from a userGroup
-     *
-     * @param userName The name of the user
-     * @param groupId The id of the group the user should be removed from
-     *
-     * @throws BadRequestRestEx (HTTP code 400) if parameters are illegal
-     * @throws NotFoundRestEx (HTTP code 404) if the user or the group are not found
-     * @throws InternalErrorRestEx (HTTP code 500)
-     */
-    @DELETE
-    @Path("/name/{userName}/group/id/{groupId}")
-    void removeFromGroup(
-            @PathParam("userName") String userName,
-            @PathParam("groupId") Long groupId)
             throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 }
