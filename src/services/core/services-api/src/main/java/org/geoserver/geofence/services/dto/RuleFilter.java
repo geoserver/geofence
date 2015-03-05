@@ -498,6 +498,18 @@ public class RuleFilter implements Serializable {
             this.forceUppercase = forceUppercase;
         }
 
+        public TextFilter(FilterType type, boolean forceUppercase, boolean includeDefault) {
+            this.type = type;
+            this.forceUppercase = forceUppercase;
+            this.includeDefault = includeDefault;
+        }
+
+        public TextFilter(String text, boolean forceUppercase, boolean includeDefault) {
+            this(text);
+            this.forceUppercase = forceUppercase;
+            this.includeDefault = includeDefault;
+        }
+
         public TextFilter(String text) {
             this.text = text;
             this.type = FilterType.NAMEVALUE;

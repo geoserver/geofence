@@ -81,14 +81,14 @@ public class GeoFenceClientTest {
     protected void removeUsers(GeoFenceClient client) { 
         for (RESTShortUser su : client.getUserService().getList(null, null, null).getUserList()) {
             LOGGER.debug("Removing user " + su);
-            client.getUserService().delete(su.getId(), true);
+            client.getUserService().delete(su.getUserName(), true);
         }
     }
 
     protected void removeGroups(GeoFenceClient client) {
         for (ShortGroup sg : client.getUserGroupService().getList(null, null, null).getList()) {
             LOGGER.debug("Removing group " + sg);
-            client.getUserGroupService().delete(sg.getId(), true);
+            client.getUserGroupService().delete(sg.getName(), true);
         }
     }
 
@@ -139,7 +139,7 @@ public class GeoFenceClientTest {
 
         {
             RESTInputRule rule = new RESTInputRule();
-            rule.setGroupName("group01");
+            rule.setRolename("group01");
             rule.setLayer("test01");
             rule.setGrant(GrantType.ALLOW);
             rule.setPosition(new RESTInputRule.RESTRulePosition(RESTInputRule.RESTRulePosition.RulePosition.offsetFromBottom, 0));
@@ -147,7 +147,7 @@ public class GeoFenceClientTest {
         }
         {
             RESTInputRule rule = new RESTInputRule();
-            rule.setGroupName("group01");
+            rule.setRolename("group01");
             rule.setLayer("test02");
             rule.setGrant(GrantType.ALLOW);
             rule.setPosition(new RESTInputRule.RESTRulePosition(RESTInputRule.RESTRulePosition.RulePosition.offsetFromBottom, 0));
@@ -155,7 +155,7 @@ public class GeoFenceClientTest {
         }
         {
             RESTInputRule rule = new RESTInputRule();
-            rule.setGroupName("group02");
+            rule.setRolename("group02");
             rule.setLayer("test03");
             rule.setGrant(GrantType.ALLOW);
             rule.setPosition(new RESTInputRule.RESTRulePosition(RESTInputRule.RESTRulePosition.RulePosition.offsetFromBottom, 0));
@@ -177,8 +177,8 @@ public class GeoFenceClientTest {
             LOGGER.debug("found rule " + rule);
         }
 
-        assertEquals(2, rsh.get(null, null, true, null, new RuleFilter.IdNameFilter("group01", false), null, null, null, null, null).getList().size());
-        assertEquals(3, rsh.get(null, null, true, null, new RuleFilter.IdNameFilter("group01", true), null, null, null, null, null).getList().size());
+        assertEquals(2, rsh.get(null, null, true, null, new RuleFilter.TextFilter("group01", false, false), null, null, null, null, null).getList().size());
+        assertEquals(3, rsh.get(null, null, true, null, new RuleFilter.TextFilter("group01", false, true), null, null, null, null, null).getList().size());
     }
 
     @Test

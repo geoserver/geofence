@@ -80,7 +80,7 @@ public abstract class RESTBaseTest {
         LOGGER.info("============================== TEST " + name.getMethodName());
         LOGGER.info("");
 
-        RESTOutputRuleList rules = restRuleService.get(null, null, false, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        RESTOutputRuleList rules = restRuleService.get(null, null, false, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
         for (RESTOutputRule rule : rules) {
             LOGGER.warn("Removing " + rule);
             restRuleService.delete(rule.getId());
@@ -90,12 +90,12 @@ public abstract class RESTBaseTest {
         RESTShortUserList users = restUserService.getList(null, null, null);
         for (RESTShortUser user : users) {
             LOGGER.warn("Removing " + user);
-            restUserService.delete(user.getId(), true);            
+            restUserService.delete(user.getUserName(), true);
         }
-        RESTFullUserGroupList userGroups = restUserGroupService.getList(null, null, null);
-        for (ShortGroup group : userGroups) {
-            LOGGER.warn("Removing " + group);
-            restUserGroupService.delete(group.getId(), true);
+        RESTFullUserGroupList roles = restUserGroupService.getList(null, null, null);
+        for (ShortGroup role : roles) {
+            LOGGER.warn("Removing " + role);
+            restUserGroupService.delete(role.getName(), true);
         }
 
         LOGGER.info("----------------- ending cleaning tasks ------------- ");

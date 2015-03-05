@@ -183,8 +183,8 @@ public class ModelPrintoutFakeTest {
     private RESTInputRule createInputRule(String base) {
         RESTInputRule ret = new RESTInputRule();
 
-        ret.setUserName("user_"+base);
-        ret.setGroupName("grp_"+base);
+        ret.setUsername("user_"+base);
+        ret.setRolename("role_"+base);
         ret.setInstanceId((long)base.hashCode());
         ret.setService("WMS_"+base);
         ret.setRequest("getMap_"+base);
@@ -218,8 +218,8 @@ public class ModelPrintoutFakeTest {
         RESTOutputRule ret = new RESTOutputRule();
 
         ret.setPriority(rulePri++);
-        ret.setUser(new IdName((long)(Math.random()*10000), "user_"+base));
-        ret.setGroup(new IdName((long)(Math.random()*10000), "grp_"+base));
+        ret.setUsername("user_"+base);
+        ret.setRolename("role_"+base);
         ret.setInstance(new IdName((long)(Math.random()*10000), "gs_"+base));
         ret.setService("WMS_"+base);
         ret.setRequest("getMap_"+base);

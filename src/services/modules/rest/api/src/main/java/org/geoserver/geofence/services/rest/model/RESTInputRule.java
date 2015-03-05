@@ -18,13 +18,13 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "rule")
-@XmlType(name="Rule", propOrder={"position","grant","user","group","instance","service","request","workspace","layer","constraints"})
+@XmlType(name="Rule", propOrder={"position","grant","username","rolename","instance","service","request","workspace","layer","constraints"})
 public class RESTInputRule extends AbstractRESTPayload {
 
     private RESTRulePosition position;
 
-    private IdName user;
-    private IdName group;
+    private String username;
+    private String rolename;
 
     private IdName instance;
 
@@ -41,22 +41,22 @@ public class RESTInputRule extends AbstractRESTPayload {
     public RESTInputRule() {
     }
 
-    public void setUserId(Long id) {
-        user = new IdName(id);
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String name) {
-        user = new IdName(name);
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setGroupId(Long id) {
-        group = new IdName(id);
+    public String getRolename() {
+        return rolename;
     }
 
-    public void setGroupName(String name) {
-        group = new IdName(name);
+    public void setRolename(String rolename) {
+        this.rolename = rolename;
     }
-
+    
     public void setInstanceId(Long id) {
         instance = new IdName(id);
     }
@@ -65,28 +65,12 @@ public class RESTInputRule extends AbstractRESTPayload {
         instance = new IdName(name);
     }
 
-    public void setGroup(IdName group) {
-        this.group = group;
-    }
-
     public void setInstance(IdName instance) {
         this.instance = instance;
     }
 
-    public void setUser(IdName user) {
-        this.user = user;
-    }
-
-    public IdName getGroup() {
-        return group;
-    }
-
     public IdName getInstance() {
         return instance;
-    }
-
-    public IdName getUser() {
-        return user;
     }
 
     public String getLayer() {
@@ -163,11 +147,11 @@ public class RESTInputRule extends AbstractRESTPayload {
             sb.append(position.getValue());
         }
 
-        if (user != null) {
-            sb.append(" user:").append(user);
+        if (rolename != null) {
+            sb.append(" rolename:").append(rolename);
         }
-        if (group != null) {
-            sb.append(" group:").append(group);
+        if (username != null) {
+            sb.append(" username:").append(username);
         }
         if (instance != null) {
             sb.append(" instance:").append(instance);
