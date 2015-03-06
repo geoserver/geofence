@@ -440,37 +440,36 @@ public class Rule extends BeanModel implements IsSerializable
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Rule [");
-        if (grant != null) {
-            builder.append("grant=").append(grant).append(", ");
+
+        builder.append("id=").append(id);
+        builder.append(", priority=").append(priority);
+
+        if (user != null) {
+            builder.append(", user=").append(user.getName());
         }
-        builder.append("id=").append(id).append(", ");
+        if (profile != null) {
+            builder.append(", group=").append(profile.getName());
+        }
         if (instance != null) {
-            builder.append("instance=").append(instance).append(", ");
+            builder.append(", instance=").append(instance.getName());
         }
         if (sourceIPRange != null) {
-            builder.append("src=").append(sourceIPRange).append(", ");
-        }
-        if (layer != null) {
-            builder.append("layer=").append(layer).append(", ");
-        }
-        if (path != null) {
-            builder.append("path=").append(path).append(", ");
-        }
-        builder.append("priority=").append(priority).append(", ");
-        if (profile != null) {
-            builder.append("profile=").append(profile).append(", ");
-        }
-        if (request != null) {
-            builder.append("request=").append(request).append(", ");
+            builder.append(", ip=").append(sourceIPRange);
         }
         if (service != null) {
-            builder.append("service=").append(service).append(", ");
+            builder.append(", service=").append(service);
         }
-        if (user != null) {
-            builder.append("user=").append(user).append(", ");
+        if (request != null) {
+            builder.append(", request=").append(request);
         }
         if (workspace != null) {
-            builder.append("workspace=").append(workspace);
+            builder.append(", workspace=").append(workspace);
+        }
+        if (layer != null) {
+            builder.append(", layer=").append(layer);
+        }
+        if (grant != null) {
+            builder.append(", grant=").append(grant);
         }
         builder.append("]");
 

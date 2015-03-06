@@ -355,34 +355,14 @@ public class GSInstance extends BeanModel implements IsSerializable
     {
         StringBuilder builder = new StringBuilder();
         builder.append("GSInstance [");
-        if (baseURL != null)
-        {
-            builder.append("baseURL=").append(baseURL).append(", ");
-        }
-        if (dateCreation != null)
-        {
-            builder.append("dateCreation=").append(dateCreation).append(", ");
-        }
-        if (description != null)
-        {
-            builder.append("description=").append(description).append(", ");
-        }
-        builder.append("id=").append(id).append(", ");
+        builder.append("id=").append(id);
         if (name != null)
         {
-            builder.append("name=").append(name).append(", ");
+            builder.append(", name=").append(name).append(", ");
         }
-        if (username != null)
+        if (baseURL != null)
         {
-            builder.append("username=").append(username).append(", ");
-        }
-        if (password != null)
-        {
-            builder.append("password=").append(password).append(", ");
-        }
-        if (path != null)
-        {
-            builder.append("path=").append(path);
+            builder.append(", url=").append(baseURL);
         }
         builder.append("]");
 
