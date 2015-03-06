@@ -5,20 +5,15 @@
 
 package org.geoserver.geofence.services;
 
-import org.geoserver.geofence.services.RuleReaderService;
 import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
 import com.vividsolutions.jts.geom.Geometry;
-import org.geoserver.geofence.core.dao.GSUserDAO;
 import org.geoserver.geofence.core.dao.LayerDetailsDAO;
 import org.geoserver.geofence.core.dao.RuleDAO;
-import org.geoserver.geofence.core.dao.UserGroupDAO;
-import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.LayerDetails;
 import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.core.model.RuleLimits;
-import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.core.model.enums.AccessType;
 import org.geoserver.geofence.core.model.enums.CatalogMode;
 import org.geoserver.geofence.core.model.enums.GrantType;
@@ -33,6 +28,8 @@ import org.geoserver.geofence.services.dto.ShortRule;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.util.AccessInfoInternal;
 import org.geoserver.geofence.services.util.IPUtils;
+import org.geoserver.geofence.spi.UserResolver;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -60,8 +57,9 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
     private RuleDAO ruleDAO;
     private LayerDetailsDAO detailsDAO;
-    private GSUserDAO userDAO;
-    private UserGroupDAO userGroupDAO;
+
+    private UserResolver userResolver;
+    private AuthorizationService authorizationService;
 
     /**
      * @deprecated
@@ -303,33 +301,15 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         return ret;
     }
 
-//    private Geometry getUserArea(IdNameFilter userFilter) {
-//        GSUser user = null;
-//
-//        if(userFilter.getType() == RuleFilter.FilterType.IDVALUE) {
-//            user = userDAO.find(userFilter.getId());
-//        } else if(userFilter.getType() == RuleFilter.FilterType.NAMEVALUE) {
-//            user = getUserByName(userFilter.getName());
-//        }
-//
-//        return user == null ? null :  user.getAllowedArea();
-//    }
 
-    private GSUser getUserByName(String userName) {
-        Search search = new Search(GSUser.class);
-        search.addFilterEqual("name", userName);
-        List<GSUser> users = userDAO.search(search);
-        if(users.size() > 1)
-            throw new IllegalStateException("Found more than one user with name '"+userName+"'");
 
-        return users.isEmpty() ? null : users.get(0);
-    }
-
-    private GSUser getFullUser(TextFilter filter) {
+    private String validateUsername(TextFilter filter) {
 
         switch(filter.getType()) {
             case NAMEVALUE:
-                return userDAO.getFull(filter.getText());
+                String name = filter.getText();
+                if (userResolver.existsUser(name))
+                    return name;
             case DEFAULT:
             case ANY:
                 return null;
@@ -338,25 +318,20 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         }
     }
 
-    private String getRole(TextFilter filter) {
-        Search search = new Search(UserGroup.class);
+    private String validateRolename(TextFilter filter) {
 
         switch(filter.getType()) {
             case NAMEVALUE:
-                search.addFilterEqual("name", filter.getText());
-                break;
-            default:
+                String name = filter.getText();
+                if (userResolver.existsRole(name))
+                    return name;
+            case DEFAULT:
+            case ANY:
                 return null;
+            default:
+                throw new IllegalStateException("Unknown filter type '"+filter+"'");
         }
-
-        List<UserGroup> groups = userGroupDAO.search(search);
-        if(groups.size() > 1)
-            throw new IllegalStateException("Found more than one userGroup '"+filter+"'");
-
-        return groups.isEmpty() ? null : groups.get(0).getName();
     }
-
-
 
     private AccessInfoInternal buildAllowAccessInfo(Rule rule, List<RuleLimits> limits, IdNameFilter userFilter) {
         AccessInfoInternal accessInfo = new AccessInfoInternal(GrantType.ALLOW);
@@ -473,56 +448,63 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     //==========================================================================
 
     /**
+     * Returns Rules matching a filter.
+     *
+     * Compatible filters:
+     *   username assigned and rolename:ANY      -> should consider all the roles the user belongs to
+     *   username:ANY      and rolename assigned -> should consider all the users belonging to the given role
+     *
      *
      * @return a Map having role names as keys, and the list of matching Rules as values. The NULL key holds the rules for the DEFAULT group.
      */
     protected Map<String, List<Rule>> getRules(RuleFilter filter) throws BadRequestServiceEx {
         
-        // user can be null if
-        // 1) id or name are defined in the filter, but the user has not been found in the db
+        // username can be null if
+        // 1) name is defined in the filter, but the user has not been found in the db
         // 2) the user filter asks for ANY or DEFAULT 
-        GSUser filterUser = getFullUser(filter.getUser());
+        String username = validateUsername(filter.getUser());
 
-        // group can be null if
+        // rolename can be null if
         // 1) id or name are defined in the filter, but the group has not been found in the db
         // 2) the group filter asks for ANY or DEFAULT
-        String filterRole = getRole(filter.getRole());
+        String rolename = validateRolename(filter.getRole());
 
-        Set<String> finalGroupFilter = new HashSet<String>();
+        Set<String> finalRoleFilter = new HashSet<String>();
 
         // If both user and group are defined in filter
         //   if user doensn't belong to group, no rule is returned
         //   otherwise assigned or default rules are searched for
-        if(filterUser != null) {
-            Set<String> assignedRoles = getRoles(filterUser);
-            if(filterRole != null) {
-                if( assignedRoles.contains(filterRole)) {
-//                    IdNameFilter f = new IdNameFilter(filterGroup.getId());
-                    finalGroupFilter = Collections.singleton(filterRole);
+        if(username != null) {
+            Set<String> assignedRoles = userResolver.getRoles(username);
+            if(rolename != null) {
+                if( assignedRoles.contains(rolename)) {
+                    finalRoleFilter = Collections.singleton(rolename);
                 } else {
-                    LOGGER.warn("User does not belong to user group [FUser:"+filter.getUser()+"] [FGroup:"+filterRole+"] [Grps:"+assignedRoles+"]");
+                    LOGGER.warn("User does not belong to role [User:"+filter.getUser()+"] [Role:"+filter.getRole()+"] [Roles:"+assignedRoles+"]");
                     return Collections.EMPTY_MAP; // shortcut here, in rder to avoid loading the rules
                 }
             } else { 
-                // User set and found, group (ANY, DEFAULT or notfound):
+                // User set and found, role (ANY, DEFAULT or notfound):
 
                 if(filter.getRole().getType() == FilterType.ANY) {
-                    if( ! filterUser.getGroups().isEmpty()) {
-                        finalGroupFilter = getRoles(filterUser);
+                    Set<String> roles = userResolver.getRoles(username);
+                    if( ! roles.isEmpty()) {
+                        finalRoleFilter = roles;
                     } else {
                         filter.setRole(SpecialFilterType.DEFAULT);
                     }
                 } else {
-                    // group is DEFAULT or not found:
-                    // no grouping, use requested filtering
+                    // role is DEFAULT or not found:
+                    // if role filter request DEFAULT -> ok, apply the filter
+                    // if role does not exists, just apply the filter, even if probably no rule will match
                 }
             }
         } else {
             // user is null: then either:
             //  1) no filter on user was requested (ANY or DEFAULT)
             //  2) user has not been found
-            if(filterRole != null) {
-                finalGroupFilter.add(filterRole);
+            if(rolename != null) {
+                finalRoleFilter.add(rolename);
             } else if(filter.getUser().getType() != FilterType.ANY) {
                 filter.setRole(SpecialFilterType.DEFAULT);
             } else {
@@ -533,11 +515,11 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
         Map<String, List<Rule>> ret = new HashMap<String, List<Rule>>();
 
-        if(finalGroupFilter.isEmpty()) {
+        if(finalRoleFilter.isEmpty()) {
             List<Rule> found = getRuleAux(filter, filter.getRole());
             ret.put(null, found);
         } else {
-            for (String role : finalGroupFilter) {
+            for (String role : finalRoleFilter) {
                 TextFilter roleFilter = new TextFilter(role);
                 roleFilter.setIncludeDefault(true);
                 List<Rule> found = getRuleAux(filter, roleFilter);
@@ -697,28 +679,15 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
     // ==========================================================================
 
+    /**
+     * @deprecated Please use the method in {@link AuthorizationService#authorize(String, String)}.
+     */
     @Override
+    @Deprecated
     public AuthUser authorize(String username, String password) {
-        GSUser user = getUserByName(username);
-        if(user == null) {
-            LOGGER.debug("User not found " + username);
-            return null;
-        }
-        if(! user.getPassword().equals(password)) {
-            LOGGER.debug("Bad pw for user " + username);
-            return null;
-        }
-
-        return new AuthUser(username, user.isAdmin() ? AuthUser.Role.ADMIN : AuthUser.Role.USER);
+        return authorizationService.authorize(username, password);
     }
 
-    private Set<String> getRoles(GSUser user) {
-        Set<String> ret = new HashSet<String>();
-        for (UserGroup role : user.getGroups()) {
-            ret.add(role.getName());
-        }
-        return ret;
-    }
 
     // ==========================================================================
 
@@ -741,12 +710,12 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         this.detailsDAO = detailsDAO;
     }
 
-    public void setGsUserDAO(GSUserDAO userDAO) {
-        this.userDAO = userDAO;
+    public void setUserResolver(UserResolver userResolver) {
+        this.userResolver = userResolver;
     }
 
-    public void setUserGroupDAO(UserGroupDAO profileDAO) {
-        this.userGroupDAO = profileDAO;
+    public void setAuthorizationService(AuthorizationService authorizationService) {
+        this.authorizationService = authorizationService;
     }
 
 }
