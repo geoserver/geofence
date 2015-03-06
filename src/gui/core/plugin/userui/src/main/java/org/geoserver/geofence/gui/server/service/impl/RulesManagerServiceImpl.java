@@ -595,7 +595,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 	 */
 	private List<LayerAttribUI> loadAttribute(Rule rule) {
 		List<LayerAttribUI> layerAttributesDTO = new ArrayList<LayerAttribUI>();
-		Set<LayerAttribute> layerAttributes = null;
+//		Set<LayerAttribute> layerAttributes = null;
 
 		GSInstance gsInstance = rule.getInstance();
 		GeoServerRESTReader gsreader;
@@ -607,7 +607,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 			RESTLayer layer = gsreader.getLayer(rule.getLayer());
 
 			if (layer.getType().equals(RESTLayer.TYPE.VECTOR)) {
-				layerAttributes = new HashSet<LayerAttribute>();
+//				layerAttributes = new HashSet<LayerAttribute>();
 
 				// ///////////////////////
 				// Vector Layer
@@ -615,28 +615,15 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 
 				RESTFeatureType featureType = gsreader.getFeatureType(layer);
 
-				for (RESTFeatureType.Attribute attribute : featureType
-						.getAttributes()) {
-					LayerAttribute attr = new LayerAttribute();
-					attr.setName(attribute.getName());
-					attr.setDatatype(attribute.getBinding());
-
-					layerAttributes.add(attr);
-				}
-
-				layerAttributesDTO = new ArrayList<LayerAttribUI>();
-
-				Iterator<LayerAttribute> iterator = layerAttributes.iterator();
-
-				while (iterator.hasNext()) {
-					LayerAttribute layerAttribute = iterator.next();
-
+				for (RESTFeatureType.Attribute attrFromGS : featureType.getAttributes()) {
 					LayerAttribUI layAttrUI = new LayerAttribUI();
-					layAttrUI.setName(layerAttribute.getName());
-					layAttrUI.setDataType(layerAttribute.getDatatype());
+					layAttrUI.setName(attrFromGS.getName());
+					layAttrUI.setDataType(attrFromGS.getBinding());
+                    layAttrUI.setAccessType("READWRITE");
 
 					layerAttributesDTO.add(layAttrUI);
 				}
+
 			} else {
 				// ///////////////////////
 				// Raster Layer
