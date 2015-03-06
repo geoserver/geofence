@@ -10,11 +10,11 @@ import java.util.List;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.GSInstance;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.GSInstanceModel;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.model.data.Layer;
 import org.geoserver.geofence.gui.client.model.data.LayerStyle;
-import org.geoserver.geofence.gui.client.model.data.Workspace;
+import org.geoserver.geofence.gui.client.model.data.WorkspaceModel;
 
 
 // TODO: Auto-generated Javadoc
@@ -35,8 +35,8 @@ public interface IWorkspacesManagerService
      * @throws ApplicationException
      *             the application exception
      */
-    public PagingLoadResult<Workspace> getWorkspaces(int offset, int limit, String URL,
-        GSInstance gsInstance) throws ApplicationException;
+    public PagingLoadResult<WorkspaceModel> getWorkspaces(int offset, int limit, String URL,
+        GSInstanceModel gsInstance) throws ApplicationException;
 
     /**
      * Gets the layers.
@@ -52,12 +52,12 @@ public interface IWorkspacesManagerService
      *             the application exception
      */
     public PagingLoadResult<Layer> getLayers(int offset, int limit, String baseURL,
-        GSInstance gsInstance, String workspace, String service) throws ApplicationException;
+        GSInstanceModel gsInstance, String workspace, String service) throws ApplicationException;
 
     /**
      * @param gsInstance
      * @return List<LayerStyle>
      * @throws ApplicationException
      */
-    public List<LayerStyle> getStyles(Rule rule) throws ApplicationException;
+    public List<LayerStyle> getStyles(RuleModel rule) throws ApplicationException;
 }

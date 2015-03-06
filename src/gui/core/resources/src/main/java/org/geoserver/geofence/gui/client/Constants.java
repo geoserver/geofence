@@ -8,10 +8,10 @@ package org.geoserver.geofence.gui.client;
 import java.util.Iterator;
 import java.util.List;
 
-import org.geoserver.geofence.gui.client.model.GSInstance;
-import org.geoserver.geofence.gui.client.model.GSUser;
-import org.geoserver.geofence.gui.client.model.UserGroup;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.GSInstanceModel;
+import org.geoserver.geofence.gui.client.model.GSUserModel;
+import org.geoserver.geofence.gui.client.model.UserGroupModel;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 
 public class Constants {
 
@@ -38,8 +38,8 @@ public class Constants {
      *            the model
      * @return the rule
      */
-    public Rule createNewRule(Rule model) {
-        Rule new_rule = new Rule();
+    public RuleModel createNewRule(RuleModel model) {
+        RuleModel new_rule = new RuleModel();
         new_rule.setId(-1);
         if (model == null) {
             new_rule.setPriority(0);
@@ -47,15 +47,9 @@ public class Constants {
             new_rule.setPriority(model.getPriority() + 1);
         }
 
-        GSUser all_user = new GSUser();
-        all_user.setId(-1);
-        all_user.setName("*");
-        new_rule.setUser(all_user);
-        UserGroup all_profile = new UserGroup();
-        all_profile.setId(-1);
-        all_profile.setName("*");
-        new_rule.setProfile(all_profile);
-        GSInstance all_instance = new GSInstance();
+        new_rule.setUsername("*");
+        new_rule.setRolename("*");
+        GSInstanceModel all_instance = new GSInstanceModel();
         all_instance.setId(-1);
         all_instance.setName("*");
         all_instance.setBaseURL("*");
@@ -75,18 +69,18 @@ public class Constants {
      * @param rule
      * @return
      */
-    public boolean checkUniqueRule(List<Rule> list, Rule rule) {
+    public boolean checkUniqueRule(List<RuleModel> list, RuleModel rule) {
         boolean res = false;
         if (list.size() > 0) {
             Iterator itr = list.iterator();
             while (itr.hasNext() && !res) {
-                Rule r = (Rule) itr.next();
-                if (((r.getUser() != null && rule.getUser() != null && r.getUser().getName()
-                        .equals(rule.getUser().getName())) || (r.getUser() == null && rule
-                        .getUser() == null))
-                        && (r.getProfile() != null && rule.getProfile() != null
-                                && r.getProfile().getName().equals(rule.getProfile().getName()) || (r
-                                .getProfile() == null && rule.getProfile() == null))
+                RuleModel r = (RuleModel) itr.next();
+                if (((r.getUsername()!= null && rule.getUsername()!= null
+                                && r.getUsername().equals(rule.getUsername())) ||
+                                 (r.getUsername()== null && rule.getUsername()== null))
+                        && (r.getRolename() != null && rule.getRolename() != null
+                                && r.getRolename().equals(rule.getRolename()) || (r.getRolename() == null &&
+                                rule.getRolename() == null))
                         && (r.getInstance() != null && rule.getInstance() != null
                                 && r.getInstance().getName().equals(rule.getInstance().getName()) || (r
                                 .getInstance() == null && rule.getInstance() == null))

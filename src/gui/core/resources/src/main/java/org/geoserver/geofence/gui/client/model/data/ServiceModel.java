@@ -13,51 +13,51 @@ import org.geoserver.geofence.gui.client.model.BeanKeyValue;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class Workspace.
+ * The Class Service.
  */
-public class Workspace extends BeanModel implements IsSerializable
+public class ServiceModel extends BeanModel implements IsSerializable
 {
 
     /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = 4900649353701687980L;
+    private static final long serialVersionUID = 2828906795801803648L;
 
-    /** The workspace. */
-    private String workspace;
+    /** The service. */
+    private String service;
 
     /** The path. */
     private String path;
 
     /**
-     * Instantiates a new workspace.
+     * Instantiates a new service.
      *
-     * @param workspace
-     *            the request
+     * @param service
+     *            the service
      */
-    public Workspace(String workspace)
+    public ServiceModel(String service)
     {
         this();
-        setWorkspace(workspace);
+        setService(service);
     }
 
     /**
-     * Instantiates a new workspace.
+     * Instantiates a new service.
      */
-    public Workspace()
+    public ServiceModel()
     {
         super();
-        setPath("geofence/resources/images/workspace.jpg");
+        setPath("geofence/resources/images/service.jpg");
     }
 
     /**
-     * Sets the workspace.
+     * Sets the service.
      *
-     * @param workspace
-     *            the new workspace
+     * @param service
+     *            the new service
      */
-    public void setWorkspace(String workspace)
+    public void setService(String service)
     {
-        this.workspace = workspace;
-        set(BeanKeyValue.WORKSPACE.getValue(), this.workspace);
+        this.service = service;
+        set(BeanKeyValue.SERVICE.getValue(), this.service);
     }
 
     /**
@@ -83,13 +83,13 @@ public class Workspace extends BeanModel implements IsSerializable
     }
 
     /**
-     * Gets the workspace.
+     * Gets the service.
      *
-     * @return the workspace
+     * @return the service
      */
-    public String getWorkspace()
+    public String getService()
     {
-        return workspace;
+        return service;
     }
 
     /* (non-Javadoc)
@@ -100,8 +100,7 @@ public class Workspace extends BeanModel implements IsSerializable
     {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + ((path == null) ? 0 : path.hashCode());
-        result = (prime * result) + ((workspace == null) ? 0 : workspace.hashCode());
+        result = (prime * result) + ((service == null) ? 0 : service.hashCode());
 
         return result;
     }
@@ -120,31 +119,20 @@ public class Workspace extends BeanModel implements IsSerializable
         {
             return false;
         }
-        if (!(obj instanceof Workspace))
+        if (!(obj instanceof ServiceModel))
         {
             return false;
         }
 
-        Workspace other = (Workspace) obj;
-        if (path == null)
+        ServiceModel other = (ServiceModel) obj;
+        if (service == null)
         {
-            if (other.path != null)
+            if (other.service != null)
             {
                 return false;
             }
         }
-        else if (!path.equals(other.path))
-        {
-            return false;
-        }
-        if (workspace == null)
-        {
-            if (other.workspace != null)
-            {
-                return false;
-            }
-        }
-        else if (!workspace.equals(other.workspace))
+        else if (!service.equals(other.service))
         {
             return false;
         }
@@ -159,14 +147,10 @@ public class Workspace extends BeanModel implements IsSerializable
     public String toString()
     {
         StringBuilder builder = new StringBuilder();
-        builder.append("Workspace [");
-        if (path != null)
+        builder.append("Service [");
+        if (service != null)
         {
-            builder.append("path=").append(path).append(", ");
-        }
-        if (workspace != null)
-        {
-            builder.append("workspace=").append(workspace);
+            builder.append("service=").append(service);
         }
         builder.append("]");
 

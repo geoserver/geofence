@@ -7,7 +7,7 @@ package org.geoserver.geofence.gui.client.widget;
 
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 
 
 // TODO: Auto-generated Javadoc
@@ -19,10 +19,10 @@ public class GridStatus
 
 
     /** The model. */
-    private Rule model;
+    private RuleModel model;
 
     /** The grid. */
-    private Grid<Rule> grid;
+    private Grid<RuleModel> grid;
 
     /**
      * Instantiates a new grid status.
@@ -32,7 +32,7 @@ public class GridStatus
      * @param rule
      *            the rule
      */
-    public GridStatus(Grid<Rule> grid, Rule rule)
+    public GridStatus(Grid<RuleModel> grid, RuleModel rule)
     {
         this.grid = grid;
         this.model = rule;
@@ -43,7 +43,7 @@ public class GridStatus
      *
      * @return the model
      */
-    public Rule getModel()
+    public RuleModel getModel()
     {
         return model;
     }
@@ -54,7 +54,7 @@ public class GridStatus
      * @param model
      *            the new model
      */
-    public void setModel(Rule model)
+    public void setModel(RuleModel model)
     {
         this.model = model;
     }
@@ -64,7 +64,7 @@ public class GridStatus
      *
      * @return the grid
      */
-    public Grid<Rule> getGrid()
+    public Grid<RuleModel> getGrid()
     {
         return grid;
     }
@@ -75,7 +75,7 @@ public class GridStatus
      * @param grid
      *            the new grid
      */
-    public void setGrid(Grid<Rule> grid)
+    public void setGrid(Grid<RuleModel> grid)
     {
         this.grid = grid;
     }

@@ -8,8 +8,8 @@ package org.geoserver.geofence.gui.client.widget.rule.detail;
 import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.Resources;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
-import org.geoserver.geofence.gui.client.model.GSUser;
-import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.GSUserModel;
+import org.geoserver.geofence.gui.client.model.UserGroupModel;
 import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 
@@ -39,7 +39,7 @@ public class UserDetailsWidget extends ContentPanel
 {
 
     /** The user. */
-    private GSUser user;
+    private GSUserModel user;
 
     /** The user details info. */
     private UserDetailsInfoWidget userDeatilsInfo;
@@ -68,7 +68,7 @@ public class UserDetailsWidget extends ContentPanel
      *            the user service
      * @param profilesManagerServiceRemote 
      */
-    public UserDetailsWidget(GSUser model, 
+    public UserDetailsWidget(GSUserModel model, 
     		GsUsersManagerRemoteServiceAsync usersService, 
     		final ProfilesManagerRemoteServiceAsync profilesManagerServiceRemote)
     {
@@ -108,13 +108,13 @@ public class UserDetailsWidget extends ContentPanel
                     /*UserLimitsInfo userInfoModel = userDeatilsInfo.getModelData();
                     Dispatcher.forwardEvent(GeofenceEvents.SAVE_USER_LIMITS, userInfoModel);*/
 
-                    profilesManagerServiceRemote.getProfiles(-1, -1, true, new AsyncCallback<PagingLoadResult<UserGroup>>() {
+                    profilesManagerServiceRemote.getProfiles(-1, -1, true, new AsyncCallback<PagingLoadResult<UserGroupModel>>() {
 						
-						public void onSuccess(PagingLoadResult<UserGroup> result) {
-		                    Set<UserGroup> groups = new HashSet<UserGroup>();
-		                    for (UserGroup gg : profilesInfo.getStore().getModels())
+						public void onSuccess(PagingLoadResult<UserGroupModel> result) {
+		                    Set<UserGroupModel> groups = new HashSet<UserGroupModel>();
+		                    for (UserGroupModel gg : profilesInfo.getStore().getModels())
 		                    {
-		                    	for(UserGroup gg_r : result.getData()){
+		                    	for(UserGroupModel gg_r : result.getData()){
 			                    	if(gg.getName().equals(gg_r.getName()) && gg.isEnabled()){
 			                    		groups.add(gg_r);
 			                    	}
@@ -125,13 +125,13 @@ public class UserDetailsWidget extends ContentPanel
 		                    Dispatcher.forwardEvent(GeofenceEvents.SAVE_USER_GROUPS, user);
 		                    
 		                    Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
-		                        new String[] { "GeoServer Users: Users Groups", "Apply Changes Successfull!" });
+		                        new String[] { "GeoServer Users: Users Roles", "Apply Changes Successfull!" });
 
 						}
 						
 						public void onFailure(Throwable caught) {
 		                    Dispatcher.forwardEvent(GeofenceEvents.SEND_ERROR_MESSAGE,
-			                        new String[] { "GeoServer Users: Users Groups", "Error Occurred while assigning groups to the User!" });
+			                        new String[] { "GeoServer Users: Users Roles", "Error Occurred while assigning roles to the user!" });
 						}
 					});
 

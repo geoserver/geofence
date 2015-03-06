@@ -43,7 +43,7 @@ import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.Resources;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
-import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.UserGroupModel;
 import org.geoserver.geofence.gui.client.model.data.ProfileCustomProps;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.widget.GeofenceGridWidget;
@@ -67,7 +67,7 @@ public class ProfileDetailsGridWidget extends GeofenceGridWidget<ProfileCustomPr
     /** The tool bar. */
     private PagingToolBar toolBar;
 
-    private UserGroup profile;
+    private UserGroupModel profile;
 
     /**
      * Instantiates a new profile custom props grid widget.
@@ -76,7 +76,7 @@ public class ProfileDetailsGridWidget extends GeofenceGridWidget<ProfileCustomPr
      * @param rulesService
      *            the rules service
      */
-    public ProfileDetailsGridWidget(UserGroup profile, ProfilesManagerRemoteServiceAsync profilesService)
+    public ProfileDetailsGridWidget(UserGroupModel profile, ProfilesManagerRemoteServiceAsync profilesService)
     {
         super();
         this.profile = profile;

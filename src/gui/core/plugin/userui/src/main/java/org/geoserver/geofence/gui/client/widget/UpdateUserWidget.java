@@ -22,14 +22,14 @@ import org.geoserver.geofence.gui.client.SendType.SendTypeEnum;
 import org.geoserver.geofence.gui.client.UpdateInterval;
 import org.geoserver.geofence.gui.client.UpdateInterval.UpdateIntervalEnum;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
-import org.geoserver.geofence.gui.client.model.User;
+import org.geoserver.geofence.gui.client.model.UserModel;
 
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class UpdateUserWidget.
  */
-public class UpdateUserWidget extends GeofenceUpdateWidget<User>
+public class UpdateUserWidget extends GeofenceUpdateWidget<UserModel>
 {
 
     /**
@@ -98,7 +98,7 @@ public class UpdateUserWidget extends GeofenceUpdateWidget<User>
      * .data.BaseModel)
      */
     @Override
-    public void bind(User user)
+    public void bind(UserModel user)
     {
         super.bind(user);
         // checkComponentsModifiability();

@@ -12,7 +12,8 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.RolenameModel;
+import org.geoserver.geofence.gui.client.model.UserGroupModel;
 import org.geoserver.geofence.gui.client.model.data.ProfileCustomProps;
 
 
@@ -34,7 +35,8 @@ public interface ProfilesManagerRemoteService extends RemoteService
      * @throws ApplicationException
      *             the application exception
      */
-    public PagingLoadResult<UserGroup> getProfiles(int offset, int limit, boolean full) throws ApplicationException;
+    public PagingLoadResult<UserGroupModel> getProfiles(int offset, int limit, boolean full) throws ApplicationException;
+    public PagingLoadResult<RolenameModel> getRolenames(int offset, int limit, boolean full) throws ApplicationException;
 
     /**
      * Save profile.
@@ -44,7 +46,7 @@ public interface ProfilesManagerRemoteService extends RemoteService
      * @throws ApplicationException
      *             the application exception
      */
-    public void saveProfile(UserGroup profile) throws ApplicationException;
+    public void saveProfile(UserGroupModel profile) throws ApplicationException;
 
     /**
      * Delete profile.
@@ -54,14 +56,14 @@ public interface ProfilesManagerRemoteService extends RemoteService
      * @throws ApplicationException
      *             the application exception
      */
-    public void deleteProfile(UserGroup profile) throws ApplicationException;
+    public void deleteProfile(UserGroupModel profile) throws ApplicationException;
 
     /**
      * @param ruleId
      * @param customProps
      * @throws ApplicationException
      */
-    public PagingLoadResult<ProfileCustomProps> getProfileCustomProps(int offset, int limit, UserGroup profile)
+    public PagingLoadResult<ProfileCustomProps> getProfileCustomProps(int offset, int limit, UserGroupModel profile)
         throws ApplicationException;
 
     /**

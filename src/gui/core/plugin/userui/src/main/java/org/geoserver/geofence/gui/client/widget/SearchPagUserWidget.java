@@ -9,7 +9,7 @@ import org.geoserver.geofence.gui.client.widget.GeofenceSearchWidget;
 import org.geoserver.geofence.gui.client.ApplicationException;
 import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
-import org.geoserver.geofence.gui.client.model.User;
+import org.geoserver.geofence.gui.client.model.UserModel;
 import org.geoserver.geofence.gui.client.service.LoginRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.widget.SearchStatus.EnumSearchStatus;
 
@@ -36,7 +36,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * The Class SearchPagUserWidget.
  */
-public class SearchPagUserWidget extends GeofenceSearchWidget<User>
+public class SearchPagUserWidget extends GeofenceSearchWidget<UserModel>
 {
 
     /** The service. */
@@ -88,11 +88,11 @@ public class SearchPagUserWidget extends GeofenceSearchWidget<User>
     {
         toolBar = new PagingToolBar(org.geoserver.geofence.gui.client.Constants.DEFAULT_PAGESIZE);
 
-        this.proxy = new RpcProxy<PagingLoadResult<User>>()
+        this.proxy = new RpcProxy<PagingLoadResult<UserModel>>()
             {
 
                 @Override
-                protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<User>> callback)
+                protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<UserModel>> callback)
                 {
 
                     // TODO REFACTOR GG
@@ -104,7 +104,7 @@ public class SearchPagUserWidget extends GeofenceSearchWidget<User>
         loader = new BasePagingLoader<PagingLoadResult<ModelData>>(proxy);
         loader.setRemoteSort(false);
 
-        store = new ListStore<User>(loader);
+        store = new ListStore<UserModel>(loader);
 
         this.toolBar.bind(loader);
         // toolBar.disable();

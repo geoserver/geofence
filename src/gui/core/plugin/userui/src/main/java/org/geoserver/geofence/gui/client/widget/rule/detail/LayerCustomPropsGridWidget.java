@@ -44,7 +44,7 @@ import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.Resources;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.model.data.LayerCustomProps;
 import org.geoserver.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.widget.GeofenceGridWidget;
@@ -70,7 +70,7 @@ public class LayerCustomPropsGridWidget extends GeofenceGridWidget<LayerCustomPr
     private ToolBar toolBar;
 
     /** The rule. */
-    private Rule theRule;
+    private RuleModel theRule;
 
 
     /**
@@ -81,7 +81,7 @@ public class LayerCustomPropsGridWidget extends GeofenceGridWidget<LayerCustomPr
      * @param rulesService
      *            the rules service
      */
-    public LayerCustomPropsGridWidget(Rule model, RulesManagerRemoteServiceAsync rulesService)
+    public LayerCustomPropsGridWidget(RuleModel model, RulesManagerRemoteServiceAsync rulesService)
     {
         super();
         this.theRule = model;

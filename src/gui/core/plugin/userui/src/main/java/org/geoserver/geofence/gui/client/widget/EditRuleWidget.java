@@ -9,15 +9,15 @@ import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.form.GeofenceFormWidget;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
-import org.geoserver.geofence.gui.client.model.GSInstance;
-import org.geoserver.geofence.gui.client.model.GSUser;
-import org.geoserver.geofence.gui.client.model.Rule;
-import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.GSInstanceModel;
+import org.geoserver.geofence.gui.client.model.GSUserModel;
+import org.geoserver.geofence.gui.client.model.RuleModel;
+import org.geoserver.geofence.gui.client.model.UserGroupModel;
 import org.geoserver.geofence.gui.client.model.data.Grant;
 import org.geoserver.geofence.gui.client.model.data.Layer;
-import org.geoserver.geofence.gui.client.model.data.Request;
-import org.geoserver.geofence.gui.client.model.data.Service;
-import org.geoserver.geofence.gui.client.model.data.Workspace;
+import org.geoserver.geofence.gui.client.model.data.RequestModel;
+import org.geoserver.geofence.gui.client.model.data.ServiceModel;
+import org.geoserver.geofence.gui.client.model.data.WorkspaceModel;
 import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
@@ -66,7 +66,8 @@ import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
-import java.util.regex.Pattern;
+import org.geoserver.geofence.gui.client.model.RolenameModel;
+import org.geoserver.geofence.gui.client.model.UsernameModel;
 
 
 // TODO: Auto-generated Javadoc
@@ -136,13 +137,13 @@ public class EditRuleWidget extends GeofenceFormWidget
     private PagingLoader<PagingLoadResult<ModelData>> loader;
 
     /** The model. */
-    public Rule model = new Rule();
+    public RuleModel model = new RuleModel();
 
     /** The store. */
-    public ListStore<Rule> store = new ListStore<Rule>();
+    public ListStore<RuleModel> store = new ListStore<RuleModel>();
 
     /** The grid. */
-    public Grid<Rule> grid;
+    public Grid<RuleModel> grid;
 
     /** The status. */
     public String status = "UPDATE";
@@ -151,7 +152,7 @@ public class EditRuleWidget extends GeofenceFormWidget
     boolean unique = false;
 
     /** The parent grid. */
-    public Grid<Rule> parentGrid;
+    public Grid<RuleModel> parentGrid;
 
     /** The priority edited. */
     boolean priorityEdited = false;
@@ -161,7 +162,7 @@ public class EditRuleWidget extends GeofenceFormWidget
 
     boolean onExecute = false;
 
-	private static ListStore<Workspace> workspaces = new ListStore<Workspace>();
+	private static ListStore<WorkspaceModel> workspaces = new ListStore<WorkspaceModel>();
 
 	private static ListStore<Layer> layers = new ListStore<Layer>();
 
@@ -216,7 +217,7 @@ public class EditRuleWidget extends GeofenceFormWidget
      * @param models
      *            the models
      */
-    public EditRuleWidget(List<Rule> models)
+    public EditRuleWidget(List<RuleModel> models)
     {
         createStore();
         this.store.add(models);
@@ -299,7 +300,7 @@ public class EditRuleWidget extends GeofenceFormWidget
         configs.add(priCol);
 
         ColumnConfig userCol = new ColumnConfig();
-        userCol.setId(BeanKeyValue.USER.getValue());
+        userCol.setId(BeanKeyValue.USERNAME.getValue());
         userCol.setHeader("User");
         userCol.setWidth(COLUMN_USER_WIDTH);
         userCol.setRenderer(this.createUsersRenderer());
@@ -308,8 +309,8 @@ public class EditRuleWidget extends GeofenceFormWidget
         configs.add(userCol);
 
         ColumnConfig groupCol = new ColumnConfig();
-        groupCol.setId(BeanKeyValue.PROFILE.getValue());
-        groupCol.setHeader("Group");
+        groupCol.setId(BeanKeyValue.ROLENAME.getValue());
+        groupCol.setHeader("Role");
         groupCol.setWidth(COLUMN_GROUPS_WIDTH);
         groupCol.setRenderer(this.createGroupsRenderer());
         groupCol.setMenuDisabled(true);
@@ -383,14 +384,14 @@ public class EditRuleWidget extends GeofenceFormWidget
     }
 
 
-    class ResizeListener implements Listener<GridEvent<Rule>> {
+    class ResizeListener implements Listener<GridEvent<RuleModel>> {
         private final int offset;
 
         public ResizeListener(int offset) {
             this.offset = offset;
         }
 
-        public void handleEvent(GridEvent<Rule> be) {
+        public void handleEvent(GridEvent<RuleModel> be) {
 
             Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
                 new String[]{"DEBUG","Resizing " + be.getGrid().getColumnModel().getColumnId(be.getColIndex())});
@@ -423,15 +424,15 @@ public class EditRuleWidget extends GeofenceFormWidget
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Rule> createPriorityRenderer()
+    private GridCellRenderer<RuleModel> createPriorityRenderer()
     {
-        GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>()
+        GridCellRenderer<RuleModel> comboRendered = new GridCellRenderer<RuleModel>()
             {
 
 //                private boolean init;
 
-                public Object render(final Rule model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
+                public Object render(final RuleModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<RuleModel> store, Grid<RuleModel> grid)
                 {
 
 //                    if (!init)
@@ -441,11 +442,11 @@ public class EditRuleWidget extends GeofenceFormWidget
 //                    }
 
                     // TODO: generalize this!
-                    ArrayList<Rule> list = new ArrayList<Rule>();
+                    ArrayList<RuleModel> list = new ArrayList<RuleModel>();
 
                     for (int i = 0; i < store.getCount(); i++)
                     {
-                        Rule rule = ((Rule) store.getAt(i));
+                        RuleModel rule = ((RuleModel) store.getAt(i));
                         list.add(rule);
                     }
 
@@ -543,15 +544,15 @@ public class EditRuleWidget extends GeofenceFormWidget
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Rule> createUsersRenderer()
+    private GridCellRenderer<RuleModel> createUsersRenderer()
     {
-        GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>()
+        GridCellRenderer<RuleModel> comboRendered = new GridCellRenderer<RuleModel>()
             {
 
 //                private boolean init;
 
-                public Object render(final Rule model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
+                public Object render(final RuleModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<RuleModel> store, Grid<RuleModel> grid)
                 {
 
 //                    if (!init)
@@ -561,11 +562,11 @@ public class EditRuleWidget extends GeofenceFormWidget
 //                    }
 
                     // TODO: generalize this!
-                    ComboBox<GSUser> combo = new ComboBox<GSUser>();
+                    ComboBox<UsernameModel> combo = new ComboBox<UsernameModel>();
                     combo.setId("editRuleUser");
                     combo.setName("editRuleUser");
                     combo.setEmptyText("(No user available)");
-                    combo.setDisplayField(BeanKeyValue.NAME.getValue());
+                    combo.setDisplayField(BeanKeyValue.USERNAME.getValue());
                     combo.setEditable(false);
                     combo.setStore(getAvailableUsers());
                     combo.setTypeAhead(true);
@@ -574,24 +575,33 @@ public class EditRuleWidget extends GeofenceFormWidget
                     combo.setWidth(COLUMN_USER_WIDTH - COLUMN_HEADER_OFFSET);
 //                    combo.setAutoWidth(true);
 
-                    if (model.getUser() != null)
+                    if (model.getUsername()!= null)
                     {
-                        combo.setValue(model.getUser());
+                        combo.setValue(new UsernameModel(model.getUsername()));
+                        combo.setSelection(Arrays.asList(new UsernameModel(model.getUsername())));
                     }
+                    else
+                    {
+                        UsernameModel def = new UsernameModel("*");
+                        combo.setValue(def);
+                        combo.setSelection(Arrays.asList(def));
+                    }
+
 
                     combo.addListener(Events.Select, new Listener<FieldEvent>()
                         {
 
                             public void handleEvent(FieldEvent be)
                             {
-                                Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
-                                    new String[]
-                                    {
-                                        "GeoServer Rules",
-                                        "Rule " + model.getPriority() + ": Rule changed"
-                                    });
+//                                Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
+//                                    new String[]
+//                                    {
+//                                        "GeoServer Rules",
+//                                        "Rule " + model.getPriority() + ": Rule changed"
+//                                    });
 
-                                model.setUser((GSUser) be.getField().getValue());
+                                final UsernameModel r = (UsernameModel) be.getField().getValue();
+                                model.setUsername(r.getUsername());
                                 Dispatcher.forwardEvent(GeofenceEvents.RULE_UPDATE_EDIT_GRID_COMBO, model);
                             }
                         });
@@ -604,25 +614,23 @@ public class EditRuleWidget extends GeofenceFormWidget
                  *
                  * @return
                  */
-                private ListStore<GSUser> getAvailableUsers()
+                private ListStore<UsernameModel> getAvailableUsers()
                 {
-                    RpcProxy<PagingLoadResult<GSUser>> userProxy = new RpcProxy<PagingLoadResult<GSUser>>()
+                    RpcProxy<PagingLoadResult<UsernameModel>> userProxy = new RpcProxy<PagingLoadResult<UsernameModel>>()
                         {
 
                             @Override
-                            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GSUser>> callback)
+                            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<UsernameModel>> callback)
                             {
-                                gsUsersService.getGsUsers(((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(), true, callback);
+                                gsUsersService.getGsUsernames(((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(), true, callback);
                             }
 
                         };
 
-                    BasePagingLoader<PagingLoadResult<ModelData>> usersLoader =
-                        new BasePagingLoader<PagingLoadResult<ModelData>>(
-                            userProxy);
+                    BasePagingLoader<PagingLoadResult<ModelData>> usersLoader = new BasePagingLoader<PagingLoadResult<ModelData>>( userProxy);
                     usersLoader.setRemoteSort(false);
 
-                    ListStore<GSUser> availableUsers = new ListStore<GSUser>(usersLoader);
+                    ListStore<UsernameModel> availableUsers = new ListStore<UsernameModel>(usersLoader);
 
                     return availableUsers;
                 }
@@ -738,15 +746,15 @@ public class EditRuleWidget extends GeofenceFormWidget
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Rule> createGroupsRenderer()
+    private GridCellRenderer<RuleModel> createGroupsRenderer()
     {
-        GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>()
+        GridCellRenderer<RuleModel> comboRendered = new GridCellRenderer<RuleModel>()
             {
 
 //                private boolean init;
 
-                public Object render(final Rule model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
+                public Object render(final RuleModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<RuleModel> store, Grid<RuleModel> grid)
                 {
 
 //                    if (!init)
@@ -756,11 +764,11 @@ public class EditRuleWidget extends GeofenceFormWidget
 //                    }
 
                     // TODO: generalize this!
-                    ComboBox<UserGroup> combo = new ComboBox<UserGroup>();
+                    ComboBox<RolenameModel> combo = new ComboBox<RolenameModel>();
                     combo.setId("editRuleGroup");
                     combo.setName("editRuleGroup");
                     combo.setEmptyText("(No group available)");
-                    combo.setDisplayField(BeanKeyValue.NAME.getValue());
+                    combo.setDisplayField(BeanKeyValue.ROLENAME.getValue());
                     combo.setEditable(false);
                     combo.setStore(getAvailableGroups());
                     combo.setTypeAhead(true);
@@ -769,10 +777,10 @@ public class EditRuleWidget extends GeofenceFormWidget
 //                    combo.setAutoWidth(true);
 
 
-                    if (model.getProfile() != null)
+                    if (model.getRolename()!= null)
                     {
-                        combo.setValue(model.getProfile());
-                        combo.setSelection(Arrays.asList(model.getProfile()));
+                        combo.setValue(new RolenameModel(model.getRolename()));
+                        combo.setSelection(Arrays.asList(new RolenameModel(model.getRolename())));
                     }
 
                     combo.addListener(Events.Select, new Listener<FieldEvent>()
@@ -780,7 +788,8 @@ public class EditRuleWidget extends GeofenceFormWidget
 
                             public void handleEvent(FieldEvent be)
                             {
-                                model.setProfile((UserGroup) be.getField().getValue());
+                                final RolenameModel r = (RolenameModel) be.getField().getValue();
+                                model.setRolename(r.getRolename());
                                 Dispatcher.forwardEvent(GeofenceEvents.RULE_UPDATE_EDIT_GRID_COMBO, model);
                             }
                         });
@@ -793,16 +802,16 @@ public class EditRuleWidget extends GeofenceFormWidget
                  *
                  * @return
                  */
-                private ListStore<UserGroup> getAvailableGroups()
+                private ListStore<RolenameModel> getAvailableGroups()
                 {
-                    ListStore<UserGroup> groups = new ListStore<UserGroup>();
-                    RpcProxy<PagingLoadResult<UserGroup>> profileProxy = new RpcProxy<PagingLoadResult<UserGroup>>()
+                    ListStore<RolenameModel> groups = new ListStore<RolenameModel>();
+                    RpcProxy<PagingLoadResult<RolenameModel>> profileProxy = new RpcProxy<PagingLoadResult<RolenameModel>>()
                         {
 
                             @Override
-                            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<UserGroup>> callback)
+                            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<RolenameModel>> callback)
                             {
-                                profilesService.getProfiles(((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(), true, callback);
+                                profilesService.getRolenames(((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(), true, callback);
                             }
 
                         };
@@ -811,7 +820,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                         new BasePagingLoader<PagingLoadResult<ModelData>>(
                             profileProxy);
                     groupLoader.setRemoteSort(false);
-                    groups = new ListStore<UserGroup>(groupLoader);
+                    groups = new ListStore<RolenameModel>(groupLoader);
 
                     return groups;
                 }
@@ -825,15 +834,15 @@ public class EditRuleWidget extends GeofenceFormWidget
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Rule> createInstancesRenderer()
+    private GridCellRenderer<RuleModel> createInstancesRenderer()
     {
-        GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>()
+        GridCellRenderer<RuleModel> comboRendered = new GridCellRenderer<RuleModel>()
             {
 
 //                private boolean init;
 
-                public Object render(final Rule model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
+                public Object render(final RuleModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<RuleModel> store, Grid<RuleModel> grid)
                 {
 
 //                    if (!init)
@@ -843,7 +852,7 @@ public class EditRuleWidget extends GeofenceFormWidget
 //                    }
 
                     // TODO: generalize this!
-                    ComboBox<GSInstance> combo = new ComboBox<GSInstance>();
+                    ComboBox<GSInstanceModel> combo = new ComboBox<GSInstanceModel>();
                     combo.setId("editRuleInstance");
                     combo.setName("editRuleInstance");
                     combo.setEmptyText("(No instance available)");
@@ -862,7 +871,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                     }
                     else
                     {
-                        GSInstance all = new GSInstance();
+                        GSInstanceModel all = new GSInstanceModel();
                         all.setId(-1);
                         all.setName("*");
                         all.setBaseURL("*");
@@ -875,7 +884,7 @@ public class EditRuleWidget extends GeofenceFormWidget
 
                             public void handleEvent(FieldEvent be)
                             {
-                                final GSInstance instance = (GSInstance) be.getField().getValue();
+                                final GSInstanceModel instance = (GSInstanceModel) be.getField().getValue();
 
                                 model.setInstance(instance);
                                 model.setService("*");
@@ -894,7 +903,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                              *
                              * @return
                              */
-                            private ListStore<Workspace> getAvailableWorkspaces(final GSInstance gsInstance)
+                            private ListStore<WorkspaceModel> getAvailableWorkspaces(final GSInstanceModel gsInstance)
                             {
                                 /*RpcProxy<PagingLoadResult<Workspace>> workspacesProxy = new RpcProxy<PagingLoadResult<Workspace>>()
                                     {
@@ -934,14 +943,14 @@ public class EditRuleWidget extends GeofenceFormWidget
                  *
                  * @return
                  */
-                private ListStore<GSInstance> getAvailableInstances()
+                private ListStore<GSInstanceModel> getAvailableInstances()
                 {
-                    RpcProxy<PagingLoadResult<GSInstance>> gsInstancesProxy =
-                        new RpcProxy<PagingLoadResult<GSInstance>>()
+                    RpcProxy<PagingLoadResult<GSInstanceModel>> gsInstancesProxy =
+                        new RpcProxy<PagingLoadResult<GSInstanceModel>>()
                         {
 
                             @Override
-                            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GSInstance>> callback)
+                            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GSInstanceModel>> callback)
                             {
                                 instancesService.getInstances(((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(), true, callback);
                             }
@@ -953,7 +962,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                             gsInstancesProxy);
                     gsInstancesLoader.setRemoteSort(false);
 
-                    ListStore<GSInstance> availableInstances = new ListStore<GSInstance>(
+                    ListStore<GSInstanceModel> availableInstances = new ListStore<GSInstanceModel>(
                             gsInstancesLoader);
 
                     return availableInstances;
@@ -963,11 +972,11 @@ public class EditRuleWidget extends GeofenceFormWidget
         return comboRendered;
     }
 
-    class IPRangeRenderer implements GridCellRenderer<Rule> {
+    class IPRangeRenderer implements GridCellRenderer<RuleModel> {
 
 
-        public Object render(final Rule model, String property, ColumnData config,
-            int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
+        public Object render(final RuleModel model, String property, ColumnData config,
+            int rowIndex, int colIndex, ListStore<RuleModel> store, Grid<RuleModel> grid)
         {
 
             TextField<String> field = new TextField<String>();
@@ -1109,15 +1118,15 @@ public class EditRuleWidget extends GeofenceFormWidget
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Rule> createServicesRenderer()
+    private GridCellRenderer<RuleModel> createServicesRenderer()
     {
-        GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>()
+        GridCellRenderer<RuleModel> comboRendered = new GridCellRenderer<RuleModel>()
             {
 
 //                private boolean init;
 
-                public Object render(final Rule model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
+                public Object render(final RuleModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<RuleModel> store, Grid<RuleModel> grid)
                 {
 
 //                    if (!init)
@@ -1127,7 +1136,7 @@ public class EditRuleWidget extends GeofenceFormWidget
 //                    }
 
                     // TODO: generalize this!
-                    final ComboBox<Service> combo = new ComboBox<Service>();
+                    final ComboBox<ServiceModel> combo = new ComboBox<ServiceModel>();
                     combo.setId("editRuleService");
                     combo.setName("editRuleService");
                     combo.setEmptyText("(No service available)");
@@ -1175,8 +1184,8 @@ public class EditRuleWidget extends GeofenceFormWidget
                     
                     if (model.getService() != null)
                     {
-                        combo.setValue(new Service(model.getService()));
-                        combo.setSelection(Arrays.asList(new Service(model.getService())));
+                        combo.setValue(new ServiceModel(model.getService()));
+                        combo.setSelection(Arrays.asList(new ServiceModel(model.getService())));
                     }
 
                     combo.addListener(Events.Select, new Listener<FieldEvent>()
@@ -1184,7 +1193,7 @@ public class EditRuleWidget extends GeofenceFormWidget
 
                             public void handleEvent(FieldEvent be)
                             {
-                                final Service service = (Service) be.getField().getValue();
+                                final ServiceModel service = (ServiceModel) be.getField().getValue();
 
                                 model.setService(service.getService());
                                 model.setRequest("*");
@@ -1203,21 +1212,21 @@ public class EditRuleWidget extends GeofenceFormWidget
                  *
                  * @return
                  */
-                private ListStore<Service> getAvailableServices(GSInstance gsInstance)
+                private ListStore<ServiceModel> getAvailableServices(GSInstanceModel gsInstance)
                 {
-                    ListStore<Service> availableServices = new ListStore<Service>();
-                    List<Service> services = new ArrayList<Service>();
+                    ListStore<ServiceModel> availableServices = new ListStore<ServiceModel>();
+                    List<ServiceModel> services = new ArrayList<ServiceModel>();
 
-                    Service all = new Service("*");
+                    ServiceModel all = new ServiceModel("*");
 
                     services.add(all);
 
                     if ((gsInstance != null) && (gsInstance.getBaseURL() != null) &&
                             !gsInstance.getBaseURL().equals("*"))
                     {
-                        Service wms = new Service("WMS");
-                        Service wcs = new Service("WCS");
-                        Service wfs = new Service("WFS");
+                        ServiceModel wms = new ServiceModel("WMS");
+                        ServiceModel wcs = new ServiceModel("WCS");
+                        ServiceModel wfs = new ServiceModel("WFS");
 
                         services.add(wms);
                         services.add(wcs);
@@ -1238,15 +1247,15 @@ public class EditRuleWidget extends GeofenceFormWidget
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Rule> createRequestRenderer()
+    private GridCellRenderer<RuleModel> createRequestRenderer()
     {
-        GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>()
+        GridCellRenderer<RuleModel> comboRendered = new GridCellRenderer<RuleModel>()
             {
 
 //                private boolean init;
 
-                public Object render(final Rule model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
+                public Object render(final RuleModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<RuleModel> store, Grid<RuleModel> grid)
                 {
 
 //                    if (!init)
@@ -1256,7 +1265,7 @@ public class EditRuleWidget extends GeofenceFormWidget
 //                    }
 
                     // TODO: generalize this!
-                    final ComboBox<Request> combo = new ComboBox<Request>();
+                    final ComboBox<RequestModel> combo = new ComboBox<RequestModel>();
                     combo.setId("editRuleRequest");
                     combo.setName("editRuleRequest");
                     combo.setEmptyText("(No OGC request available)");
@@ -1301,8 +1310,8 @@ public class EditRuleWidget extends GeofenceFormWidget
 
                     if (model.getService() != null)
                     {
-                        combo.setValue(new Request(model.getRequest()));
-                        combo.setSelection(Arrays.asList(new Request(model.getRequest())));
+                        combo.setValue(new RequestModel(model.getRequest()));
+                        combo.setSelection(Arrays.asList(new RequestModel(model.getRequest())));
                     }
 
                     combo.addListener(Events.Select, new Listener<FieldEvent>()
@@ -1310,7 +1319,7 @@ public class EditRuleWidget extends GeofenceFormWidget
 
                             public void handleEvent(FieldEvent be)
                             {
-                                final Request request = (Request) be.getField().getValue();
+                                final RequestModel request = (RequestModel) be.getField().getValue();
 
                                 model.setRequest(request.getRequest());
                                 Dispatcher.forwardEvent(GeofenceEvents.RULE_UPDATE_EDIT_GRID_COMBO, model);
@@ -1328,22 +1337,22 @@ public class EditRuleWidget extends GeofenceFormWidget
                  *
                  * @return
                  */
-                private ListStore<Request> getSampleRequests(GSInstance gsInstance, String service)
+                private ListStore<RequestModel> getSampleRequests(GSInstanceModel gsInstance, String service)
                 {
-                    ListStore<Request> availableServicesRequests = new ListStore<Request>();
-                    List<Request> requests = new ArrayList<Request>();
+                    ListStore<RequestModel> availableServicesRequests = new ListStore<RequestModel>();
+                    List<RequestModel> requests = new ArrayList<RequestModel>();
 
-                    Request all = new Request("*");
-                    Request getCapabilities = new Request("GetCapabilities");
+                    RequestModel all = new RequestModel("*");
+                    RequestModel getCapabilities = new RequestModel("GetCapabilities");
 
                     requests.add(all);
                     requests.add(getCapabilities);
 
                     if ((service != null) && service.equalsIgnoreCase("WMS"))
                     {
-                        Request getMap = new Request("GetMap");
-                        Request getFeatureInfo = new Request("GetFeatureInfo");
-                        Request describeLayer = new Request("DescribeLayer");
+                        RequestModel getMap = new RequestModel("GetMap");
+                        RequestModel getFeatureInfo = new RequestModel("GetFeatureInfo");
+                        RequestModel describeLayer = new RequestModel("DescribeLayer");
 
                         requests.add(getMap);
                         requests.add(getFeatureInfo);
@@ -1352,8 +1361,8 @@ public class EditRuleWidget extends GeofenceFormWidget
 
                     if ((service != null) && service.equalsIgnoreCase("WCS"))
                     {
-                        Request getCoverage = new Request("GetCoverage");
-                        Request describeCoverage = new Request("DescribeCoverage");
+                        RequestModel getCoverage = new RequestModel("GetCoverage");
+                        RequestModel describeCoverage = new RequestModel("DescribeCoverage");
 
                         requests.add(getCoverage);
                         requests.add(describeCoverage);
@@ -1361,13 +1370,13 @@ public class EditRuleWidget extends GeofenceFormWidget
 
                     if ((service != null) && service.equalsIgnoreCase("WFS"))
                     {
-                        Request getFeatureType = new Request("GetFeatureType");
-                        Request describeFeatureType = new Request("DescribeFeatureType");
-                        Request getFeature = new Request("GetFeature");
-                        Request getGmlObject = new Request("GetGmlObject");
-                        Request lockFeature = new Request("LockFeature");
-                        Request getFeatureWithLock = new Request("GetFeatureWithLock");
-                        Request transaction = new Request("Transaction");
+                        RequestModel getFeatureType = new RequestModel("GetFeatureType");
+                        RequestModel describeFeatureType = new RequestModel("DescribeFeatureType");
+                        RequestModel getFeature = new RequestModel("GetFeature");
+                        RequestModel getGmlObject = new RequestModel("GetGmlObject");
+                        RequestModel lockFeature = new RequestModel("LockFeature");
+                        RequestModel getFeatureWithLock = new RequestModel("GetFeatureWithLock");
+                        RequestModel transaction = new RequestModel("Transaction");
 
                         requests.add(getFeatureType);
                         requests.add(describeFeatureType);
@@ -1392,15 +1401,15 @@ public class EditRuleWidget extends GeofenceFormWidget
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Rule> createWorkspacesRenderer()
+    private GridCellRenderer<RuleModel> createWorkspacesRenderer()
     {
-        GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>()
+        GridCellRenderer<RuleModel> comboRendered = new GridCellRenderer<RuleModel>()
             {
 
 //                private boolean init;
 				
-                public Object render(final Rule model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
+                public Object render(final RuleModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<RuleModel> store, Grid<RuleModel> grid)
                 {
 
 //                    if (!init)
@@ -1410,7 +1419,7 @@ public class EditRuleWidget extends GeofenceFormWidget
 //                    }
 
                     // TODO: generalize this!
-                    ComboBox<Workspace> combo = new ComboBox<Workspace>();
+                    ComboBox<WorkspaceModel> combo = new ComboBox<WorkspaceModel>();
                     combo.setId("editRuleWorkspace");
                     combo.setName("editRuleWorkspace");
 
@@ -1425,8 +1434,8 @@ public class EditRuleWidget extends GeofenceFormWidget
 
                     if (model.getWorkspace() != null)
                     {
-                        combo.setValue(new Workspace(model.getWorkspace()));
-                        combo.setSelection(Arrays.asList(new Workspace(model.getWorkspace())));
+                        combo.setValue(new WorkspaceModel(model.getWorkspace()));
+                        combo.setSelection(Arrays.asList(new WorkspaceModel(model.getWorkspace())));
                     }
                     combo.setEmptyText("(No workspace available)");
                     combo.addListener(Events.Select, new Listener<FieldEvent>()
@@ -1434,7 +1443,7 @@ public class EditRuleWidget extends GeofenceFormWidget
 
                             public void handleEvent(FieldEvent be)
                             {
-                                final Workspace workspace = (Workspace) be.getField().getValue();
+                                final WorkspaceModel workspace = (WorkspaceModel) be.getField().getValue();
 
                                 model.setWorkspace(workspace.getWorkspace());
                                 model.setLayer("*");
@@ -1450,7 +1459,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                              *
                              * @return
                              */
-                            private ListStore<Layer> getAvailableLayers(final GSInstance gsInstance,
+                            private ListStore<Layer> getAvailableLayers(final GSInstanceModel gsInstance,
                                 final String workspace, final String service)
                             {
 //                                RpcProxy<PagingLoadResult<Layer>> workspacesProxy = new RpcProxy<PagingLoadResult<Layer>>()
@@ -1494,15 +1503,15 @@ public class EditRuleWidget extends GeofenceFormWidget
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Rule> createLayersRenderer()
+    private GridCellRenderer<RuleModel> createLayersRenderer()
     {
-        GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>()
+        GridCellRenderer<RuleModel> comboRendered = new GridCellRenderer<RuleModel>()
             {
 
 //                private boolean init;
 
-                public Object render(final Rule model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
+                public Object render(final RuleModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<RuleModel> store, Grid<RuleModel> grid)
                 {
 
 //                    if (!init)
@@ -1556,15 +1565,15 @@ public class EditRuleWidget extends GeofenceFormWidget
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Rule> createGrantsRenderer()
+    private GridCellRenderer<RuleModel> createGrantsRenderer()
     {
-        GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>()
+        GridCellRenderer<RuleModel> comboRendered = new GridCellRenderer<RuleModel>()
             {
 
 //                private boolean init;
 
-                public Object render(final Rule model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
+                public Object render(final RuleModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<RuleModel> store, Grid<RuleModel> grid)
                 {
 
 //                    if (!init)
@@ -1674,7 +1683,7 @@ public class EditRuleWidget extends GeofenceFormWidget
      */
     public void createStore()
     {
-        store = new ListStore<Rule>();
+        store = new ListStore<RuleModel>();
         if (store != null)
         {
             store.setSortField(BeanKeyValue.PRIORITY.getValue());
@@ -1783,7 +1792,7 @@ public class EditRuleWidget extends GeofenceFormWidget
     {
         ColumnModel cm = prepareColumnModel();
 
-        grid = new Grid<Rule>(store, cm);
+        grid = new Grid<RuleModel>(store, cm);
         grid.setBorders(true);
 
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -1798,11 +1807,11 @@ public class EditRuleWidget extends GeofenceFormWidget
      * @param store
      *            the store
      */
-    public void initGrid(ListStore<Rule> store)
+    public void initGrid(ListStore<RuleModel> store)
     {
         ColumnModel cm = prepareColumnModel();
 
-        grid = new Grid<Rule>(store, cm);
+        grid = new Grid<RuleModel>(store, cm);
         grid.setBorders(true);
 
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -1817,7 +1826,7 @@ public class EditRuleWidget extends GeofenceFormWidget
      * @param model
      *            the new profile
      */
-    public void setModel(Rule model)
+    public void setModel(RuleModel model)
     {
         this.model = model;
     }
@@ -1828,7 +1837,7 @@ public class EditRuleWidget extends GeofenceFormWidget
      * @see com.extjs.gxt.ui.client.widget.Component#getModel()
      */
     @SuppressWarnings({ "unchecked" })
-    public Rule getModel()
+    public RuleModel getModel()
     {
         return model;
     }
@@ -1883,7 +1892,7 @@ public class EditRuleWidget extends GeofenceFormWidget
      *
      * @return the RuleGridWidget
      */
-    public Grid<Rule> getParentGrid()
+    public Grid<RuleModel> getParentGrid()
     {
         return parentGrid;
     }
@@ -1894,7 +1903,7 @@ public class EditRuleWidget extends GeofenceFormWidget
      * @param parentGrid
      *            the new RuleGridWidget
      */
-    public void setParentGrid(Grid<Rule> parentGrid)
+    public void setParentGrid(Grid<RuleModel> parentGrid)
     {
         this.parentGrid = parentGrid;
     }
@@ -1924,15 +1933,15 @@ public class EditRuleWidget extends GeofenceFormWidget
 	 * @param gsInstance
 	 */
 	private void initializeWorkspaces(
-			final GSInstance gsInstance) {
+			final GSInstanceModel gsInstance) {
 		workspacesService.getWorkspaces(0, 0, (gsInstance != null) ? gsInstance.getBaseURL() : null, gsInstance,
-                new AsyncCallback<PagingLoadResult<Workspace>>() {
+                new AsyncCallback<PagingLoadResult<WorkspaceModel>>() {
 
 					public void onFailure(Throwable caught) {
 						workspaces.removeAll();
 					}
 
-					public void onSuccess(PagingLoadResult<Workspace> result) {
+					public void onSuccess(PagingLoadResult<WorkspaceModel> result) {
 						workspaces.removeAll();
 						workspaces.add(result.getData());
 						
@@ -1947,7 +1956,7 @@ public class EditRuleWidget extends GeofenceFormWidget
 	 * @param service
 	 */
 	private void initializeLayers(
-			final GSInstance gsInstance,
+			final GSInstanceModel gsInstance,
 			final String workspace, final String service) {
 		workspacesService.getLayers(0, 0, (gsInstance != null) ? gsInstance.getBaseURL() : null, gsInstance, workspace, service, 
     			new AsyncCallback<PagingLoadResult<Layer>>() {

@@ -12,10 +12,10 @@ import org.geoserver.geofence.core.model.enums.AccessType;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.core.model.enums.LayerType;
 import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.GSInstance;
-import org.geoserver.geofence.gui.client.model.GSUser;
-import org.geoserver.geofence.gui.client.model.Rule;
-import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.GSInstanceModel;
+import org.geoserver.geofence.gui.client.model.GSUserModel;
+import org.geoserver.geofence.gui.client.model.RuleModel;
+import org.geoserver.geofence.gui.client.model.UserGroupModel;
 import org.geoserver.geofence.gui.client.model.data.LayerAttribUI;
 import org.geoserver.geofence.gui.client.model.data.LayerCustomProps;
 import org.geoserver.geofence.gui.client.model.data.LayerDetailsInfo;
@@ -54,6 +54,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import org.geoserver.geofence.core.model.IPAddressRange;
+import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.core.model.enums.CatalogMode;
 import org.geoserver.geofence.gui.client.model.data.ClientCatalogMode;
 import org.geoserver.geofence.services.util.IPUtils;
@@ -79,11 +80,11 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 	 * org.geoserver.geofence.gui.server.service.IFeatureService#loadFeature
 	 * (com.extjs.gxt.ui. client.data.PagingLoadConfig, java.lang.String)
 	 */
-	public PagingLoadResult<Rule> getRules(int offset, int limit, boolean full)
+	public PagingLoadResult<RuleModel> getRules(int offset, int limit, boolean full)
 			throws ApplicationException {
 		int start = offset;
 
-		List<Rule> ruleListDTO = new ArrayList<Rule>();
+		List<RuleModel> ruleListDTO = new ArrayList<RuleModel>();
 
 		long rulesCount = geofenceRemoteService.getRuleAdminService()
 				.getCountAll();
@@ -108,7 +109,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 		while (it.hasNext()) {
 			ShortRule shortRule = it.next();
 
-			org.geoserver.geofence.core.model.Rule fullRule;
+			Rule fullRule;
 			try {
 				fullRule = geofenceRemoteService.getRuleAdminService().get(shortRule.getId());
 			} catch (NotFoundServiceEx e) {
@@ -120,48 +121,23 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 						+ shortRule.getPriority() + " not found on Server!");
 			}
 
-			Rule ruleDTO = new Rule();
+			RuleModel ruleDTO = new RuleModel();
 
 			ruleDTO.setId(shortRule.getId());
 			ruleDTO.setPriority(fullRule.getPriority());
 
-			if (fullRule.getGsuser() == null) {
-				GSUser all = new GSUser();
-				all.setId(-1);
-				all.setName("*");
-				ruleDTO.setUser(all);
-			} else {
-				org.geoserver.geofence.core.model.GSUser remote_user = fullRule
-						.getGsuser();
-				GSUser local_user = new GSUser();
-				local_user.setId(remote_user.getId());
-				local_user.setName(remote_user.getName());
-				ruleDTO.setUser(local_user);
-			}
-
-			if (fullRule.getUserGroup() == null) {
-				UserGroup all = new UserGroup();
-				all.setId(-1);
-				all.setName("*");
-				ruleDTO.setProfile(all);
-			} else {
-				org.geoserver.geofence.core.model.UserGroup remote_profile = fullRule
-						.getUserGroup();
-				UserGroup local_profile = new UserGroup();
-				local_profile.setId(remote_profile.getId());
-				local_profile.setName(remote_profile.getName());
-				ruleDTO.setProfile(local_profile);
-			}
-
+            ruleDTO.setUsername(fullRule.getUsername() == null ? "*" : fullRule.getUsername() );
+            ruleDTO.setRolename(fullRule.getRolename()== null ? "*" : fullRule.getRolename() );
+            
 			if (fullRule.getInstance() == null) {
-				GSInstance all = new GSInstance();
+				GSInstanceModel all = new GSInstanceModel();
 				all.setId(-1);
 				all.setName("*");
 				all.setBaseURL("*");
 			} else {
 				org.geoserver.geofence.core.model.GSInstance remote_instance = fullRule
 						.getInstance();
-				GSInstance local_instance = new GSInstance();
+				GSInstanceModel local_instance = new GSInstanceModel();
 				local_instance.setId(remote_instance.getId());
 				local_instance.setName(remote_instance.getName());
 				local_instance.setBaseURL(remote_instance.getBaseURL());
@@ -191,7 +167,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 			ruleListDTO.add(ruleDTO);
 		}
 
-		return new RpcPageLoadResult<Rule>(ruleListDTO, offset, t.intValue());
+		return new RpcPageLoadResult<RuleModel>(ruleListDTO, offset, t.intValue());
 	}
 
 	/*
@@ -201,35 +177,36 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 	 * org.geoserver.geofence.gui.server.service.IRulesManagerService#saveAllRules
 	 * (java.util.List)
 	 */
-	public void saveRule(Rule rule) throws ApplicationException {
+	public void saveRule(RuleModel ruleModel) throws ApplicationException {
 
         if(logger.isDebugEnabled())
-            logger.debug("Trying to save rule " + rule);
+            logger.debug("Trying to save rule " + ruleModel);
 
-        IPAddressRange addressRange = validateSourceRange(rule.getSourceIPRange());
+        IPAddressRange addressRange = validateSourceRange(ruleModel.getSourceIPRange());
 
-        org.geoserver.geofence.core.model.Rule modelRule = new org.geoserver.geofence.core.model.Rule(
-                rule.getPriority(), getUser(rule.getUser()),
-                getProfile(rule.getProfile()),
-                getInstance(rule.getInstance()),
+        Rule rule = new Rule(
+                ruleModel.getPriority(),
+                "*".equals(ruleModel.getUsername()) ?   null : ruleModel.getUsername(),
+                "*".equals(ruleModel.getRolename()) ?   null : ruleModel.getRolename(),
+                getInstance(ruleModel.getInstance()),
                 addressRange,
-                "*".equals(rule.getService()) ? null : rule.getService(),
-                "*".equals(rule.getRequest()) ? null : rule.getRequest(),
-                "*".equals(rule.getWorkspace()) ? null : rule.getWorkspace(),
-                "*".equals(rule.getLayer()) ? null : rule.getLayer(),
-                getAccessType(rule.getGrant()));
+                "*".equals(ruleModel.getService()) ? null : ruleModel.getService(),
+                "*".equals(ruleModel.getRequest()) ? null : ruleModel.getRequest(),
+                "*".equals(ruleModel.getWorkspace()) ? null : ruleModel.getWorkspace(),
+                "*".equals(ruleModel.getLayer()) ? null : ruleModel.getLayer(),
+                getAccessType(ruleModel.getGrant()));
 
         try {
-            if (rule.getId() == -1) { // REQUEST FOR INSERT
-                modelRule.setId(null);
-                    geofenceRemoteService.getRuleAdminService().insert(modelRule);
+            if (ruleModel.getId() == -1) { // REQUEST FOR INSERT
+                rule.setId(null);
+                    geofenceRemoteService.getRuleAdminService().insert(rule);
             } else {                  // REQUEST FOR UPDATE
-                long ruleId = rule.getId();
-                modelRule.setId(ruleId);
+                long ruleId = ruleModel.getId();
+                rule.setId(ruleId);
                 try {
-                    geofenceRemoteService.getRuleAdminService().update(modelRule);
+                    geofenceRemoteService.getRuleAdminService().update(rule);
                     org.geoserver.geofence.core.model.Rule loaded = geofenceRemoteService.getRuleAdminService().get(ruleId);
-                    if (! loaded.getAccess().name().equalsIgnoreCase(rule.getGrant())) {
+                    if (! loaded.getAccess().name().equalsIgnoreCase(ruleModel.getGrant())) {
                         geofenceRemoteService.getRuleAdminService().setDetails(ruleId, null);
                         geofenceRemoteService.getRuleAdminService().setLimits(ruleId, null);
                     }
@@ -247,11 +224,12 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 
     protected IPAddressRange validateSourceRange(String srcIP) throws ApplicationException {
         IPAddressRange addressRange = null;
-        if(srcIP != null && ! "*".equals(srcIP) ) {
-            if ( ! IPUtils.isRangeValid(srcIP) ) {
-                logger.error("Invalid IP range '"+srcIP+"'");
-                throw new ApplicationException("Invalid IP range '"+srcIP+"'");
-            }
+        if( srcIP == null || "*".equals(srcIP) || "".equals(srcIP.trim()) ) {
+            addressRange = null;
+        } else if ( ! IPUtils.isRangeValid(srcIP) ) {
+            logger.error("Invalid IP range '"+srcIP+"'"); 
+            throw new ApplicationException("Invalid IP range '"+srcIP+"'");
+        } else {
             addressRange = new IPAddressRange(srcIP);
         }
         return addressRange;
@@ -264,7 +242,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 	 * org.geoserver.geofence.gui.server.service.IRulesManagerService#saveAllRules
 	 * (java.util.List)
 	 */
-	public void deleteRule(Rule rule) throws ApplicationException {
+	public void deleteRule(RuleModel rule) throws ApplicationException {
 
 		if (rule.getId() != -1) {
 			try {
@@ -280,7 +258,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 	/*
      *
      */
-	public void updatePriorities(Rule rule, long shift) {
+	public void updatePriorities(RuleModel rule, long shift) {
 		geofenceRemoteService.getRuleAdminService()
 				.shift(rule.getPriority(), 1);
 	}
@@ -292,7 +270,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 	 * org.geoserver.geofence.gui.server.service.IRulesManagerService#saveAllRules
 	 * (java.util.List)
 	 */
-	public void saveAllRules(List<Rule> rules) throws ApplicationException {
+	public void saveAllRules(List<RuleModel> rules) throws ApplicationException {
 		for (ShortRule rule : geofenceRemoteService.getRuleAdminService()
 				.getAll()) {
 			try {
@@ -304,14 +282,14 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 			}
 		}
 
-		for (Rule localRule : rules) {
+		for (RuleModel localRule : rules) {
 
             IPAddressRange addressRange = validateSourceRange(localRule.getSourceIPRange());
 
-			org.geoserver.geofence.core.model.Rule rule = new org.geoserver.geofence.core.model.Rule(
+			Rule rule = new Rule(
 					localRule.getPriority(),
-                    getUser(localRule.getUser()),
-					getProfile(localRule.getProfile()),
+                    "*".equals(localRule.getUsername()) ?   null : localRule.getUsername(),
+                    "*".equals(localRule.getRolename()) ?   null : localRule.getRolename(),
 					getInstance(localRule.getInstance()),
                     addressRange,
                     "*".equals(localRule.getService()) ?   null : localRule.getService(),
@@ -346,7 +324,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 	 * @return single instance of RulesManagerServiceImpl
 	 */
 	private org.geoserver.geofence.core.model.GSInstance getInstance(
-			GSInstance instance) {
+			GSInstanceModel instance) {
 		org.geoserver.geofence.core.model.GSInstance remote_instance = null;
 		try {
 			if ((instance != null) && (instance.getId() != -1)) {
@@ -360,48 +338,48 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 		return remote_instance;
 	}
 
-	/**
-	 * Gets the profile.
-	 * 
-	 * @param profile
-	 *            the profile
-	 * @return the profile
-	 */
-	private org.geoserver.geofence.core.model.UserGroup getProfile(
-			UserGroup profile) {
-		org.geoserver.geofence.core.model.UserGroup remote_profile = null;
-		try {
-			if ((profile != null) && (profile.getId() != -1)) {
-				remote_profile = geofenceRemoteService
-						.getUserGroupAdminService().get(profile.getId());
-			}
-		} catch (Exception e) {
-			logger.info(e.getMessage(), e);
-		}
-
-		return remote_profile;
-	}
-
-	/**
-	 * Gets the profile.
-	 * 
-	 * @param profile
-	 *            the profile
-	 * @return the profile
-	 */
-	private org.geoserver.geofence.core.model.GSUser getUser(GSUser user) {
-		org.geoserver.geofence.core.model.GSUser remote_user = null;
-		try {
-			if ((user != null) && (user.getId() != -1)) {
-				remote_user = geofenceRemoteService.getUserAdminService().get(
-						user.getId());
-			}
-		} catch (Exception e) {
-			logger.info(e.getMessage(), e);
-		}
-
-		return remote_user;
-	}
+//	/**
+//	 * Gets the profile.
+//	 *
+//	 * @param profile
+//	 *            the profile
+//	 * @return the profile
+//	 */
+//	private org.geoserver.geofence.core.model.UserGroup getProfile(
+//			UserGroup profile) {
+//		org.geoserver.geofence.core.model.UserGroup remote_profile = null;
+//		try {
+//			if ((profile != null) && (profile.getId() != -1)) {
+//				remote_profile = geofenceRemoteService
+//						.getUserGroupAdminService().get(profile.getId());
+//			}
+//		} catch (Exception e) {
+//			logger.info(e.getMessage(), e);
+//		}
+//
+//		return remote_profile;
+//	}
+//
+//	/**
+//	 * Gets the profile.
+//	 *
+//	 * @param profile
+//	 *            the profile
+//	 * @return the profile
+//	 */
+//	private org.geoserver.geofence.core.model.GSUser getUser(GSUser user) {
+//		org.geoserver.geofence.core.model.GSUser remote_user = null;
+//		try {
+//			if ((user != null) && (user.getId() != -1)) {
+//				remote_user = geofenceRemoteService.getUserAdminService().get(
+//						user.getId());
+//			}
+//		} catch (Exception e) {
+//			logger.info(e.getMessage(), e);
+//		}
+//
+//		return remote_user;
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -533,7 +511,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 	 * getLayerAttributes(com.extjs .gxt.ui.client.data.PagingLoadConfig,
 	 * org.geoserver.geofence.gui.client.model.Rule)
 	 */
-	public List<LayerAttribUI> getLayerAttributes(Rule rule) {
+	public List<LayerAttribUI> getLayerAttributes(RuleModel rule) {
 
 		LayerDetails layerDetails = null;
 		List<LayerAttribUI> layerAttributesDTO = new ArrayList<LayerAttribUI>();
@@ -562,16 +540,15 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 							LayerAttribute layerAttribute = iterator.next();
 
 							for (int i = 0; i < layerAttributesDTO.size(); i++) {
-								String attrName = layerAttributesDTO.get(i)
-										.getName();
-								if (layerAttribute.getName().equalsIgnoreCase(
-										attrName)) {
+
+								String attrName = layerAttributesDTO.get(i).getName();
+
+								if (layerAttribute.getName().equalsIgnoreCase(attrName)) {
+
 									LayerAttribUI layAttrUI = new LayerAttribUI();
 									layAttrUI.setName(layerAttribute.getName());
-									layAttrUI.setDataType(layerAttribute
-											.getDatatype());
-									layAttrUI.setAccessType(layerAttribute
-											.getAccess().toString());
+									layAttrUI.setDataType(layerAttribute.getDatatype());
+									layAttrUI.setAccessType(layerAttribute.getAccess().toString());
 
 									layerAttributesDTO.set(i, layAttrUI);
 								}
@@ -593,11 +570,11 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 	 * @param rule
 	 * @return List<LayerAttribUI>
 	 */
-	private List<LayerAttribUI> loadAttribute(Rule rule) {
+	private List<LayerAttribUI> loadAttribute(RuleModel rule) {
 		List<LayerAttribUI> layerAttributesDTO = new ArrayList<LayerAttribUI>();
-		Set<LayerAttribute> layerAttributes = null;
+//		Set<LayerAttribute> layerAttributes = null;
 
-		GSInstance gsInstance = rule.getInstance();
+		GSInstanceModel gsInstance = rule.getInstance();
 		GeoServerRESTReader gsreader;
 
 		try {
@@ -607,7 +584,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 			RESTLayer layer = gsreader.getLayer(rule.getLayer());
 
 			if (layer.getType().equals(RESTLayer.TYPE.VECTOR)) {
-				layerAttributes = new HashSet<LayerAttribute>();
+//				layerAttributes = new HashSet<LayerAttribute>();
 
 				// ///////////////////////
 				// Vector Layer
@@ -615,28 +592,17 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 
 				RESTFeatureType featureType = gsreader.getFeatureType(layer);
 
-				for (RESTFeatureType.Attribute attribute : featureType
-						.getAttributes()) {
-					LayerAttribute attr = new LayerAttribute();
-					attr.setName(attribute.getName());
-					attr.setDatatype(attribute.getBinding());
-
-					layerAttributes.add(attr);
-				}
-
-				layerAttributesDTO = new ArrayList<LayerAttribUI>();
-
-				Iterator<LayerAttribute> iterator = layerAttributes.iterator();
-
-				while (iterator.hasNext()) {
-					LayerAttribute layerAttribute = iterator.next();
+				for (RESTFeatureType.Attribute attrFromGS : featureType.getAttributes()) {
 
 					LayerAttribUI layAttrUI = new LayerAttribUI();
-					layAttrUI.setName(layerAttribute.getName());
-					layAttrUI.setDataType(layerAttribute.getDatatype());
+					layAttrUI.setName(attrFromGS.getName());
+					layAttrUI.setDataType(attrFromGS.getBinding());
+                    layAttrUI.setAccessType("READWRITE");
 
 					layerAttributesDTO.add(layAttrUI);
+
 				}
+
 			} else {
 				// ///////////////////////
 				// Raster Layer
@@ -849,7 +815,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 	 * @seeorg.geoserver.geofence.gui.server.service.IRulesManagerService#
 	 * getLayerDetailsInfo(it. geosolutions.geofence.gui.client.model.Rule)
 	 */
-	public LayerDetailsInfo getLayerDetailsInfo(Rule rule) {
+	public LayerDetailsInfo getLayerDetailsInfo(RuleModel rule) {
 		Long ruleId = rule.getId();
 		LayerDetails layerDetails = null;
 		LayerDetailsInfo layerDetailsInfo = null;
@@ -919,7 +885,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 
 	}
 
-	public void findRule(Rule rule) throws ApplicationException, Exception {
+	public void findRule(RuleModel rule) throws ApplicationException, Exception {
 		org.geoserver.geofence.core.model.Rule ret = null;
 		ret = geofenceRemoteService.getRuleAdminService().get(rule.getId());
 		// return ret;
@@ -1031,7 +997,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 	 * @see org.geoserver.geofence.gui.server.service.IRulesManagerService#
 	 * getLayerLimitsInfo(it. geosolutions.geofence.gui.client.model.Rule)
 	 */
-	public LayerLimitsInfo getLayerLimitsInfo(Rule rule) {
+	public LayerLimitsInfo getLayerLimitsInfo(RuleModel rule) {
 		Long ruleId = rule.getId();
 		RuleLimits ruleLimits = null;
 		LayerLimitsInfo layerLimitsInfo = null;

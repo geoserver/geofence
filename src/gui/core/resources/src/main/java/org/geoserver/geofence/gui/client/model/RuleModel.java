@@ -14,7 +14,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class Rule.
  */
-public class Rule extends BeanModel implements IsSerializable
+public class RuleModel extends BeanModel implements IsSerializable
 {
 
     /** The Constant serialVersionUID. */
@@ -27,13 +27,13 @@ public class Rule extends BeanModel implements IsSerializable
     private long priority;
 
     /** The user. */
-    private GSUser user;
+    private String username;
 
     /** The profile. */
-    private UserGroup profile;
+    private String rolename;
 
     /** The instance. */
-    private GSInstance instance;
+    private GSInstanceModel instance;
 
     private String sourceIPRange;
 
@@ -58,7 +58,7 @@ public class Rule extends BeanModel implements IsSerializable
     /**
      * Instantiates a new rule.
      */
-    public Rule()
+    public RuleModel()
     {
         setPath("geofence/resources/images/rule.jpg");
     }
@@ -106,48 +106,23 @@ public class Rule extends BeanModel implements IsSerializable
         set(BeanKeyValue.PRIORITY.getValue(), this.priority);
     }
 
-    /**
-     * Gets the user.
-     *
-     * @return the user
-     */
-    public GSUser getUser()
-    {
-        return user;
+    public String getUsername() {
+        return username;
     }
 
-    /**
-     * Sets the user.
-     *
-     * @param user
-     *            the new user
-     */
-    public void setUser(GSUser user)
+    public void setUsername(String username)
     {
-        this.user = user;
-        set(BeanKeyValue.USER.getValue(), this.user);
+        this.username = username;
+        set(BeanKeyValue.USERNAME.getValue(), this.username);
     }
 
-    /**
-     * Gets the profile.
-     *
-     * @return the profile
-     */
-    public UserGroup getProfile()
-    {
-        return profile;
+    public String getRolename() {
+        return rolename;
     }
 
-    /**
-     * Sets the profile.
-     *
-     * @param profile
-     *            the new profile
-     */
-    public void setProfile(UserGroup profile)
-    {
-        this.profile = profile;
-        set(BeanKeyValue.PROFILE.getValue(), this.profile);
+    public void setRolename(String rolename) {
+        this.rolename = rolename;
+        set(BeanKeyValue.ROLENAME.getValue(), this.rolename);
     }
 
     /**
@@ -156,7 +131,7 @@ public class Rule extends BeanModel implements IsSerializable
      * @param instance
      *            the new instance
      */
-    public void setInstance(GSInstance instance)
+    public void setInstance(GSInstanceModel instance)
     {
         this.instance = instance;
         set(BeanKeyValue.INSTANCE.getValue(), this.instance);
@@ -167,7 +142,7 @@ public class Rule extends BeanModel implements IsSerializable
      *
      * @return single instance of Rule
      */
-    public GSInstance getInstance()
+    public GSInstanceModel getInstance()
     {
         return instance;
     }
@@ -328,10 +303,10 @@ public class Rule extends BeanModel implements IsSerializable
         result = (prime * result) + ((layer == null) ? 0 : layer.hashCode());
         result = (prime * result) + ((path == null) ? 0 : path.hashCode());
         result = (prime * result) + (int) (priority ^ (priority >>> 32));
-        result = (prime * result) + ((profile == null) ? 0 : profile.hashCode());
+        result = (prime * result) + ((rolename == null) ? 0 : rolename.hashCode());
         result = (prime * result) + ((request == null) ? 0 : request.hashCode());
         result = (prime * result) + ((service == null) ? 0 : service.hashCode());
-        result = (prime * result) + ((user == null) ? 0 : user.hashCode());
+        result = (prime * result) + ((username == null) ? 0 : username.hashCode());
         result = (prime * result) + ((workspace == null) ? 0 : workspace.hashCode());
 
         return result;
@@ -348,11 +323,11 @@ public class Rule extends BeanModel implements IsSerializable
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof Rule)) {
+        if (!(obj instanceof RuleModel)) {
             return false;
         }
 
-        Rule other = (Rule) obj;
+        RuleModel other = (RuleModel) obj;
         if (grant == null) {
             if (other.grant != null) {
                 return false;
@@ -387,11 +362,11 @@ public class Rule extends BeanModel implements IsSerializable
         if (priority != other.priority) {
             return false;
         }
-        if (profile == null) {
-            if (other.profile != null) {
+        if (rolename == null) {
+            if (other.rolename != null) {
                 return false;
             }
-        } else if (!profile.equals(other.profile)) {
+        } else if (!rolename.equals(other.rolename)) {
             return false;
         }
         if (request == null) {
@@ -408,11 +383,11 @@ public class Rule extends BeanModel implements IsSerializable
         } else if (!service.equals(other.service)) {
             return false;
         }
-        if (user == null) {
-            if (other.user != null) {
+        if (username == null) {
+            if (other.username != null) {
                 return false;
             }
-        } else if (!user.equals(other.user)) {
+        } else if (!username.equals(other.username)) {
             return false;
         }
         if (workspace == null) {
@@ -440,37 +415,36 @@ public class Rule extends BeanModel implements IsSerializable
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Rule [");
-        if (grant != null) {
-            builder.append("grant=").append(grant).append(", ");
+
+        builder.append("id=").append(id);
+        builder.append(", priority=").append(priority);
+
+        if (username != null) {
+            builder.append(", user=").append(username);
         }
-        builder.append("id=").append(id).append(", ");
+        if (rolename != null) {
+            builder.append(", role=").append(rolename);
+        }
         if (instance != null) {
-            builder.append("instance=").append(instance).append(", ");
+            builder.append(", instance=").append(instance.getName());
         }
         if (sourceIPRange != null) {
-            builder.append("src=").append(sourceIPRange).append(", ");
-        }
-        if (layer != null) {
-            builder.append("layer=").append(layer).append(", ");
-        }
-        if (path != null) {
-            builder.append("path=").append(path).append(", ");
-        }
-        builder.append("priority=").append(priority).append(", ");
-        if (profile != null) {
-            builder.append("profile=").append(profile).append(", ");
-        }
-        if (request != null) {
-            builder.append("request=").append(request).append(", ");
+            builder.append(", ip=").append(sourceIPRange);
         }
         if (service != null) {
-            builder.append("service=").append(service).append(", ");
+            builder.append(", service=").append(service);
         }
-        if (user != null) {
-            builder.append("user=").append(user).append(", ");
+        if (request != null) {
+            builder.append(", request=").append(request);
         }
         if (workspace != null) {
-            builder.append("workspace=").append(workspace);
+            builder.append(", workspace=").append(workspace);
+        }
+        if (layer != null) {
+            builder.append(", layer=").append(layer);
+        }
+        if (grant != null) {
+            builder.append(", grant=").append(grant);
         }
         builder.append("]");
 

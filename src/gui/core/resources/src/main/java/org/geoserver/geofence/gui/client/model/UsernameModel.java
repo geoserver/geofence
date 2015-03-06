@@ -3,7 +3,7 @@
  * application directory.
  */
 
-package org.geoserver.geofence.gui.client.model.data;
+package org.geoserver.geofence.gui.client.model;
 
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -13,51 +13,41 @@ import org.geoserver.geofence.gui.client.model.BeanKeyValue;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class Service.
  */
-public class Service extends BeanModel implements IsSerializable
+public class UsernameModel extends BeanModel implements IsSerializable
 {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 2828906795801803648L;
 
-    /** The service. */
-    private String service;
+    private String username;
 
     /** The path. */
     private String path;
 
-    /**
-     * Instantiates a new service.
-     *
-     * @param service
-     *            the service
-     */
-    public Service(String service)
-    {
-        this();
-        setService(service);
-    }
 
-    /**
-     * Instantiates a new service.
-     */
-    public Service()
+    public UsernameModel()
     {
         super();
-        setPath("geofence/resources/images/service.jpg");
+        setPath("geofence/resources/images/username.jpg");
+    }
+
+    public UsernameModel(String username)
+    {
+        this();
+        setUsername(username);
     }
 
     /**
      * Sets the service.
      *
-     * @param service
+     * @param username
      *            the new service
      */
-    public void setService(String service)
+    public void setUsername(String username)
     {
-        this.service = service;
-        set(BeanKeyValue.SERVICE.getValue(), this.service);
+        this.username = username;
+        set(BeanKeyValue.USERNAME.getValue(), this.username);
     }
 
     /**
@@ -82,14 +72,8 @@ public class Service extends BeanModel implements IsSerializable
         return path;
     }
 
-    /**
-     * Gets the service.
-     *
-     * @return the service
-     */
-    public String getService()
-    {
-        return service;
+    public String getUsername() {
+        return username;
     }
 
     /* (non-Javadoc)
@@ -100,7 +84,7 @@ public class Service extends BeanModel implements IsSerializable
     {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + ((service == null) ? 0 : service.hashCode());
+        result = (prime * result) + ((username == null) ? 0 : username.hashCode());
 
         return result;
     }
@@ -119,20 +103,20 @@ public class Service extends BeanModel implements IsSerializable
         {
             return false;
         }
-        if (!(obj instanceof Service))
+        if (!(obj instanceof UsernameModel))
         {
             return false;
         }
 
-        Service other = (Service) obj;
-        if (service == null)
+        UsernameModel other = (UsernameModel) obj;
+        if (username == null)
         {
-            if (other.service != null)
+            if (other.username != null)
             {
                 return false;
             }
         }
-        else if (!service.equals(other.service))
+        else if (!username.equals(other.username))
         {
             return false;
         }
@@ -147,10 +131,10 @@ public class Service extends BeanModel implements IsSerializable
     public String toString()
     {
         StringBuilder builder = new StringBuilder();
-        builder.append("Service [");
-        if (service != null)
+        builder.append("Username [");
+        if (username != null)
         {
-            builder.append("service=").append(service);
+            builder.append("username=").append(username);
         }
         builder.append("]");
 

@@ -9,7 +9,7 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
 
 
@@ -24,7 +24,7 @@ public class LayerCustomPropsWidget extends ContentPanel
     private LayerCustomPropsGridWidget layerCustomPropsInfo;
 
     /** The model. */
-    private Rule model;
+    private RuleModel model;
 
     /**
      * Instantiates a new layer custom props widget.
@@ -34,7 +34,7 @@ public class LayerCustomPropsWidget extends ContentPanel
      * @param rulesService
      *            the rules service
      */
-    public LayerCustomPropsWidget(Rule model, RulesManagerRemoteServiceAsync rulesService)
+    public LayerCustomPropsWidget(RuleModel model, RulesManagerRemoteServiceAsync rulesService)
     {
         this.model = model;
 

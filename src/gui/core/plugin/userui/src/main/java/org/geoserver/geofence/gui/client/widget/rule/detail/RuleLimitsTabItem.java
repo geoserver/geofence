@@ -14,7 +14,7 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 
 import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.Resources;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
 
 /**
@@ -26,7 +26,7 @@ public class RuleLimitsTabItem extends TabItem {
 	private RuleLimitsWidget ruleLimitsWidget;
 
 	/** The rule. */
-	private Rule theRule;
+	private RuleModel theRule;
 
 	/**
 	 * Instantiates a new rule limits tab item.
@@ -53,7 +53,7 @@ public class RuleLimitsTabItem extends TabItem {
 	 * @param workspacesService
 	 *            the workspaces service
 	 */
-	public RuleLimitsTabItem(String tabItemId, Rule model,
+	public RuleLimitsTabItem(String tabItemId, RuleModel model,
 			RulesManagerRemoteServiceAsync rulesService, boolean loadModel) {
 		this(tabItemId);
 		this.theRule = model;

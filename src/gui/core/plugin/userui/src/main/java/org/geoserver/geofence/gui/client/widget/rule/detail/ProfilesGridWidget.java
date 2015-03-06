@@ -8,8 +8,8 @@ package org.geoserver.geofence.gui.client.widget.rule.detail;
 import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
-import org.geoserver.geofence.gui.client.model.GSUser;
-import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.GSUserModel;
+import org.geoserver.geofence.gui.client.model.UserGroupModel;
 import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.widget.GeofenceGridWidget;
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * The Class ProfilesGridWidget.
  */
-public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
+public class ProfilesGridWidget extends GeofenceGridWidget<UserGroupModel>
 {
 	/** The users service */
 	private final GsUsersManagerRemoteServiceAsync usersService;
@@ -59,12 +59,12 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
     private UserDetailsWidget userDetailsWidget;
     
     /** The proxy. */
-    private RpcProxy<PagingLoadResult<UserGroup>> proxy;
+    private RpcProxy<PagingLoadResult<UserGroupModel>> proxy;
 
     /** The loader. */
     private BaseListLoader<ListLoadResult<ModelData>> loader;
 
-	private GSUser user;
+	private GSUserModel user;
 
     /**
      * Instantiates a new rule details grid widget.
@@ -78,7 +78,7 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
      * @param ruleDetailsWidget
      *            the rule details widget
      */
-    public ProfilesGridWidget(GSUser model,
+    public ProfilesGridWidget(GSUserModel model,
     		GsUsersManagerRemoteServiceAsync usersService, ProfilesManagerRemoteServiceAsync profilesService, UserDetailsWidget userDetailsWidget)
     {
         super();
@@ -123,10 +123,10 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
         // Loader for rulesService
         // /////////////////////////////
 
-        this.proxy = new RpcProxy<PagingLoadResult<UserGroup>>()
+        this.proxy = new RpcProxy<PagingLoadResult<UserGroupModel>>()
             {
                 @Override
-                protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<UserGroup>> callback)
+                protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<UserGroupModel>> callback)
                 {
                     profilesService.getProfiles(-1,-1,false, callback);
                 }
@@ -134,7 +134,7 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
 
         loader = new BaseListLoader<ListLoadResult<ModelData>>(proxy);
         loader.setRemoteSort(false);
-        store = new ListStore<UserGroup>(loader);
+        store = new ListStore<UserGroupModel>(loader);
         store.sort(BeanKeyValue.STYLES_COMBO.getValue(), SortDir.ASC);
 
         setUpLoadListener();
@@ -199,7 +199,7 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
 
         ColumnConfig attributeProfileColumn = new ColumnConfig();
         attributeProfileColumn.setId(BeanKeyValue.STYLES_COMBO.getValue());
-        attributeProfileColumn.setHeader("Group");
+        attributeProfileColumn.setHeader("Role");
         attributeProfileColumn.setWidth(180);
         attributeProfileColumn.setRenderer(this.createProfileTextBox());
         attributeProfileColumn.setMenuDisabled(true);
@@ -224,25 +224,25 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<UserGroup> createProfileTextBox()
+    private GridCellRenderer<UserGroupModel> createProfileTextBox()
     {
 
-        GridCellRenderer<UserGroup> textRendered = new GridCellRenderer<UserGroup>()
+        GridCellRenderer<UserGroupModel> textRendered = new GridCellRenderer<UserGroupModel>()
             {
 
                 private boolean init;
 
-                public Object render(final UserGroup model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<UserGroup> store, Grid<UserGroup> grid)
+                public Object render(final UserGroupModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<UserGroupModel> store, Grid<UserGroupModel> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<UserGroup>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<UserGroupModel>>()
                             {
 
-                                public void handleEvent(GridEvent<UserGroup> be)
+                                public void handleEvent(GridEvent<UserGroupModel> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {
@@ -274,25 +274,25 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<UserGroup> createEnableCheckBox()
+    private GridCellRenderer<UserGroupModel> createEnableCheckBox()
     {
 
-        GridCellRenderer<UserGroup> textRendered = new GridCellRenderer<UserGroup>()
+        GridCellRenderer<UserGroupModel> textRendered = new GridCellRenderer<UserGroupModel>()
             {
 
                 private boolean init;
 
-                public Object render(final UserGroup model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<UserGroup> store, Grid<UserGroup> grid)
+                public Object render(final UserGroupModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<UserGroupModel> store, Grid<UserGroupModel> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<UserGroup>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<UserGroupModel>>()
                             {
 
-                                public void handleEvent(GridEvent<UserGroup> be)
+                                public void handleEvent(GridEvent<UserGroupModel> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {
@@ -309,7 +309,7 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
 
                     CheckBox available = new CheckBox();
                     model.setEnabled(false);
-                    for( UserGroup group : user.getUserGroups()) {
+                    for( UserGroupModel group : user.getUserGroups()) {
                     	if (group.getName().equals(model.getName())) {
                     		available.setValue(true);
                     		model.setEnabled(true);
@@ -327,7 +327,7 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
                                 if (enable.booleanValue())
                                 {
                                     Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
-                                        new String[] { "User Groups", "Group " + model.getName() + ": enabled" });
+                                        new String[] { "User Roles", "Role " + model.getName() + ": enabled" });
 
                                     model.setEnabled(enable);
 
@@ -338,7 +338,7 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
                                 else
                                 {
                                     Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
-                                        new String[] { "User Groups", "Group " + model.getName() + ": disabled" });
+                                        new String[] { "User Roles", "Role " + model.getName() + ": disabled" });
 
                                     model.setEnabled(enable);
 

@@ -14,7 +14,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
-import org.geoserver.geofence.gui.client.model.GSUser;
+import org.geoserver.geofence.gui.client.model.GSUserModel;
 import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.view.UsersView;
@@ -147,12 +147,12 @@ public class UsersController extends Controller
 
             GsUsersTabItem usersTabItem = (GsUsersTabItem) tabWidget.getItemByItemId(USERS_TAB_ITEM_ID);
             final UserGridWidget usersInfoWidget = usersTabItem.getUserManagementWidget().getUsersInfo();
-            final Grid<GSUser> grid = usersInfoWidget.getGrid();
+            final Grid<GSUserModel> grid = usersInfoWidget.getGrid();
 
-            if ((grid != null) && (grid.getStore() != null) && (event.getData() != null) && (event.getData() instanceof GSUser))
+            if ((grid != null) && (grid.getStore() != null) && (event.getData() != null) && (event.getData() instanceof GSUserModel))
             {
 
-                GSUser user = event.getData();
+                GSUserModel user = event.getData();
 
                 gsManagerServiceRemote.saveGsUser(user, new AsyncCallback<Void>()
                     {
@@ -198,12 +198,12 @@ public class UsersController extends Controller
 
             GsUsersTabItem usersTabItem = (GsUsersTabItem) tabWidget.getItemByItemId(USERS_TAB_ITEM_ID);
             final UserGridWidget usersInfoWidget = usersTabItem.getUserManagementWidget().getUsersInfo();
-            final Grid<GSUser> grid = usersInfoWidget.getGrid();
+            final Grid<GSUserModel> grid = usersInfoWidget.getGrid();
 
-            if ((grid != null) && (grid.getStore() != null) && (event.getData() != null) && (event.getData() instanceof GSUser))
+            if ((grid != null) && (grid.getStore() != null) && (event.getData() != null) && (event.getData() instanceof GSUserModel))
             {
 
-                GSUser user = event.getData();
+                GSUserModel user = event.getData();
 
                 gsManagerServiceRemote.deleteGsUser(user, new AsyncCallback<Void>()
                     {

@@ -20,7 +20,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
@@ -274,7 +274,7 @@ public class RulesController extends Controller
 
             RulesTabItem rulesTabItem = (RulesTabItem) tabWidget.getItemByItemId(RULES_TAB_ITEM_ID);
             final RuleGridWidget rulesInfoWidget = rulesTabItem.getRuleManagementWidget().getRulesInfo();
-            final Grid<Rule> grid = rulesInfoWidget.getGrid();
+            final Grid<RuleModel> grid = rulesInfoWidget.getGrid();
             grid.getStore().setSortField(BeanKeyValue.PRIORITY.getValue());
             grid.getStore().setSortDir(SortDir.ASC);
             grid.getStore().sort(BeanKeyValue.PRIORITY.getValue(), SortDir.ASC);
@@ -293,14 +293,14 @@ public class RulesController extends Controller
         {
             Object tabData = event.getData();
 
-            if (tabData instanceof Rule)
+            if (tabData instanceof RuleModel)
             {
                 RulesTabItem rulesTabItem = (RulesTabItem) tabWidget.getItemByItemId(RULES_TAB_ITEM_ID);
                 final RuleGridWidget rulesInfoWidget = rulesTabItem.getRuleManagementWidget().getRulesInfo();
-                final Grid<Rule> grid = rulesInfoWidget.getGrid();
+                final Grid<RuleModel> grid = rulesInfoWidget.getGrid();
 
-                List<Rule> rules = new ArrayList<Rule>(grid.getStore().getModels());
-                if (checkUniqueRule(rules, (Rule) tabData))
+                List<RuleModel> rules = new ArrayList<RuleModel>(grid.getStore().getModels());
+                if (checkUniqueRule(rules, (RuleModel) tabData))
                 {
                     Dispatcher.forwardEvent(GeofenceEvents.SEND_ERROR_MESSAGE,
                         new String[]
@@ -326,7 +326,7 @@ public class RulesController extends Controller
                     res = false;
                 }
 
-                Rule model = (Rule) tabData;
+                RuleModel model = (RuleModel) tabData;
                 if (res)
                 {
                     grid.getStore().remove(model);
@@ -349,11 +349,11 @@ public class RulesController extends Controller
         {
             Object tabData = event.getData();
 
-            if (tabData instanceof Rule)
+            if (tabData instanceof RuleModel)
             {
                 RulesTabItem rulesTabItem = (RulesTabItem) tabWidget.getItemByItemId(RULES_TAB_ITEM_ID);
                 final RuleGridWidget rulesInfoWidget = rulesTabItem.getRuleManagementWidget().getRulesInfo();
-                final Grid<Rule> grid = rulesInfoWidget.getGrid();
+                final Grid<RuleModel> grid = rulesInfoWidget.getGrid();
 
                 boolean res;
                 try
@@ -366,7 +366,7 @@ public class RulesController extends Controller
                     res = false;
                 }
 
-                Rule model = (Rule) tabData;
+                RuleModel model = (RuleModel) tabData;
                 if (res)
                 {
                     grid.getStore().remove(model);
@@ -389,9 +389,9 @@ public class RulesController extends Controller
         {
             Object tabData = event.getData();
 
-            if (tabData instanceof Rule)
+            if (tabData instanceof RuleModel)
             {
-                Rule model = (Rule) tabData;
+                RuleModel model = (RuleModel) tabData;
                 this.rulesView.ruleRowEditor.grid.getStore().remove(model);
                 this.rulesView.ruleRowEditor.grid.getStore().add(model);
                 this.rulesView.ruleRowEditor.setModel(model);
@@ -412,16 +412,16 @@ public class RulesController extends Controller
 
             RulesTabItem rulesTabItem = (RulesTabItem) tabWidget.getItemByItemId(RULES_TAB_ITEM_ID);
             final RuleGridWidget rulesInfoWidget = rulesTabItem.getRuleManagementWidget().getRulesInfo();
-            final Grid<Rule> grid = rulesInfoWidget.getGrid();
+            final Grid<RuleModel> grid = rulesInfoWidget.getGrid();
             if ((grid != null) && (grid.getStore() != null))
             {
-                ListStore<Rule> store = grid.getStore();
+                ListStore<RuleModel> store = grid.getStore();
 
                 if ((store != null) && (store.getModels() != null) &&
                         (store.getModels().size() > 0))
                 {
                     // TODO: details?
-                    Rule lRule = (Rule) event.getData();
+                    RuleModel lRule = (RuleModel) event.getData();
 
                     rulesManagerServiceRemote.shift(lRule.getPriority(), 1,
                         new AsyncCallback<Void>()
@@ -518,11 +518,11 @@ public class RulesController extends Controller
 
             RulesTabItem rulesTabItem = (RulesTabItem) tabWidget.getItemByItemId(RULES_TAB_ITEM_ID);
             final RuleGridWidget rulesInfoWidget = rulesTabItem.getRuleManagementWidget().getRulesInfo();
-            final Grid<Rule> grid = rulesInfoWidget.getGrid();
+            final Grid<RuleModel> grid = rulesInfoWidget.getGrid();
 
             if ((grid != null) && (grid.getStore() != null))
             {
-                ListStore<Rule> store = grid.getStore();
+                ListStore<RuleModel> store = grid.getStore();
 
                 if ((store != null) && (store.getModels() != null) &&
                         (store.getModels().size() > 0))
@@ -580,16 +580,16 @@ public class RulesController extends Controller
         {
             Object tabData = event.getData();
 
-            if (tabData instanceof Rule)
+            if (tabData instanceof RuleModel)
             {
-                Rule model = (Rule) tabData;
+                RuleModel model = (RuleModel) tabData;
                 RulesTabItem rulesTabItem = (RulesTabItem) tabWidget.getItemByItemId(RULES_TAB_ITEM_ID);
                 final RuleGridWidget rulesInfoWidget = rulesTabItem.getRuleManagementWidget().getRulesInfo();
-                final Grid<Rule> grid = rulesInfoWidget.getGrid();
+                final Grid<RuleModel> grid = rulesInfoWidget.getGrid();
 
                 if ((grid != null) && (grid.getStore() != null))
                 {
-                    ListStore<Rule> store = grid.getStore();
+                    ListStore<RuleModel> store = grid.getStore();
 
                     if ((store != null) && (store.getModels() != null) &&
                             (store.getModels().size() > 0))
@@ -644,16 +644,16 @@ public class RulesController extends Controller
         {
             Object tabData = event.getData();
 
-            if (tabData instanceof Rule)
+            if (tabData instanceof RuleModel)
             {
-                Rule model = (Rule) tabData;
+                RuleModel model = (RuleModel) tabData;
 
                 RulesTabItem rulesTabItem = (RulesTabItem) tabWidget.getItemByItemId(RULES_TAB_ITEM_ID);
                 final RuleGridWidget rulesInfoWidget = rulesTabItem.getRuleManagementWidget().getRulesInfo();
-                final Grid<Rule> grid = rulesInfoWidget.getGrid();
+                final Grid<RuleModel> grid = rulesInfoWidget.getGrid();
 
-                List<Rule> rules = new ArrayList<Rule>(grid.getStore().getModels());
-                Rule new_rule = model;
+                List<RuleModel> rules = new ArrayList<RuleModel>(grid.getStore().getModels());
+                RuleModel new_rule = model;
                 rulesManagerServiceRemote.shift(new_rule.getPriority(), 1,
                     new AsyncCallback<Void>()
                     {
@@ -734,25 +734,25 @@ public class RulesController extends Controller
         {
             Object tabData = event.getData();
 
-            if (tabData instanceof Rule)
+            if (tabData instanceof RuleModel)
             {
-                Rule model = (Rule) tabData;
+                RuleModel model = (RuleModel) tabData;
 
                 RulesTabItem rulesTabItem = (RulesTabItem) tabWidget.getItemByItemId(RULES_TAB_ITEM_ID);
                 final RuleGridWidget rulesInfoWidget = rulesTabItem.getRuleManagementWidget().getRulesInfo();
-                final Grid<Rule> grid = rulesInfoWidget.getGrid();
+                final Grid<RuleModel> grid = rulesInfoWidget.getGrid();
 
-                List<Rule> rules = new ArrayList<Rule>(grid.getStore().getModels());
+                List<RuleModel> rules = new ArrayList<RuleModel>(grid.getStore().getModels());
                 if (model.getPriority() > 0)
                 {
                     int indexUp = rules.lastIndexOf(model);
-                    Rule rup = null;
-                    Rule rupup = null;
+                    RuleModel rup = null;
+                    RuleModel rupup = null;
 
-                    rup = ((Rule) (rules.get(indexUp)));
+                    rup = ((RuleModel) (rules.get(indexUp)));
                     if ((indexUp - 1) >= 0)
                     {
-                        rupup = ((Rule) (rules.get(indexUp - 1)));
+                        rupup = ((RuleModel) (rules.get(indexUp - 1)));
                     }
 
                     if (rupup != null)
@@ -810,25 +810,25 @@ public class RulesController extends Controller
 
             Object tabData = event.getData();
 
-            if (tabData instanceof Rule)
+            if (tabData instanceof RuleModel)
             {
-                Rule model = (Rule) tabData;
+                RuleModel model = (RuleModel) tabData;
 
                 RulesTabItem rulesTabItem = (RulesTabItem) tabWidget.getItemByItemId(RULES_TAB_ITEM_ID);
                 final RuleGridWidget rulesInfoWidget = rulesTabItem.getRuleManagementWidget().getRulesInfo();
-                final Grid<Rule> grid = rulesInfoWidget.getGrid();
+                final Grid<RuleModel> grid = rulesInfoWidget.getGrid();
 
-                List<Rule> rules = new ArrayList<Rule>(grid.getStore().getModels());
+                List<RuleModel> rules = new ArrayList<RuleModel>(grid.getStore().getModels());
                 if (model.getPriority() >= 0)
                 {
                     int indexUp = rules.lastIndexOf(model);
-                    Rule rup = null;
-                    Rule rupup = null;
+                    RuleModel rup = null;
+                    RuleModel rupup = null;
 
-                    rup = ((Rule) (rules.get(indexUp)));
+                    rup = ((RuleModel) (rules.get(indexUp)));
                     if ((indexUp + 1) != rules.size())
                     {
-                        rupup = ((Rule) (rules.get(indexUp + 1)));
+                        rupup = ((RuleModel) (rules.get(indexUp + 1)));
                     }
 
                     if (rupup != null)
@@ -879,22 +879,22 @@ public class RulesController extends Controller
      * @param rule
      * @return
      */
-    public boolean checkUniqueRule(List<Rule> list, Rule rule)
+    public boolean checkUniqueRule(List<RuleModel> list, RuleModel rule)
     {
         boolean res = false;
         if (list.size() > 0)
         {
-            Iterator<Rule> itr = list.iterator();
+            Iterator<RuleModel> itr = list.iterator();
             while (itr.hasNext() && !res)
             {
-                Rule r = (Rule) itr.next();
+                RuleModel r = (RuleModel) itr.next();
                 if ((r.getId() != rule.getId()) &&
-                        (((r.getUser() != null) && (rule.getUser() != null) && r.getUser().getName().equals(rule.getUser().getName())) || ((r.getUser() == null) && (rule.getUser() == null))) &&
-                        (((r.getProfile() != null) && (rule.getProfile() != null) && r.getProfile().getName().equals(rule.getProfile().getName())) || ((r.getProfile() == null) && (rule.getProfile() == null))) &&
-                        (((r.getInstance() != null) && (rule.getInstance() != null) && r.getInstance().getName().equals(rule.getInstance().getName())) || ((r.getInstance() == null) && (rule.getInstance() == null))) &&
-                        (((r.getService() != null) && (rule.getService() != null) && r.getService().equals(rule.getService())) || ((r.getService() == null) && (rule.getService() == null))) &&
-                        (((r.getRequest() != null) && (rule.getRequest() != null) && r.getRequest().equals(rule.getRequest())) || ((r.getRequest() == null) && (rule.getRequest() == null))) &&
-                        (((r.getWorkspace() != null) && (rule.getWorkspace() != null) && r.getWorkspace().equals(rule.getWorkspace())) || ((r.getWorkspace() == null) && (rule.getWorkspace() == null))) &&
+                        (((r.getUsername() != null) && (rule.getUsername()!= null) && r.getUsername().equals(rule.getUsername())) || ((r.getUsername() == null) && (rule.getUsername()== null))) &&
+                        (((r.getRolename() != null) && (rule.getRolename()!= null) && r.getRolename().equals(rule.getRolename())) || ((r.getRolename() == null) && (rule.getRolename()== null))) &&
+                        (((r.getInstance() != null) && (rule.getInstance()!= null) && r.getInstance().getName().equals(rule.getInstance().getName())) || ((r.getInstance() == null) && (rule.getInstance() == null))) &&
+                        (((r.getService()  != null) && (rule.getService() != null) && r.getService().equals(rule.getService()))   || ((r.getService() == null) && (rule.getService() == null))) &&
+                        (((r.getRequest()  != null) && (rule.getRequest() != null) && r.getRequest().equals(rule.getRequest()))   || ((r.getRequest() == null) && (rule.getRequest() == null))) &&
+                        (((r.getWorkspace()!= null) && (rule.getWorkspace() != null) && r.getWorkspace().equals(rule.getWorkspace())) || ((r.getWorkspace() == null) && (rule.getWorkspace() == null))) &&
                         (((r.getLayer() != null) && (rule.getLayer() != null) && r.getLayer().equals(rule.getLayer())) || ((r.getLayer() == null) && (rule.getLayer() == null))))
                 {
                     res = true;

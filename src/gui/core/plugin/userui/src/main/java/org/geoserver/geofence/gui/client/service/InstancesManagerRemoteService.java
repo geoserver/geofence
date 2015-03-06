@@ -6,7 +6,7 @@
 package org.geoserver.geofence.gui.client.service;
 
 import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.GSInstance;
+import org.geoserver.geofence.gui.client.model.GSInstanceModel;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -29,7 +29,7 @@ public interface InstancesManagerRemoteService extends RemoteService
      * @throws ApplicationException
      *             the application exception
      */
-    public PagingLoadResult<GSInstance> getInstances(int offset, int limit, boolean full) throws ApplicationException;
+    public PagingLoadResult<GSInstanceModel> getInstances(int offset, int limit, boolean full) throws ApplicationException;
 
 
     /**
@@ -39,7 +39,7 @@ public interface InstancesManagerRemoteService extends RemoteService
      * @param name
      * @return
      */
-    public GSInstance getInstance(int offset, int limit, long id);
+    public GSInstanceModel getInstance(int offset, int limit, long id);
 
     /**
      * Save instance.
@@ -49,7 +49,7 @@ public interface InstancesManagerRemoteService extends RemoteService
      * @param asyncCallback
      *            the async callback
      */
-    public void saveInstance(GSInstance instance);
+    public void saveInstance(GSInstanceModel instance);
 
     /**
      * Delete instance.
@@ -59,7 +59,7 @@ public interface InstancesManagerRemoteService extends RemoteService
      * @param asyncCallback
      *            the async callback
      */
-    public void deleteInstance(GSInstance instance);
+    public void deleteInstance(GSInstanceModel instance);
     
     /**
      * Test connection with instance.
@@ -67,6 +67,6 @@ public interface InstancesManagerRemoteService extends RemoteService
      * @param url
      * @param callback
      */
-    public void testConnection( org.geoserver.geofence.gui.client.model.GSInstance instance) throws ApplicationException;
+    public void testConnection( org.geoserver.geofence.gui.client.model.GSInstanceModel instance) throws ApplicationException;
 
 }

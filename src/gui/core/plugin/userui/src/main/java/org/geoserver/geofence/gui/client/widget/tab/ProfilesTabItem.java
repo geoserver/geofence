@@ -31,7 +31,7 @@ public class ProfilesTabItem extends TabItem
     {
         // TODO: add I18n message
         // super(I18nProvider.getMessages().profiles());
-        super("Groups");
+        super("Roles");
         setId(tabItemId);
         setIcon(Resources.ICONS.pageEdit());
     }
