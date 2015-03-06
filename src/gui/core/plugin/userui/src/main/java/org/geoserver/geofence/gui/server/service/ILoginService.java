@@ -7,7 +7,7 @@ package org.geoserver.geofence.gui.server.service;
 
 import javax.servlet.http.HttpSession;
 
-import org.geoserver.geofence.gui.client.model.User;
+import org.geoserver.geofence.gui.client.model.UserModel;
 
 
 // TODO: Auto-generated Javadoc
@@ -28,7 +28,7 @@ public interface ILoginService
      *            the session
      * @return the profile
      */
-    public User authenticate(String userName, String password, HttpSession session);
+    public UserModel authenticate(String userName, String password, HttpSession session);
 
     // public PagingLoadResult<User> loadUsers(PagingLoadConfig config,
     // String searchText) throws ApplicationException;

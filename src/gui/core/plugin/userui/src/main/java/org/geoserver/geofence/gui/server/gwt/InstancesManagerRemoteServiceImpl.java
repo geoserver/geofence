@@ -9,7 +9,7 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.GSInstance;
+import org.geoserver.geofence.gui.client.model.GSInstanceModel;
 import org.geoserver.geofence.gui.client.service.InstancesManagerRemoteService;
 import org.geoserver.geofence.gui.server.service.IInstancesManagerService;
 import org.geoserver.geofence.gui.spring.ApplicationContextUtil;
@@ -49,7 +49,7 @@ public class InstancesManagerRemoteServiceImpl extends RemoteServiceServlet impl
      * org.geoserver.geofence.gui.client.service.InstancesManagerRemoteService#getInstances(com.extjs
      * .gxt.ui.client.data.PagingLoadConfig)
      */
-    public PagingLoadResult<GSInstance> getInstances(int offset, int limit, boolean full) throws ApplicationException
+    public PagingLoadResult<GSInstanceModel> getInstances(int offset, int limit, boolean full) throws ApplicationException
     {
         return instancesManagerService.getInstances(offset, limit, full);
     }
@@ -61,7 +61,7 @@ public class InstancesManagerRemoteServiceImpl extends RemoteServiceServlet impl
      * org.geoserver.geofence.gui.client.service.InstancesManagerRemoteService#getInstances(com.extjs
      * .gxt.ui.client.data.PagingLoadConfig)
      */
-    public GSInstance getInstance(int offset, int limit, long id) throws ApplicationException
+    public GSInstanceModel getInstance(int offset, int limit, long id) throws ApplicationException
     {
         return instancesManagerService.getInstance(offset, limit, id);
     }
@@ -69,7 +69,7 @@ public class InstancesManagerRemoteServiceImpl extends RemoteServiceServlet impl
     /* (non-Javadoc)
      * @see org.geoserver.geofence.gui.client.service.InstancesManagerRemoteService#deleteInstance(org.geoserver.geofence.gui.client.model.Instance)
      */
-    public void deleteInstance(GSInstance instance) throws ApplicationException
+    public void deleteInstance(GSInstanceModel instance) throws ApplicationException
     {
         instancesManagerService.deleteInstance(instance);
     }
@@ -77,12 +77,12 @@ public class InstancesManagerRemoteServiceImpl extends RemoteServiceServlet impl
     /* (non-Javadoc)
      * @see org.geoserver.geofence.gui.client.service.InstancesManagerRemoteService#saveInstance(org.geoserver.geofence.gui.client.model.Instance)
      */
-    public void saveInstance(GSInstance instance) throws ApplicationException
+    public void saveInstance(GSInstanceModel instance) throws ApplicationException
     {
         instancesManagerService.saveInstance(instance);
     }
 
-	public void testConnection(org.geoserver.geofence.gui.client.model.GSInstance instance)  throws ApplicationException {
+	public void testConnection(org.geoserver.geofence.gui.client.model.GSInstanceModel instance)  throws ApplicationException {
 		instancesManagerService.testConnection(instance);
 		
 	}

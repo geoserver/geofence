@@ -9,7 +9,7 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
-import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.UserGroupModel;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 
 
@@ -25,7 +25,7 @@ public class ProfileDetailsWidget extends ContentPanel
     /** The profile details info. */
     private ProfileDetailsGridWidget profileDetailsInfo;
 
-    private UserGroup profile;
+    private UserGroupModel profile;
 
     /**
      * Instantiates a new layer custom props widget.
@@ -34,7 +34,7 @@ public class ProfileDetailsWidget extends ContentPanel
      * @param rulesService
      *            the rules service
      */
-    public ProfileDetailsWidget(UserGroup profile, ProfilesManagerRemoteServiceAsync profilesService)
+    public ProfileDetailsWidget(UserGroupModel profile, ProfilesManagerRemoteServiceAsync profilesService)
     {
         this.profile = profile;
 

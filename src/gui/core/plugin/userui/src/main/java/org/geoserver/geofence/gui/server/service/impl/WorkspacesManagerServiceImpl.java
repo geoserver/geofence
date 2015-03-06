@@ -16,11 +16,11 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.geoserver.geofence.core.model.LayerDetails;
 import org.geoserver.geofence.gui.client.ApplicationException;
 import org.geoserver.geofence.gui.client.configuration.WorkspaceConfigOpts;
-import org.geoserver.geofence.gui.client.model.GSInstance;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.GSInstanceModel;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.model.data.Layer;
 import org.geoserver.geofence.gui.client.model.data.LayerStyle;
-import org.geoserver.geofence.gui.client.model.data.Workspace;
+import org.geoserver.geofence.gui.client.model.data.WorkspaceModel;
 import org.geoserver.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
 import org.geoserver.geofence.gui.server.service.IWorkspacesManagerService;
 import org.geoserver.geofence.gui.service.GeofenceRemoteService;
@@ -67,12 +67,12 @@ public class WorkspacesManagerServiceImpl implements IWorkspacesManagerService
      * org.geoserver.geofence.gui.server.service.IWorkspacesManagerService#getWorkspaces(com.extjs
      * .gxt.ui.client.data.PagingLoadConfig, java.lang.String)
      */
-    public PagingLoadResult<Workspace> getWorkspaces(int offset, int limit, String remoteURL,
-        GSInstance gsInstance) throws ApplicationException
+    public PagingLoadResult<WorkspaceModel> getWorkspaces(int offset, int limit, String remoteURL,
+        GSInstanceModel gsInstance) throws ApplicationException
     {
 
-        List<Workspace> workspacesListDTO = new ArrayList<Workspace>();
-        workspacesListDTO.add(new Workspace("*"));
+        List<WorkspaceModel> workspacesListDTO = new ArrayList<WorkspaceModel>();
+        workspacesListDTO.add(new WorkspaceModel("*"));
 
         if ((remoteURL != null) && !remoteURL.equals("*") && !remoteURL.contains("?"))
         {
@@ -88,7 +88,7 @@ public class WorkspacesManagerServiceImpl implements IWorkspacesManagerService
                     {
                         RESTShortWorkspace workspace = wkIT.next();
 
-                        workspacesListDTO.add(new Workspace(workspace.getName()));
+                        workspacesListDTO.add(new WorkspaceModel(workspace.getName()));
                     }
                 }
             }
@@ -99,7 +99,7 @@ public class WorkspacesManagerServiceImpl implements IWorkspacesManagerService
             }
         }
 
-        return new RpcPageLoadResult<Workspace>(workspacesListDTO, 0, workspacesListDTO.size());
+        return new RpcPageLoadResult<WorkspaceModel>(workspacesListDTO, 0, workspacesListDTO.size());
     }
 
     /*
@@ -110,7 +110,7 @@ public class WorkspacesManagerServiceImpl implements IWorkspacesManagerService
      * gxt.ui.client.data.PagingLoadConfig, java.lang.String, java.lang.String)
      */
     public PagingLoadResult<Layer> getLayers(int offset, int limit, String baseURL,
-        GSInstance gsInstance, String workspace, String service) throws ApplicationException
+        GSInstanceModel gsInstance, String workspace, String service) throws ApplicationException
     {
 
         List<Layer> layersListDTO = new ArrayList<Layer>();
@@ -185,7 +185,7 @@ public class WorkspacesManagerServiceImpl implements IWorkspacesManagerService
      * org.geoserver.geofence.gui.server.service.IWorkspacesManagerService#getStyles(org.geoserver
      * .geofence.gui.client.model.GSInstance)
      */
-    public List<LayerStyle> getStyles(Rule rule) throws ApplicationException
+    public List<LayerStyle> getStyles(RuleModel rule) throws ApplicationException
     {
 
         List<LayerStyle> layerStyles = new ArrayList<LayerStyle>();

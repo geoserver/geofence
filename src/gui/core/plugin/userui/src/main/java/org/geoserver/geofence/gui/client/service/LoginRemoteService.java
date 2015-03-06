@@ -6,7 +6,7 @@
 package org.geoserver.geofence.gui.client.service;
 
 import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.User;
+import org.geoserver.geofence.gui.client.model.UserModel;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -30,7 +30,7 @@ public interface LoginRemoteService extends RemoteService
      * @throws ApplicationException
      *             the application exception
      */
-    public User authenticate(String userName, String password) throws ApplicationException;
+    public UserModel authenticate(String userName, String password) throws ApplicationException;
 
     /**
      * Logout.

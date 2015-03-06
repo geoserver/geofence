@@ -46,7 +46,7 @@ import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.Resources;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
-import org.geoserver.geofence.gui.client.model.GSInstance;
+import org.geoserver.geofence.gui.client.model.GSInstanceModel;
 import org.geoserver.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
 
 
@@ -54,14 +54,14 @@ import org.geoserver.geofence.gui.client.service.InstancesManagerRemoteServiceAs
 /**
  * The Class InstanceGridWidget.
  */
-public class InstanceGridWidget extends GeofenceGridWidget<GSInstance>
+public class InstanceGridWidget extends GeofenceGridWidget<GSInstanceModel>
 {
 
     /** The service. */
     private InstancesManagerRemoteServiceAsync service;
 
     /** The proxy. */
-    private RpcProxy<PagingLoadResult<GSInstance>> proxy;
+    private RpcProxy<PagingLoadResult<GSInstanceModel>> proxy;
 
     /** The loader. */
     private PagingLoader<PagingLoadResult<ModelData>> loader;
@@ -87,7 +87,7 @@ public class InstanceGridWidget extends GeofenceGridWidget<GSInstance>
      * @param models
      *            the models
      */
-    public InstanceGridWidget(List<GSInstance> models)
+    public InstanceGridWidget(List<GSInstanceModel> models)
     {
         super(models);
     }
@@ -193,11 +193,11 @@ public class InstanceGridWidget extends GeofenceGridWidget<GSInstance>
                 org.geoserver.geofence.gui.client.Constants.DEFAULT_PAGESIZE);
 
         // Loader fro service
-        this.proxy = new RpcProxy<PagingLoadResult<GSInstance>>()
+        this.proxy = new RpcProxy<PagingLoadResult<GSInstanceModel>>()
             {
 
                 @Override
-                protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GSInstance>> callback)
+                protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GSInstanceModel>> callback)
                 {
                     service.getInstances(((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(), false, callback);
                 }
@@ -205,16 +205,16 @@ public class InstanceGridWidget extends GeofenceGridWidget<GSInstance>
             };
         loader = new BasePagingLoader<PagingLoadResult<ModelData>>(proxy);
         loader.setRemoteSort(false);
-        store = new ListStore<GSInstance>(loader);
+        store = new ListStore<GSInstanceModel>(loader);
         // store.sort(BeanKeyValue.NAME.getValue(), SortDir.ASC);
 
         // Search tool
-        SearchFilterField<GSInstance> filter = new SearchFilterField<GSInstance>()
+        SearchFilterField<GSInstanceModel> filter = new SearchFilterField<GSInstanceModel>()
             {
 
                 @Override
-                protected boolean doSelect(Store<GSInstance> store, GSInstance parent,
-                    GSInstance record, String property, String filter)
+                protected boolean doSelect(Store<GSInstanceModel> store, GSInstanceModel parent,
+                    GSInstanceModel record, String property, String filter)
                 {
 
                     String name = parent.get(BeanKeyValue.NAME.getValue());
@@ -354,24 +354,24 @@ public class InstanceGridWidget extends GeofenceGridWidget<GSInstance>
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<GSInstance> createInstanceNameTextBox()
+    private GridCellRenderer<GSInstanceModel> createInstanceNameTextBox()
     {
-        GridCellRenderer<GSInstance> buttonRendered = new GridCellRenderer<GSInstance>()
+        GridCellRenderer<GSInstanceModel> buttonRendered = new GridCellRenderer<GSInstanceModel>()
             {
 
                 private boolean init;
 
-                public Object render(final GSInstance model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<GSInstance> store, Grid<GSInstance> grid)
+                public Object render(final GSInstanceModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<GSInstanceModel> store, Grid<GSInstanceModel> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSInstance>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSInstanceModel>>()
                             {
 
-                                public void handleEvent(GridEvent<GSInstance> be)
+                                public void handleEvent(GridEvent<GSInstanceModel> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {
@@ -422,24 +422,24 @@ public class InstanceGridWidget extends GeofenceGridWidget<GSInstance>
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<GSInstance> createInstanceDescriptionTextBox()
+    private GridCellRenderer<GSInstanceModel> createInstanceDescriptionTextBox()
     {
-        GridCellRenderer<GSInstance> buttonRendered = new GridCellRenderer<GSInstance>()
+        GridCellRenderer<GSInstanceModel> buttonRendered = new GridCellRenderer<GSInstanceModel>()
             {
 
                 private boolean init;
 
-                public Object render(final GSInstance model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<GSInstance> store, Grid<GSInstance> grid)
+                public Object render(final GSInstanceModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<GSInstanceModel> store, Grid<GSInstanceModel> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSInstance>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSInstanceModel>>()
                             {
 
-                                public void handleEvent(GridEvent<GSInstance> be)
+                                public void handleEvent(GridEvent<GSInstanceModel> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {
@@ -490,24 +490,24 @@ public class InstanceGridWidget extends GeofenceGridWidget<GSInstance>
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<GSInstance> createInstanceBaseurlTextBox()
+    private GridCellRenderer<GSInstanceModel> createInstanceBaseurlTextBox()
     {
-        GridCellRenderer<GSInstance> buttonRendered = new GridCellRenderer<GSInstance>()
+        GridCellRenderer<GSInstanceModel> buttonRendered = new GridCellRenderer<GSInstanceModel>()
             {
 
                 private boolean init;
 
-                public Object render(final GSInstance model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<GSInstance> store, Grid<GSInstance> grid)
+                public Object render(final GSInstanceModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<GSInstanceModel> store, Grid<GSInstanceModel> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSInstance>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSInstanceModel>>()
                             {
 
-                                public void handleEvent(GridEvent<GSInstance> be)
+                                public void handleEvent(GridEvent<GSInstanceModel> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {
@@ -558,24 +558,24 @@ public class InstanceGridWidget extends GeofenceGridWidget<GSInstance>
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<GSInstance> createInstanceUsernameTextBox()
+    private GridCellRenderer<GSInstanceModel> createInstanceUsernameTextBox()
     {
-        GridCellRenderer<GSInstance> buttonRendered = new GridCellRenderer<GSInstance>()
+        GridCellRenderer<GSInstanceModel> buttonRendered = new GridCellRenderer<GSInstanceModel>()
             {
 
                 private boolean init;
 
-                public Object render(final GSInstance model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<GSInstance> store, Grid<GSInstance> grid)
+                public Object render(final GSInstanceModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<GSInstanceModel> store, Grid<GSInstanceModel> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSInstance>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSInstanceModel>>()
                             {
 
-                                public void handleEvent(GridEvent<GSInstance> be)
+                                public void handleEvent(GridEvent<GSInstanceModel> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {
@@ -626,24 +626,24 @@ public class InstanceGridWidget extends GeofenceGridWidget<GSInstance>
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<GSInstance> createInstancePasswordTextBox()
+    private GridCellRenderer<GSInstanceModel> createInstancePasswordTextBox()
     {
-        GridCellRenderer<GSInstance> buttonRendered = new GridCellRenderer<GSInstance>()
+        GridCellRenderer<GSInstanceModel> buttonRendered = new GridCellRenderer<GSInstanceModel>()
             {
 
                 private boolean init;
 
-                public Object render(final GSInstance model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<GSInstance> store, Grid<GSInstance> grid)
+                public Object render(final GSInstanceModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<GSInstanceModel> store, Grid<GSInstanceModel> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSInstance>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSInstanceModel>>()
                             {
 
-                                public void handleEvent(GridEvent<GSInstance> be)
+                                public void handleEvent(GridEvent<GSInstanceModel> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {
@@ -695,24 +695,24 @@ public class InstanceGridWidget extends GeofenceGridWidget<GSInstance>
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<GSInstance> createInstanceDeleteButton()
+    private GridCellRenderer<GSInstanceModel> createInstanceDeleteButton()
     {
-        GridCellRenderer<GSInstance> buttonRendered = new GridCellRenderer<GSInstance>()
+        GridCellRenderer<GSInstanceModel> buttonRendered = new GridCellRenderer<GSInstanceModel>()
             {
 
                 private boolean init;
 
-                public Object render(final GSInstance model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<GSInstance> store, Grid<GSInstance> grid)
+                public Object render(final GSInstanceModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<GSInstanceModel> store, Grid<GSInstanceModel> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSInstance>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSInstanceModel>>()
                             {
 
-                                public void handleEvent(GridEvent<GSInstance> be)
+                                public void handleEvent(GridEvent<GSInstanceModel> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {
@@ -772,24 +772,24 @@ public class InstanceGridWidget extends GeofenceGridWidget<GSInstance>
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<GSInstance> createInstanceTestConnectionButton()
+    private GridCellRenderer<GSInstanceModel> createInstanceTestConnectionButton()
     {
-        GridCellRenderer<GSInstance> buttonRendered = new GridCellRenderer<GSInstance>()
+        GridCellRenderer<GSInstanceModel> buttonRendered = new GridCellRenderer<GSInstanceModel>()
             {
 
                 private boolean init;
 
-                public Object render(final GSInstance model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<GSInstance> store, Grid<GSInstance> grid)
+                public Object render(final GSInstanceModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<GSInstanceModel> store, Grid<GSInstanceModel> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSInstance>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSInstanceModel>>()
                             {
 
-                                public void handleEvent(GridEvent<GSInstance> be)
+                                public void handleEvent(GridEvent<GSInstanceModel> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {

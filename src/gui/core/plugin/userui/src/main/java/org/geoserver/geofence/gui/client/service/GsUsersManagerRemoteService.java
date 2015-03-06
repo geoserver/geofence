@@ -10,8 +10,9 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.GSUser;
-import org.geoserver.geofence.gui.client.model.data.UserLimitsInfo;
+import org.geoserver.geofence.gui.client.model.GSUserModel;
+import org.geoserver.geofence.gui.client.model.UsernameModel;
+import org.geoserver.geofence.gui.client.model.data.UserLimitsInfoModel;
 
 
 /**
@@ -32,7 +33,8 @@ public interface GsUsersManagerRemoteService extends RemoteService
      * @throws ApplicationException
      *             the application exception
      */
-    public PagingLoadResult<GSUser> getGsUsers(int offset, int limit, boolean full) throws ApplicationException;
+    public PagingLoadResult<GSUserModel> getGsUsers(int offset, int limit, boolean full) throws ApplicationException;
+    public PagingLoadResult<UsernameModel> getGsUsernames(int offset, int limit, boolean full) throws ApplicationException;
 
     /**
      * Save gs profile.
@@ -42,7 +44,7 @@ public interface GsUsersManagerRemoteService extends RemoteService
      * @throws ApplicationException
      *             the application exception
      */
-    public void saveGsUser(GSUser user) throws ApplicationException;
+    public void saveGsUser(GSUserModel user) throws ApplicationException;
 
     /**
      * Delete gs profile.
@@ -52,20 +54,20 @@ public interface GsUsersManagerRemoteService extends RemoteService
      * @throws ApplicationException
      *             the application exception
      */
-    public void deleteGsUser(GSUser user) throws ApplicationException;
+    public void deleteGsUser(GSUserModel user) throws ApplicationException;
 
     /**
      * @param user
      * @return UserLimitInfo
      * @throws ApplicationException
      */
-    public UserLimitsInfo getUserLimitsInfo(GSUser user) throws ApplicationException;
+    public UserLimitsInfoModel getUserLimitsInfo(GSUserModel user) throws ApplicationException;
 
     /**
      * @param user
      * @return UserLimitInfo
      * @throws ApplicationException
      */
-    public UserLimitsInfo saveUserLimitsInfo(UserLimitsInfo userLimitInfo) throws ApplicationException;
+    public UserLimitsInfoModel saveUserLimitsInfo(UserLimitsInfoModel userLimitInfo) throws ApplicationException;
 
 }

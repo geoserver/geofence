@@ -6,9 +6,9 @@
 package org.geoserver.geofence.gui.server.service.impl;
 
 import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.GSUser;
-import org.geoserver.geofence.gui.client.model.UserGroup;
-import org.geoserver.geofence.gui.client.model.data.UserLimitsInfo;
+import org.geoserver.geofence.gui.client.model.GSUserModel;
+import org.geoserver.geofence.gui.client.model.UserGroupModel;
+import org.geoserver.geofence.gui.client.model.data.UserLimitsInfoModel;
 import org.geoserver.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
 import org.geoserver.geofence.gui.server.service.IGsUsersManagerService;
 import org.geoserver.geofence.gui.service.GeofenceRemoteService;
@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import org.geoserver.geofence.gui.client.model.UsernameModel;
 
 /**
  * The Class GsUsersManagerServiceImpl.
@@ -48,15 +49,15 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
      * org.geoserver.geofence.gui.server.service.IFeatureService#loadFeature(com.extjs.gxt.ui.
      * client.data.PagingLoadConfig, java.lang.String)
      */
-    public PagingLoadResult<GSUser> getGsUsers(int offset, int limit, boolean full) throws ApplicationException
+    public PagingLoadResult<GSUserModel> getGsUsers(int offset, int limit, boolean full) throws ApplicationException
     {
         int start = offset;
 
-        List<GSUser> usersListDTO = new ArrayList<GSUser>();
+        List<GSUserModel> usersListDTO = new ArrayList<GSUserModel>();
 
         if (full)
         {
-            GSUser all_user = new GSUser();
+            GSUserModel all_user = new GSUserModel();
             all_user.setId(-1);
             all_user.setName("*");
             all_user.setFullName("*");
@@ -101,7 +102,7 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
                 throw new ApplicationException(e);
             }
 
-            GSUser local_user = new GSUser();
+            GSUserModel local_user = new GSUserModel();
             local_user.setId(short_usr.getId());
             local_user.setName(remote_user.getName());
             local_user.setFullName(remote_user.getFullName());
@@ -115,7 +116,7 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
             //org.geoserver.geofence.core.model.UserGroup remote_profile = remote_user.getGroups().iterator().next();
             for(org.geoserver.geofence.core.model.UserGroup remote_profile : remote_user.getGroups())
             {
-            	UserGroup local_group = new UserGroup();
+            	UserGroupModel local_group = new UserGroupModel();
             	local_group.setId(remote_profile.getId());
             	local_group.setName(remote_profile.getName());
             	local_group.setDateCreation(remote_profile.getDateCreation());
@@ -126,13 +127,55 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
             usersListDTO.add(local_user);
         }
 
-        return new RpcPageLoadResult<GSUser>(usersListDTO, offset, t.intValue());
+        return new RpcPageLoadResult<GSUserModel>(usersListDTO, offset, t.intValue());
+    }
+
+    public PagingLoadResult<UsernameModel> getGsUsernames(int offset, int limit, boolean full) throws ApplicationException
+    {
+        int start = offset;
+
+        List<UsernameModel> returnList = new ArrayList<UsernameModel>();
+
+        logger.info("getGsUsernames()");
+
+        if (full)
+        {
+            UsernameModel all_user = new UsernameModel();
+            all_user.setUsername("*");
+            returnList.add(all_user);
+        }
+
+        long usersCount = geofenceRemoteService.getUserAdminService().getCount(null) + 1;
+
+        logger.info("getGsUsernames(): count " + usersCount);
+
+        Long t = new Long(usersCount);
+
+        int page = (start == 0) ? start : (start / limit);
+
+        List<ShortUser> usersList = geofenceRemoteService.getUserAdminService().getList(null, page, limit);
+
+        if (usersList == null)
+        {
+            logger.error("No user found on server");
+            throw new ApplicationException("No user found on server");
+        }
+
+        for (ShortUser user : usersList)
+        {
+            UsernameModel username = new UsernameModel(user.getName());
+            returnList.add(username);
+        }
+
+        logger.info("getGsUsernames(): returning " + returnList.size() + " users" );
+
+        return new RpcPageLoadResult<UsernameModel>(returnList, offset, t.intValue());
     }
 
     /* (non-Javadoc)
      * @see org.geoserver.geofence.gui.server.service.IGsUsersManagerService#saveUser(org.geoserver.geofence.gui.client.model.GSUser)
      */
-    public void saveUser(GSUser user) throws ApplicationException
+    public void saveUser(GSUserModel user) throws ApplicationException
     {
         org.geoserver.geofence.core.model.GSUser remote_user = null;
         if (user.getId() >= 0)
@@ -171,7 +214,7 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
      * @param remote_user
      * @throws ResourceNotFoundFault
      */
-    private void copyUser(GSUser user, org.geoserver.geofence.core.model.GSUser remote_user) throws NotFoundServiceEx
+    private void copyUser(GSUserModel user, org.geoserver.geofence.core.model.GSUser remote_user) throws NotFoundServiceEx
     {
         remote_user.setName(user.getName());
         remote_user.setFullName(user.getFullName());
@@ -182,7 +225,7 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
         remote_user.setDateCreation(user.getDateCreation());
         
         Set<org.geoserver.geofence.core.model.UserGroup> remote_groups = new HashSet<org.geoserver.geofence.core.model.UserGroup>();
-        for(UserGroup group : user.getUserGroups())
+        for(UserGroupModel group : user.getUserGroups())
         {
             org.geoserver.geofence.core.model.UserGroup remote_group = geofenceRemoteService.getUserGroupAdminService().get(group.getId());
             logger.error("TODO: profile refactoring!!!");
@@ -195,7 +238,7 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
     /* (non-Javadoc)
      * @see org.geoserver.geofence.gui.server.service.IGsUsersManagerService#deleteUser(org.geoserver.geofence.gui.client.model.GSUser)
      */
-    public void deleteUser(GSUser user) throws ApplicationException
+    public void deleteUser(GSUserModel user) throws ApplicationException
     {
         org.geoserver.geofence.core.model.GSUser remote_user = null;
         try
@@ -213,11 +256,11 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
     /* (non-Javadoc)
      * @see org.geoserver.geofence.gui.server.service.IGsUsersManagerService#getUserLimitsInfo(org.geoserver.geofence.gui.client.model.GSUser)
      */
-    public UserLimitsInfo getUserLimitsInfo(GSUser user) throws ApplicationException
+    public UserLimitsInfoModel getUserLimitsInfo(GSUserModel user) throws ApplicationException
     {
         Long userId = user.getId();
         org.geoserver.geofence.core.model.GSUser gsUser = null;
-        UserLimitsInfo userLimitInfo = null;
+        UserLimitsInfoModel userLimitInfo = null;
 
         logger.error("TODO: allowed area removed from base model!!!");
 
@@ -227,7 +270,7 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
 
             if (gsUser != null)
             {
-                userLimitInfo = new UserLimitsInfo();
+                userLimitInfo = new UserLimitsInfoModel();
                 userLimitInfo.setUserId(userId);
 
 //                MultiPolygon the_geom = gsUser.getAllowedArea();
@@ -256,7 +299,7 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
     /* (non-Javadoc)
      * @see org.geoserver.geofence.gui.server.service.IGsUsersManagerService#saveUserLimitsInfo(org.geoserver.geofence.gui.client.model.GSUser)
      */
-    public UserLimitsInfo saveUserLimitsInfo(UserLimitsInfo userLimitInfo) throws ApplicationException
+    public UserLimitsInfoModel saveUserLimitsInfo(UserLimitsInfoModel userLimitInfo) throws ApplicationException
     {
         logger.error("TODO: allowed area removed from base model!!!");
 

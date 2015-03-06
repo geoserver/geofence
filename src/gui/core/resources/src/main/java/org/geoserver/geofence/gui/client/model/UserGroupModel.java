@@ -15,7 +15,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class Profile.
  */
-public class UserGroup extends BeanModel implements IsSerializable
+public class UserGroupModel extends BeanModel implements IsSerializable
 {
 
     /** The Constant serialVersionUID. */
@@ -42,7 +42,7 @@ public class UserGroup extends BeanModel implements IsSerializable
     /**
      * Instantiates a new profile.
      */
-    public UserGroup()
+    public UserGroupModel()
     {
         setPath("geofence/resources/images/profile.jpg");
     }
@@ -198,10 +198,10 @@ public class UserGroup extends BeanModel implements IsSerializable
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof UserGroup)) {
+		if (!(obj instanceof UserGroupModel)) {
 			return false;
 		}
-		UserGroup other = (UserGroup) obj;
+		UserGroupModel other = (UserGroupModel) obj;
 		if (dateCreation == null) {
 			if (other.dateCreation != null) {
 				return false;

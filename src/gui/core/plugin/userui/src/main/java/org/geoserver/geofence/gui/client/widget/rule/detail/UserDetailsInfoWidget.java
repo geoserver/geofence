@@ -13,8 +13,8 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 
-import org.geoserver.geofence.gui.client.model.GSUser;
-import org.geoserver.geofence.gui.client.model.data.UserLimitsInfo;
+import org.geoserver.geofence.gui.client.model.GSUserModel;
+import org.geoserver.geofence.gui.client.model.data.UserLimitsInfoModel;
 import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.widget.GeofenceFormBindingWidget;
 
@@ -22,11 +22,11 @@ import org.geoserver.geofence.gui.client.widget.GeofenceFormBindingWidget;
 /**
  * The Class UserDetailsInfoWidget.
  */
-public class UserDetailsInfoWidget extends GeofenceFormBindingWidget<UserLimitsInfo>
+public class UserDetailsInfoWidget extends GeofenceFormBindingWidget<UserLimitsInfoModel>
 {
 
     /** The user. */
-    private GSUser user;
+    private GSUserModel user;
 
     /** The user service. */
     private GsUsersManagerRemoteServiceAsync usersService;
@@ -47,7 +47,7 @@ public class UserDetailsInfoWidget extends GeofenceFormBindingWidget<UserLimitsI
      * @param ruleDetailsWidget
      *            the rule details widget
      */
-    public UserDetailsInfoWidget(GSUser model, GsUsersManagerRemoteServiceAsync usersService,
+    public UserDetailsInfoWidget(GSUserModel model, GsUsersManagerRemoteServiceAsync usersService,
         UserDetailsWidget userDetailsWidget)
     {
 
@@ -102,9 +102,9 @@ public class UserDetailsInfoWidget extends GeofenceFormBindingWidget<UserLimitsI
      *
      * @return the model data
      */
-    public UserLimitsInfo getModelData()
+    public UserLimitsInfoModel getModelData()
     {
-        UserLimitsInfo userInfo = new UserLimitsInfo();
+        UserLimitsInfoModel userInfo = new UserLimitsInfoModel();
 
         String area = allowedArea.getValue();
 
@@ -143,7 +143,7 @@ public class UserDetailsInfoWidget extends GeofenceFormBindingWidget<UserLimitsI
      * @param layerDetailsInfo
      *            the layer details info
      */
-    public void bindModelData(UserLimitsInfo userInfo)
+    public void bindModelData(UserLimitsInfoModel userInfo)
     {
         this.bindModel(userInfo);
 

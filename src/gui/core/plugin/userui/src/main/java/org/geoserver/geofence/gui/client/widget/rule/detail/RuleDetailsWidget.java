@@ -20,7 +20,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.Resources;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.model.data.LayerDetailsInfo;
 import org.geoserver.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
 
@@ -33,7 +33,7 @@ public class RuleDetailsWidget extends ContentPanel
 {
 
     /** The rule. */
-    private Rule theRule;
+    private RuleModel theRule;
 
     /** The rule details info. */
     private RuleDetailsInfoWidget ruleDetailsInfo;
@@ -57,7 +57,7 @@ public class RuleDetailsWidget extends ContentPanel
     * @param workspacesService
     *            the workspaces service
     */
-    public RuleDetailsWidget(Rule model, WorkspacesManagerRemoteServiceAsync workspacesService)
+    public RuleDetailsWidget(RuleModel model, WorkspacesManagerRemoteServiceAsync workspacesService)
     {
         this.theRule = model;
         this.toolBar = new ToolBar();

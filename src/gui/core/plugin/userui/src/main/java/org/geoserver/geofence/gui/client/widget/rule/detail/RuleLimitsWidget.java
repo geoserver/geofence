@@ -21,7 +21,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.Resources;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.model.data.LayerLimitsInfo;
 import org.geoserver.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
 
@@ -34,7 +34,7 @@ public class RuleLimitsWidget extends ContentPanel
 {
 
     /** The rule. */
-    private Rule theRule;
+    private RuleModel theRule;
 
     /** The rule details info. */
     private RuleLimitsInfoWidget ruleLimitsInfo;
@@ -55,7 +55,7 @@ public class RuleLimitsWidget extends ContentPanel
     * @param rulesService
     *            the rule service
     */
-    public RuleLimitsWidget(Rule model, RulesManagerRemoteServiceAsync rulesService)
+    public RuleLimitsWidget(RuleModel model, RulesManagerRemoteServiceAsync rulesService)
     {
         this.theRule = model;
         this.toolBar = new ToolBar();

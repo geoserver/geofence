@@ -7,14 +7,14 @@ package org.geoserver.geofence.gui.client.view;
 
 import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
-import org.geoserver.geofence.gui.client.model.GSUser;
-import org.geoserver.geofence.gui.client.model.Rule;
-import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.GSUserModel;
+import org.geoserver.geofence.gui.client.model.RuleModel;
+import org.geoserver.geofence.gui.client.model.UserGroupModel;
 import org.geoserver.geofence.gui.client.model.data.LayerCustomProps;
 import org.geoserver.geofence.gui.client.model.data.LayerDetailsInfo;
 import org.geoserver.geofence.gui.client.model.data.LayerLimitsInfo;
 import org.geoserver.geofence.gui.client.model.data.ProfileCustomProps;
-import org.geoserver.geofence.gui.client.model.data.UserLimitsInfo;
+import org.geoserver.geofence.gui.client.model.data.UserLimitsInfoModel;
 import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
@@ -237,10 +237,10 @@ public class RulesView extends View {
 	 * @param event
 	 */
 	private void onSaveUserLimits(AppEvent event) {
-		UserLimitsInfo userInfo = event.getData();
+		UserLimitsInfoModel userInfo = event.getData();
 
 		this.usersManagerServiceRemote.saveUserLimitsInfo(userInfo,
-				new AsyncCallback<UserLimitsInfo>() {
+				new AsyncCallback<UserLimitsInfoModel>() {
 
 					public void onFailure(Throwable caught) {
 						Dispatcher
@@ -252,7 +252,7 @@ public class RulesView extends View {
 												"Error occurred while saving User Details!" });
 					}
 
-					public void onSuccess(UserLimitsInfo result) {
+					public void onSuccess(UserLimitsInfoModel result) {
 						UserDetailsTabItem userDetailsTabItem = (UserDetailsTabItem) userDetailsEditDialog
 								.getTabWidget()
 								.getItemByItemId(
@@ -276,7 +276,7 @@ public class RulesView extends View {
 	 * @param event
 	 */
 	private void onSaveUserGroups(AppEvent event) {
-		GSUser user = event.getData();
+		GSUserModel user = event.getData();
 
 		this.usersManagerServiceRemote.saveGsUser(user,
 				new AsyncCallback<Void>() {
@@ -306,10 +306,10 @@ public class RulesView extends View {
 	 * @param event
 	 */
 	private void onLoadUserLimits(AppEvent event) {
-		GSUser user = event.getData();
+		GSUserModel user = event.getData();
 
 		this.usersManagerServiceRemote.getUserLimitsInfo(user,
-				new AsyncCallback<UserLimitsInfo>() {
+				new AsyncCallback<UserLimitsInfoModel>() {
 
 					public void onFailure(Throwable caught) {
 						Dispatcher
@@ -321,7 +321,7 @@ public class RulesView extends View {
 												"Error occurred while getting User Details!" });
 					}
 
-					public void onSuccess(UserLimitsInfo result) {
+					public void onSuccess(UserLimitsInfoModel result) {
 						if (result != null) {
 							UserDetailsTabItem userDetailsTabItem = (UserDetailsTabItem) userDetailsEditDialog
 									.getTabWidget()
@@ -352,9 +352,9 @@ public class RulesView extends View {
 	 * @param event
 	 */
 	private void onEditUserDetails(AppEvent event) {
-		if ((event.getData() != null) && (event.getData() instanceof GSUser)) {
+		if ((event.getData() != null) && (event.getData() instanceof GSUserModel)) {
 			this.userDetailsEditDialog.reset();
-			this.userDetailsEditDialog.setModel((GSUser) event.getData());
+			this.userDetailsEditDialog.setModel((GSUserModel) event.getData());
 			this.userDetailsEditDialog.show();
 		} else {
 			// TODO: i18n!!
@@ -368,7 +368,7 @@ public class RulesView extends View {
 	 * @param event
 	 */
 	private void onLoadLayerLimits(AppEvent event) {
-		Rule rule = event.getData();
+		RuleModel rule = event.getData();
 
 		this.rulesManagerServiceRemote.getLayerLimitsInfo(rule,
 				new AsyncCallback<LayerLimitsInfo>() {
@@ -452,9 +452,9 @@ public class RulesView extends View {
 	 * @param event
 	 */
 	private void onEditProfileDetails(AppEvent event) {
-		if ((event.getData() != null) && (event.getData() instanceof UserGroup)) {
+		if ((event.getData() != null) && (event.getData() instanceof UserGroupModel)) {
 			this.profileEditorDialog.reset();
-			this.profileEditorDialog.setModel((UserGroup) event.getData());
+			this.profileEditorDialog.setModel((UserGroupModel) event.getData());
 			this.profileEditorDialog.show();
 		} else {
 			// TODO: i18n!!
@@ -650,7 +650,7 @@ public class RulesView extends View {
 	 * @param event
 	 */
 	private void onLoadLayerDetailsInfo(AppEvent event) {
-		Rule rule = event.getData();
+		RuleModel rule = event.getData();
 
 		this.rulesManagerServiceRemote.getLayerDetailsInfo(rule,
 				new AsyncCallback<LayerDetailsInfo>() {
@@ -756,9 +756,9 @@ public class RulesView extends View {
 	 *            the event
 	 */
 	private void onEditRuleDetails(AppEvent event) {
-		if ((event.getData() != null) && (event.getData() instanceof Rule)) {
+		if ((event.getData() != null) && (event.getData() instanceof RuleModel)) {
 			this.ruleEditorDialog.reset();
-			this.ruleEditorDialog.setModel((Rule) event.getData());
+			this.ruleEditorDialog.setModel((RuleModel) event.getData());
 			this.ruleEditorDialog.show();
 			
 			
@@ -777,7 +777,7 @@ public class RulesView extends View {
 	 *            the event
 	 */
 	private void onEditRowRuleDetails(AppEvent event) {
-		if ((event.getData() != null) && (event.getData() instanceof Rule)) {
+		if ((event.getData() != null) && (event.getData() instanceof RuleModel)) {
 			this.ruleRowEditor.reset();
 			this.ruleRowEditor.status = "INSERT";
 			showPanel(event);
@@ -806,7 +806,7 @@ public class RulesView extends View {
 	 *            the event
 	 */
 	private void onEditRowUpdateRuleDetails(AppEvent event) {
-		if ((event.getData() != null) && (event.getData() instanceof Rule)) {
+		if ((event.getData() != null) && (event.getData() instanceof RuleModel)) {
 			this.ruleRowEditor.reset();
 			this.ruleRowEditor.status = "UPDATE";
 			showPanel(event);
@@ -837,7 +837,7 @@ public class RulesView extends View {
 			this.ruleRowEditor.store.removeAll();
 		}
 		this.ruleRowEditor.createStore();
-		this.ruleRowEditor.store.add((Rule) event.getData());
+		this.ruleRowEditor.store.add((RuleModel) event.getData());
 		this.ruleRowEditor.initGrid();
 
 		if (!this.ruleRowEditor.formPanel.isRendered()) {
@@ -851,7 +851,7 @@ public class RulesView extends View {
 			this.ruleRowEditor.initSizeFormPanel();
 		}
 
-		this.ruleRowEditor.setModel((Rule) event.getData());
+		this.ruleRowEditor.setModel((RuleModel) event.getData());
 		this.ruleRowEditor.addComponentToForm();
 
 		this.ruleRowEditor.setClosable(false);
@@ -1127,7 +1127,7 @@ public class RulesView extends View {
 	private void onInjectWKT(AppEvent event) {
 
 		final String area = (String) event.getData();
-		Rule rule = ruleEditorDialog.getModel();
+		RuleModel rule = ruleEditorDialog.getModel();
 
 		if (rule != null) {
 			ruleEditorDialog.reset();

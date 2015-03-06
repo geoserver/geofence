@@ -7,7 +7,7 @@ package org.geoserver.geofence.gui.client.widget.rule.detail;
 
 import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.Resources;
-import org.geoserver.geofence.gui.client.model.GSUser;
+import org.geoserver.geofence.gui.client.model.GSUserModel;
 import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 
@@ -29,7 +29,7 @@ public class UserDetailsTabItem extends TabItem
     private UserDetailsWidget userDetailsWidget;
 
     /** The user. */
-    private GSUser user;
+    private GSUserModel user;
 
     /**
      * Instantiates a new user tab item.
@@ -41,7 +41,7 @@ public class UserDetailsTabItem extends TabItem
     {
         // TODO: add I18n message
         // super(I18nProvider.getMessages().profiles());
-        super("User Groups");
+        super("User roles");
         setId(tabItemId);
         setIcon(Resources.ICONS.addAOI());
     }
@@ -57,7 +57,7 @@ public class UserDetailsTabItem extends TabItem
      * @param workspacesService
      *            the workspaces service
      */
-    public UserDetailsTabItem(String tabItemId, GSUser model, GsUsersManagerRemoteServiceAsync usersService, ProfilesManagerRemoteServiceAsync profilesManagerServiceRemote)
+    public UserDetailsTabItem(String tabItemId, GSUserModel model, GsUsersManagerRemoteServiceAsync usersService, ProfilesManagerRemoteServiceAsync profilesManagerServiceRemote)
     {
         this(tabItemId);
         this.user = model;

@@ -9,8 +9,9 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.GSUser;
-import org.geoserver.geofence.gui.client.model.data.UserLimitsInfo;
+import org.geoserver.geofence.gui.client.model.GSUserModel;
+import org.geoserver.geofence.gui.client.model.UsernameModel;
+import org.geoserver.geofence.gui.client.model.data.UserLimitsInfoModel;
 import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteService;
 import org.geoserver.geofence.gui.server.service.IGsUsersManagerService;
 import org.geoserver.geofence.gui.spring.ApplicationContextUtil;
@@ -46,15 +47,20 @@ public class GsUsersManagerServiceImpl extends RemoteServiceServlet implements G
     /* (non-Javadoc)
      * @see org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteService#getGsUsers(com.extjs.gxt.ui.client.data.PagingLoadConfig)
      */
-    public PagingLoadResult<GSUser> getGsUsers(int offset, int limit, boolean full) throws ApplicationException
+    public PagingLoadResult<GSUserModel> getGsUsers(int offset, int limit, boolean full) throws ApplicationException
     {
         return gsUserManagerService.getGsUsers(offset, limit, full);
+    }
+
+    public PagingLoadResult<UsernameModel> getGsUsernames(int offset, int limit, boolean full) throws ApplicationException
+    {
+        return gsUserManagerService.getGsUsernames(offset, limit, full);
     }
 
     /* (non-Javadoc)
      * @see org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteService#saveGsUser(org.geoserver.geofence.gui.client.model.GSUser)
      */
-    public void saveGsUser(GSUser user) throws ApplicationException
+    public void saveGsUser(GSUserModel user) throws ApplicationException
     {
         gsUserManagerService.saveUser(user);
     }
@@ -62,7 +68,7 @@ public class GsUsersManagerServiceImpl extends RemoteServiceServlet implements G
     /* (non-Javadoc)
      * @see org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteService#deleteGsUser(org.geoserver.geofence.gui.client.model.GSUser)
      */
-    public void deleteGsUser(GSUser user) throws ApplicationException
+    public void deleteGsUser(GSUserModel user) throws ApplicationException
     {
         gsUserManagerService.deleteUser(user);
     }
@@ -70,7 +76,7 @@ public class GsUsersManagerServiceImpl extends RemoteServiceServlet implements G
     /* (non-Javadoc)
      * @see org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteService#getUserLimitsInfo(org.geoserver.geofence.gui.client.model.GSUser)
      */
-    public UserLimitsInfo getUserLimitsInfo(GSUser user) throws ApplicationException
+    public UserLimitsInfoModel getUserLimitsInfo(GSUserModel user) throws ApplicationException
     {
         return gsUserManagerService.getUserLimitsInfo(user);
     }
@@ -78,7 +84,7 @@ public class GsUsersManagerServiceImpl extends RemoteServiceServlet implements G
     /* (non-Javadoc)
      * @see org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteService#saveUserLimitsInfo(org.geoserver.geofence.gui.client.model.GSUser)
      */
-    public UserLimitsInfo saveUserLimitsInfo(UserLimitsInfo userLimitInfo) throws ApplicationException
+    public UserLimitsInfoModel saveUserLimitsInfo(UserLimitsInfoModel userLimitInfo) throws ApplicationException
     {
         return gsUserManagerService.saveUserLimitsInfo(userLimitInfo);
     }

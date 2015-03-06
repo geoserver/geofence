@@ -8,8 +8,9 @@ package org.geoserver.geofence.gui.server.service;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.GSUser;
-import org.geoserver.geofence.gui.client.model.data.UserLimitsInfo;
+import org.geoserver.geofence.gui.client.model.GSUserModel;
+import org.geoserver.geofence.gui.client.model.UsernameModel;
+import org.geoserver.geofence.gui.client.model.data.UserLimitsInfoModel;
 
 
 /**
@@ -29,7 +30,8 @@ public interface IGsUsersManagerService
      * @throws ApplicationException
      *             the application exception
      */
-    public PagingLoadResult<GSUser> getGsUsers(int offset, int limit, boolean full) throws ApplicationException;
+    public PagingLoadResult<GSUserModel> getGsUsers(int offset, int limit, boolean full) throws ApplicationException;
+    public PagingLoadResult<UsernameModel> getGsUsernames(int offset, int limit, boolean full) throws ApplicationException;
 
     /**
      * Save profile.
@@ -39,7 +41,7 @@ public interface IGsUsersManagerService
      * @throws ApplicationException
      *             the application exception
      */
-    public void saveUser(GSUser user) throws ApplicationException;
+    public void saveUser(GSUserModel user) throws ApplicationException;
 
     /**
      * Delete profile.
@@ -47,18 +49,18 @@ public interface IGsUsersManagerService
      * @param profile
      *            the profile
      */
-    public void deleteUser(GSUser user);
+    public void deleteUser(GSUserModel user);
 
 
     /**
      * @param user
      * @return UserLimitInfo
      */
-    public UserLimitsInfo getUserLimitsInfo(GSUser user);
+    public UserLimitsInfoModel getUserLimitsInfo(GSUserModel user);
 
     /**
      * @param user
      * @return UserLimitInfo
      */
-    public UserLimitsInfo saveUserLimitsInfo(UserLimitsInfo userLimitInfo);
+    public UserLimitsInfoModel saveUserLimitsInfo(UserLimitsInfoModel userLimitInfo);
 }
