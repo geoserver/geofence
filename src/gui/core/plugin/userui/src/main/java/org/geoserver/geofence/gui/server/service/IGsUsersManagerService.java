@@ -61,4 +61,10 @@ public interface IGsUsersManagerService
      * @return UserLimitInfo
      */
     public UserLimitsInfo saveUserLimitsInfo(UserLimitsInfo userLimitInfo);
+	
+    /**
+     * @return
+     * @throws ApplicationException
+     */
+    public boolean activateUserGroupTabs() throws ApplicationException;
 }
