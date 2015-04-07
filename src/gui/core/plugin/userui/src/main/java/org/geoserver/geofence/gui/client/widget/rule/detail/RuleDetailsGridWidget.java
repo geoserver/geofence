@@ -35,7 +35,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.model.data.LayerStyle;
 import org.geoserver.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.widget.GeofenceGridWidget;
@@ -47,7 +47,7 @@ import org.geoserver.geofence.gui.client.widget.GeofenceGridWidget;
 public class RuleDetailsGridWidget extends GeofenceGridWidget<LayerStyle> {
 
 	/** The rule. */
-	private Rule theRule;
+	private RuleModel theRule;
 
 	/** The workspaces service. */
 	private WorkspacesManagerRemoteServiceAsync workspacesService;
@@ -71,7 +71,7 @@ public class RuleDetailsGridWidget extends GeofenceGridWidget<LayerStyle> {
 	 * @param ruleDetailsWidget
 	 *            the rule details widget
 	 */
-	public RuleDetailsGridWidget(Rule model,
+	public RuleDetailsGridWidget(RuleModel model,
 			WorkspacesManagerRemoteServiceAsync workspacesService,
 			RuleDetailsWidget ruleDetailsWidget) {
 		super();

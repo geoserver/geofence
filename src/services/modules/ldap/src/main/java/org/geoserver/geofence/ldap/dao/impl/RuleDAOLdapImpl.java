@@ -52,102 +52,104 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
 
 	@Override
 	public void persist(Rule... entities) {
-		for(Rule rule : entities) {
-			checkUserAndGroup(rule);
-		}
+//		for(Rule rule : entities) {
+//			checkUserAndGroup(rule);
+//		}
 		super.persist(entities);
 	}
 
 
+    // This part has been removed in the refactoring of the user model.
+    // We probably don't need to store the user anymore when using ldap
 
-	/**
-	 * Checks a rule, to identify users or groups not persisted on db.
-	 * If any is found, they are persisted before the rule, to avoid
-	 * referential integrity issues.
-	 * 
-	 * @param rule
-	 */
-	private void checkUserAndGroup(Rule entity) {		
-		if(notPersistedUser(entity)) {		
-			// create a new persistable user, persist it and update the rule
-			GSUser user = copyUser(entity.getGsuser());
-			userDao.persist(user);			
-			entity.setGsuser(user);			
-		}
-		if(notPersistedGroup(entity)) {
-			// create a new persistable group, persist it and update the rule			 
-			UserGroup group = copyGroup(entity.getUserGroup());
-			userGroupDao.persist(group);
-			entity.setUserGroup(group);
-		}
-	}
-
-
-
-	/**
-	 * Checks if the rule has a group defined, and if it is persisted.
-	 * 
-	 * @param rule
-	 * @return
-	 */
-	private boolean notPersistedGroup(Rule rule) {
-		return rule.getUserGroup() != null && userGroupDao.find(rule.getUserGroup().getId()) == null;
-	}
+//	/**
+//	 * Checks a rule, to identify users or groups not persisted on db.
+//	 * If any is found, they are persisted before the rule, to avoid
+//	 * referential integrity issues.
+//	 *
+//	 * @param rule
+//	 */
+//	private void checkUserAndGroup(Rule entity) {
+//		if(notPersistedUser(entity)) {
+//			// create a new persistable user, persist it and update the rule
+//			GSUser user = copyUser(entity.getGsuser());
+//			userDao.persist(user);
+//			entity.setGsuser(user);
+//		}
+//		if(notPersistedGroup(entity)) {
+//			// create a new persistable group, persist it and update the rule
+//			UserGroup group = copyGroup(entity.getUserGroup());
+//			userGroupDao.persist(group);
+//			entity.setUserGroup(group);
+//		}
+//	}
 
 
 
-	/**
-	 * Checks if the rule has a user defined, and if it is persisted.
-	 * 
-	 * @param rule
-	 * @return
-	 */
-	private boolean notPersistedUser(Rule rule) {
-		return rule.getGsuser() != null && userDao.find(rule.getGsuser().getId()) == null;
-	}
+//	/**
+//	 * Checks if the rule has a group defined, and if it is persisted.
+//	 *
+//	 * @param rule
+//	 * @return
+//	 */
+//	private boolean notPersistedGroup(Rule rule) {
+//		return rule.getRolename() != null && userGroupDao.find(rule.getUserGroup().getId()) == null;
+//	}
+
+
+//
+//	/**
+//	 * Checks if the rule has a user defined, and if it is persisted.
+//	 *
+//	 * @param rule
+//	 * @return
+//	 */
+//	private boolean notPersistedUser(Rule rule) {
+//        return rule.getUsername() != null &&  userDao.getFull(rule.getUsername()) == null;
+//	}
 
 
 
 	@Override
 	public Rule merge(Rule entity) {		
-		checkUserAndGroup(entity);
+//		checkUserAndGroup(entity);
 		return super.merge(entity);
 		
 	}
 	
-	/**
-	 * Creates a persistable copy of the given user.
-	 * 
-     * @param user   
-     */
-    private GSUser copyUser(GSUser user)
-    {    	
-        GSUser newUser = new GSUser();
-    	newUser.setName(user.getName());
-    	newUser.setFullName(user.getFullName());
-    	newUser.setEmailAddress(user.getEmailAddress());
-    	newUser.setEnabled(true);
-    	newUser.setAdmin(user.isAdmin());
-    	newUser.setPassword(user.getPassword());
-    	// set external id to negative ldap id, so that it's easily identifiable in
-    	// searches
-    	newUser.setExtId(-user.getId()+"");
-    	newUser.setDateCreation(user.getDateCreation());
-    	return newUser;
-    }
-    
-    /**
-     * Creates a persistable copy of the given group.
-     * 
-     * @param user 
-     */
-    private UserGroup copyGroup(UserGroup group)
-    {    	
-    	UserGroup newGroup = new UserGroup();
-    	newGroup.setName(group.getName());
-    	newGroup.setExtId(-group.getId()+"");    	
-    	newGroup.setEnabled(true);   
-    	return newGroup;
-    }
+//	/**
+//	 * Creates a persistable copy of the given user.
+//	 *
+//     * @param user
+//     */
+//    private GSUser copyUser(GSUser user)
+//    {
+//        GSUser newUser = new GSUser();
+//    	newUser.setName(user.getName());
+//    	newUser.setFullName(user.getFullName());
+//    	newUser.setEmailAddress(user.getEmailAddress());
+//    	newUser.setEnabled(true);
+//    	newUser.setAdmin(user.isAdmin());
+//    	newUser.setPassword(user.getPassword());
+//    	// set external id to negative ldap id, so that it's easily identifiable in
+//    	// searches
+//    	newUser.setExtId(-user.getId()+"");
+//    	newUser.setDateCreation(user.getDateCreation());
+//    	return newUser;
+//    }
+//
+//    /**
+//     * Creates a persistable copy of the given group.
+//     *
+//     * @param user
+//     */
+//    private UserGroup copyGroup(UserGroup group)
+//    {
+//    	UserGroup newGroup = new UserGroup();
+//    	newGroup.setName(group.getName());
+//    	newGroup.setExtId(-group.getId()+"");
+//    	newGroup.setEnabled(true);
+//    	return newGroup;
+//    }
 	
 }

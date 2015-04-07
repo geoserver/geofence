@@ -7,8 +7,8 @@ package org.geoserver.geofence.gui.client.widget;
 
 import org.geoserver.geofence.gui.client.form.GeofenceFormWidget;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
-import org.geoserver.geofence.gui.client.model.GSUser;
-import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.GSUserModel;
+import org.geoserver.geofence.gui.client.model.UserGroupModel;
 import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 
@@ -48,7 +48,7 @@ public class AddGsUserWidget extends GeofenceFormWidget
     private boolean closeOnSubmit;
 
     /** The user. */
-    protected GSUser user = new GSUser();
+    protected GSUserModel user = new GSUserModel();
 
     /** The user name. */
     private TextField<String> userName;
@@ -65,7 +65,7 @@ public class AddGsUserWidget extends GeofenceFormWidget
     private CheckBox isAdmin;
 
     /** The profiles combo box. */
-    private ComboBox<UserGroup> profilesComboBox;
+    private ComboBox<UserGroupModel> profilesComboBox;
 
     /** The gs manager service remote. */
     private final GsUsersManagerRemoteServiceAsync gsManagerServiceRemote;
@@ -180,9 +180,9 @@ public class AddGsUserWidget extends GeofenceFormWidget
      */
     private void createProfilesComboBox()
     {
-        profilesComboBox = new ComboBox<UserGroup>();
-        profilesComboBox.setFieldLabel("Group");
-        profilesComboBox.setEmptyText("(No group available)");
+        profilesComboBox = new ComboBox<UserGroupModel>();
+        profilesComboBox.setFieldLabel("Role");
+        profilesComboBox.setEmptyText("(No role available)");
         profilesComboBox.setDisplayField(BeanKeyValue.NAME.getValue());
         profilesComboBox.setEditable(false);
         profilesComboBox.setStore(getAvailableProfiles());
@@ -209,14 +209,14 @@ public class AddGsUserWidget extends GeofenceFormWidget
      *
      * @return the available profiles
      */
-    private ListStore<UserGroup> getAvailableProfiles()
+    private ListStore<UserGroupModel> getAvailableProfiles()
     {
-        ListStore<UserGroup> availableProfiles = new ListStore<UserGroup>();
-        RpcProxy<PagingLoadResult<UserGroup>> profileProxy = new RpcProxy<PagingLoadResult<UserGroup>>()
+        ListStore<UserGroupModel> availableProfiles = new ListStore<UserGroupModel>();
+        RpcProxy<PagingLoadResult<UserGroupModel>> profileProxy = new RpcProxy<PagingLoadResult<UserGroupModel>>()
             {
 
                 @Override
-                protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<UserGroup>> callback)
+                protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<UserGroupModel>> callback)
                 {
                     profilesManagerServiceRemote.getProfiles(
                         ((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(),
@@ -229,7 +229,7 @@ public class AddGsUserWidget extends GeofenceFormWidget
             new BasePagingLoader<PagingLoadResult<ModelData>>(
                 profileProxy);
         profilesLoader.setRemoteSort(false);
-        availableProfiles = new ListStore<UserGroup>(profilesLoader);
+        availableProfiles = new ListStore<UserGroupModel>(profilesLoader);
 
         return availableProfiles;
     }
@@ -314,7 +314,7 @@ public class AddGsUserWidget extends GeofenceFormWidget
      *
      * @return the profile
      */
-    public GSUser getUser()
+    public GSUserModel getUser()
     {
         return user;
     }

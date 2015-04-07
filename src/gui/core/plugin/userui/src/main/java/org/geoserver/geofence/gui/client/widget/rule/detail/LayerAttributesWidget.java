@@ -9,7 +9,7 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
 
 
@@ -24,7 +24,7 @@ public class LayerAttributesWidget extends ContentPanel
     private LayerAttributesGridWidget layerAttributesInfo;
 
     /** The rule. */
-    private Rule theRule;
+    private RuleModel theRule;
 
     /**
      * Instantiates a new layer attributes widget.
@@ -34,7 +34,7 @@ public class LayerAttributesWidget extends ContentPanel
      * @param rulesService
      *            the rules service
      */
-    public LayerAttributesWidget(Rule model, RulesManagerRemoteServiceAsync rulesService)
+    public LayerAttributesWidget(RuleModel model, RulesManagerRemoteServiceAsync rulesService)
     {
         this.theRule = model;
         setHeaderVisible(false);

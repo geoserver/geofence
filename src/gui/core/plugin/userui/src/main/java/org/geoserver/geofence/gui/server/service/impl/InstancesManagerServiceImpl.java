@@ -6,7 +6,7 @@
 package org.geoserver.geofence.gui.server.service.impl;
 
 import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.GSInstance;
+import org.geoserver.geofence.gui.client.model.GSInstanceModel;
 import org.geoserver.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
 import org.geoserver.geofence.gui.server.service.IInstancesManagerService;
 import org.geoserver.geofence.gui.service.GeofenceRemoteService;
@@ -58,14 +58,14 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 	 * org.geoserver.geofence.gui.server.service.IInstancesManagerService#
 	 * getInstances(com.extjs.gxt.ui.client.data.PagingLoadConfig)
 	 */
-	public PagingLoadResult<GSInstance> getInstances(int offset, int limit,
+	public PagingLoadResult<GSInstanceModel> getInstances(int offset, int limit,
 			boolean full) throws ApplicationException {
 		int start = offset;
 
-		List<GSInstance> instancesListDTO = new ArrayList<GSInstance>();
+		List<GSInstanceModel> instancesListDTO = new ArrayList<GSInstanceModel>();
 
 		if (full) {
-			GSInstance all = new GSInstance();
+			GSInstanceModel all = new GSInstanceModel();
 			all.setId(-1);
 			all.setName("*");
 			all.setBaseURL("*");
@@ -96,7 +96,7 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 			org.geoserver.geofence.core.model.GSInstance remote =
                     geofenceRemoteService.getInstanceAdminService().get(id);
 
-			GSInstance local = new GSInstance();
+			GSInstanceModel local = new GSInstanceModel();
 			local.setId(remote.getId());
 			local.setName(remote.getName());
 			local.setDescription(remote.getDescription());
@@ -107,7 +107,7 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 			instancesListDTO.add(local);
 		}
 
-		return new RpcPageLoadResult<GSInstance>(instancesListDTO, offset,
+		return new RpcPageLoadResult<GSInstanceModel>(instancesListDTO, offset,
 				t.intValue());
 	}
 
@@ -117,7 +117,7 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 	 * @param name
 	 * @return
 	 */
-	public GSInstance getInstance(int offset, int limit, long id) {
+	public GSInstanceModel getInstance(int offset, int limit, long id) {
 		org.geoserver.geofence.core.model.GSInstance remote_instance = geofenceRemoteService
 				.getInstanceAdminService().get(id);
 		if (remote_instance == null) {
@@ -127,7 +127,7 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 			throw new ApplicationException("No server instance found on server");
 		}
 
-		GSInstance local_instance = new GSInstance();
+		GSInstanceModel local_instance = new GSInstanceModel();
 		local_instance.setId(remote_instance.getId());
 		local_instance.setName(remote_instance.getName());
 		local_instance.setDescription(remote_instance.getDescription());
@@ -145,7 +145,7 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 	 * org.geoserver.geofence.gui.server.service.IInstancesManagerService#
 	 * deleteInstance(org.geoserver.geofence.gui.client.model.Instance)
 	 */
-	public void deleteInstance(GSInstance instance) {
+	public void deleteInstance(GSInstanceModel instance) {
 		org.geoserver.geofence.core.model.GSInstance remote_instance = null;
 		try {
 			remote_instance = geofenceRemoteService.getInstanceAdminService()
@@ -160,7 +160,7 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 	}
 
 
-	public void testConnection(org.geoserver.geofence.gui.client.model.GSInstance instance) throws ApplicationException {
+	public void testConnection(org.geoserver.geofence.gui.client.model.GSInstanceModel instance) throws ApplicationException {
 		try {
 			String response = getURL(instance.getBaseURL() + "/rest/geofence/info", instance.getUsername(), instance.getPassword());
 			if(response != null) {
@@ -236,7 +236,7 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 	 * org.geoserver.geofence.gui.server.service.IInstancesManagerService#
 	 * saveInstance(org.geoserver.geofence.gui.client.model.Instance)
 	 */
-	public void saveInstance(GSInstance instance) {
+	public void saveInstance(GSInstanceModel instance) {
 		org.geoserver.geofence.core.model.GSInstance remote_instance = null;
 		if (instance.getId() >= 0) {
 			try {

@@ -52,7 +52,7 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
         Long id = (Long)userResp.getEntity();
 
         RESTInputRule rule = new RESTInputRule();
-        rule.setUser(new IdName("user0"));
+        rule.setUsername("user0");
 
         try{
             restRuleService.insert(rule).getEntity();
@@ -70,7 +70,7 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
         {
             RESTOutputRule out = restRuleService.get(rid);
             assertNotNull(out);
-            assertEquals("user0", out.getUser().getName());
+            assertEquals("user0", out.getUsername());
             assertNull(out.getConstraints());
         }
     }

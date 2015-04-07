@@ -10,7 +10,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
-import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.UserGroupModel;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.widget.SaveStaus;
 import org.geoserver.geofence.gui.client.widget.rule.detail.ProfileDetailsTabItem;
@@ -36,7 +36,7 @@ public class ProfileDetailsEditDialog extends Dialog
     private Button done;
 
     /** The model. */
-    private UserGroup profile;
+    private UserGroupModel profile;
 
     /** The rules manager service remote. */
     private ProfilesManagerRemoteServiceAsync ProfilesManagerRemoteServiceAsync;
@@ -117,7 +117,7 @@ public class ProfileDetailsEditDialog extends Dialog
      * @param model
      *            the new model
      */
-    public void setModel(UserGroup profile)
+    public void setModel(UserGroupModel profile)
     {
         this.profile = profile;
     }
@@ -125,7 +125,7 @@ public class ProfileDetailsEditDialog extends Dialog
     /* (non-Javadoc)
      * @see com.extjs.gxt.ui.client.widget.Component#getModel()
      */
-    public UserGroup getModel()
+    public UserGroupModel getModel()
     {
         return this.profile;
     }

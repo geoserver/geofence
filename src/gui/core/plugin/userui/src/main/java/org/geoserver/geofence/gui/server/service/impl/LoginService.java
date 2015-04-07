@@ -17,7 +17,7 @@ import org.geoserver.geofence.api.exception.AuthException;
 import org.geoserver.geofence.core.model.GFUser;
 import org.geoserver.geofence.gui.client.ApplicationException;
 import org.geoserver.geofence.gui.client.model.Authorization;
-import org.geoserver.geofence.gui.client.model.User;
+import org.geoserver.geofence.gui.client.model.UserModel;
 import org.geoserver.geofence.gui.server.GeofenceKeySessionValues;
 import org.geoserver.geofence.gui.server.service.ILoginService;
 import org.geoserver.geofence.gui.service.GeofenceRemoteService;
@@ -55,7 +55,7 @@ public class LoginService implements ILoginService
      * @see org.geoserver.geofence.gui.server.service.ILoginService#authenticate (java.lang.String,
      * java.lang.String)
      */
-    public User authenticate(String userName, String password, HttpSession session) throws ApplicationException
+    public UserModel authenticate(String userName, String password, HttpSession session) throws ApplicationException
     {
         logger.info("Authenticating '" + userName+"'");
 
@@ -131,7 +131,7 @@ public class LoginService implements ILoginService
             throw new ApplicationException(e.getMessage(), e);
         }
 
-        User user = new User();
+        UserModel user = new UserModel();
         user.setName(userName);
         user.setPassword(password);
 

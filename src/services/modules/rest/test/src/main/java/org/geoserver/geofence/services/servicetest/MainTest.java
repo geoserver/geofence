@@ -97,7 +97,7 @@ public class MainTest implements InitializingBean {
         gs1.setDescription("A sample instance");
         instanceAdminService.insert(gs1);
 
-        Rule r0 = new Rule(5, u1, p2, gs1, null, "s0", "r0", null, null, GrantType.ALLOW);
+        Rule r0 = new Rule(5, u1.getName(), p2.getName(), gs1, null, "s0", "r0", null, null, GrantType.ALLOW);
         ruleAdminService.insert(r0);
 
 

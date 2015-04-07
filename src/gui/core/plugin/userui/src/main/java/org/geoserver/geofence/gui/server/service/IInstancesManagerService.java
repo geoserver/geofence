@@ -8,7 +8,7 @@ package org.geoserver.geofence.gui.server.service;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.GSInstance;
+import org.geoserver.geofence.gui.client.model.GSInstanceModel;
 
 
 /**
@@ -26,7 +26,7 @@ public interface IInstancesManagerService
      * @throws ApplicationException
      *             the application exception
      */
-    public PagingLoadResult<GSInstance> getInstances(int offset, int limit, boolean full) throws ApplicationException;
+    public PagingLoadResult<GSInstanceModel> getInstances(int offset, int limit, boolean full) throws ApplicationException;
 
     /**
      * Get the instance
@@ -35,7 +35,7 @@ public interface IInstancesManagerService
      * @param l
      * @return
      */
-    public GSInstance getInstance(int offset, int limit, long l) throws ApplicationException;
+    public GSInstanceModel getInstance(int offset, int limit, long l) throws ApplicationException;
 
     /**
      * Delete instance.
@@ -43,7 +43,7 @@ public interface IInstancesManagerService
      * @param instance
      *            the instance
      */
-    public void deleteInstance(GSInstance instance);
+    public void deleteInstance(GSInstanceModel instance);
 
     /**
      * Save instance.
@@ -51,13 +51,13 @@ public interface IInstancesManagerService
      * @param instance
      *            the instance
      */
-    public void saveInstance(GSInstance instance);
+    public void saveInstance(GSInstanceModel instance);
     
     /**
      * Test connection to instance.
      * 
      * @param url
      */
-    public void testConnection(org.geoserver.geofence.gui.client.model.GSInstance instance) throws ApplicationException;
+    public void testConnection(org.geoserver.geofence.gui.client.model.GSInstanceModel instance) throws ApplicationException;
 
 }

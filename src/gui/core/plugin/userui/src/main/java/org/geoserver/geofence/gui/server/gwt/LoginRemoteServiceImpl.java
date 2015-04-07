@@ -9,7 +9,7 @@ import javax.servlet.http.HttpSession;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import org.geoserver.geofence.gui.client.model.User;
+import org.geoserver.geofence.gui.client.model.UserModel;
 import org.geoserver.geofence.gui.client.service.LoginRemoteService;
 import org.geoserver.geofence.gui.server.GeofenceKeySessionValues;
 import org.geoserver.geofence.gui.server.service.ILoginService;
@@ -50,7 +50,7 @@ public class LoginRemoteServiceImpl extends RemoteServiceServlet implements Logi
      * @see org.geoserver.geofence.gui.client.service.LoginRemote#authenticate(java .lang.String,
      * java.lang.String)
      */
-    public User authenticate(String userName, String password)
+    public UserModel authenticate(String userName, String password)
     {
         HttpSession session = getThreadLocalRequest().getSession();
 

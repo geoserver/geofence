@@ -6,7 +6,7 @@
 package org.geoserver.geofence.gui.client.widget.rule.detail;
 
 import org.geoserver.geofence.gui.client.Resources;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -27,7 +27,7 @@ public class LayerAttributesTabItem extends TabItem
     private LayerAttributesWidget layerAttributesWidget;
 
     /** The model. */
-    private Rule model;
+    private RuleModel model;
 
     /**
      * Instantiates a new layer attributes tab item.
@@ -54,7 +54,7 @@ public class LayerAttributesTabItem extends TabItem
      * @param rulesService
      *            the rules service
      */
-    public LayerAttributesTabItem(String tabItemId, Rule model, RulesManagerRemoteServiceAsync rulesService)
+    public LayerAttributesTabItem(String tabItemId, RuleModel model, RulesManagerRemoteServiceAsync rulesService)
     {
         this(tabItemId);
         this.model = model;

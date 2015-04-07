@@ -14,7 +14,7 @@ import com.google.gwt.user.client.ui.FormPanel;
 
 import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.widget.SaveStaus;
@@ -60,7 +60,7 @@ public class RuleDetailsEditDialog extends Dialog
     protected String wkt;
 
     /** The model. */
-    private Rule model;
+    private RuleModel model;
 
     /** The rules manager service remote. */
     private RulesManagerRemoteServiceAsync rulesManagerServiceRemote;
@@ -263,7 +263,7 @@ public class RuleDetailsEditDialog extends Dialog
      * @param model
      *            the new model
      */
-    public void setModel(Rule model)
+    public void setModel(RuleModel model)
     {
         this.model = model;
     }
@@ -271,7 +271,7 @@ public class RuleDetailsEditDialog extends Dialog
     /* (non-Javadoc)
      * @see com.extjs.gxt.ui.client.widget.Component#getModel()
      */
-    public Rule getModel()
+    public RuleModel getModel()
     {
         return model;
     }

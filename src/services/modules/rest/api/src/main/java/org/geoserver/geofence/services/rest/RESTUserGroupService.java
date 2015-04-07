@@ -51,10 +51,10 @@ public interface RESTUserGroupService
     @Path("/count/{nameLike}")
     long count(@PathParam("nameLike") String nameLike);
 
-    @GET
-    @Path("/id/{id}")
-    @Produces(MediaType.APPLICATION_XML)
-    ShortGroup get(@PathParam("id") Long id) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+//    @GET
+//    @Path("/id/{id}")
+//    @Produces(MediaType.APPLICATION_XML)
+//    ShortGroup get(@PathParam("id") Long id) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     @GET
     @Path("/name/{name}")
@@ -66,11 +66,11 @@ public interface RESTUserGroupService
     @Produces(MediaType.APPLICATION_XML)
     Response insert(@Multipart("userGroup") RESTInputGroup group) throws BadRequestRestEx, ConflictRestEx, InternalErrorRestEx;
 
-    @PUT
-    @Path("/id/{id}")
-    @Produces(MediaType.APPLICATION_XML)
-    void update(@PathParam("id") Long id,
-        @Multipart("userGroup") RESTInputGroup group) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+//    @PUT
+//    @Path("/id/{id}")
+//    @Produces(MediaType.APPLICATION_XML)
+//    void update(@PathParam("id") Long id,
+//        @Multipart("userGroup") RESTInputGroup group) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     @PUT
     @Path("/name/{name}")
@@ -89,11 +89,11 @@ public interface RESTUserGroupService
      * @throws ConflictRestEx (HTTP code 409) if any rule refers to the group and cascade is false
      * @throws InternalErrorRestEx (HTTP code 500)
      */
-    @DELETE
-    @Path("/id/{id}")
-    Response delete(
-            @PathParam("id") Long id,
-            @QueryParam("cascade") @DefaultValue("false") boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx;
+//    @DELETE
+//    @Path("/id/{id}")
+//    Response delete(
+//            @PathParam("id") Long id,
+//            @QueryParam("cascade") @DefaultValue("false") boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     /**
      * Deletes a UserGroup.

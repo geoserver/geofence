@@ -12,7 +12,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.model.data.LayerAttribUI;
 import org.geoserver.geofence.gui.client.model.data.LayerCustomProps;
 import org.geoserver.geofence.gui.client.model.data.LayerDetailsInfo;
@@ -38,7 +38,7 @@ public interface RulesManagerRemoteService extends RemoteService
      * @throws ApplicationException
      *             the application exception
      */
-    public PagingLoadResult<Rule> getRules(int offset, int limit, boolean full) throws ApplicationException;
+    public PagingLoadResult<RuleModel> getRules(int offset, int limit, boolean full) throws ApplicationException;
 
 
     /**
@@ -49,7 +49,7 @@ public interface RulesManagerRemoteService extends RemoteService
      * @param callback
      *            the callback
      */
-    public void saveRule(Rule rules) throws ApplicationException;
+    public void saveRule(RuleModel rules) throws ApplicationException;
 
     /**
      * Delete rule
@@ -59,7 +59,7 @@ public interface RulesManagerRemoteService extends RemoteService
      * @param callback
      *            the callback
      */
-    public void deleteRule(Rule rules) throws ApplicationException;
+    public void deleteRule(RuleModel rules) throws ApplicationException;
 
     /**
      * Find rule
@@ -72,7 +72,7 @@ public interface RulesManagerRemoteService extends RemoteService
      * @throws Exception
      * @throws ResourceNotFoundFault
      */
-    public void findRule(Rule rules) throws ApplicationException, Exception;
+    public void findRule(RuleModel rules) throws ApplicationException, Exception;
 
     /**
      * Shifts the priority of the rules having <TT>priority &gt;= priorityStart</TT>
@@ -95,7 +95,7 @@ public interface RulesManagerRemoteService extends RemoteService
      * @throws ApplicationException
      *             the application exception
      */
-    public void saveAllRules(List<Rule> rules) throws ApplicationException;
+    public void saveAllRules(List<RuleModel> rules) throws ApplicationException;
 
     /**
      * Gets the layer custom props.
@@ -132,7 +132,7 @@ public interface RulesManagerRemoteService extends RemoteService
      * @throws ApplicationException
      *             the application exception
      */
-    public List<LayerAttribUI> getLayerAttributes(Rule rule) throws ApplicationException;
+    public List<LayerAttribUI> getLayerAttributes(RuleModel rule) throws ApplicationException;
 
     /**
      * @param ruleId
@@ -154,7 +154,7 @@ public interface RulesManagerRemoteService extends RemoteService
      * @return LayerDetailsForm
      * @throws ApplicationException
      */
-    public LayerDetailsInfo getLayerDetailsInfo(Rule rule) throws ApplicationException;
+    public LayerDetailsInfo getLayerDetailsInfo(RuleModel rule) throws ApplicationException;
 
     /**
      * @param layerLimitsForm
@@ -168,6 +168,6 @@ public interface RulesManagerRemoteService extends RemoteService
      * @return LayerLimitsInfo
      * @throws ApplicationException
      */
-    public LayerLimitsInfo getLayerLimitsInfo(Rule rule) throws ApplicationException;
+    public LayerLimitsInfo getLayerLimitsInfo(RuleModel rule) throws ApplicationException;
 
 }

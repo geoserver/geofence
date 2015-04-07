@@ -18,10 +18,10 @@ public enum BeanKeyValue {
     FULL_NAME("fullName"),
 
     /** The USER. */
-    USER("user"),
+    USERNAME("username"),
 
     /** The PROFILE. */
-    PROFILE("profile"),
+    ROLENAME("rolename"),
     
     /** The RULE. */
     RULE("rule"),

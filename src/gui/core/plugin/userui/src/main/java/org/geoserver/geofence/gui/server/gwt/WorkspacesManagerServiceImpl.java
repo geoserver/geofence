@@ -11,11 +11,11 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.GSInstance;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.GSInstanceModel;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.model.data.Layer;
 import org.geoserver.geofence.gui.client.model.data.LayerStyle;
-import org.geoserver.geofence.gui.client.model.data.Workspace;
+import org.geoserver.geofence.gui.client.model.data.WorkspaceModel;
 import org.geoserver.geofence.gui.client.service.WorkspacesManagerRemoteService;
 import org.geoserver.geofence.gui.server.service.IWorkspacesManagerService;
 import org.geoserver.geofence.gui.spring.ApplicationContextUtil;
@@ -55,8 +55,8 @@ public class WorkspacesManagerServiceImpl extends RemoteServiceServlet implement
      * org.geoserver.geofence.gui.client.service.WorkspacesManagerRemoteService#getWorkspaces(com
      * .extjs .gxt.ui.client.data.PagingLoadConfig)
      */
-    public PagingLoadResult<Workspace> getWorkspaces(int offset, int limit, String URL,
-        GSInstance gsInstance) throws ApplicationException
+    public PagingLoadResult<WorkspaceModel> getWorkspaces(int offset, int limit, String URL,
+        GSInstanceModel gsInstance) throws ApplicationException
     {
         return workspaceManagerService.getWorkspaces(offset, limit, URL, gsInstance);
     }
@@ -69,7 +69,7 @@ public class WorkspacesManagerServiceImpl extends RemoteServiceServlet implement
      * .gxt.ui.client.data.PagingLoadConfig, java.lang.String, java.lang.String)
      */
     public PagingLoadResult<Layer> getLayers(int offset, int limit, String baseURL,
-        GSInstance gsInstance, String workspace, String service) throws ApplicationException
+        GSInstanceModel gsInstance, String workspace, String service) throws ApplicationException
     {
         return workspaceManagerService.getLayers(offset, limit, baseURL, gsInstance, workspace, service);
     }
@@ -80,7 +80,7 @@ public class WorkspacesManagerServiceImpl extends RemoteServiceServlet implement
      * @seeorg.geoserver.geofence.gui.client.service.WorkspacesManagerServiceRemote#getStyles(it.
      * geosolutions.geofence.gui.client.model.GSInstance)
      */
-    public List<LayerStyle> getStyles(Rule rule) throws ApplicationException
+    public List<LayerStyle> getStyles(RuleModel rule) throws ApplicationException
     {
         return workspaceManagerService.getStyles(rule);
     }

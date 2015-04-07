@@ -12,10 +12,10 @@ import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.Resources;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
-import org.geoserver.geofence.gui.client.model.GSInstance;
-import org.geoserver.geofence.gui.client.model.GSUser;
-import org.geoserver.geofence.gui.client.model.UserGroup;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.GSInstanceModel;
+import org.geoserver.geofence.gui.client.model.GSUserModel;
+import org.geoserver.geofence.gui.client.model.UserGroupModel;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
@@ -56,6 +56,8 @@ import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
+import org.geoserver.geofence.gui.client.model.RolenameModel;
+import org.geoserver.geofence.gui.client.model.UsernameModel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -66,7 +68,7 @@ import com.google.gwt.user.client.ui.Widget;
  * http://www.sencha.com/forum/showthread.php?234952-Sencha-Ext-GWT-grid-columns-not-aligned-with-grid-header
 
  */
-public class RuleGridWidget extends GeofenceGridWidget<Rule> {
+public class RuleGridWidget extends GeofenceGridWidget<RuleModel> {
 
 	private static final int COLUMN_HEADER_OFFSET = 10;
 
@@ -134,7 +136,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 	private WorkspacesManagerRemoteServiceAsync workspacesService;
 
 	/** The proxy. */
-	private RpcProxy<PagingLoadResult<Rule>> proxy;
+	private RpcProxy<PagingLoadResult<RuleModel>> proxy;
 
 	/** The loader. */
 	private PagingLoader<PagingLoadResult<ModelData>> loader;
@@ -149,7 +151,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 	public RuleGridWidget parentEditRuleWidget;
 
 	/** The button rendered. */
-	private GridCellRenderer<Rule> buttonRendered;
+	private GridCellRenderer<RuleModel> buttonRendered;
 
 	/**
 	 * Instantiates a new rule grid widget.
@@ -185,7 +187,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 	 * @param models
 	 *            the models
 	 */
-	public RuleGridWidget(List<Rule> models) {
+	public RuleGridWidget(List<RuleModel> models) {
 		super(models);
 		if (this.parentEditRuleWidget == null) {
 			this.parentEditRuleWidget = this;
@@ -208,9 +210,9 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 		}
 
 		grid.addListener(Events.RowDoubleClick,
-				new Listener<GridEvent<Rule>>() {
-					public void handleEvent(GridEvent<Rule> be) {
-						Rule ruleModel = be.getModel();
+				new Listener<GridEvent<RuleModel>>() {
+					public void handleEvent(GridEvent<RuleModel> be) {
+						RuleModel ruleModel = be.getModel();
 						Dispatcher.forwardEvent(
 								GeofenceEvents.EDIT_RULE_UPDATE,
 								new GridStatus(grid, ruleModel));
@@ -236,7 +238,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 		configs.add(rulePriorityColumn);
 
 		ColumnConfig ruleUserColumn = new ColumnConfig();
-		ruleUserColumn.setId(BeanKeyValue.USER.getValue());
+		ruleUserColumn.setId(BeanKeyValue.USERNAME.getValue());
 		ruleUserColumn.setHeader("User");
 		ruleUserColumn.setWidth(COLUMN_USER_WIDTH);
 		ruleUserColumn.setRenderer(new UserRenderer());
@@ -245,8 +247,8 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 		configs.add(ruleUserColumn);
 
 		ColumnConfig ruleProfileColumn = new ColumnConfig();
-		ruleProfileColumn.setId(BeanKeyValue.PROFILE.getValue());
-		ruleProfileColumn.setHeader("Group");
+		ruleProfileColumn.setId(BeanKeyValue.ROLENAME.getValue());
+		ruleProfileColumn.setHeader("Role");
 		ruleProfileColumn.setWidth(COLUMN_GROUP_WIDTH);
 		ruleProfileColumn.setRenderer(new GroupRenderer());
 		ruleProfileColumn.setMenuDisabled(true);
@@ -371,14 +373,14 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 	}
 
 
-    class ResizeListener implements Listener<GridEvent<Rule>> {
+    class ResizeListener implements Listener<GridEvent<RuleModel>> {
         private final int offset;
 
         public ResizeListener(int offset) {
             this.offset = offset;
         }
 
-        public void handleEvent(GridEvent<Rule> be) {
+        public void handleEvent(GridEvent<RuleModel> be) {
             for (int i = 0; i < be.getGrid().getStore().getCount(); i++) {
                 final Widget wid = be.getGrid().getView().getWidget(i, be.getColIndex());
                 if ((wid != null) && (wid instanceof BoxComponent)) {
@@ -390,7 +392,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 
 
 
-    abstract class FieldRenderer implements GridCellRenderer<Rule> {
+    abstract class FieldRenderer implements GridCellRenderer<RuleModel> {
 
         private boolean init;
 
@@ -402,9 +404,9 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
             this.initialWidth = initialWidth;
         }
 
-        public Object render(final Rule model, String property,
+        public Object render(final RuleModel model, String property,
                 ColumnData config, int rowIndex, int colIndex,
-                ListStore<Rule> store, Grid<Rule> grid) {
+                ListStore<RuleModel> store, Grid<RuleModel> grid) {
 
             if (!init) {
                 init = true;
@@ -428,7 +430,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
             return field;
         }
 
-        abstract void setFieldValue(Rule model, LabelField field);
+        abstract void setFieldValue(RuleModel model, LabelField field);
         
     }
 
@@ -437,10 +439,9 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
             super("viewRuleUser", COLUMN_USER_WIDTH);
         }
 
-        void setFieldValue(Rule model, LabelField field) {
-            if ((model.getUser() != null)
-                    && (model.getUser().getName() != null)) {
-                String name2 = model.getUser().getName();
+        void setFieldValue(RuleModel model, LabelField field) {
+            if ((model.getUsername() != null)) {
+                String name2 = model.getUsername();
                 field.setValue(name2);
             } else {
                 field.setValue("*");
@@ -453,10 +454,9 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
             super("viewRuleGroup", COLUMN_GROUP_WIDTH);
         }
 
-        void setFieldValue(Rule model, LabelField field) {
-            if ((model.getProfile() != null)
-                    && (model.getProfile().getName() != null)) {
-                String name2 = model.getProfile().getName();
+        void setFieldValue(RuleModel model, LabelField field) {
+            if ((model.getRolename() != null)) {
+                String name2 = model.getRolename();
                 field.setValue(name2);
             } else {
                 field.setValue("*");
@@ -469,7 +469,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
             super("viewRuleInstance", COLUMN_INSTANCE_WIDTH);
         }
 
-        void setFieldValue(Rule model, LabelField field) {
+        void setFieldValue(RuleModel model, LabelField field) {
             if ((model.getInstance() != null)
                     && (model.getInstance().getName() != null)) {
                 field.setValue(model.getInstance().getName());
@@ -484,7 +484,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
             super("viewRuleIPRange", COLUMN_IPRANGE_WIDTH);
         }
 
-        void setFieldValue(Rule model, LabelField field) {
+        void setFieldValue(RuleModel model, LabelField field) {
             if (model.getSourceIPRange() != null) {
                 field.setValue(model.getSourceIPRange());
             } else {
@@ -498,7 +498,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
             super("viewRuleService", COLUMN_SERVICE_WIDTH);
         }
 
-        void setFieldValue(Rule model, LabelField field) {
+        void setFieldValue(RuleModel model, LabelField field) {
             if (model.getService() != null) {
                 field.setValue(model.getService());
             } else {
@@ -512,7 +512,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
             super("viewRuleRequest", COLUMN_REQUEST_WIDTH);
         }
 
-        void setFieldValue(Rule model, LabelField field) {
+        void setFieldValue(RuleModel model, LabelField field) {
             if (model.getRequest() != null) {
                 field.setValue(model.getRequest());
             } else {
@@ -526,7 +526,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
             super("viewRuleWorkspace", COLUMN_WORKSPACE_WIDTH);
         }
 
-        void setFieldValue(Rule model, LabelField field) {
+        void setFieldValue(RuleModel model, LabelField field) {
             if (model.getWorkspace() != null) {
                 field.setValue(model.getWorkspace());
             } else {
@@ -540,7 +540,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
             super("viewRuleLayer", COLUMN_LAYER_WIDTH);
         }
 
-        void setFieldValue(Rule model, LabelField field) {
+        void setFieldValue(RuleModel model, LabelField field) {
             if (model.getLayer() != null) {
                 field.setValue(model.getLayer());
             } else {
@@ -556,21 +556,21 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 	 * 
 	 * @return the grid cell renderer
 	 */
-	private GridCellRenderer<Rule> createGrantsCustomField() {
-		GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>() {
+	private GridCellRenderer<RuleModel> createGrantsCustomField() {
+		GridCellRenderer<RuleModel> comboRendered = new GridCellRenderer<RuleModel>() {
 
 			private boolean init;
 
-			public Object render(final Rule model, String property,
+			public Object render(final RuleModel model, String property,
 					ColumnData config, int rowIndex, int colIndex,
-					ListStore<Rule> store, Grid<Rule> grid) {
+					ListStore<RuleModel> store, Grid<RuleModel> grid) {
 
 				if (!init) {
 					init = true;
 					grid.addListener(Events.ColumnResize,
-							new Listener<GridEvent<Rule>>() {
+							new Listener<GridEvent<RuleModel>>() {
 
-								public void handleEvent(GridEvent<Rule> be) {
+								public void handleEvent(GridEvent<RuleModel> be) {
 									for (int i = 0; i < be.getGrid().getStore()
 											.getCount(); i++) {
 										if ((be.getGrid().getView()
@@ -622,21 +622,21 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 	 * 
 	 * @return the grid cell renderer
 	 */
-	private GridCellRenderer<Rule> createRuleDeleteButton() {
-		GridCellRenderer<Rule> buttonRendered = new GridCellRenderer<Rule>() {
+	private GridCellRenderer<RuleModel> createRuleDeleteButton() {
+		GridCellRenderer<RuleModel> buttonRendered = new GridCellRenderer<RuleModel>() {
 
 			private boolean init;
 
-			public Object render(final Rule model, String property,
+			public Object render(final RuleModel model, String property,
 					ColumnData config, int rowIndex, int colIndex,
-					ListStore<Rule> store, Grid<Rule> grid) {
+					ListStore<RuleModel> store, Grid<RuleModel> grid) {
 
 				if (!init) {
 					init = true;
 					grid.addListener(Events.ColumnResize,
-							new Listener<GridEvent<Rule>>() {
+							new Listener<GridEvent<RuleModel>>() {
 
-								public void handleEvent(GridEvent<Rule> be) {
+								public void handleEvent(GridEvent<RuleModel> be) {
 									for (int i = 0; i < be.getGrid().getStore()
 											.getCount(); i++) {
 										if ((be.getGrid().getView()
@@ -709,21 +709,21 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 	 * 
 	 * @return the grid cell renderer
 	 */
-	private GridCellRenderer<Rule> editRuleButton() {
-		buttonRendered = new GridCellRenderer<Rule>() {
+	private GridCellRenderer<RuleModel> editRuleButton() {
+		buttonRendered = new GridCellRenderer<RuleModel>() {
 
 			private boolean init;
 
-			public Object render(final Rule model, String property,
+			public Object render(final RuleModel model, String property,
 					ColumnData config, int rowIndex, int colIndex,
-					ListStore<Rule> store, final Grid<Rule> grid) {
+					ListStore<RuleModel> store, final Grid<RuleModel> grid) {
 
 				if (!init) {
 					init = true;
 					grid.addListener(Events.ColumnResize,
-							new Listener<GridEvent<Rule>>() {
+							new Listener<GridEvent<RuleModel>>() {
 
-								public void handleEvent(GridEvent<Rule> be) {
+								public void handleEvent(GridEvent<RuleModel> be) {
 									for (int i = 0; i < be.getGrid().getStore()
 											.getCount(); i++) {
 										if ((be.getGrid().getView()
@@ -775,21 +775,21 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 	 * 
 	 * @return the grid cell renderer
 	 */
-	private GridCellRenderer<Rule> createRuleDetailsButton() {
-		GridCellRenderer<Rule> buttonRendered = new GridCellRenderer<Rule>() {
+	private GridCellRenderer<RuleModel> createRuleDetailsButton() {
+		GridCellRenderer<RuleModel> buttonRendered = new GridCellRenderer<RuleModel>() {
 
 			private boolean init;
 
-			public Object render(final Rule model, String property,
+			public Object render(final RuleModel model, String property,
 					ColumnData config, int rowIndex, int colIndex,
-					ListStore<Rule> store, Grid<Rule> grid) {
+					ListStore<RuleModel> store, Grid<RuleModel> grid) {
 
 				if (!init) {
 					init = true;
 					grid.addListener(Events.ColumnResize,
-							new Listener<GridEvent<Rule>>() {
+							new Listener<GridEvent<RuleModel>>() {
 
-								public void handleEvent(GridEvent<Rule> be) {
+								public void handleEvent(GridEvent<RuleModel> be) {
 									for (int i = 0; i < be.getGrid().getStore()
 											.getCount(); i++) {
 										if ((be.getGrid().getView()
@@ -849,21 +849,21 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 	 * 
 	 * @return the grid cell renderer
 	 */
-	private GridCellRenderer<Rule> createRuleAddButton() {
-		GridCellRenderer<Rule> buttonRendered = new GridCellRenderer<Rule>() {
+	private GridCellRenderer<RuleModel> createRuleAddButton() {
+		GridCellRenderer<RuleModel> buttonRendered = new GridCellRenderer<RuleModel>() {
 
 			private boolean init;
 
-			public Object render(final Rule model, String property,
+			public Object render(final RuleModel model, String property,
 					ColumnData config, int rowIndex, int colIndex,
-					ListStore<Rule> store, final Grid<Rule> grid) {
+					ListStore<RuleModel> store, final Grid<RuleModel> grid) {
 
 				if (!init) {
 					init = true;
 					grid.addListener(Events.ColumnResize,
-							new Listener<GridEvent<Rule>>() {
+							new Listener<GridEvent<RuleModel>>() {
 
-								public void handleEvent(GridEvent<Rule> be) {
+								public void handleEvent(GridEvent<RuleModel> be) {
 									for (int i = 0; i < be.getGrid().getStore()
 											.getCount(); i++) {
 										if ((be.getGrid().getView()
@@ -896,7 +896,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 						new Listener<ButtonEvent>() {
 
 							public void handleEvent(ButtonEvent be) {
-								Rule new_rule = Constants.getInstance()
+								RuleModel new_rule = Constants.getInstance()
 										.createNewRule(model);
 								Dispatcher.forwardEvent(
 										GeofenceEvents.EDIT_RULE,
@@ -917,21 +917,21 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 	 * 
 	 * @return the grid cell renderer
 	 */
-	private GridCellRenderer<Rule> createRulePriorityUpButton() {
-		GridCellRenderer<Rule> buttonRendered = new GridCellRenderer<Rule>() {
+	private GridCellRenderer<RuleModel> createRulePriorityUpButton() {
+		GridCellRenderer<RuleModel> buttonRendered = new GridCellRenderer<RuleModel>() {
 
 			private boolean init;
 
-			public Object render(final Rule model, String property,
+			public Object render(final RuleModel model, String property,
 					ColumnData config, int rowIndex, int colIndex,
-					ListStore<Rule> store, Grid<Rule> grid) {
+					ListStore<RuleModel> store, Grid<RuleModel> grid) {
 
 				if (!init) {
 					init = true;
 					grid.addListener(Events.ColumnResize,
-							new Listener<GridEvent<Rule>>() {
+							new Listener<GridEvent<RuleModel>>() {
 
-								public void handleEvent(GridEvent<Rule> be) {
+								public void handleEvent(GridEvent<RuleModel> be) {
 									for (int i = 0; i < be.getGrid().getStore()
 											.getCount(); i++) {
 										if ((be.getGrid().getView()
@@ -990,21 +990,21 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 	 * 
 	 * @return the grid cell renderer
 	 */
-	private GridCellRenderer<Rule> createRulePriorityDownButton() {
-		GridCellRenderer<Rule> buttonRendered = new GridCellRenderer<Rule>() {
+	private GridCellRenderer<RuleModel> createRulePriorityDownButton() {
+		GridCellRenderer<RuleModel> buttonRendered = new GridCellRenderer<RuleModel>() {
 
 			private boolean init;
 
-			public Object render(final Rule model, String property,
+			public Object render(final RuleModel model, String property,
 					ColumnData config, int rowIndex, int colIndex,
-					ListStore<Rule> store, Grid<Rule> grid) {
+					ListStore<RuleModel> store, Grid<RuleModel> grid) {
 
 				if (!init) {
 					init = true;
 					grid.addListener(Events.ColumnResize,
-							new Listener<GridEvent<Rule>>() {
+							new Listener<GridEvent<RuleModel>>() {
 
-								public void handleEvent(GridEvent<Rule> be) {
+								public void handleEvent(GridEvent<RuleModel> be) {
 									for (int i = 0; i < be.getGrid().getStore()
 											.getCount(); i++) {
 										if ((be.getGrid().getView()
@@ -1072,11 +1072,11 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 				org.geoserver.geofence.gui.client.Constants.DEFAULT_PAGESIZE);
 
 		// Loader for rulesService
-		this.proxy = new RpcProxy<PagingLoadResult<Rule>>() {
+		this.proxy = new RpcProxy<PagingLoadResult<RuleModel>>() {
 
 			@Override
 			protected void load(Object loadConfig,
-					AsyncCallback<PagingLoadResult<Rule>> callback) {
+					AsyncCallback<PagingLoadResult<RuleModel>> callback) {
 				rulesService.getRules(
 						((PagingLoadConfig) loadConfig).getOffset(),
 						((PagingLoadConfig) loadConfig).getLimit(), false,
@@ -1088,7 +1088,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 		loader.setRemoteSort(false);
 		loader.setSortField(BeanKeyValue.PRIORITY.getValue());
 		loader.setSortDir(SortDir.ASC);
-		store = new ListStore<Rule>(loader);
+		store = new ListStore<RuleModel>(loader);
 
 		if (store != null) {
 			store.setSortField(BeanKeyValue.PRIORITY.getValue());
@@ -1096,27 +1096,25 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 		}
 
 		// Search tool
-		SearchFilterField<Rule> filter = new SearchFilterField<Rule>() {
+		SearchFilterField<RuleModel> filter = new SearchFilterField<RuleModel>() {
 
 			@Override
-			protected boolean doSelect(Store<Rule> store, Rule parent,
-					Rule record, String property, String filter) {
+			protected boolean doSelect(Store<RuleModel> store, RuleModel parent,
+					RuleModel record, String property, String filter) {
 
-				String field = ((GSUser) parent.get(BeanKeyValue.USER
-						.getValue())).getName();
+				String field = ((UsernameModel) parent.get(BeanKeyValue.USERNAME.getValue())).getUsername();
 				field = field.toLowerCase();
 				if (field.indexOf(filter.toLowerCase()) != -1) {
 					return true;
 				}
 
-				field = ((UserGroup) parent
-						.get(BeanKeyValue.PROFILE.getValue())).getName();
+				field = ((RolenameModel) parent.get(BeanKeyValue.ROLENAME.getValue())).getRolename();
 				field = field.toLowerCase();
 				if (field.indexOf(filter.toLowerCase()) != -1) {
 					return true;
 				}
 
-				field = ((GSInstance) parent.get(BeanKeyValue.INSTANCE
+				field = ((GSInstanceModel) parent.get(BeanKeyValue.INSTANCE
 						.getValue())).getName();
 				field = field.toLowerCase();
 				if (field.indexOf(filter.toLowerCase()) != -1) {
@@ -1175,7 +1173,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 				Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
 						new String[] { "GeoServer Rules", "Add Rule" });
 
-				Rule new_rule = new Rule();
+				RuleModel new_rule = new RuleModel();
 				new_rule.setId(-1);
 				new_rule.setPriority(-1);
 				new_rule = Constants.getInstance().createNewRule(new_rule);

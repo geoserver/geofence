@@ -147,29 +147,29 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     }
 
     @Override
-    public void deleteRulesByUser(long userId) throws NotFoundServiceEx {
+    public void deleteRulesByUser(String username) throws NotFoundServiceEx {
         Search searchCriteria = new Search(Rule.class);
-        searchCriteria.addFilter(Filter.equal("gsuser.id", userId));
+        searchCriteria.addFilter(Filter.equal("username", username));
 
         List<Rule> list = ruleDAO.search(searchCriteria);
         if(LOGGER.isInfoEnabled())
-            LOGGER.info("Removing "+list.size()+" rules for user " + userId);
+            LOGGER.info("Removing "+list.size()+" rules for user " + username);
         for (Rule rule : list) {
             if(LOGGER.isInfoEnabled())
-                LOGGER.info("Removing rule for user " + userId+": " + rule);
+                LOGGER.info("Removing rule for user " + username+": " + rule);
             ruleDAO.remove(rule);
         }
     }
 
     @Override
-    public void deleteRulesByGroup(long groupId) throws NotFoundServiceEx {
+    public void deleteRulesByRole(String rolename) throws NotFoundServiceEx {
         Search searchCriteria = new Search(Rule.class);
-        searchCriteria.addFilter(Filter.equal("userGroup.id", groupId));
+        searchCriteria.addFilter(Filter.equal("rolename", rolename));
 
         List<Rule> list = ruleDAO.search(searchCriteria);
         for (Rule rule : list) {
             if(LOGGER.isInfoEnabled())
-                LOGGER.info("Removing rule for group " + groupId+": " + rule);
+                LOGGER.info("Removing rule for role " + rolename+": " + rule);
             ruleDAO.remove(rule);
         }
     }
@@ -302,8 +302,8 @@ public class RuleAdminServiceImpl implements RuleAdminService {
         Search searchCriteria = new Search(Rule.class);
 
         if(filter != null) {
-            addCriteria(searchCriteria, "gsuser", filter.getUser());
-            addCriteria(searchCriteria, "userGroup", filter.getUserGroup());
+            addStringCriteria(searchCriteria, "username", filter.getUser());
+            addStringCriteria(searchCriteria, "rolename", filter.getRole());
             addCriteria(searchCriteria, "instance", filter.getInstance());
 
             addStringCriteria(searchCriteria, "service", filter.getService()); // see class' javadoc
@@ -389,8 +389,8 @@ public class RuleAdminServiceImpl implements RuleAdminService {
         Search searchCriteria = new Search(Rule.class);
 
         if(filter != null) {
-            addFixedCriteria(searchCriteria, "gsuser", filter.getUser());
-            addFixedCriteria(searchCriteria, "userGroup", filter.getUserGroup());
+            addFixedStringCriteria(searchCriteria, "username", filter.getUser());
+            addFixedStringCriteria(searchCriteria, "rolename", filter.getRole());
             addFixedCriteria(searchCriteria, "instance", filter.getInstance());
 
             addFixedStringCriteria(searchCriteria, "service", filter.getService()); // see class' javadoc

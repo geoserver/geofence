@@ -47,24 +47,27 @@ public class RESTUserServiceImpl
 
 //    private UserAdminService userAdminService;
 //    private UserGroupAdminService userGroupAdminService;
+
     @Override
-    public Response delete(Long id, boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public Response delete(String username, boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
             if ( cascade ) {
-                ruleAdminService.deleteRulesByUser(id);
+                ruleAdminService.deleteRulesByUser(username);
             } else {
                 RuleFilter filter = new RuleFilter(SpecialFilterType.ANY);
-                filter.setUser(id);
+                filter.setUser(username);
                 filter.getUser().setIncludeDefault(false);
                 long cnt = ruleAdminService.count(filter);
                 if ( cnt > 0 ) {
-                    throw new ConflictRestEx("Existing rules reference the user " + id);
+                    throw new ConflictRestEx("Existing rules reference the user " + username);
                 }
             }
 
-            if ( ! userAdminService.delete(id)) {
-                LOGGER.warn("User not found: " + id);
-                throw new NotFoundRestEx("User not found: " + id);
+            GSUser user = userAdminService.get(username); // may throw NotFoundServiceEx
+
+            if ( ! userAdminService.delete(user.getId())) {
+                LOGGER.warn("ILLEGAL STATE -- User not found: " + user); // this should not happen
+                throw new NotFoundRestEx("ILLEGAL STATE -- User not found: " + user);
             }
 
             return Response.status(Status.OK).entity("OK\n").build();
@@ -72,38 +75,8 @@ public class RESTUserServiceImpl
         } catch (GeoFenceRestEx ex) { // already handled
             throw ex;
         } catch (NotFoundServiceEx ex) {
-            LOGGER.warn("User not found: " + id);
-            throw new NotFoundRestEx("User not found: " + id);
-        } catch (Exception ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            throw new InternalErrorRestEx(ex.getMessage());
-        }
-    }
-
-    @Override
-    public Response delete(String name, boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
-        try {
-            long id = userAdminService.get(name).getId();
-            return this.delete(id, cascade);
-        } catch (NotFoundServiceEx ex) {
-            LOGGER.warn("User not found: " + name);
-            throw new NotFoundRestEx("User not found: " + name);
-        } catch (GeoFenceRestEx ex) { // already handled
-            throw ex;
-        } catch (Exception ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            throw new InternalErrorRestEx(ex.getMessage());
-        }
-
-    }
-
-    @Override
-    public RESTOutputUser get(Long id) throws NotFoundRestEx, InternalErrorRestEx {
-        try {
-            return toOutputUser(userAdminService.getFull(id));
-        } catch (NotFoundServiceEx ex) {
-            LOGGER.warn("User not found: " + id);
-            throw new NotFoundRestEx("User not found: " + id);
+            LOGGER.warn("User not found: " + username);
+            throw new NotFoundRestEx("User not found: " +username);
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new InternalErrorRestEx(ex.getMessage());
@@ -321,27 +294,11 @@ public class RESTUserServiceImpl
     // ==========================================================================
 
     @Override
-    public void addIntoGroup(Long userId, String groupName) throws NotFoundRestEx, InternalErrorRestEx {
-        addIntoGroup(new IdName(userId), new IdName(groupName));
-    }
-
-    @Override
-    public void addIntoGroup(Long userId, Long groupId) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
-        addIntoGroup(new IdName(userId), new IdName(groupId));
-    }
-
-    @Override
     public void addIntoGroup(String userName, String groupName) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         addIntoGroup(new IdName(userName), new IdName(groupName));
     }
 
-    @Override
-    public void addIntoGroup(String userName, Long groupId) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
-        addIntoGroup(new IdName(userName), new IdName(groupId));
-    }
-
-    @Override
-    public void addIntoGroup(IdName userId, IdName groupId) throws InternalErrorRestEx, BadRequestRestEx, NotFoundRestEx {
+    private void addIntoGroup(IdName userId, IdName groupId) throws InternalErrorRestEx, BadRequestRestEx, NotFoundRestEx {
         try {
             GSUser user = getUser(userId);
             UserGroup group = getUserGroup(groupId);
@@ -363,27 +320,11 @@ public class RESTUserServiceImpl
     // ==========================================================================
 
     @Override
-    public void removeFromGroup(Long userId, String groupName) throws NotFoundRestEx, InternalErrorRestEx, BadRequestRestEx {
-        removeFromGroup(new IdName(userId), new IdName(groupName));
-    }
-
-    @Override
-    public void removeFromGroup(Long userId, Long groupId) throws NotFoundRestEx, InternalErrorRestEx, BadRequestRestEx {
-        removeFromGroup(new IdName(userId), new IdName(groupId));
-    }
-
-    @Override
     public void removeFromGroup(String userName, String groupName) throws NotFoundRestEx, InternalErrorRestEx, BadRequestRestEx {
         removeFromGroup(new IdName(userName), new IdName(groupName));
     }
 
-    @Override
-    public void removeFromGroup(String userName, Long groupId) throws NotFoundRestEx, InternalErrorRestEx, BadRequestRestEx {
-        removeFromGroup(new IdName(userName), new IdName(groupId));
-    }
-
-    @Override
-    public void removeFromGroup(IdName userId, IdName groupId) throws InternalErrorRestEx, BadRequestRestEx, NotFoundRestEx {
+    private void removeFromGroup(IdName userId, IdName groupId) throws InternalErrorRestEx, BadRequestRestEx, NotFoundRestEx {
         try {
             GSUser user = getUser(userId);
             UserGroup groupToRemove = getUserGroup(groupId);

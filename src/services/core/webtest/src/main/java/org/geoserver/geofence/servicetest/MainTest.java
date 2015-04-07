@@ -93,19 +93,23 @@ public class MainTest implements InitializingBean, ApplicationContextAware {
 
 
         LOGGER.info("===== Creating Users =====");
-        GSUser cite = createUser("cite");
-        cite.getGroups().add(p1);
-        userAdminService.insert(cite);
+        String citeUsername = "cite";
+        GSUser citeUser = createUser(citeUsername);
+        citeUser.getGroups().add(p1);
+        userAdminService.insert(citeUser);
 
-        GSUser wmsUser = createUser("wmsuser");
+        String wmsUsername = "wmsuser";
+        GSUser wmsUser = createUser(wmsUsername);
         wmsUser.getGroups().add(p1);
         userAdminService.insert(wmsUser);
 
-        GSUser areaUser = createUser("area");
+        String areaUsername = "area";
+        GSUser areaUser = createUser(areaUsername);
         areaUser.getGroups().add(p1);
         userAdminService.insert(areaUser);
 
-        GSUser uStates = createUser("u-states");
+        String statesUsername = "u-states";
+        GSUser uStates = createUser(statesUsername);
         uStates.getGroups().add(p1);
         userAdminService.insert(uStates);
 
@@ -122,27 +126,27 @@ public class MainTest implements InitializingBean, ApplicationContextAware {
 
         /* Cite user rules */
         // allow user cite full control over the cite workspace
-        ruleAdminService.insert(new Rule(priority++, cite, null, null, null, null, null, "cite", null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(priority++, citeUsername, null, null, null, null, null, "cite", null, GrantType.ALLOW));
         // allow only getmap, getcapatbilities and reflector usage on workspace sf
-        ruleAdminService.insert((new Rule(priority++, cite, null, null, null, "wms", "GetMap", "sf", null, GrantType.ALLOW)));
-        ruleAdminService.insert((new Rule(priority++, cite, null, null, null, "wms", "GetCapabilities", "sf", null, GrantType.ALLOW)));
-        ruleAdminService.insert((new Rule(priority++, cite, null, null, null, "wms", "reflect", "sf", null, GrantType.ALLOW)));
+        ruleAdminService.insert((new Rule(priority++, citeUsername, null, null, null, "wms", "GetMap", "sf", null, GrantType.ALLOW)));
+        ruleAdminService.insert((new Rule(priority++, citeUsername, null, null, null, "wms", "GetCapabilities", "sf", null, GrantType.ALLOW)));
+        ruleAdminService.insert((new Rule(priority++, citeUsername, null, null, null, "wms", "reflect", "sf", null, GrantType.ALLOW)));
         // allow only GetMap and GetFeature the topp workspace
 
         /* wms user rules */
-        ruleAdminService.insert((new Rule(priority++, wmsUser, null, null, null, "wms", null, null, null, GrantType.ALLOW)));
+        ruleAdminService.insert((new Rule(priority++, wmsUsername, null, null, null, "wms", null, null, null, GrantType.ALLOW)));
 
         /* all powerful but only in a restricted area */
-        Rule areaRestriction = new Rule(priority++, areaUser, null, null, null, null, null, null, null, GrantType.LIMIT);
+        Rule areaRestriction = new Rule(priority++, areaUsername, null, null, null, null, null, null, null, GrantType.LIMIT);
         RuleLimits limits = new RuleLimits();
         limits.setAllowedArea((MultiPolygon) new WKTReader().read(MULTIPOLYGONWKT));
         long ruleId = ruleAdminService.insert(areaRestriction);
         ruleAdminService.setLimits(ruleId, limits);
-        ruleAdminService.insert((new Rule(priority++, areaUser, null, null, null, null, null, null, null, GrantType.ALLOW)));
+        ruleAdminService.insert((new Rule(priority++, areaUsername, null, null, null, null, null, null, null, GrantType.ALLOW)));
 
         /* some users for interactive testing with the default data directory */
         // uStates can do whatever, but only on topp:states
-        ruleAdminService.insert(new Rule(priority++, uStates, null, null, null, null, null, "topp", "states", GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(priority++, statesUsername, null, null, null, null, null, "topp", "states", GrantType.ALLOW));
 
         // deny everything else
         ruleAdminService.insert(new Rule(priority++, null, null, null,  null, null, null, null, null, GrantType.DENY));

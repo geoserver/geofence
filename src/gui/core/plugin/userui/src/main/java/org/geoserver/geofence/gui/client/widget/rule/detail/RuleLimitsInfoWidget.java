@@ -7,7 +7,7 @@ package org.geoserver.geofence.gui.client.widget.rule.detail;
 
 import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.model.data.LayerLimitsInfo;
 import org.geoserver.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.widget.GeofenceFormBindingWidget;
@@ -41,7 +41,7 @@ public class RuleLimitsInfoWidget extends GeofenceFormBindingWidget<LayerLimitsI
 {
 
     /** The rule. */
-    private Rule theRule;
+    private RuleModel theRule;
 
     /** The rule service. */
     private RulesManagerRemoteServiceAsync rulesService;
@@ -68,7 +68,7 @@ public class RuleLimitsInfoWidget extends GeofenceFormBindingWidget<LayerLimitsI
      * @param ruleDetailsWidget
      *            the rule details widget
      */
-    public RuleLimitsInfoWidget(Rule model, RulesManagerRemoteServiceAsync rulesService,
+    public RuleLimitsInfoWidget(RuleModel model, RulesManagerRemoteServiceAsync rulesService,
         RuleLimitsWidget ruleLimitsWidget)
     {
         super();

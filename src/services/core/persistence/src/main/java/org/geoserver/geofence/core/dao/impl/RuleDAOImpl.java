@@ -163,8 +163,8 @@ public class RuleDAOImpl extends BaseDAO<Rule, Long> implements RuleDAO {
 
     private Search getDupSearch(Rule rule) {
         Search search = new Search(Rule.class);
-        addSearchField(search, "gsuser", rule.getGsuser());
-        addSearchField(search, "userGroup", rule.getUserGroup());
+        addSearchField(search, "username", rule.getUsername());
+        addSearchField(search, "rolename", rule.getRolename());
         addSearchField(search, "instance", rule.getInstance());
         addSearchField(search, "service", rule.getService());
         addSearchField(search, "request", rule.getRequest());

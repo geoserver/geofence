@@ -10,7 +10,7 @@ import java.util.List;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.model.data.LayerAttribUI;
 import org.geoserver.geofence.gui.client.model.data.LayerCustomProps;
 import org.geoserver.geofence.gui.client.model.data.LayerDetailsInfo;
@@ -36,7 +36,7 @@ public interface IRulesManagerService
      * @throws ApplicationException
      *             the application exception
      */
-    public PagingLoadResult<Rule> getRules(int offset, int limit, boolean full) throws ApplicationException;
+    public PagingLoadResult<RuleModel> getRules(int offset, int limit, boolean full) throws ApplicationException;
 
     /**
      * Save all rules.
@@ -46,7 +46,7 @@ public interface IRulesManagerService
      * @throws ApplicationException
      *             the application exception
      */
-    public void saveAllRules(List<Rule> rules) throws ApplicationException;
+    public void saveAllRules(List<RuleModel> rules) throws ApplicationException;
 
     /**
      * Gets the layer custom props.
@@ -77,7 +77,7 @@ public interface IRulesManagerService
      *            the rule
      * @return the layer attributes
      */
-    public List<LayerAttribUI> getLayerAttributes(Rule rule);
+    public List<LayerAttribUI> getLayerAttributes(RuleModel rule);
 
     /**
      * @param ruleId
@@ -95,14 +95,14 @@ public interface IRulesManagerService
      * @param rule
      * @return LayerDetailsForm
      */
-    public LayerDetailsInfo getLayerDetailsInfo(Rule rule);
+    public LayerDetailsInfo getLayerDetailsInfo(RuleModel rule);
 
     /**
      * Save single rule
      *
      * @param rule
      */
-    public void saveRule(Rule rule) throws ApplicationException;
+    public void saveRule(RuleModel rule) throws ApplicationException;
 
     /**
      * Save single rule
@@ -111,14 +111,14 @@ public interface IRulesManagerService
      * @return
      * @throws ResourceNotFoundFault
      */
-    public void findRule(Rule rule) throws ApplicationException, Exception;
+    public void findRule(RuleModel rule) throws ApplicationException, Exception;
 
     /**
      * Delete single rule
      *
      * @param rule
      */
-    public void deleteRule(Rule rule) throws ApplicationException;
+    public void deleteRule(RuleModel rule) throws ApplicationException;
 
     /**
      * Shifts the priority of the rules having <TT>priority &gt;= priorityStart</TT>
@@ -143,6 +143,6 @@ public interface IRulesManagerService
      * @param rule
      * @return LayerLimitsInfo
      */
-    public LayerLimitsInfo getLayerLimitsInfo(Rule rule);
+    public LayerLimitsInfo getLayerLimitsInfo(RuleModel rule);
 
 }

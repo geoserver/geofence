@@ -11,7 +11,7 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import org.geoserver.geofence.gui.client.ApplicationException;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.model.data.LayerAttribUI;
 import org.geoserver.geofence.gui.client.model.data.LayerCustomProps;
 import org.geoserver.geofence.gui.client.model.data.LayerDetailsInfo;
@@ -56,9 +56,9 @@ public class RulesManagerServiceImpl extends RemoteServiceServlet implements Rul
      * org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteService#getRules(com.extjs
      * .gxt.ui.client.data.PagingLoadConfig)
      */
-    public PagingLoadResult<Rule> getRules(int offset, int limit, boolean full) throws ApplicationException
+    public PagingLoadResult<RuleModel> getRules(int offset, int limit, boolean full) throws ApplicationException
     {
-        PagingLoadResult<Rule> ret = rulesManagerService.getRules(offset, limit, full);
+        PagingLoadResult<RuleModel> ret = rulesManagerService.getRules(offset, limit, full);
 
         return ret;
     }
@@ -70,7 +70,7 @@ public class RulesManagerServiceImpl extends RemoteServiceServlet implements Rul
      * org.geoserver.geofence.gui.client.service.RulesManagerRemoteService#saveAllRules(java.util
      * .List)
      */
-    public void saveRule(Rule rule) throws ApplicationException
+    public void saveRule(RuleModel rule) throws ApplicationException
     {
         rulesManagerService.saveRule(rule);
     }
@@ -82,7 +82,7 @@ public class RulesManagerServiceImpl extends RemoteServiceServlet implements Rul
      * org.geoserver.geofence.gui.client.service.RulesManagerRemoteService#saveAllRules(java.util
      * .List)
      */
-    public void deleteRule(Rule rule) throws ApplicationException
+    public void deleteRule(RuleModel rule) throws ApplicationException
     {
         rulesManagerService.deleteRule(rule);
     }
@@ -94,7 +94,7 @@ public class RulesManagerServiceImpl extends RemoteServiceServlet implements Rul
      * org.geoserver.geofence.gui.client.service.RulesManagerRemoteService#saveAllRules(java.util
      * .List)
      */
-    public void saveAllRules(List<Rule> rules) throws ApplicationException
+    public void saveAllRules(List<RuleModel> rules) throws ApplicationException
     {
         rulesManagerService.saveAllRules(rules);
     }
@@ -134,7 +134,7 @@ public class RulesManagerServiceImpl extends RemoteServiceServlet implements Rul
         rulesManagerService.swap(id1, id2);
     }
 
-    public void findRule(Rule rule) throws ApplicationException, Exception
+    public void findRule(RuleModel rule) throws ApplicationException, Exception
     {
         rulesManagerService.findRule(rule);
     }
@@ -171,7 +171,7 @@ public class RulesManagerServiceImpl extends RemoteServiceServlet implements Rul
      * org.geoserver.geofence.gui.client.service.RulesManagerRemoteService#getLayerDetailsInfo(
      * org.geoserver.geofence.gui.client.model.Rule)
      */
-    public LayerDetailsInfo getLayerDetailsInfo(Rule rule) throws ApplicationException
+    public LayerDetailsInfo getLayerDetailsInfo(RuleModel rule) throws ApplicationException
     {
         return rulesManagerService.getLayerDetailsInfo(rule);
     }
@@ -183,7 +183,7 @@ public class RulesManagerServiceImpl extends RemoteServiceServlet implements Rul
      * org.geoserver.geofence.gui.client.service.RulesManagerRemoteService#getLayerAttributes(com
      * .extjs.gxt.ui.client.data.PagingLoadConfig, org.geoserver.geofence.gui.client.model.Rule)
      */
-    public List<LayerAttribUI> getLayerAttributes(Rule rule) throws ApplicationException
+    public List<LayerAttribUI> getLayerAttributes(RuleModel rule) throws ApplicationException
     {
         return rulesManagerService.getLayerAttributes(rule);
     }
@@ -199,7 +199,7 @@ public class RulesManagerServiceImpl extends RemoteServiceServlet implements Rul
     /* (non-Javadoc)
      * @see org.geoserver.geofence.gui.client.service.RulesManagerRemoteService#getLayerLimitsInfo(org.geoserver.geofence.gui.client.model.Rule)
      */
-    public LayerLimitsInfo getLayerLimitsInfo(Rule rule) throws ApplicationException
+    public LayerLimitsInfo getLayerLimitsInfo(RuleModel rule) throws ApplicationException
     {
         return rulesManagerService.getLayerLimitsInfo(rule);
     }

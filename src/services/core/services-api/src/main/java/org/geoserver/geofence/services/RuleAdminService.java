@@ -52,10 +52,10 @@ public interface RuleAdminService
 
 
     // Internal, no REST annotations
-    void deleteRulesByUser(long userId) throws NotFoundServiceEx;
+    void deleteRulesByUser(String username) throws NotFoundServiceEx;
 
     // Internal, no REST annotations
-    void deleteRulesByGroup(long groupId) throws NotFoundServiceEx;
+    void deleteRulesByRole(String rolename) throws NotFoundServiceEx;
 
     // Internal, no REST annotations
     void deleteRulesByInstance(long instanceId) throws NotFoundServiceEx;
