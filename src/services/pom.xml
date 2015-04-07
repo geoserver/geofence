@@ -7,19 +7,18 @@
 
 
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.geoserver.geofence</groupId>
         <artifactId>geofence</artifactId>
-        <version>2.2-SNAPSHOT</version>
+        <version>2.2.0</version>
     </parent>
 
     <groupId>org.geoserver.geofence</groupId>
     <artifactId>geofence-root</artifactId>
-    <version>2.2-SNAPSHOT</version>
+    <version>2.2.0</version>
     <packaging>pom</packaging>
 
     <name>GeoFence - 0 Services </name>
@@ -30,7 +29,7 @@
     </modules>
 
     <properties>
-        <geofence-version>2.2-SNAPSHOT</geofence-version>
+        <geofence-version>2.2.0</geofence-version>
         <main-prefix>geofence</main-prefix>
 
         <cxf-version>2.3.2</cxf-version>
