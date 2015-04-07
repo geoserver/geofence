@@ -9,7 +9,7 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.TabItem;
 
 import org.geoserver.geofence.gui.client.Resources;
-import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.UserGroupModel;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 
 
@@ -22,7 +22,7 @@ public class ProfileDetailsTabItem extends TabItem
     /** The profile details widget. */
     private ProfileDetailsWidget profileDetailsWidget;
 
-    private UserGroup profile;
+    private UserGroupModel profile;
 
     /**
      * Instantiates a new profile details tab item.
@@ -34,7 +34,7 @@ public class ProfileDetailsTabItem extends TabItem
     {
         // TODO: add I18n message
         // super(I18nProvider.getMessages().profiles());
-        super("Group Details");
+        super("Role Details");
         setId(tabItemId);
         setIcon(Resources.ICONS.table());
     }
@@ -48,7 +48,7 @@ public class ProfileDetailsTabItem extends TabItem
      * @param rulesService
      *            the rules service
      */
-    public ProfileDetailsTabItem(String tabItemId, UserGroup profile, ProfilesManagerRemoteServiceAsync profilesService)
+    public ProfileDetailsTabItem(String tabItemId, UserGroupModel profile, ProfilesManagerRemoteServiceAsync profilesService)
     {
         this(tabItemId);
         this.profile = profile;

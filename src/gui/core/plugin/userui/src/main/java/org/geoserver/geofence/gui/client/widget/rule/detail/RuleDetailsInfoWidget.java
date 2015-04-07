@@ -8,7 +8,7 @@ package org.geoserver.geofence.gui.client.widget.rule.detail;
 import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.model.data.LayerDetailsInfo;
 import org.geoserver.geofence.gui.client.model.data.LayerStyle;
 import org.geoserver.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
@@ -52,7 +52,7 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
 {
 
     /** The rule. */
-    private Rule theRule;
+    private RuleModel theRule;
 
     /** The workspaces service. */
     private WorkspacesManagerRemoteServiceAsync workspacesService;
@@ -89,7 +89,7 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
      * @param ruleDetailsWidget
      *            the rule details widget
      */
-    public RuleDetailsInfoWidget(Rule model, WorkspacesManagerRemoteServiceAsync workspacesService,
+    public RuleDetailsInfoWidget(RuleModel model, WorkspacesManagerRemoteServiceAsync workspacesService,
         RuleDetailsWidget ruleDetailsWidget)
     {
         this.theRule = model;
@@ -358,7 +358,7 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
      *            the rule
      * @return the available styles
      */
-    private ListStore<LayerStyle> getAvailableStyles(final Rule rule)
+    private ListStore<LayerStyle> getAvailableStyles(final RuleModel rule)
     {
         RpcProxy<List<LayerStyle>> workspacesProxy = new RpcProxy<List<LayerStyle>>()
             {

@@ -44,8 +44,8 @@ public class RuleFilter implements Serializable {
             return relatedType;
         }
     }
-    private final IdNameFilter user;
-    private final IdNameFilter userGroup;
+    private final TextFilter user;
+    private final TextFilter role;
     private final IdNameFilter instance;
     private final TextFilter sourceAddress;
     private final TextFilter service;
@@ -67,8 +67,8 @@ public class RuleFilter implements Serializable {
     public RuleFilter(SpecialFilterType type) {
         FilterType ft = type.getRelatedType();
 
-        user = new IdNameFilter(ft);
-        userGroup = new IdNameFilter(ft);
+        user = new TextFilter(ft);
+        role = new TextFilter(ft);
         instance = new IdNameFilter(ft);
         sourceAddress = new TextFilter(ft);
         service = new TextFilter(ft, true);
@@ -80,8 +80,10 @@ public class RuleFilter implements Serializable {
     public RuleFilter(SpecialFilterType type, boolean includeDefault) {
         FilterType ft = type.getRelatedType();
 
-        user = new IdNameFilter(ft, includeDefault);
-        userGroup = new IdNameFilter(ft, includeDefault);
+        user = new TextFilter(ft);
+        user.setIncludeDefault(includeDefault);
+        role = new TextFilter(ft);
+        role.setIncludeDefault(includeDefault);
         instance = new IdNameFilter(ft, includeDefault);
         sourceAddress = new TextFilter(ft);
         sourceAddress.setIncludeDefault(includeDefault);
@@ -110,7 +112,7 @@ public class RuleFilter implements Serializable {
 
 
         this.user.setHeuristically(userName);
-        this.userGroup.setHeuristically(groupName);
+        this.role.setHeuristically(groupName);
         this.instance.setHeuristically(instanceName);
         this.sourceAddress.setHeuristically(sourceAddress);
 
@@ -120,63 +122,27 @@ public class RuleFilter implements Serializable {
         this.layer.setHeuristically(layer);
     }
 
-    /**
-     * Creates a RuleFilter by heuristically converting special string values into Fitler behaviour:<UL> <LI>a null value will
-     * match only with null</LI> <LI>a '*' value will match everything (no filter condition on that given field)</LI> <LI>any
-     * other string will match literally</LI> </UL>
-     *
-     * @deprecated Please use plain setters if you want to handle by hand special values or filter conditions.
-     */
-    public RuleFilter(Long userId, Long groupId, Long instanceId,
-            String sourceAddress,
-            String service, String request, String workspace,
-            String layer) {
-        this(SpecialFilterType.DEFAULT);
-
-        this.user.setHeuristically(userId);
-        this.userGroup.setHeuristically(groupId);
-        this.instance.setHeuristically(instanceId);
-        this.sourceAddress.setHeuristically(sourceAddress);
-
-        this.service.setHeuristically(service);
-        this.request.setHeuristically(request);
-        this.workspace.setHeuristically(workspace);
-        this.layer.setHeuristically(layer);
-    }
-
-    public RuleFilter setUser(Long id) {
-        if(id == null)
-            throw new NullPointerException();
-        user.setId(id);
-        return this;
-    }
-
     public RuleFilter setUser(String name) {
         if(name == null)
             throw new NullPointerException();
-        user.setName(name);
+        user.setText(name);
         return this;
     }
 
     public RuleFilter setUser(SpecialFilterType type) {
-        if(type == null)
-            throw new NullPointerException();
         user.setType(type);
         return this;
     }
 
-    public RuleFilter setUserGroup(Long id) {
-        userGroup.setId(id);
+    public RuleFilter setRole(String name) {
+        if(name == null)
+            throw new NullPointerException();
+        role.setText(name);
         return this;
     }
 
-    public RuleFilter setUserGroup(String name) {
-        userGroup.setName(name);
-        return this;
-    }
-
-    public RuleFilter setUserGroup(SpecialFilterType type) {
-        userGroup.setType(type);
+    public RuleFilter setRole(SpecialFilterType type) {
+        role.setType(type);
         return this;
     }
 
@@ -257,8 +223,8 @@ public class RuleFilter implements Serializable {
         return layer;
     }
 
-    public IdNameFilter getUserGroup() {
-        return userGroup;
+    public TextFilter getRole() {
+        return role;
     }
 
     public TextFilter getRequest() {
@@ -269,7 +235,7 @@ public class RuleFilter implements Serializable {
         return service;
     }
 
-    public IdNameFilter getUser() {
+    public TextFilter getUser() {
         return user;
     }
 
@@ -300,7 +266,7 @@ public class RuleFilter implements Serializable {
         if (this.user != other.user && (this.user == null || !this.user.equals(other.user))) {
             return false;
         }
-        if (this.userGroup != other.userGroup && (this.userGroup == null || !this.userGroup.equals(other.userGroup))) {
+        if (this.role != other.role && (this.role == null || !this.role.equals(other.role))) {
             return false;
         }
         if (this.instance != other.instance && (this.instance == null || !this.instance.equals(other.instance))) {
@@ -326,7 +292,7 @@ public class RuleFilter implements Serializable {
     public int hashCode() {
         int hash = 7;
         hash = 37 * hash + (this.user != null ? this.user.hashCode() : 0);
-        hash = 37 * hash + (this.userGroup != null ? this.userGroup.hashCode() : 0);
+        hash = 37 * hash + (this.role != null ? this.role.hashCode() : 0);
         hash = 37 * hash + (this.instance != null ? this.instance.hashCode() : 0);
         hash = 37 * hash + (this.sourceAddress != null ? this.sourceAddress.hashCode() : 0);
         hash = 37 * hash + (this.service != null ? this.service.hashCode() : 0);
@@ -342,7 +308,7 @@ public class RuleFilter implements Serializable {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName());
         sb.append('[');
         sb.append("user:").append(user);
-        sb.append(" grp:").append(userGroup);
+        sb.append(" role:").append(role);
         sb.append(" inst:").append(instance);
         sb.append(" ip:").append(sourceAddress);
         sb.append(" serv:").append(service);
@@ -530,6 +496,23 @@ public class RuleFilter implements Serializable {
         public TextFilter(FilterType type, boolean forceUppercase) {
             this.type = type;
             this.forceUppercase = forceUppercase;
+        }
+
+        public TextFilter(FilterType type, boolean forceUppercase, boolean includeDefault) {
+            this.type = type;
+            this.forceUppercase = forceUppercase;
+            this.includeDefault = includeDefault;
+        }
+
+        public TextFilter(String text, boolean forceUppercase, boolean includeDefault) {
+            this(text);
+            this.forceUppercase = forceUppercase;
+            this.includeDefault = includeDefault;
+        }
+
+        public TextFilter(String text) {
+            this.text = text;
+            this.type = FilterType.NAMEVALUE;
         }
 
         public void setHeuristically(String text) {

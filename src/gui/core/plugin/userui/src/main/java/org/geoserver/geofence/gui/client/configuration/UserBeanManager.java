@@ -11,7 +11,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.geoserver.geofence.gui.client.model.User;
+import org.geoserver.geofence.gui.client.model.UserModel;
 
 import org.springframework.stereotype.Component;
 
@@ -28,7 +28,7 @@ public class UserBeanManager implements IUserBeanManager
     private static final long serialVersionUID = 575619421702010379L;
 
     /** The users. */
-    private List<User> users = new ArrayList<User>();
+    private List<UserModel> users = new ArrayList<UserModel>();
 
     /**
      * Sets the users.
@@ -36,7 +36,7 @@ public class UserBeanManager implements IUserBeanManager
      * @param users
      *            the new users
      */
-    public void setUsers(List<User> users)
+    public void setUsers(List<UserModel> users)
     {
         this.users = users;
     }
@@ -46,7 +46,7 @@ public class UserBeanManager implements IUserBeanManager
      *
      * @see org.geoserver.geofence.gui.client.configuration.IUserBeanManager#getUsers ()
      */
-    public List<User> getUsers()
+    public List<UserModel> getUsers()
     {
         // TODO Auto-generated method stub
         return users;
@@ -62,7 +62,7 @@ public class UserBeanManager implements IUserBeanManager
     {
         for (int i = 0; i < 200; i++)
         {
-            User user = new User();
+            UserModel user = new UserModel();
             user.setPath("geofence/resources/images/userChoose.jpg");
             user.setName("TEST" + i);
             user.setFullName("profile" + i);

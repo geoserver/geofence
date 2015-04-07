@@ -26,14 +26,14 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.Resources;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
-import org.geoserver.geofence.gui.client.model.User;
+import org.geoserver.geofence.gui.client.model.UserModel;
 
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class UserInfoBindingWidget.
  */
-public class UserInfoBindingWidget extends GeofenceBindingWidget<User>
+public class UserInfoBindingWidget extends GeofenceBindingWidget<UserModel>
 {
 
     /** The form data. */

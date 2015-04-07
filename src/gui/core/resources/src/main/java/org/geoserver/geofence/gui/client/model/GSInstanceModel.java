@@ -15,7 +15,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class GSInstance.
  */
-public class GSInstance extends BeanModel implements IsSerializable
+public class GSInstanceModel extends BeanModel implements IsSerializable
 {
 
     /** The Constant serialVersionUID. */
@@ -49,7 +49,7 @@ public class GSInstance extends BeanModel implements IsSerializable
     /**
     * Instantiates a new gS instance.
     */
-    public GSInstance()
+    public GSInstanceModel()
     {
         setPath("geofence/resources/images/instance.jpg");
     }
@@ -256,12 +256,12 @@ public class GSInstance extends BeanModel implements IsSerializable
         {
             return false;
         }
-        if (!(obj instanceof GSInstance))
+        if (!(obj instanceof GSInstanceModel))
         {
             return false;
         }
 
-        GSInstance other = (GSInstance) obj;
+        GSInstanceModel other = (GSInstanceModel) obj;
         if (baseURL == null)
         {
             if (other.baseURL != null)
@@ -355,34 +355,13 @@ public class GSInstance extends BeanModel implements IsSerializable
     {
         StringBuilder builder = new StringBuilder();
         builder.append("GSInstance [");
-        if (baseURL != null)
-        {
-            builder.append("baseURL=").append(baseURL).append(", ");
-        }
-        if (dateCreation != null)
-        {
-            builder.append("dateCreation=").append(dateCreation).append(", ");
-        }
-        if (description != null)
-        {
-            builder.append("description=").append(description).append(", ");
-        }
-        builder.append("id=").append(id).append(", ");
         if (name != null)
         {
-            builder.append("name=").append(name).append(", ");
+            builder.append(name).append(" ");
         }
-        if (username != null)
+        if (baseURL != null)
         {
-            builder.append("username=").append(username).append(", ");
-        }
-        if (password != null)
-        {
-            builder.append("password=").append(password).append(", ");
-        }
-        if (path != null)
-        {
-            builder.append("path=").append(path);
+            builder.append(" @ ").append(baseURL);
         }
         builder.append("]");
 

@@ -51,7 +51,7 @@ import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.Resources;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
-import org.geoserver.geofence.gui.client.model.GSUser;
+import org.geoserver.geofence.gui.client.model.GSUserModel;
 //import org.geoserver.geofence.gui.client.model.Profile;
 import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
@@ -61,7 +61,7 @@ import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsy
 /**
  * The Class UserGridWidget.
  */
-public class UserGridWidget extends GeofenceGridWidget<GSUser>
+public class UserGridWidget extends GeofenceGridWidget<GSUserModel>
 {
 
     /** The gs users service. */
@@ -71,7 +71,7 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
     private ProfilesManagerRemoteServiceAsync profilesService;
 
     /** The proxy. */
-    private RpcProxy<PagingLoadResult<GSUser>> proxy;
+    private RpcProxy<PagingLoadResult<GSUserModel>> proxy;
 
     /** The loader. */
     private PagingLoader<PagingLoadResult<ModelData>> loader;
@@ -101,7 +101,7 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
      * @param models
      *            the models
      */
-    public UserGridWidget(List<GSUser> models)
+    public UserGridWidget(List<GSUserModel> models)
     {
         super(models);
     }
@@ -179,15 +179,6 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
         passwordColumn.setSortable(false);
         configs.add(passwordColumn);
 
-        /*ColumnConfig userProfileColumn = new ColumnConfig();
-        userProfileColumn.setId(BeanKeyValue.PROFILE.getValue());
-        userProfileColumn.setHeader("Group");
-        userProfileColumn.setWidth(160);
-        userProfileColumn.setRenderer(this.createProfilesComboBox());
-        userProfileColumn.setMenuDisabled(true);
-        userProfileColumn.setSortable(false);
-        configs.add(userProfileColumn);*/
-
         ColumnConfig detailsUserColumn = new ColumnConfig();
         detailsUserColumn.setId("detailsUser");
         detailsUserColumn.setWidth(80);
@@ -219,11 +210,11 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
                 org.geoserver.geofence.gui.client.Constants.DEFAULT_PAGESIZE);
 
         // Loader fro gsUsersService
-        this.proxy = new RpcProxy<PagingLoadResult<GSUser>>()
+        this.proxy = new RpcProxy<PagingLoadResult<GSUserModel>>()
             {
 
                 @Override
-                protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GSUser>> callback)
+                protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GSUserModel>> callback)
                 {
                     gsUsersService.getGsUsers(((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(), false, callback);
                 }
@@ -231,14 +222,14 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
             };
         loader = new BasePagingLoader<PagingLoadResult<ModelData>>(proxy);
         loader.setRemoteSort(false);
-        store = new ListStore<GSUser>(loader);
+        store = new ListStore<GSUserModel>(loader);
 
         // Search tool
-        SearchFilterField<GSUser> filter = new SearchFilterField<GSUser>()
+        SearchFilterField<GSUserModel> filter = new SearchFilterField<GSUserModel>()
             {
 
                 @Override
-                protected boolean doSelect(Store<GSUser> store, GSUser parent, GSUser record,
+                protected boolean doSelect(Store<GSUserModel> store, GSUserModel parent, GSUserModel record,
                     String property, String filter)
                 {
 
@@ -378,25 +369,25 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<GSUser> createEnableCheckBox()
+    private GridCellRenderer<GSUserModel> createEnableCheckBox()
     {
 
-        GridCellRenderer<GSUser> buttonRendered = new GridCellRenderer<GSUser>()
+        GridCellRenderer<GSUserModel> buttonRendered = new GridCellRenderer<GSUserModel>()
             {
 
                 private boolean init;
 
-                public Object render(final GSUser model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<GSUser> store, Grid<GSUser> grid)
+                public Object render(final GSUserModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<GSUserModel> store, Grid<GSUserModel> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSUser>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSUserModel>>()
                             {
 
-                                public void handleEvent(GridEvent<GSUser> be)
+                                public void handleEvent(GridEvent<GSUserModel> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {
@@ -439,25 +430,25 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<GSUser> createAdminCheckBox()
+    private GridCellRenderer<GSUserModel> createAdminCheckBox()
     {
 
-        GridCellRenderer<GSUser> buttonRendered = new GridCellRenderer<GSUser>()
+        GridCellRenderer<GSUserModel> buttonRendered = new GridCellRenderer<GSUserModel>()
             {
 
                 private boolean init;
 
-                public Object render(final GSUser model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<GSUser> store, Grid<GSUser> grid)
+                public Object render(final GSUserModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<GSUserModel> store, Grid<GSUserModel> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSUser>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSUserModel>>()
                             {
 
-                                public void handleEvent(GridEvent<GSUser> be)
+                                public void handleEvent(GridEvent<GSUserModel> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {
@@ -500,24 +491,24 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<GSUser> createPasswordTextBox()
+    private GridCellRenderer<GSUserModel> createPasswordTextBox()
     {
-        GridCellRenderer<GSUser> buttonRendered = new GridCellRenderer<GSUser>()
+        GridCellRenderer<GSUserModel> buttonRendered = new GridCellRenderer<GSUserModel>()
             {
 
                 private boolean init;
 
-                public Object render(final GSUser model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<GSUser> store, Grid<GSUser> grid)
+                public Object render(final GSUserModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<GSUserModel> store, Grid<GSUserModel> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSUser>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSUserModel>>()
                             {
 
-                                public void handleEvent(GridEvent<GSUser> be)
+                                public void handleEvent(GridEvent<GSUserModel> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {
@@ -566,24 +557,24 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<GSUser> createEMailTextBox()
+    private GridCellRenderer<GSUserModel> createEMailTextBox()
     {
-        GridCellRenderer<GSUser> buttonRendered = new GridCellRenderer<GSUser>()
+        GridCellRenderer<GSUserModel> buttonRendered = new GridCellRenderer<GSUserModel>()
             {
 
                 private boolean init;
 
-                public Object render(final GSUser model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<GSUser> store, Grid<GSUser> grid)
+                public Object render(final GSUserModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<GSUserModel> store, Grid<GSUserModel> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSUser>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSUserModel>>()
                             {
 
-                                public void handleEvent(GridEvent<GSUser> be)
+                                public void handleEvent(GridEvent<GSUserModel> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {
@@ -626,133 +617,29 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
         return buttonRendered;
     }
 
-//    /**
-//     * Creates the profiles combo box.
-//     *
-//     * @return the grid cell renderer
-//     */
-//    private GridCellRenderer<GSUser> createProfilesComboBox()
-//    {
-//
-//        GridCellRenderer<GSUser> buttonRendered = new GridCellRenderer<GSUser>()
-//            {
-//
-//                private boolean init;
-//
-//                public Object render(final GSUser model, String property, ColumnData config,
-//                    int rowIndex, int colIndex, ListStore<GSUser> store, Grid<GSUser> grid)
-//                {
-//
-//                    if (!init)
-//                    {
-//                        init = true;
-//                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSUser>>()
-//                            {
-//
-//                                public void handleEvent(GridEvent<GSUser> be)
-//                                {
-//                                    for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
-//                                    {
-//                                        if ((be.getGrid().getView().getWidget(i, be.getColIndex()) != null) &&
-//                                                (be.getGrid().getView().getWidget(i, be.getColIndex()) instanceof BoxComponent))
-//                                        {
-//                                            ((BoxComponent) be.getGrid().getView().getWidget(i,
-//                                                    be.getColIndex())).setWidth(be.getWidth() - 10);
-//                                        }
-//                                    }
-//                                }
-//                            });
-//                    }
-//
-//                    // TODO: generalize this!
-//                    ComboBox<Profile> profilesComboBox = new ComboBox<Profile>();
-//                    profilesComboBox.setId("userProfilesCombo");
-//                    profilesComboBox.setName("userProfilesCombo");
-//                    profilesComboBox.setEmptyText("(No profile available)");
-//                    profilesComboBox.setDisplayField(BeanKeyValue.NAME.getValue());
-//                    profilesComboBox.setEditable(false);
-//                    profilesComboBox.setStore(getAvailableProfiles());
-//                    profilesComboBox.setTypeAhead(true);
-//                    profilesComboBox.setTriggerAction(TriggerAction.ALL);
-//                    profilesComboBox.setWidth(150);
-//
-//                    if (model.getProfile() != null)
-//                    {
-//                        profilesComboBox.setValue(model.getProfile());
-//                        profilesComboBox.setSelection(Arrays.asList(model.getProfile()));
-//                    }
-//
-//                    profilesComboBox.addListener(Events.Select, new Listener<FieldEvent>()
-//                        {
-//
-//                            public void handleEvent(FieldEvent be)
-//                            {
-//                                Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
-//                                    new String[] { "GeoServer Users", "Groups" });
-//
-//                                model.setProfile((Profile) be.getField().getValue());
-//                                Dispatcher.forwardEvent(GeofenceEvents.UPDATE_USER, model);
-//                            }
-//                        });
-//
-//                    return profilesComboBox;
-//                }
-//
-//                /**
-//                 * TODO: Call Profile Service here!!
-//                 *
-//                 * @return
-//                 */
-//                private ListStore<Profile> getAvailableProfiles()
-//                {
-//                    ListStore<Profile> availableProfiles = new ListStore<Profile>();
-//                    RpcProxy<PagingLoadResult<Profile>> profileProxy = new RpcProxy<PagingLoadResult<Profile>>()
-//                        {
-//
-//                            @Override
-//                            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<Profile>> callback)
-//                            {
-//                                profilesService.getProfiles(((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(), false, callback);
-//                            }
-//
-//                        };
-//
-//                    BasePagingLoader<PagingLoadResult<ModelData>> profilesLoader =
-//                        new BasePagingLoader<PagingLoadResult<ModelData>>(
-//                            profileProxy);
-//                    profilesLoader.setRemoteSort(false);
-//                    availableProfiles = new ListStore<Profile>(profilesLoader);
-//
-//                    return availableProfiles;
-//                }
-//            };
-//
-//        return buttonRendered;
-//    }
-
     /**
      * Creates the user delete button.
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<GSUser> createUserDeleteButton()
+    private GridCellRenderer<GSUserModel> createUserDeleteButton()
     {
-        GridCellRenderer<GSUser> buttonRendered = new GridCellRenderer<GSUser>()
+        GridCellRenderer<GSUserModel> buttonRendered = new GridCellRenderer<GSUserModel>()
             {
 
                 private boolean init;
 
-                public Object render(final GSUser model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<GSUser> store, Grid<GSUser> grid)
+                public Object render(final GSUserModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<GSUserModel> store, Grid<GSUserModel> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSUser>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSUserModel>>()
                             {
 
-                                public void handleEvent(GridEvent<GSUser> be)
+                                public void handleEvent(GridEvent<GSUserModel> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {
@@ -811,24 +698,24 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<GSUser> createUserDetailsButton()
+    private GridCellRenderer<GSUserModel> createUserDetailsButton()
     {
-        GridCellRenderer<GSUser> buttonRendered = new GridCellRenderer<GSUser>()
+        GridCellRenderer<GSUserModel> buttonRendered = new GridCellRenderer<GSUserModel>()
             {
 
                 private boolean init;
 
-                public Object render(final GSUser model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<GSUser> store, Grid<GSUser> grid)
+                public Object render(final GSUserModel model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<GSUserModel> store, Grid<GSUserModel> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSUser>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSUserModel>>()
                             {
 
-                                public void handleEvent(GridEvent<GSUser> be)
+                                public void handleEvent(GridEvent<GSUserModel> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {
@@ -843,7 +730,7 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
                             });
                     }
 
-                    Button groupsUserButton = new Button("Groups");
+                    Button groupsUserButton = new Button("Roles");
                     groupsUserButton.setIcon(Resources.ICONS.table());
 
                     groupsUserButton.addListener(Events.OnClick, new Listener<ButtonEvent>()
@@ -852,7 +739,7 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
                             public void handleEvent(ButtonEvent be)
                             {
                                 Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
-                                    new String[] { "GeoServer User", "User Groups: " + model.getName() });
+                                    new String[] { "GeoServer User", "User roles: " + model.getName() });
 
                                 Dispatcher.forwardEvent(GeofenceEvents.EDIT_USER_DETAILS, model);
                             }

@@ -14,7 +14,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 
 import org.geoserver.geofence.gui.client.form.GeofenceFormWidget;
-import org.geoserver.geofence.gui.client.model.GSInstance;
+import org.geoserver.geofence.gui.client.model.GSInstanceModel;
 import org.geoserver.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
 
 
@@ -32,7 +32,7 @@ public class AddInstanceWidget extends GeofenceFormWidget
     private boolean closeOnSubmit;
 
     /** The instance. */
-    protected GSInstance instance = new GSInstance();
+    protected GSInstanceModel instance = new GSInstanceModel();
 
     /** The instances manager service remote. */
     private InstancesManagerRemoteServiceAsync instancesManagerServiceRemote;
@@ -222,7 +222,7 @@ public class AddInstanceWidget extends GeofenceFormWidget
      *
      * @return the instance
      */
-    public GSInstance getInstance()
+    public GSInstanceModel getInstance()
     {
         return instance;
     }

@@ -13,51 +13,51 @@ import org.geoserver.geofence.gui.client.model.BeanKeyValue;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class Request.
+ * The Class Workspace.
  */
-public class Request extends BeanModel implements IsSerializable
+public class WorkspaceModel extends BeanModel implements IsSerializable
 {
 
     /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = -750499207539541183L;
+    private static final long serialVersionUID = 4900649353701687980L;
 
-    /** The request. */
-    private String request;
+    /** The workspace. */
+    private String workspace;
 
     /** The path. */
     private String path;
 
     /**
-     * Instantiates a new request.
+     * Instantiates a new workspace.
      *
-     * @param request
+     * @param workspace
      *            the request
      */
-    public Request(String request)
+    public WorkspaceModel(String workspace)
     {
         this();
-        setRequest(request);
+        setWorkspace(workspace);
     }
 
     /**
-     * Instantiates a new request.
+     * Instantiates a new workspace.
      */
-    public Request()
+    public WorkspaceModel()
     {
         super();
-        setPath("geofence/resources/images/request.jpg");
+        setPath("geofence/resources/images/workspace.jpg");
     }
 
     /**
-     * Sets the request.
+     * Sets the workspace.
      *
-     * @param request
-     *            the new request
+     * @param workspace
+     *            the new workspace
      */
-    public void setRequest(String request)
+    public void setWorkspace(String workspace)
     {
-        this.request = request;
-        set(BeanKeyValue.REQUEST.getValue(), this.request);
+        this.workspace = workspace;
+        set(BeanKeyValue.WORKSPACE.getValue(), this.workspace);
     }
 
     /**
@@ -83,13 +83,13 @@ public class Request extends BeanModel implements IsSerializable
     }
 
     /**
-     * Gets the request.
+     * Gets the workspace.
      *
-     * @return the request
+     * @return the workspace
      */
-    public String getRequest()
+    public String getWorkspace()
     {
-        return request;
+        return workspace;
     }
 
     /* (non-Javadoc)
@@ -101,7 +101,7 @@ public class Request extends BeanModel implements IsSerializable
         final int prime = 31;
         int result = 1;
         result = (prime * result) + ((path == null) ? 0 : path.hashCode());
-        result = (prime * result) + ((request == null) ? 0 : request.hashCode());
+        result = (prime * result) + ((workspace == null) ? 0 : workspace.hashCode());
 
         return result;
     }
@@ -120,12 +120,12 @@ public class Request extends BeanModel implements IsSerializable
         {
             return false;
         }
-        if (!(obj instanceof Request))
+        if (!(obj instanceof WorkspaceModel))
         {
             return false;
         }
 
-        Request other = (Request) obj;
+        WorkspaceModel other = (WorkspaceModel) obj;
         if (path == null)
         {
             if (other.path != null)
@@ -137,14 +137,14 @@ public class Request extends BeanModel implements IsSerializable
         {
             return false;
         }
-        if (request == null)
+        if (workspace == null)
         {
-            if (other.request != null)
+            if (other.workspace != null)
             {
                 return false;
             }
         }
-        else if (!request.equals(other.request))
+        else if (!workspace.equals(other.workspace))
         {
             return false;
         }
@@ -159,14 +159,14 @@ public class Request extends BeanModel implements IsSerializable
     public String toString()
     {
         StringBuilder builder = new StringBuilder();
-        builder.append("Request [");
+        builder.append("Workspace [");
         if (path != null)
         {
             builder.append("path=").append(path).append(", ");
         }
-        if (request != null)
+        if (workspace != null)
         {
-            builder.append("request=").append(request);
+            builder.append("workspace=").append(workspace);
         }
         builder.append("]");
 

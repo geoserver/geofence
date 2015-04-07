@@ -14,7 +14,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 
 import org.geoserver.geofence.gui.client.form.GeofenceFormWidget;
-import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.UserGroupModel;
 import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 
@@ -33,7 +33,7 @@ public class AddProfileWidget extends GeofenceFormWidget
     private boolean closeOnSubmit;
 
     /** The profile. */
-    protected UserGroup profile = new UserGroup();
+    protected UserGroupModel profile = new UserGroupModel();
 
     /** The gs manager service remote. */
     private GsUsersManagerRemoteServiceAsync gsManagerServiceRemote;
@@ -98,7 +98,7 @@ public class AddProfileWidget extends GeofenceFormWidget
     public void addComponentToForm()
     {
         fieldSet = new FieldSet();
-        fieldSet.setHeading("Group Information");
+        fieldSet.setHeading("Role Information");
 
         FormLayout layout = new FormLayout();
         layout.setLabelWidth(80);
@@ -106,7 +106,7 @@ public class AddProfileWidget extends GeofenceFormWidget
 
         profileName = new TextField<String>();
         profileName.setAllowBlank(false);
-        profileName.setFieldLabel("Group name");
+        profileName.setFieldLabel("Role name");
         fieldSet.add(profileName);
 
         this.formPanel.add(fieldSet);
@@ -187,7 +187,7 @@ public class AddProfileWidget extends GeofenceFormWidget
      *
      * @return the profile
      */
-    public UserGroup getProfile()
+    public UserGroupModel getProfile()
     {
         return profile;
     }

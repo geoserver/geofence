@@ -38,9 +38,9 @@ public class UserAdminServiceImplTest extends ServiceTestBase {
     @Test
     public void testInsertDeleteUpdateUser() throws NotFoundServiceEx {
 
-        UserGroup g1 = createUserGroup(getName()+"_1");
-        UserGroup g2 = createUserGroup(getName()+"_2");
-        UserGroup g3 = createUserGroup(getName()+"_3");
+        UserGroup g1 = createRole(getName()+"_1");
+        UserGroup g2 = createRole(getName()+"_2");
+        UserGroup g3 = createRole(getName()+"_3");
 
         GSUser user = new GSUser();
         user.setName( getName() );
@@ -109,10 +109,10 @@ public class UserAdminServiceImplTest extends ServiceTestBase {
 
     @Test
     public void testUpdateUser() throws Exception {
-        UserGroup ug1 = createUserGroup("p1");
+        UserGroup ug1 = createRole("p1");
         GSUser user = createUser("u1", ug1);
 
-        UserGroup ug2 = createUserGroup("p2");
+        UserGroup ug2 = createRole("p2");
         final String NEWNAME = "NEWNAME";
 
         {
@@ -150,9 +150,9 @@ public class UserAdminServiceImplTest extends ServiceTestBase {
     @Test
     public void testUpdateUserGroups() throws Exception {
 
-        UserGroup ug1 = createUserGroup("g1");
-        UserGroup ug2 = createUserGroup("g2");
-        UserGroup ug3 = createUserGroup("g3");
+        UserGroup ug1 = createRole("g1");
+        UserGroup ug2 = createRole("g2");
+        UserGroup ug3 = createRole("g3");
 
 
         Long id;        

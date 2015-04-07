@@ -7,7 +7,7 @@ package org.geoserver.geofence.gui.client.controller;
 
 import org.geoserver.geofence.gui.client.ApplicationException;
 import org.geoserver.geofence.gui.client.GeofenceEvents;
-import org.geoserver.geofence.gui.client.model.User;
+import org.geoserver.geofence.gui.client.model.UserModel;
 import org.geoserver.geofence.gui.client.service.LoginRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.widget.GeofenceChooserWidget;
 import org.geoserver.geofence.gui.client.widget.GeofenceSearchWidget;
@@ -42,16 +42,16 @@ public class LoginController extends Controller
     private LoginWidget loginWidget;
 
     /** The choose profile widget. */
-    private GeofenceChooserWidget<User> chooseUserWidget;
+    private GeofenceChooserWidget<UserModel> chooseUserWidget;
 
     /** The profile management widget. */
     private UserManagementWidget userManagementWidget;
 
     /** The search widget. */
-    private GeofenceSearchWidget<User> searchWidget;
+    private GeofenceSearchWidget<UserModel> searchWidget;
 
     /** The update profile. */
-    private GeofenceUpdateWidget<User> updateUser;
+    private GeofenceUpdateWidget<UserModel> updateUser;
 
     /**
      * Instantiates a new login controller.
@@ -205,7 +205,7 @@ public class LoginController extends Controller
      */
     private void onShowUpdateUserWidget(AppEvent event)
     {
-        this.updateUser.bind((User) event.getData());
+        this.updateUser.bind((UserModel) event.getData());
         this.updateUser.show();
     }
 
@@ -234,10 +234,10 @@ public class LoginController extends Controller
     private void onLogin(AppEvent event)
     {
         String[] values = (String[]) event.getData();
-        this.loginRemote.authenticate(values[0], values[1], new AsyncCallback<User>()
+        this.loginRemote.authenticate(values[0], values[1], new AsyncCallback<UserModel>()
             {
 
-                public void onSuccess(User user)
+                public void onSuccess(UserModel user)
                 {
                     if (user != null)
                     {

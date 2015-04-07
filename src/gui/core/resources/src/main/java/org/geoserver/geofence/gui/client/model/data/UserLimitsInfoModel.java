@@ -17,7 +17,7 @@ import org.geoserver.geofence.gui.client.model.BeanKeyValue;
  * @author Tobia di Pisa
  *
  */
-public class UserLimitsInfo extends BeanModel implements IsSerializable
+public class UserLimitsInfoModel extends BeanModel implements IsSerializable
 {
 
     /** The Constant serialVersionUID. */
@@ -33,7 +33,7 @@ public class UserLimitsInfo extends BeanModel implements IsSerializable
     /**
      * Instantiates a new limits.
      */
-    public UserLimitsInfo()
+    public UserLimitsInfoModel()
     {
         super();
     }
@@ -126,7 +126,7 @@ public class UserLimitsInfo extends BeanModel implements IsSerializable
             return false;
         }
 
-        UserLimitsInfo other = (UserLimitsInfo) obj;
+        UserLimitsInfoModel other = (UserLimitsInfoModel) obj;
 
         if (userId == null)
         {

@@ -49,9 +49,9 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
     @Test
     public void testInsertDeleteRule() throws NotFoundServiceEx {
 
-        UserGroup profile = createUserGroup(getName());
+        UserGroup profile = createRole(getName());
         Rule rule = new Rule();
-        rule.setUserGroup(profile);
+        rule.setRolename(getName());
         rule.setAccess(GrantType.ALLOW);
         ruleAdminService.insert(rule);
         ruleAdminService.get(rule.getId()); // will throw if not found
@@ -60,21 +60,21 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
 
     @Test
     public void testUpdateRule() throws Exception {
-        UserGroup p1 = createUserGroup("p1");
-        UserGroup p2 = createUserGroup("p2");
+        UserGroup p1 = createRole("p1");
+        UserGroup p2 = createRole("p2");
 
-        Rule rule = new Rule(10, null, p1,null,null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
+        Rule rule = new Rule(10, null, "p1",null,null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
         ruleAdminService.insert(rule);
 
         {
             Rule loaded = ruleAdminService.get(rule.getId());
             assertNotNull(loaded);
 
-            assertEquals("p1", loaded.getUserGroup().getName());
+            assertEquals("p1", loaded.getRolename());
             assertEquals("S1", loaded.getService());
             assertEquals("l1", loaded.getLayer());
 
-            loaded.setUserGroup(p2);
+            loaded.setRolename("p2");
             loaded.setService("s2");
             loaded.setLayer("l2");
 
@@ -84,7 +84,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
             Rule loaded = ruleAdminService.get(rule.getId());
             assertNotNull(loaded);
 
-            assertEquals("p2", loaded.getUserGroup().getName());
+            assertEquals("p2", loaded.getRolename());
             assertEquals("S2", loaded.getService());
             assertEquals("l2", loaded.getLayer());
         }
@@ -94,11 +94,11 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
     public void testGetAllRules() {
         assertEquals(0, ruleAdminService.getAll().size());
 
-        UserGroup p1 = createUserGroup("p1");
+        UserGroup p1 = createRole("p1");
 
-        Rule r1 = new Rule(10, null, p1, null,null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
-        Rule r2 = new Rule(20, null, p1, null,null, "s2", "r2", "w2", "l2", GrantType.ALLOW);
-        Rule r3 = new Rule(30, null, p1, null,null, "s3", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r1 = new Rule(10, null, "p1", null,null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
+        Rule r2 = new Rule(20, null, "p1", null,null, "s2", "r2", "w2", "l2", GrantType.ALLOW);
+        Rule r3 = new Rule(30, null, "p1", null,null, "s3", "r3", "w3", "l3", GrantType.ALLOW);
 
         ruleAdminService.insert(r1);
         ruleAdminService.insert(r2);
@@ -111,13 +111,13 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
     public void testGetRules() {
         assertEquals(0, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY)));
 
-        UserGroup p1 = createUserGroup("p1");
-        UserGroup p2 = createUserGroup("p2");
+        UserGroup p1 = createRole("p1");
+        UserGroup p2 = createRole("p2");
 
-        Rule r1 = new Rule(10, null, p1, null,null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
-        Rule r2 = new Rule(20, null, p2, null,null,      "s1", "r2", "w2", "l2", GrantType.ALLOW);
-        Rule r3 = new Rule(30, null, p1, null,null,      "s3", "r3", "w3", "l3", GrantType.ALLOW);
-        Rule r4 = new Rule(40, null, p1, null,null,      null, null, null, null, GrantType.ALLOW);
+        Rule r1 = new Rule(10, null, "p1", null,null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
+        Rule r2 = new Rule(20, null, "p2", null,null,      "s1", "r2", "w2", "l2", GrantType.ALLOW);
+        Rule r3 = new Rule(30, null, "p1", null,null,      "s3", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r4 = new Rule(40, null, "p1", null,null,      null, null, null, null, GrantType.ALLOW);
 
         ruleAdminService.insert(r1);
         ruleAdminService.insert(r2);
@@ -128,9 +128,8 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
        assertNotNull(p2.getId());
 
         assertEquals(4, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY)));
-        assertEquals(3, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setUserGroup(p1.getId())));
-        assertEquals(3, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setUserGroup(p1.getName())));
-        assertEquals(1, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setUserGroup(p2.getId())));
+        assertEquals(3, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setRole("p1")));
+        assertEquals(1, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setRole("p2")));
         assertEquals(3, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setService("s1")));
         assertEquals(1, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setService("ZZ")));
         RuleFilter f1 = new RuleFilter(SpecialFilterType.ANY).setService("s1");
@@ -144,13 +143,13 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
     public void testGetFixedRule() {
         assertEquals(0, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY)));
 
-        UserGroup p1 = createUserGroup("p1");
-        UserGroup p2 = createUserGroup("p2");
+        UserGroup p1 = createRole("p1");
+        UserGroup p2 = createRole("p2");
 
-        Rule r1 = new Rule(10, null, p1, null,null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
-        Rule r2 = new Rule(20, null, p2, null,null,      "s1", "r2", "w2", "l2", GrantType.ALLOW);
-        Rule r3 = new Rule(30, null, p1, null,null,      "s3", "r3", "w3", "l3", GrantType.ALLOW);
-        Rule r4 = new Rule(40, null, p1, null,null,      null, null, null, null, GrantType.ALLOW);
+        Rule r1 = new Rule(10, null, "p1", null,null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
+        Rule r2 = new Rule(20, null, "p2", null,null,      "s1", "r2", "w2", "l2", GrantType.ALLOW);
+        Rule r3 = new Rule(30, null, "p1", null,null,      "s3", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r4 = new Rule(40, null, "p1", null,null,      null, null, null, null, GrantType.ALLOW);
 
         ruleAdminService.insert(r1);
         ruleAdminService.insert(r2);
@@ -160,11 +159,11 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         assertNull(ruleAdminService.getRule(new RuleFilter(SpecialFilterType.DEFAULT)));
 
         RuleFilter f1 = new RuleFilter(SpecialFilterType.DEFAULT, false);
-        f1.setUserGroup("p1");
+        f1.setRole("p1");
         assertNotNull(ruleAdminService.getRule(f1));
-        f1.setUserGroup("p99");
+        f1.setRole("p99");
         assertNull(ruleAdminService.getRule(f1));
-        f1.setUserGroup("p1");
+        f1.setRole("p1");
         f1.setService("s3");
         assertNull(ruleAdminService.getRule(f1));
         f1.setRequest("r3");

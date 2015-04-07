@@ -20,15 +20,15 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "Rule")
-@XmlType(propOrder={"id", "priority","grant","user","group","instance","service","request","workspace","layer","constraints"})
+@XmlType(propOrder={"id", "priority","grant","username","rolename","instance","service","request","workspace","layer","constraints"})
 public class RESTOutputRule implements Serializable {
 
     private Long id;
 
     private Long priority;
 
-    private IdName user;
-    private IdName group;
+    private String username;
+    private String rolename;
     private IdName instance;
 
     private String service;
@@ -52,28 +52,29 @@ public class RESTOutputRule implements Serializable {
         this.id = id;
     }
 
-    public void setGroup(IdName group) {
-        this.group = group;
+    public String getUsername() {
+        return username;
     }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getRolename() {
+        return rolename;
+    }
+
+    public void setRolename(String rolename) {
+        this.rolename = rolename;
+    }
+
 
     public void setInstance(IdName instance) {
         this.instance = instance;
     }
 
-    public void setUser(IdName user) {
-        this.user = user;
-    }
-
-    public IdName getGroup() {
-        return group;
-    }
-
     public IdName getInstance() {
         return instance;
-    }
-
-    public IdName getUser() {
-        return user;
     }
 
     public String getLayer() {
@@ -142,11 +143,11 @@ public class RESTOutputRule implements Serializable {
                 .append("[id:").append(id)
                 .append(" pri:").append(priority);
 
-        if (user != null) {
-            sb.append(" user:").append(user);
+        if (username != null) {
+            sb.append(" user:").append(username);
         }
-        if (group != null) {
-            sb.append(" group:").append(group);
+        if (rolename != null) {
+            sb.append(" role:").append(rolename);
         }
         if (instance != null) {
             sb.append(" instance:").append(instance);

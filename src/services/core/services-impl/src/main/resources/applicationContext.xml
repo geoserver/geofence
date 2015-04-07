@@ -21,6 +21,12 @@
 			http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
        default-autowire="byName">
 
+    <bean id="defaultUserResolver" class="org.geoserver.geofence.services.DefaultUserResolver">
+    </bean>
+
+    <bean id="authorizationService" class="org.geoserver.geofence.services.AuthorizationServiceImpl">
+    </bean>
+
     <bean id="userAdminService" class="org.geoserver.geofence.services.UserAdminServiceImpl">
     </bean>
 
@@ -37,6 +43,7 @@
     </bean>
 
     <bean id="ruleReaderService" class="org.geoserver.geofence.services.RuleReaderServiceImpl">
+        <property name="userResolver" ref="defaultUserResolver"/>
     </bean>
 
 </beans>

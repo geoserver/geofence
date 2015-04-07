@@ -33,8 +33,12 @@ public class RuleDAOTest extends BaseDAOTest {
         GSUser user = createUserAndGroup("rule_test");
         userDAO.persist(user);
 
+        return createRule(user);
+    }
+    
+    private Rule createRule(GSUser persistentUser) {
         Rule rule = new Rule();
-        rule.setGsuser(user);
+        rule.setUsername(persistentUser.getName());
         rule.setPriority(0);
         rule.setAccess(GrantType.ALLOW);
         ruleDAO.persist(rule);
@@ -44,12 +48,16 @@ public class RuleDAOTest extends BaseDAOTest {
     @Test
     public void testPersistRule() throws Exception {
 
+        final String username = "rule_test";
         Long uid;
         Long rid;
         {
-            Rule rule = createRule();
+            GSUser user = createUserAndGroup(username);
+            userDAO.persist(user);
+            uid = user.getId();
+
+            Rule rule = createRule(user);
             rid = rule.getId();
-            uid = rule.getGsuser().getId();
         }
 
         // test save & load
@@ -58,7 +66,7 @@ public class RuleDAOTest extends BaseDAOTest {
             assertNotNull("Can't retrieve rule", loaded);
 
             assertNull(loaded.getLayerDetails());
-            assertEquals(uid, loaded.getGsuser().getId());
+            assertEquals(username, loaded.getUsername());
             assertEquals(GrantType.ALLOW, loaded.getAccess());
 
             loaded.setAccess(GrantType.DENY);
@@ -548,14 +556,14 @@ public class RuleDAOTest extends BaseDAOTest {
             userDAO.persist(user);
 
             Rule rule = new Rule();
-            rule.setGsuser(user);
+            rule.setUsername("rule_test");
             rule.setPriority(0);
             rule.setAddressRange(new IPAddressRange("10.11.0.0/16"));
             rule.setAccess(GrantType.ALLOW);
             ruleDAO.persist(rule);
 
             rid = rule.getId();
-            uid = rule.getGsuser().getId();
+            uid = user.getId();
         }
 
         // test save & load by id

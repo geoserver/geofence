@@ -9,7 +9,7 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.TabItem;
 
 import org.geoserver.geofence.gui.client.Resources;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
 
 
@@ -24,7 +24,7 @@ public class LayerCustomPropsTabItem extends TabItem
     private LayerCustomPropsWidget layerCustomPropsWidget;
 
     /** The model. */
-    private Rule model;
+    private RuleModel model;
 
     /**
      * Instantiates a new layer custom props tab item.
@@ -51,7 +51,7 @@ public class LayerCustomPropsTabItem extends TabItem
      * @param rulesService
      *            the rules service
      */
-    public LayerCustomPropsTabItem(String tabItemId, Rule model, RulesManagerRemoteServiceAsync rulesService)
+    public LayerCustomPropsTabItem(String tabItemId, RuleModel model, RulesManagerRemoteServiceAsync rulesService)
     {
         this(tabItemId);
         this.model = model;

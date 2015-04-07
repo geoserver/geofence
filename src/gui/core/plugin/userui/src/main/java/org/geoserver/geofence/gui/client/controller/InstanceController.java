@@ -13,7 +13,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import org.geoserver.geofence.gui.client.GeofenceEvents;
-import org.geoserver.geofence.gui.client.model.GSInstance;
+import org.geoserver.geofence.gui.client.model.GSInstanceModel;
 import org.geoserver.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.view.InstancesView;
 import org.geoserver.geofence.gui.client.widget.InstanceGridWidget;
@@ -146,12 +146,12 @@ public class InstanceController extends Controller
             InstancesTabItem instancesTabItem = (InstancesTabItem) tabWidget.getItemByItemId(INSTANCES_TAB_ITEM_ID);
             final InstanceGridWidget instancesInfoWidget =
                 instancesTabItem.getInstanceManagementWidget().getInstancesInfo();
-            final Grid<GSInstance> grid = instancesInfoWidget.getGrid();
+            final Grid<GSInstanceModel> grid = instancesInfoWidget.getGrid();
 
-            if ((grid != null) && (grid.getStore() != null) && (event.getData() != null) && (event.getData() instanceof GSInstance))
+            if ((grid != null) && (grid.getStore() != null) && (event.getData() != null) && (event.getData() instanceof GSInstanceModel))
             {
 
-                GSInstance instance = event.getData();
+                GSInstanceModel instance = event.getData();
 
                 instancesManagerServiceRemote.saveInstance(instance, new AsyncCallback<Void>()
                     {
@@ -195,12 +195,12 @@ public class InstanceController extends Controller
             InstancesTabItem instancesTabItem = (InstancesTabItem) tabWidget.getItemByItemId(INSTANCES_TAB_ITEM_ID);
             final InstanceGridWidget instancesInfoWidget =
                 instancesTabItem.getInstanceManagementWidget().getInstancesInfo();
-            final Grid<GSInstance> grid = instancesInfoWidget.getGrid();
+            final Grid<GSInstanceModel> grid = instancesInfoWidget.getGrid();
 
-            if ((grid != null) && (grid.getStore() != null) && (event.getData() != null) && (event.getData() instanceof GSInstance))
+            if ((grid != null) && (grid.getStore() != null) && (event.getData() != null) && (event.getData() instanceof GSInstanceModel))
             {
 
-                GSInstance instance = event.getData();
+                GSInstanceModel instance = event.getData();
 
                 instancesManagerServiceRemote.deleteInstance(instance,
                     new AsyncCallback<Void>()
@@ -245,12 +245,12 @@ public class InstanceController extends Controller
            InstancesTabItem instancesTabItem = (InstancesTabItem) tabWidget.getItemByItemId(INSTANCES_TAB_ITEM_ID);
            final InstanceGridWidget instancesInfoWidget =
                instancesTabItem.getInstanceManagementWidget().getInstancesInfo();
-           final Grid<GSInstance> grid = instancesInfoWidget.getGrid();
+           final Grid<GSInstanceModel> grid = instancesInfoWidget.getGrid();
 
-           if ((grid != null) && (grid.getStore() != null) && (event.getData() != null) && (event.getData() instanceof GSInstance))
+           if ((grid != null) && (grid.getStore() != null) && (event.getData() != null) && (event.getData() instanceof GSInstanceModel))
            {
 
-               GSInstance instance = event.getData();
+               GSInstanceModel instance = event.getData();
                
                instancesManagerServiceRemote.testConnection(instance, new AsyncCallback<Void>()
                        {

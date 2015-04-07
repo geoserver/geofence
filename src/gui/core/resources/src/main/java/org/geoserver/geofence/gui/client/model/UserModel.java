@@ -6,8 +6,7 @@
 package org.geoserver.geofence.gui.client.model;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -15,13 +14,13 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class GSUser.
+ * The Class User.
  */
-public class GSUser extends BeanModel implements IsSerializable
+public class UserModel extends BeanModel implements IsSerializable
 {
 
     /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = 270623297309308741L;
+    private static final long serialVersionUID = -5117714882113396553L;
 
     /** The id. */
     private long id;
@@ -44,19 +43,16 @@ public class GSUser extends BeanModel implements IsSerializable
     /** The enabled. */
     private boolean enabled;
 
-    /** The admin. */
-    private boolean admin;
-
-    /** The user groups. */
-    private Set<UserGroup> userGroups = new HashSet<UserGroup>();
-
     /** The path. */
     private String path;
 
+    /** The granted authorizations. */
+    private List<Authorization> grantedAuthorizations;
+
     /**
-     * Instantiates a new gS user.
+     * Instantiates a new user.
      */
-    public GSUser()
+    public UserModel()
     {
         setPath("geofence/resources/images/userChoose.jpg");
     }
@@ -101,7 +97,7 @@ public class GSUser extends BeanModel implements IsSerializable
     public void setName(String name)
     {
         this.name = name;
-        set(BeanKeyValue.NAME.getValue(), this.name);
+        set(BeanKeyValue.USER_NAME.getValue(), this.name);
     }
 
     /**
@@ -146,7 +142,6 @@ public class GSUser extends BeanModel implements IsSerializable
     public void setPassword(String password)
     {
         this.password = password;
-        set(BeanKeyValue.PASSWORD.getValue(), password);
     }
 
     /**
@@ -216,59 +211,6 @@ public class GSUser extends BeanModel implements IsSerializable
     }
 
     /**
-     * @return the admin
-     */
-    public boolean isAdmin()
-    {
-        return admin;
-    }
-
-    /**
-     * @param admin the admin to set
-     */
-    public void setAdmin(boolean admin)
-    {
-        this.admin = admin;
-        set(BeanKeyValue.USER_ADMIN.getValue(), admin);
-    }
-
-    /**
-     * Sets the profile.
-     *
-     * @param profile
-     *            the new profile
-     */
-//    public void setProfile(Profile profile)
-//    {
-//        this.profile = profile;
-//        set(BeanKeyValue.PROFILE.getValue(), profile);
-//    }
-
-    /**
-     * Gets the profile.
-     *
-     * @return the profile
-     */
-//    public Profile getProfile()
-//    {
-//        return profile;
-//    }
-
-    /**
-	 * @param userGroups the userGroups to set
-	 */
-	public void setUserGroups(Set<UserGroup> userGroups) {
-		this.userGroups = userGroups;
-	}
-
-	/**
-	 * @return the userGroups
-	 */
-	public Set<UserGroup> getUserGroups() {
-		return userGroups;
-	}
-
-	/**
      * Gets the path.
      *
      * @return the path
@@ -290,6 +232,27 @@ public class GSUser extends BeanModel implements IsSerializable
         set(BeanKeyValue.PATH.getValue(), this.path);
     }
 
+    /**
+     * Sets the granted authorizations.
+     *
+     * @param ga
+     *            the new granted authorizations
+     */
+    public void setGrantedAuthorizations(List<Authorization> ga)
+    {
+        this.grantedAuthorizations = ga;
+    }
+
+    /**
+     * Gets the granted authorizations.
+     *
+     * @return the granted authorizations
+     */
+    public List<Authorization> getGrantedAuthorizations()
+    {
+        return this.grantedAuthorizations;
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
@@ -302,6 +265,8 @@ public class GSUser extends BeanModel implements IsSerializable
         result = (prime * result) + ((emailAddress == null) ? 0 : emailAddress.hashCode());
         result = (prime * result) + (enabled ? 1231 : 1237);
         result = (prime * result) + ((fullName == null) ? 0 : fullName.hashCode());
+        result = (prime * result) +
+            ((grantedAuthorizations == null) ? 0 : grantedAuthorizations.hashCode());
         result = (prime * result) + (int) (id ^ (id >>> 32));
         result = (prime * result) + ((name == null) ? 0 : name.hashCode());
         result = (prime * result) + ((password == null) ? 0 : password.hashCode());
@@ -324,12 +289,12 @@ public class GSUser extends BeanModel implements IsSerializable
         {
             return false;
         }
-        if (!(obj instanceof GSUser))
+        if (!(obj instanceof UserModel))
         {
             return false;
         }
 
-        GSUser other = (GSUser) obj;
+        UserModel other = (UserModel) obj;
         if (dateCreation == null)
         {
             if (other.dateCreation != null)
@@ -364,6 +329,17 @@ public class GSUser extends BeanModel implements IsSerializable
             }
         }
         else if (!fullName.equals(other.fullName))
+        {
+            return false;
+        }
+        if (grantedAuthorizations == null)
+        {
+            if (other.grantedAuthorizations != null)
+            {
+                return false;
+            }
+        }
+        else if (!grantedAuthorizations.equals(other.grantedAuthorizations))
         {
             return false;
         }
@@ -428,6 +404,10 @@ public class GSUser extends BeanModel implements IsSerializable
         if (fullName != null)
         {
             builder.append("fullName=").append(fullName).append(", ");
+        }
+        if (grantedAuthorizations != null)
+        {
+            builder.append("grantedAuthorizations=").append(grantedAuthorizations).append(", ");
         }
         builder.append("id=").append(id).append(", ");
         if (name != null)

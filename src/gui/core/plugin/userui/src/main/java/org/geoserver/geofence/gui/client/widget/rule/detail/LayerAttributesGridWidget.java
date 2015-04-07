@@ -43,7 +43,7 @@ import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.Resources;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
-import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.model.data.AccessType;
 import org.geoserver.geofence.gui.client.model.data.LayerAttribUI;
 import org.geoserver.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
@@ -57,7 +57,7 @@ public class LayerAttributesGridWidget extends GeofenceGridWidget<LayerAttribUI>
 {
 
     /** The rule. */
-    private Rule theRule;
+    private RuleModel theRule;
 
     /** The rules service. */
     private RulesManagerRemoteServiceAsync rulesService;
@@ -85,7 +85,7 @@ public class LayerAttributesGridWidget extends GeofenceGridWidget<LayerAttribUI>
      * @param rulesService
      *            the rules service
      */
-    public LayerAttributesGridWidget(Rule model, RulesManagerRemoteServiceAsync rulesService)
+    public LayerAttributesGridWidget(RuleModel model, RulesManagerRemoteServiceAsync rulesService)
     {
         super();
         this.theRule = model;

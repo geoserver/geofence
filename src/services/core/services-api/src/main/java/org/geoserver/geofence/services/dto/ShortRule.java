@@ -23,11 +23,9 @@ public class ShortRule implements Serializable
     private Long id;
     private Long priority;
 
-    private Long userId;
     private String userName;
 
-    private Long profileId;
-    private String profileName;
+    private String roleName;
 
     private Long instanceId;
     private String instanceName;
@@ -47,17 +45,9 @@ public class ShortRule implements Serializable
     {
         setId(rule.getId());
         setPriority(rule.getPriority());
+        setUserName(rule.getUsername());
+        setRoleName(rule.getRolename());
 
-        if (rule.getGsuser() != null)
-        {
-            setUserId(rule.getGsuser().getId());
-            setUserName(rule.getGsuser().getName());
-        }
-        if (rule.getUserGroup() != null)
-        {
-            setProfileId(rule.getUserGroup().getId());
-            setProfileName(rule.getUserGroup().getName());
-        }
         if (rule.getInstance() != null)
         {
             setInstanceId(rule.getInstance().getId());
@@ -132,24 +122,12 @@ public class ShortRule implements Serializable
         this.priority = priority;
     }
 
-    public Long getProfileId()
-    {
-        return profileId;
+    public String getRoleName() {
+        return roleName;
     }
 
-    public void setProfileId(Long profileId)
-    {
-        this.profileId = profileId;
-    }
-
-    public String getProfileName()
-    {
-        return profileName;
-    }
-
-    public void setProfileName(String profileName)
-    {
-        this.profileName = profileName;
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 
     public String getRequest()
@@ -170,16 +148,6 @@ public class ShortRule implements Serializable
     public void setService(String service)
     {
         this.service = service;
-    }
-
-    public Long getUserId()
-    {
-        return userId;
-    }
-
-    public void setUserId(Long userId)
-    {
-        this.userId = userId;
     }
 
     public String getUserName()
@@ -208,22 +176,14 @@ public class ShortRule implements Serializable
         StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append("[id:").append(id).append(" pri:").append(
                 priority);
 
-        if (userId != null)
-        {
-            sb.append(" uId:").append(userId);
-        }
         if (userName != null)
         {
-            sb.append(" uName:").append(userName);
+            sb.append(" user:").append(userName);
         }
 
-        if (profileId != null)
+        if (roleName != null)
         {
-            sb.append(" pId:").append(profileId);
-        }
-        if (profileName != null)
-        {
-            sb.append(" pName:").append(profileName);
+            sb.append(" role:").append(roleName);
         }
 
         if (instanceId != null)

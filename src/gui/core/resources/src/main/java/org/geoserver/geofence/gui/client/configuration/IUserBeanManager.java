@@ -5,7 +5,7 @@
 
 package org.geoserver.geofence.gui.client.configuration;
 
-import org.geoserver.geofence.gui.client.model.User;
+import org.geoserver.geofence.gui.client.model.UserModel;
 
 import java.io.Serializable;
 import java.util.List;
@@ -21,7 +21,7 @@ public interface IUserBeanManager extends Serializable {
      * 
      * @return the users
      */
-    public List<User> getUsers();
+    public List<UserModel> getUsers();
 
     /**
      * Configure users.

@@ -6,7 +6,7 @@
 package org.geoserver.geofence.gui.client.widget.dialog;
 
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
-import org.geoserver.geofence.gui.client.model.GSUser;
+import org.geoserver.geofence.gui.client.model.GSUserModel;
 import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.widget.SaveStaus;
@@ -33,7 +33,7 @@ public class UserDetailsEditDialog extends Dialog
     private SaveStaus saveStatus;
 
     /** The model. */
-    private GSUser user;
+    private GSUserModel user;
 
     /** The user manager service remote. */
     private GsUsersManagerRemoteServiceAsync usersManagerServiceRemoteAsync;
@@ -119,7 +119,7 @@ public class UserDetailsEditDialog extends Dialog
      * @param model
      *            the new model
      */
-    public void setModel(GSUser user)
+    public void setModel(GSUserModel user)
     {
         this.user = user;
     }
@@ -127,7 +127,7 @@ public class UserDetailsEditDialog extends Dialog
     /* (non-Javadoc)
      * @see com.extjs.gxt.ui.client.widget.Component#getModel()
      */
-    public GSUser getModel()
+    public GSUserModel getModel()
     {
         return this.user;
     }
