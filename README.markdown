@@ -16,12 +16,27 @@ Getting GeoFence
 ==================================================
 
 You will need the **GeoFence** .war file, and the probe module to be installed into your GeoServer instance.
-In this list you can find a GeoServer .war file with the GeoFence probe preinstalled.
 
 This is the list of the currently available resources for using **GeoFence**:
 
-* [Latest **GeoFence** .war file](http://ares.boundlessgeo.com/geofence/master/geofence-master-latest-war.zip)
-* [Latest GeoFence **probe** for GeoServer **Master**](http://ares.boundlessgeo.com/geoserver/master/community-latest/geoserver-2.7-SNAPSHOT-geofence-plugin.zip)
+Stable
+------
+
+Stable branch of GeoFence (2.2) is compatible with GeoServer 2.6 and 2.7.
+
+* [Latest GeoFence **probe** for GeoServer **2.7.x**](http://ares.boundlessgeo.com/geoserver/2.7.x/community-latest/geoserver-2.7-SNAPSHOT-geofence-plugin.zip)
+* [Latest GeoFence **probe** for GeoServer **2.6.x**](http://ares.boundlessgeo.com/geoserver/2.6.x/community-latest/geoserver-2.6-SNAPSHOT-geofence-plugin.zip)
+* [Latest GeoFence 2.2 **.war** ]
+(http://ares.boundlessgeo.com/geofence)
+
+Master
+------
+Master branch of GeoFence (3.0) is compatible with GeoServer master (2.8).
+
+* [Latest GeoFence **probe** for GeoServer master **2.8.x**](http://ares.boundlessgeo.com/geoserver/master/community-latest/geoserver-2.8-SNAPSHOT-geofence-plugin.zip)
+
+* [Latest GeoFence 3.0 **.war** file](http://ares.boundlessgeo.com/geofence/master/geofence-master-latest-war.zip)
+
 
 
 Once you have downloaded the resources you need, please follow the instructions on the [GeoFence installation] (https://github.com/geoserver/geofence/wiki/GeoFence-installation) wiki page.
