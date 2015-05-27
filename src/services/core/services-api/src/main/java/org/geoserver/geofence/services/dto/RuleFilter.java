@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -11,16 +11,21 @@ import java.io.Serializable;
 
 
 /**
- * A Filter for selecting {@link Rule}s. <P> For every given field, you may choose to select <LI>a given value</LI> <LI>any values
- * (no filtering)</LI> <LI>only default rules (null value in a field) </LI> </UL>
+ * A Filter for selecting {@link Rule}s. 
+ * 
+ * <P> For every given field, you may choose to select <UL>
+ * <LI>a given value</LI>
+ * <LI>any values (no filtering)</LI>
+ * <LI>only default rules (null value in a field) </LI>
+ * </UL>
  *
- * For users, groups, instances (i.e., classes represented by DB entities) you may specify either the ID or the name.
+ * For instances (i.e., classes represented by DB entities) you may specify either the ID or the name.
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class RuleFilter implements Serializable {
+public class RuleFilter implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = 5629211135629700041L;
+    private static final long serialVersionUID = 5629211135629700042L;
 
     public enum FilterType {
 
@@ -120,6 +125,23 @@ public class RuleFilter implements Serializable {
         this.request.setHeuristically(request);
         this.workspace.setHeuristically(workspace);
         this.layer.setHeuristically(layer);
+    }
+
+    public RuleFilter(RuleFilter source) {
+
+        try {
+            user = source.user.clone();
+            role = source.role.clone();
+            instance = source.instance.clone();
+            sourceAddress = source.sourceAddress.clone();
+            service = source.service.clone();
+            request = source.request.clone();
+            workspace = source.workspace.clone();
+            layer = source.layer.clone();
+        } catch (CloneNotSupportedException ex) {
+            // Should not happen
+            throw new UnknownError("Clone error - should not happen");
+        }
     }
 
     public RuleFilter setUser(String name) {
@@ -320,13 +342,19 @@ public class RuleFilter implements Serializable {
         return sb.toString();
     }
 
+    @Override
+    public RuleFilter clone() {
+        return new RuleFilter(this);
+    }
+
+
     /**
      * A filter that can be either:
      *  - an id
      *  - a string
      *  - a special constraint (DEFAULT, ANY)
      */
-    public static class IdNameFilter implements Serializable {
+    public static class IdNameFilter implements Serializable, Cloneable {
 
         private static final long serialVersionUID = -5984311150423659545L;
         private Long id;
@@ -473,12 +501,18 @@ public class RuleFilter implements Serializable {
                     throw new AssertionError();
             }
         }
+
+        @Override
+        public IdNameFilter clone() throws CloneNotSupportedException {
+            return (IdNameFilter)super.clone();
+        }
+
     }
 
     /**
      * Contains a fixed text OR a special filtering condition (i.e. ANY, DEFAULT).
      */
-    public static class TextFilter implements Serializable {
+    public static class TextFilter implements Serializable, Cloneable {
 
         private static final long serialVersionUID = 6565336016075974626L;
         private String text;
@@ -603,5 +637,11 @@ public class RuleFilter implements Serializable {
                     throw new AssertionError();
             }
         }
+
+        @Override
+        public TextFilter clone() throws CloneNotSupportedException {
+            return (TextFilter)super.clone();
+        }
+
     }
 }
