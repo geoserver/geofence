@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -255,7 +255,32 @@ public class RuleAdminServiceImpl implements RuleAdminService {
             LOGGER.error("Unexpected rule count for filter " + filter + " : " + found);
         }
 
-        return convertToShortList(found).get(0);
+        return new ShortRule(found.get(0));
+    }
+
+    @Override
+    public List<ShortRule> getRulesByPriority(int priority, Integer page, Integer entries) {
+        Search searchCriteria = new Search(Rule.class);
+        searchCriteria.addFilter(Filter.greaterOrEqual("priority", priority));
+        searchCriteria.addSortAsc("priority");
+        addPagingConstraints(searchCriteria, page, entries);
+        List<Rule> found = ruleDAO.search(searchCriteria);
+        return convertToShortList(found);
+    }
+
+    @Override
+    public ShortRule getRuleByPriority(int priority) throws BadRequestServiceEx {
+        Search searchCriteria = new Search(Rule.class);
+        searchCriteria.addFilter(Filter.equal("priority", priority));
+        List<Rule> found = ruleDAO.search(searchCriteria);
+        if(found.isEmpty())
+            return null;
+
+        if(found.size() > 1) {
+            LOGGER.error("Unexpected rule count for priority " + priority + " : " + found);
+        }
+
+        return new ShortRule(found.get(0));
     }
 
     @Override
@@ -266,17 +291,25 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     }
 
     protected Search buildSearch(Integer page, Integer entries, RuleFilter filter) throws BadRequestServiceEx {
+        Search searchCriteria = buildRuleSearch(filter);
+        addPagingConstraints(searchCriteria, page, entries);
+        searchCriteria.addSortAsc("priority");
+        return searchCriteria;
+    }
+
+    protected void addPagingConstraints(Search searchCriteria, Integer page, Integer entries) {
         if( (page != null && entries == null) || (page ==null && entries != null)) {
             throw new BadRequestServiceEx("Page and entries params should be declared together.");
         }
-        Search searchCriteria = buildRuleSearch(filter);
-        searchCriteria.addSortAsc("priority");
-        LOGGER.info("Searching Rule list " + ( page==null? "(unpaged) " : (" p:"+page + "#:"+entries)));
+
+        if(LOGGER.isInfoEnabled()) {
+            LOGGER.info("Searching Rule list " + ( page==null? "(unpaged) " : (" p:"+page + "#:"+entries)));
+        }
+
         if(entries != null) {
             searchCriteria.setMaxResults(entries);
             searchCriteria.setPage(page);
         }
-        return searchCriteria;
     }
 
     @Override
