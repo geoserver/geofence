@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -104,6 +104,23 @@ public interface RuleAdminService
      * @see RuleReaderService#getMatchingRules(RuleFilter)
      */
     List<ShortRule> getList(RuleFilter filter, Integer page, Integer entries);
+
+    /**
+     * Search a Rule by priority.
+     *
+     * Returns the rule having the requested priority, or null if none found.
+     */
+    ShortRule getRuleByPriority(int priority);
+
+    /**
+     * Return the Rules according to the priority.
+     *
+     * Returns the rules having priority greater or equal to <code>priority</code>
+     *
+     * @param page used for retrieving paged data, may be null if not used. If not null, also <TT>entries</TT> should be defined.
+     * @param entries used for retrieving paged data, may be null if not used. If not null, also <TT>page</TT> should be defined.
+     */
+    List<ShortRule> getRulesByPriority(int priority, Integer page, Integer entries);
 
     /**
      * Return a single Rule according to the filter.

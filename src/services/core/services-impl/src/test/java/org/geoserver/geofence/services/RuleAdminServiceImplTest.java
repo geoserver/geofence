@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -641,6 +641,47 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         assertEquals(30, loaded.get(2).getPriority());
     }
 
+    @Test
+    public void testGetByPriority() {
+        assertEquals(0, ruleAdminService.getAll().size());
+
+        Rule r1 = new Rule(10, null, null, null,null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
+        Rule r2 = new Rule(20, null, null, null,null, "s2", "r2", "w2", "l2", GrantType.ALLOW);
+        Rule r3 = new Rule(30, null, null, null,null, "s3", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r4 = new Rule(40, null, null, null,null, "s4", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r5 = new Rule(50, null, null, null,null, "s5", "r3", "w3", "l3", GrantType.ALLOW);
+
+        ruleAdminService.insert(r1);
+        ruleAdminService.insert(r2);
+        ruleAdminService.insert(r3);
+        ruleAdminService.insert(r4);
+        ruleAdminService.insert(r5);
+
+        assertEquals(5, ruleAdminService.getAll().size());
+
+        // single existing rule
+        ShortRule res1 = ruleAdminService.getRuleByPriority(20);
+        assertNotNull(res1);
+        assertEquals("S2", res1.getService());
+
+        // single non-existing rule
+        ShortRule resNull = ruleAdminService.getRuleByPriority(21);
+        assertNull(resNull);
+
+        // all rules, first is not the requested priority
+        assertEquals(5, ruleAdminService.getRulesByPriority(0, null, null).size());
+        // all rules, first is the requested priority
+        assertEquals(5, ruleAdminService.getRulesByPriority(10, null, null).size());
+        // first rule should be not included
+        assertEquals(4, ruleAdminService.getRulesByPriority(20, null, null).size());
+        // paged request amid the list
+        assertEquals(2, ruleAdminService.getRulesByPriority(20, 0, 2).size());
+        // paged request at the end of the list
+        assertEquals(1, ruleAdminService.getRulesByPriority(50, 0, 2).size());
+        // empty page
+        assertEquals(0, ruleAdminService.getRulesByPriority(50, 100, 2).size());
+
+    }
 
 
 
