@@ -110,7 +110,7 @@ public interface RuleAdminService
      *
      * Returns the rule having the requested priority, or null if none found.
      */
-    ShortRule getRuleByPriority(int priority);
+    ShortRule getRuleByPriority(long priority);
 
     /**
      * Return the Rules according to the priority.
@@ -120,7 +120,7 @@ public interface RuleAdminService
      * @param page used for retrieving paged data, may be null if not used. If not null, also <TT>entries</TT> should be defined.
      * @param entries used for retrieving paged data, may be null if not used. If not null, also <TT>page</TT> should be defined.
      */
-    List<ShortRule> getRulesByPriority(int priority, Integer page, Integer entries);
+    List<ShortRule> getRulesByPriority(long priority, Integer page, Integer entries);
 
     /**
      * Return a single Rule according to the filter.
