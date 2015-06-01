@@ -259,7 +259,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     }
 
     @Override
-    public List<ShortRule> getRulesByPriority(int priority, Integer page, Integer entries) {
+    public List<ShortRule> getRulesByPriority(long priority, Integer page, Integer entries) {
         Search searchCriteria = new Search(Rule.class);
         searchCriteria.addFilter(Filter.greaterOrEqual("priority", priority));
         searchCriteria.addSortAsc("priority");
@@ -269,7 +269,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     }
 
     @Override
-    public ShortRule getRuleByPriority(int priority) throws BadRequestServiceEx {
+    public ShortRule getRuleByPriority(long priority) throws BadRequestServiceEx {
         Search searchCriteria = new Search(Rule.class);
         searchCriteria.addFilter(Filter.equal("priority", priority));
         List<Rule> found = ruleDAO.search(searchCriteria);
