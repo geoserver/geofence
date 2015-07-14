@@ -22,12 +22,19 @@ This is the list of the currently available resources for using **GeoFence**:
 Stable
 ------
 
-Stable branch of GeoFence (2.2) is compatible with GeoServer 2.6 and 2.7.
+Stable branch of GeoFence (2.2.x) is compatible with GeoServer 2.6 and 2.7.
 
+### Release
+
+* Latest stable release: [GeoFence 2.2.0 **.war** ]
+(http://ares.boundlessgeo.com/geofence/2.2.x/geofence-release-v2.2.0-war.zip)
+
+### Nightly builds
+
+* [Latest GeoFence 2.2.x **.war** ]
+(http://ares.boundlessgeo.com/geofence/2.2.x/geofence-2.2.x-latest-war.zip)
 * [Latest GeoFence **probe** for GeoServer **2.7.x**](http://ares.boundlessgeo.com/geoserver/2.7.x/community-latest/geoserver-2.7-SNAPSHOT-geofence-plugin.zip)
 * [Latest GeoFence **probe** for GeoServer **2.6.x**](http://ares.boundlessgeo.com/geoserver/2.6.x/community-latest/geoserver-2.6-SNAPSHOT-geofence-plugin.zip)
-* [Latest GeoFence 2.2 **.war** ]
-(http://ares.boundlessgeo.com/geofence/2.2.x/geofence-2.2.x-latest-war.zip)
 
 Master
 ------
