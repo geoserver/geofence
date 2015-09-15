@@ -300,10 +300,13 @@ public class RESTUserServiceImpl
 
     private void addIntoGroup(IdName userId, IdName groupId) throws InternalErrorRestEx, BadRequestRestEx, NotFoundRestEx {
         try {
-            GSUser user = getUser(userId);
             UserGroup group = getUserGroup(groupId);
 
-            user.getGroups().add(group);
+            GSUser user = getUser(userId);
+            Set<UserGroup> groups = getUserGroups(user.getId());
+            groups.add(group);
+            user.setGroups(groups);
+
             userAdminService.update(user);
 
         } catch (BadRequestRestEx e) {
@@ -326,22 +329,26 @@ public class RESTUserServiceImpl
 
     private void removeFromGroup(IdName userId, IdName groupId) throws InternalErrorRestEx, BadRequestRestEx, NotFoundRestEx {
         try {
-            GSUser user = getUser(userId);
             UserGroup groupToRemove = getUserGroup(groupId);
 
+            GSUser user = getUser(userId);
+            Set<UserGroup> groups = getUserGroups(user.getId());
+
             UserGroup found = null;
-            for (UserGroup group : user.getGroups()) {
-                if(group.getId().equals(groupToRemove.getId()) ) {
+            for (UserGroup group : groups) {
+                if (group.getId().equals(groupToRemove.getId())) {
                     found = group;
                     break;
                 }
             }
-            if(found != null) {
-                user.getGroups().remove(found);
+            if (found != null) {
+                groups.remove(found);
+                user.setGroups(groups);
                 userAdminService.update(user);
             } else {
-                if(LOGGER.isInfoEnabled())
+                if (LOGGER.isInfoEnabled()) {
                     LOGGER.info("User " + user.getName() + " not in group " + groupToRemove);
+                }
             }
         } catch (NotFoundRestEx e) {
             throw e;
