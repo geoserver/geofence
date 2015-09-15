@@ -343,10 +343,13 @@ public class RESTUserServiceImpl
     @Override
     public void addIntoGroup(IdName userId, IdName groupId) throws InternalErrorRestEx, BadRequestRestEx, NotFoundRestEx {
         try {
-            GSUser user = getUser(userId);
             UserGroup group = getUserGroup(groupId);
 
-            user.getGroups().add(group);
+            GSUser user = getUser(userId);
+            Set<UserGroup> groups = getUserGroups(user.getId());
+            groups.add(group);
+            user.setGroups(groups);
+
             userAdminService.update(user);
 
         } catch (BadRequestRestEx e) {
@@ -385,18 +388,21 @@ public class RESTUserServiceImpl
     @Override
     public void removeFromGroup(IdName userId, IdName groupId) throws InternalErrorRestEx, BadRequestRestEx, NotFoundRestEx {
         try {
-            GSUser user = getUser(userId);
             UserGroup groupToRemove = getUserGroup(groupId);
 
+            GSUser user = getUser(userId);
+            Set<UserGroup> groups = getUserGroups(user.getId());
+
             UserGroup found = null;
-            for (UserGroup group : user.getGroups()) {
+            for (UserGroup group : groups) {
                 if(group.getId().equals(groupToRemove.getId()) ) {
                     found = group;
                     break;
                 }
             }
             if(found != null) {
-                user.getGroups().remove(found);
+                groups.remove(found);
+                user.setGroups(groups);
                 userAdminService.update(user);
             } else {
                 if(LOGGER.isInfoEnabled())

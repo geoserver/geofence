@@ -182,7 +182,6 @@ public class GeoFenceClientTest {
     }
 
     @Test
-    @Ignore
     public void testReassign() {
         GeoFenceClient client = createClient();
         
@@ -215,7 +214,7 @@ public class GeoFenceClientTest {
         client.getUserService().addIntoGroup("pippo", "group02");
         assertEquals(2, client.getUserService().get("pippo").getGroups().size());
 
-        // remove first assinged group
+        // remove first assigned group
         client.getUserService().removeFromGroup("pippo", "group01");
         assertEquals(1, client.getUserService().get("pippo").getGroups().size());
     }
