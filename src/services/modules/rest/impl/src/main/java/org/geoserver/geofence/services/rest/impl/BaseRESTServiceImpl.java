@@ -22,6 +22,7 @@ import org.geoserver.geofence.services.rest.model.RESTOutputUser;
 import org.geoserver.geofence.services.rest.model.RESTShortUser;
 import org.geoserver.geofence.services.rest.model.util.IdName;
 import java.util.ArrayList;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,35 +42,51 @@ public abstract class BaseRESTServiceImpl {
     protected RuleAdminService ruleAdminService;
 
 
-    protected UserGroup getUserGroup(IdName filter) throws BadRequestRestEx, NotFoundRestEx {
+    protected UserGroup getUserGroup(IdName groupFilter) throws BadRequestRestEx, NotFoundRestEx {
 
         try {
-            if ( filter.getId() != null ) {
-                return userGroupAdminService.get(filter.getId());
-            } else if ( filter.getName() != null ) {
-                return userGroupAdminService.get(filter.getName());
+            if (groupFilter.getId() != null) {
+                return userGroupAdminService.get(groupFilter.getId());
+            } else if (groupFilter.getName() != null) {
+                return userGroupAdminService.get(groupFilter.getName());
             } else {
-                throw new BadRequestRestEx("Bad UserGroup filter " + filter);
+                throw new BadRequestRestEx("Bad UserGroup filter " + groupFilter);
             }
         } catch (NotFoundServiceEx e) {
-            LOGGER.warn("UserGroup not found " + filter);
-            throw new NotFoundRestEx("UserGroup not found " + filter);
+            LOGGER.warn("UserGroup not found " + groupFilter);
+            throw new NotFoundRestEx("UserGroup not found " + groupFilter);
         }
     }
 
-    protected GSUser getUser(IdName filter) throws BadRequestRestEx, NotFoundRestEx {
+    protected GSUser getUser(IdName userFilter) throws BadRequestRestEx, NotFoundRestEx {
 
         try {
-            if ( filter.getId() != null ) {
-                return userAdminService.get(filter.getId());
-            } else if ( filter.getName() != null ) {
-                return userAdminService.get(filter.getName());
+            if (userFilter.getId() != null) {
+                return userAdminService.get(userFilter.getId());
+            } else if (userFilter.getName() != null) {
+                return userAdminService.get(userFilter.getName());
             } else {
-                throw new BadRequestRestEx("Bad GSUser filter " + filter);
+                throw new BadRequestRestEx("Bad GSUser filter " + userFilter);
             }
         } catch (NotFoundServiceEx e) {
-            LOGGER.warn("GSUser not found " + filter);
-            throw new NotFoundRestEx("GSUser not found " + filter);
+            LOGGER.warn("GSUser not found " + userFilter);
+            throw new NotFoundRestEx("GSUser not found " + userFilter);
+        }
+    }
+
+    protected Set<UserGroup> getUserGroups(long userId) throws BadRequestRestEx, NotFoundRestEx {
+
+        try {
+            Set<UserGroup> groups = userAdminService.getUserGroups(userId);
+            if (groups == null) {
+                LOGGER.warn("GSUser not found " + userId);
+                throw new NotFoundRestEx("GSUser not found " + userId);
+            }
+            return groups;
+
+        } catch (NotFoundServiceEx e) {
+            LOGGER.warn("GSUser not found " + userId);
+            throw new NotFoundRestEx("GSUser not found " + userId);
         }
     }
 
