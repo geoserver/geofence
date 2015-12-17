@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014,2015 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.geoserver.geofence.services.AdminRuleAdminService;
 
 
 /**
@@ -40,6 +41,7 @@ public abstract class BaseRESTServiceImpl {
     protected UserGroupAdminService userGroupAdminService;
     protected InstanceAdminService instanceAdminService;
     protected RuleAdminService ruleAdminService;
+    protected AdminRuleAdminService adminRuleAdminService;
 
 
     protected UserGroup getUserGroup(IdName groupFilter) throws BadRequestRestEx, NotFoundRestEx {
@@ -156,4 +158,7 @@ public abstract class BaseRESTServiceImpl {
         this.instanceAdminService = instanceAdminService;
     }
 
+    public void setAdminRuleAdminService(AdminRuleAdminService adminRuleAdminService) {
+        this.adminRuleAdminService = adminRuleAdminService;
+    }
 }

@@ -1,28 +1,16 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.services.rest.model;
 
-import org.geoserver.geofence.services.rest.model.RESTInputUser;
-import org.geoserver.geofence.services.rest.model.RESTLayerConstraints;
-import org.geoserver.geofence.services.rest.model.RESTInputInstance;
-import org.geoserver.geofence.services.rest.model.RESTShortInstanceList;
-import org.geoserver.geofence.services.rest.model.RESTInputRule;
-import org.geoserver.geofence.services.rest.model.RESTOutputRule;
-import org.geoserver.geofence.services.rest.model.RESTInputGroup;
-import org.geoserver.geofence.services.rest.model.RESTRuleList;
-import org.geoserver.geofence.services.rest.model.RESTShortUserList;
-import org.geoserver.geofence.services.rest.model.RESTShortUser;
 import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.enums.AccessType;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.core.model.enums.LayerType;
 import org.geoserver.geofence.services.dto.ShortGroup;
 import org.geoserver.geofence.services.dto.ShortInstance;
-import org.geoserver.geofence.services.rest.model.RESTInputRule.RESTRulePosition;
-import org.geoserver.geofence.services.rest.model.RESTInputRule.RESTRulePosition.RulePosition;
 import org.geoserver.geofence.services.rest.model.config.RESTFullUserGroupList;
 import org.geoserver.geofence.services.rest.model.util.IdName;
 
@@ -34,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.JAXB;
+import org.geoserver.geofence.services.rest.model.RESTRulePosition.RulePosition;
 
 import org.junit.Test;
 
@@ -64,7 +53,7 @@ public class ModelPrintoutFakeTest {
 
         {
             System.out.println("RESTRuleList sample");
-            RESTRuleList ruleList = new RESTRuleList();
+            RESTOutputRuleList ruleList = new RESTOutputRuleList();
 
             RESTOutputRule r1 = createOutputRule("01");
             r1.setConstraints(null);

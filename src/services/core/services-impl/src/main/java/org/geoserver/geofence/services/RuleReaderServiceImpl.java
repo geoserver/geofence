@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -27,7 +27,6 @@ import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
 import org.geoserver.geofence.services.dto.ShortRule;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.util.AccessInfoInternal;
-import org.geoserver.geofence.services.util.IPUtils;
 import org.geoserver.geofence.spi.UserResolver;
 
 import java.util.ArrayList;
@@ -41,6 +40,10 @@ import java.util.Set;
 import java.util.TreeMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.geoserver.geofence.core.dao.AdminRuleDAO;
+import org.geoserver.geofence.core.model.AdminRule;
+import org.geoserver.geofence.core.model.enums.AdminGrantType;
+import static org.geoserver.geofence.services.util.FilterUtils.filterByAddress;
 
 /**
  *
@@ -56,6 +59,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     private final static Logger LOGGER = LogManager.getLogger(RuleReaderServiceImpl.class);
 
     private RuleDAO ruleDAO;
+    private AdminRuleDAO adminRuleDAO;
     private LayerDetailsDAO detailsDAO;
 
     private UserResolver userResolver;
@@ -114,7 +118,8 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     }
 
     @Override
-    public AccessInfo getAccessInfo(RuleFilter filter) {
+    public AccessInfo getAccessInfo(RuleFilter filter)
+    {
         LOGGER.info("Requesting access for " + filter);
         Map<String, List<Rule>> groupedRules = getRules(filter);
 
@@ -142,11 +147,16 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             ret = currAccessInfo.toAccessInfo();
         }
 
+        if(ret.getGrant() == GrantType.ALLOW) {
+            ret.setAdminRights(getAdminAuth(filter));
+        }
+
         LOGGER.info("Returning " + ret + " for " + filter);
         return ret;
     }
 
-    private AccessInfoInternal enlargeAccessInfo(AccessInfoInternal baseAccess, AccessInfoInternal moreAccess) {
+    private AccessInfoInternal enlargeAccessInfo(AccessInfoInternal baseAccess, AccessInfoInternal moreAccess)
+    {
         if(baseAccess == null) {
             if(moreAccess == null)
                 return null;
@@ -459,58 +469,10 @@ public class RuleReaderServiceImpl implements RuleReaderService {
      */
     protected Map<String, List<Rule>> getRules(RuleFilter filter) throws BadRequestServiceEx {
         
-        // username can be null if
-        // 1) name is defined in the filter, but the user has not been found in the db
-        // 2) the user filter asks for ANY or DEFAULT 
-        String username = validateUsername(filter.getUser());
+        Set<String> finalRoleFilter = validateUserRoles(filter);
 
-        // rolename can be null if
-        // 1) id or name are defined in the filter, but the group has not been found in the db
-        // 2) the group filter asks for ANY or DEFAULT
-        String rolename = validateRolename(filter.getRole());
-
-        Set<String> finalRoleFilter = new HashSet<String>();
-
-        // If both user and group are defined in filter
-        //   if user doensn't belong to group, no rule is returned
-        //   otherwise assigned or default rules are searched for
-        if(username != null) {
-            Set<String> assignedRoles = userResolver.getRoles(username);
-            if(rolename != null) {
-                if( assignedRoles.contains(rolename)) {
-                    finalRoleFilter = Collections.singleton(rolename);
-                } else {
-                    LOGGER.warn("User does not belong to role [User:"+filter.getUser()+"] [Role:"+filter.getRole()+"] [Roles:"+assignedRoles+"]");
-                    return Collections.EMPTY_MAP; // shortcut here, in rder to avoid loading the rules
-                }
-            } else { 
-                // User set and found, role (ANY, DEFAULT or notfound):
-
-                if(filter.getRole().getType() == FilterType.ANY) {
-                    Set<String> roles = userResolver.getRoles(username);
-                    if( ! roles.isEmpty()) {
-                        finalRoleFilter = roles;
-                    } else {
-                        filter.setRole(SpecialFilterType.DEFAULT);
-                    }
-                } else {
-                    // role is DEFAULT or not found:
-                    // if role filter request DEFAULT -> ok, apply the filter
-                    // if role does not exists, just apply the filter, even if probably no rule will match
-                }
-            }
-        } else {
-            // user is null: then either:
-            //  1) no filter on user was requested (ANY or DEFAULT)
-            //  2) user has not been found
-            if(rolename != null) {
-                finalRoleFilter.add(rolename);
-            } else if(filter.getUser().getType() != FilterType.ANY) {
-                filter.setRole(SpecialFilterType.DEFAULT);
-            } else {
-                // group is ANY, DEFAULT or not found:
-                // no grouping, use requested filtering
-            }
+        if(finalRoleFilter == null) {
+            return Collections.EMPTY_MAP; // shortcut here, in order to avoid loading the rules
         }
 
         Map<String, List<Rule>> ret = new HashMap<String, List<Rule>>();
@@ -546,6 +508,75 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         return ret;
     }
 
+    /**
+     * Check requested user and group fileter.
+     *
+     * <br/>
+     * The input filter <b>may be altered</b> for fixing some request inconsistencies.
+     *
+     * @param filter
+     * @return a Set of group names, or null if provided user/group are invalid.
+     * @throws BadRequestServiceEx
+     */
+    protected Set<String> validateUserRoles(RuleFilter filter) throws BadRequestServiceEx {
+
+        // username can be null if
+        // 1) name is defined in the filter, but the user has not been found in the db
+        // 2) the user filter asks for ANY or DEFAULT
+        String username = validateUsername(filter.getUser());
+
+        // rolename can be null if
+        // 1) id or name are defined in the filter, but the group has not been found in the db
+        // 2) the group filter asks for ANY or DEFAULT
+        String rolename = validateRolename(filter.getRole());
+
+        Set<String> finalRoleFilter = new HashSet<String>();
+
+        // If both user and group are defined in filter
+        //   if user doensn't belong to group, no rule is returned
+        //   otherwise assigned or default rules are searched for
+        if(username != null) {
+            Set<String> assignedRoles = userResolver.getRoles(username);
+            if(rolename != null) {
+                if( assignedRoles.contains(rolename)) {
+                    finalRoleFilter = Collections.singleton(rolename);
+                } else {
+                    LOGGER.warn("User does not belong to role [User:"+filter.getUser()+"] [Role:"+filter.getRole()+"] [Roles:"+assignedRoles+"]");
+                    return null;
+                }
+            } else {
+                // User set and found, role (ANY, DEFAULT or notfound):
+
+                if(filter.getRole().getType() == FilterType.ANY) {
+                    Set<String> roles = userResolver.getRoles(username);
+                    if( ! roles.isEmpty()) {
+                        finalRoleFilter = roles;
+                    } else {
+                        filter.setRole(SpecialFilterType.DEFAULT);
+                    }
+                } else {
+                    // role is DEFAULT or not found:
+                    // if role filter request DEFAULT -> ok, apply the filter
+                    // if role does not exists, just apply the filter, even if probably no rule will match
+                }
+            }
+        } else {
+            // user is null: then either:
+            //  1) no filter on user was requested (ANY or DEFAULT)
+            //  2) user has not been found
+            if(rolename != null) {
+                finalRoleFilter.add(rolename);
+            } else if(filter.getUser().getType() != FilterType.ANY) {
+                filter.setRole(SpecialFilterType.DEFAULT);
+            } else {
+                // group is ANY, DEFAULT or not found:
+                // no grouping, use requested filtering
+            }
+        }
+
+        return finalRoleFilter;
+    }
+
     protected List<Rule> getRuleAux(RuleFilter filter, TextFilter roleFilter) {
         Search searchCriteria = new Search(Rule.class);
         searchCriteria.addSortAsc("priority");
@@ -562,73 +593,6 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
         return found;
     }
-
-    /**
-     * Filters out rules not matching with ip address filter.
-     *
-     * IP address filtering is not performed by DAO at the moment, so we'll have to filter out
-     * such results by hand.
-     */
-    protected static List<Rule> filterByAddress(RuleFilter filter, List<Rule> rules) {
-
-        FilterType type = filter.getSourceAddress().getType();
-
-        if(type == FilterType.ANY )
-            return rules;
-        
-        String ipvalue = null;
-        if(type == FilterType.NAMEVALUE) {
-            ipvalue = filter.getSourceAddress().getText();
-            if(! IPUtils.isAddressValid(ipvalue)) {
-                LOGGER.error("Bad address filter " + ipvalue);
-                return Collections.EMPTY_LIST;
-            }
-        }
-
-        List<Rule> ret = new ArrayList<Rule>(rules.size());
-
-        for (Rule rule : rules) {
-            boolean added = false;
-
-            switch(type) {
-                case DEFAULT:
-                    if(rule.getAddressRange() == null) {
-                        ret.add(rule);
-                        added = true;
-                    }
-                    break;
-
-                case NAMEVALUE:
-                    if ( filter.getSourceAddress().isIncludeDefault()) {
-                        if(rule.getAddressRange() == null || rule.getAddressRange().match(ipvalue) ) {                        
-                            ret.add(rule);
-                            added = true; 
-                        }
-                    } else {
-                        if(rule.getAddressRange() != null && rule.getAddressRange().match(ipvalue) ) {
-                            ret.add(rule);
-                            added = true;
-                        }
-                    }
-                    break;
-
-                case IDVALUE:
-                default:
-                    LOGGER.error("Bad address filter type" + type);
-                    return Collections.EMPTY_LIST;
-            }
-
-            if(LOGGER.isDebugEnabled()) {
-                if(added)
-                    LOGGER.debug("ADDED " + rule);
-                else
-                    LOGGER.debug("NOT ADDED " + rule);
-            }
-        }
-
-        return ret;
-    }
-
 
     private void addCriteria(Search searchCriteria, String fieldName, IdNameFilter filter) {
         switch (filter.getType()) {
@@ -706,6 +670,10 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         this.ruleDAO = ruleDAO;
     }
 
+    public void setAdminRuleDAO(AdminRuleDAO adminRuleDAO) {
+        this.adminRuleDAO = adminRuleDAO;
+    }
+
     public void setLayerDetailsDAO(LayerDetailsDAO detailsDAO) {
         this.detailsDAO = detailsDAO;
     }
@@ -717,5 +685,60 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     public void setAuthorizationService(AuthorizationService authorizationService) {
         this.authorizationService = authorizationService;
     }
+
+
+
+    private boolean getAdminAuth(RuleFilter filter) {
+        Set<String> finalRoleFilter = validateUserRoles(filter);
+
+        if(finalRoleFilter == null) {
+            return false;
+        }
+
+        boolean isAdmin = false;
+
+        if(finalRoleFilter.isEmpty()) {
+            AdminRule rule = getAdminAuthAux(filter, filter.getRole());
+            isAdmin = rule == null ? false : rule.getAccess() == AdminGrantType.ADMIN;
+        } else {
+            for (String role : finalRoleFilter) {
+                TextFilter roleFilter = new TextFilter(role);
+                roleFilter.setIncludeDefault(true);
+                AdminRule rule = getAdminAuthAux(filter, roleFilter);
+                // if it's admin in at least one group, the admin auth is granted
+                if(rule != null && rule.getAccess() == AdminGrantType.ADMIN) {
+                    isAdmin = true;
+                }
+            }
+        }
+
+        return isAdmin;
+    }
+
+    protected AdminRule getAdminAuthAux(RuleFilter filter, TextFilter roleFilter) {
+        Search searchCriteria = new Search(AdminRule.class);
+        searchCriteria.addSortAsc("priority");
+        addStringCriteria(searchCriteria, "username", filter.getUser());
+        addStringCriteria(searchCriteria, "rolename", roleFilter);
+        addCriteria(searchCriteria, "instance", filter.getInstance());
+        addStringCriteria(searchCriteria, "workspace", filter.getWorkspace());
+
+        // we only need the first match, no need to aggregate (no LIMIT rules here)
+        searchCriteria.setMaxResults(1);
+
+        List<AdminRule> found = adminRuleDAO.search(searchCriteria);
+        found = filterByAddress(filter, found);
+
+        switch(found.size()) {
+            case 0:
+                return null;
+            case 1:
+                return found.get(0);
+            default:
+                // should not happen
+                throw new IllegalStateException("Too many admin auth rules");
+        }
+    }
+
 
 }

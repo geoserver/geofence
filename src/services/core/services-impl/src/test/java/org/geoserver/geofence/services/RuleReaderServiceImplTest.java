@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014,2015 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import org.geoserver.geofence.core.model.AdminRule;
+import org.geoserver.geofence.core.model.enums.AdminGrantType;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -746,6 +748,38 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         
         filter = createFilter("anonymous", null, null);
         assertEquals(0, ruleReaderService.getMatchingRules(filter).size());
+    }
+
+    @Test
+    public void testAdminRules() {
+
+
+        GSUser user = createUser("auth00");
+
+        ruleAdminService.insert(new Rule(10, user.getName(), null, null, null,     "s1", "r1", "w1", "l1", GrantType.ALLOW));
+
+        RuleFilter filter = new RuleFilter(SpecialFilterType.ANY, true);
+        filter.setWorkspace("w1");
+
+        AccessInfo accessInfo = ruleReaderService.getAccessInfo(filter);
+        assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+        assertFalse(accessInfo.getAdminRights());
+
+        // let's add a USER adminrule
+
+        adminruleAdminService.insert(new AdminRule(20, user.getName(), null, null, null, null, AdminGrantType.USER));
+
+        accessInfo = ruleReaderService.getAccessInfo(filter);
+        assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+        assertFalse(accessInfo.getAdminRights());
+
+        // let's add an ADMIN adminrule on workspace w1
+
+        adminruleAdminService.insert(new AdminRule(10, user.getName(), null, null, null, "w1", AdminGrantType.ADMIN));
+
+        accessInfo = ruleReaderService.getAccessInfo(filter);
+        assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+        assertTrue(accessInfo.getAdminRights());
     }
 
 }

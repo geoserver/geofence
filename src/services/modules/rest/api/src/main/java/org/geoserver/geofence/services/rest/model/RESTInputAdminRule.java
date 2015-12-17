@@ -1,11 +1,11 @@
-/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2015 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.services.rest.model;
 
-import org.geoserver.geofence.core.model.enums.GrantType;
+import org.geoserver.geofence.core.model.enums.AdminGrantType;
 import org.geoserver.geofence.services.rest.model.util.IdName;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -13,32 +13,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * A compact representation of Rule
+ * A compact representation of AdminRule
  *
  * @author Etj (etj at geo-solutions.it)
  */
-@XmlRootElement(name = "rule")
-@XmlType(name="Rule", propOrder={"position","grant","username","rolename","instance","service","request","workspace","layer","constraints"})
-public class RESTInputRule extends AbstractRESTPayload {
-
+@XmlRootElement(name = "adminrule")
+@XmlType(name="Rule", propOrder={"position","grant","username","rolename","instance","workspace"})
+public class RESTInputAdminRule extends AbstractRESTPayload
+{
     private RESTRulePosition position;
 
     private String username;
     private String rolename;
-
     private IdName instance;
-
-    private String service;
-    private String request;
-
     private String workspace;
-    private String layer;
 
-    private GrantType grant;
+    private AdminGrantType grant;
 
-    private RESTLayerConstraints constraints;
 
-    public RESTInputRule() {
+    public RESTInputAdminRule() {
     }
 
     public String getUsername() {
@@ -73,46 +66,12 @@ public class RESTInputRule extends AbstractRESTPayload {
         return instance;
     }
 
-    public String getLayer() {
-        return layer;
-    }
-
-    public void setLayer(String layer) {
-        this.layer = layer;
-    }
-
-    public String getRequest() {
-        return request;
-    }
-
-    public void setRequest(String request) {
-        this.request = request;
-    }
-
-    public String getService() {
-        return service;
-    }
-
-    public void setService(String service) {
-        this.service = service;
-    }
-
     public String getWorkspace() {
         return workspace;
     }
 
     public void setWorkspace(String workspace) {
         this.workspace = workspace;
-    }
-
-
-
-    public RESTLayerConstraints getConstraints() {
-        return constraints;
-    }
-
-    public void setConstraints(RESTLayerConstraints constraints) {
-        this.constraints = constraints;
     }
 
     public RESTRulePosition getPosition() {
@@ -124,11 +83,11 @@ public class RESTInputRule extends AbstractRESTPayload {
     }
 
     @XmlAttribute
-    public GrantType getGrant() {
+    public AdminGrantType getGrant() {
         return grant;
     }
 
-    public void setGrant(GrantType grant) {
+    public void setGrant(AdminGrantType grant) {
         this.grant = grant;
     }
 
@@ -156,17 +115,8 @@ public class RESTInputRule extends AbstractRESTPayload {
         if (instance != null) {
             sb.append(" instance:").append(instance);
         }
-        if (service != null) {
-            sb.append(" service:").append(service);
-        }
-        if (request != null) {
-            sb.append(" request:").append(request);
-        }
         if (workspace != null) {
             sb.append(" workspace:").append(workspace);
-        }
-        if (layer != null) {
-            sb.append(" layer:").append(layer);
         }
         sb.append(']');
 

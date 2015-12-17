@@ -1,18 +1,16 @@
-
 <!--
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014,2015 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-
-
 -->
+
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
 
-	   xmlns:cxf="http://cxf.apache.org/core"
-	   xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xmlns:cxf="http://cxf.apache.org/core"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
        xmlns:jaxrs="http://cxf.apache.org/jaxrs"
 
        xsi:schemaLocation="
@@ -21,6 +19,7 @@
             http://cxf.apache.org/jaxrs                     http://cxf.apache.org/schemas/jaxrs.xsd
             http://cxf.apache.org/core                      http://cxf.apache.org/schemas/core.xsd
             http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+
        default-autowire="byName">
 
    <!-- === CXF ======================================================== -->
@@ -48,6 +47,9 @@
     </bean>
 
     <bean id="restRuleService" class="org.geoserver.geofence.services.rest.impl.RESTRuleServiceImpl">
+    </bean>
+
+    <bean id="restAdminRuleService" class="org.geoserver.geofence.services.rest.impl.RESTAdminRuleServiceImpl">
     </bean>
 
     <bean id="restBatchService" class="org.geoserver.geofence.services.rest.impl.RESTBatchServiceImpl">
@@ -154,6 +156,22 @@
                <property name="securedObject" ref="restResourceService"/>
             </bean>-->
         </jaxrs:inInterceptors>
+    </jaxrs:server>
+
+    <jaxrs:server id="geofenceRESTAdminRules" address="/adminrules">
+        <jaxrs:serviceBeans>
+          <ref bean="restAdminRuleService"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:features>
+             <cxf:logging/>
+        </jaxrs:features>
+
+        <jaxrs:providers>
+           <ref bean="jaxbXmlProvider"/>
+           <ref bean="jsonProvider"/>
+        </jaxrs:providers>
+
     </jaxrs:server>
 
     <jaxrs:server id="geofenceRESTConfig" address="/config">

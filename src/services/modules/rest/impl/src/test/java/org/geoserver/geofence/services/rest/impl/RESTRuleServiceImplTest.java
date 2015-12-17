@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -14,15 +14,14 @@ import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.enums.AccessType;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
-import org.geoserver.geofence.services.rest.exception.ConflictRestEx;
 import org.geoserver.geofence.services.rest.model.util.IdName;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
 import javax.ws.rs.core.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.geoserver.geofence.services.rest.model.RESTRulePosition;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -61,7 +60,7 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
             LOGGER.info("Exception properly trapped");
         }
 
-        rule.setPosition(new RESTInputRule.RESTRulePosition(RESTInputRule.RESTRulePosition.RulePosition.offsetFromTop, 0));        
+        rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromTop, 0));        
         rule.setGrant(GrantType.ALLOW);
 
         Long rid = (Long)restRuleService.insert(rule).getEntity();
@@ -79,7 +78,7 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
     public void testMissingLayerOnConstraints() {
 
         RESTInputRule rule = new RESTInputRule();
-        rule.setPosition(new RESTInputRule.RESTRulePosition(RESTInputRule.RESTRulePosition.RulePosition.offsetFromTop, 0));
+        rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromTop, 0));
         rule.setGrant(GrantType.ALLOW);
 
         RESTLayerConstraints constraints = new RESTLayerConstraints();
@@ -99,7 +98,7 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
     @Test
     public void testUpdateToNull() {
         RESTInputRule rule = new RESTInputRule();
-        rule.setPosition(new RESTInputRule.RESTRulePosition(RESTInputRule.RESTRulePosition.RulePosition.offsetFromTop, 0));
+        rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromTop, 0));
         rule.setGrant(GrantType.ALLOW);
         rule.setService("s0");
         rule.setWorkspace("w0");
@@ -132,7 +131,7 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
     @Test
     public void testEmptyDetails() {
         RESTInputRule rule = new RESTInputRule();
-        rule.setPosition(new RESTInputRule.RESTRulePosition(RESTInputRule.RESTRulePosition.RulePosition.offsetFromTop, 0));
+        rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromTop, 0));
         rule.setGrant(GrantType.ALLOW);
         rule.setLayer("l0");
         Long rid = (Long)restRuleService.insert(rule).getEntity();
@@ -169,7 +168,7 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
 
         {
             RESTInputRule rule = new RESTInputRule();
-            rule.setPosition(new RESTInputRule.RESTRulePosition(RESTInputRule.RESTRulePosition.RulePosition.offsetFromTop, 0));
+            rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromTop, 0));
             rule.setGrant(GrantType.ALLOW);
             rule.setWorkspace("w0");
             rule.setLayer("l0");
@@ -223,7 +222,7 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
 
         {
             RESTInputRule rule = new RESTInputRule();
-            rule.setPosition(new RESTInputRule.RESTRulePosition(RESTInputRule.RESTRulePosition.RulePosition.fixedPriority, 42));
+            rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.fixedPriority, 42));
             rule.setGrant(GrantType.ALLOW);
             rule.setWorkspace("w0");
             rule.setLayer("l0");
