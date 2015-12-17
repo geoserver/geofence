@@ -5,7 +5,6 @@
 
 package org.geoserver.geofence.services;
 
-import org.geoserver.geofence.services.RuleAdminService;
 import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
 import org.geoserver.geofence.core.dao.LayerDetailsDAO;
@@ -18,27 +17,24 @@ import org.geoserver.geofence.core.model.RuleLimits;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
 import org.geoserver.geofence.services.dto.RuleFilter;
-import static org.geoserver.geofence.services.dto.RuleFilter.FilterType.ANY;
-import static org.geoserver.geofence.services.dto.RuleFilter.FilterType.DEFAULT;
-import static org.geoserver.geofence.services.dto.RuleFilter.FilterType.IDVALUE;
-import static org.geoserver.geofence.services.dto.RuleFilter.FilterType.NAMEVALUE;
-import org.geoserver.geofence.services.dto.RuleFilter.IdNameFilter;
-import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
 import org.geoserver.geofence.services.dto.ShortRule;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
+
+import static org.geoserver.geofence.services.util.FilterUtils.addCriteria;
+import static org.geoserver.geofence.services.util.FilterUtils.addFixedCriteria;
+import static org.geoserver.geofence.services.util.FilterUtils.addFixedStringCriteria;
+import static org.geoserver.geofence.services.util.FilterUtils.addPagingConstraints;
+import static org.geoserver.geofence.services.util.FilterUtils.addStringCriteria;
 
 /**
  *
@@ -297,20 +293,6 @@ public class RuleAdminServiceImpl implements RuleAdminService {
         return searchCriteria;
     }
 
-    protected void addPagingConstraints(Search searchCriteria, Integer page, Integer entries) {
-        if( (page != null && entries == null) || (page ==null && entries != null)) {
-            throw new BadRequestServiceEx("Page and entries params should be declared together.");
-        }
-
-        if(LOGGER.isInfoEnabled()) {
-            LOGGER.info("Searching Rule list " + ( page==null? "(unpaged) " : (" p:"+page + "#:"+entries)));
-        }
-
-        if(entries != null) {
-            searchCriteria.setMaxResults(entries);
-            searchCriteria.setPage(page);
-        }
-    }
 
     @Override
     public long getCountAll() {
@@ -348,74 +330,6 @@ public class RuleAdminServiceImpl implements RuleAdminService {
         return searchCriteria;
     }
 
-
-    /**
-     * Add criteria for <B>searching</B>.
-     *
-     * We're dealing with IDs here, so <U>we'll suppose that the related object id field is called "id"</U>.
-     */
-    private void addCriteria(Search searchCriteria, String fieldName, IdNameFilter filter) {
-        switch (filter.getType()) {
-            case ANY:
-                break; // no filtering
-
-            case DEFAULT:
-                searchCriteria.addFilterNull(fieldName);
-                break;
-
-            case IDVALUE:
-                if(filter.isIncludeDefault()) {
-                    searchCriteria.addFilterOr(
-                            Filter.isNull(fieldName),
-                            Filter.equal(fieldName + ".id", filter.getId()));
-                } else {
-                    searchCriteria.addFilter(
-                            Filter.equal(fieldName + ".id", filter.getId()));
-                }
-                break;
-
-            case NAMEVALUE:
-                if(filter.isIncludeDefault()) {
-                    searchCriteria.addFilterOr(
-                            Filter.isNull(fieldName),
-                            Filter.equal(fieldName + ".name", filter.getName()));
-                } else {
-                    searchCriteria.addFilter(
-                            Filter.equal(fieldName + ".name", filter.getName()));
-                }
-                break;
-
-            default:
-                throw new AssertionError();
-        }
-    }
-
-    private void addStringCriteria(Search searchCriteria, String fieldName, TextFilter filter) {
-        switch (filter.getType()) {
-            case ANY:
-                break; // no filtering
-
-            case DEFAULT:
-                searchCriteria.addFilterNull(fieldName);
-                break;
-
-            case NAMEVALUE:
-                if(filter.isIncludeDefault()) {
-                    searchCriteria.addFilterOr(
-                            Filter.isNull(fieldName),
-                            Filter.equal(fieldName, filter.getText()));
-                } else {
-                    searchCriteria.addFilter(
-                            Filter.equal(fieldName, filter.getText()));
-                }
-                break;
-
-            case IDVALUE:
-            default:
-                throw new AssertionError();
-        }
-    }
-
     //=========================================================================
 
     private Search buildFixedRuleSearch(RuleFilter filter) {
@@ -436,67 +350,6 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     }
 
 
-    /**
-     * Add criteria for <B>searching</B>.
-     *
-     * We're dealing with IDs here, so <U>we'll suppose that the related object id field is called "id"</U>.
-     */
-    private void addFixedCriteria(Search searchCriteria, String fieldName, IdNameFilter filter) {
-        switch (filter.getType()) {
-            case ANY:
-                throw new BadRequestServiceEx(fieldName + " should be a fixed search and can't be ANY");
-
-            case DEFAULT:
-                searchCriteria.addFilterNull(fieldName);
-                break;
-
-            case IDVALUE:
-                if(filter.isIncludeDefault()) {
-                    throw new BadRequestServiceEx(fieldName + " should be a fixed search");
-                } else {
-                    searchCriteria.addFilter(
-                            Filter.equal(fieldName + ".id", filter.getId()));
-                }
-                break;
-
-            case NAMEVALUE:
-                if(filter.isIncludeDefault()) {
-                    throw new BadRequestServiceEx(fieldName + " should be a fixed search");
-
-                } else {
-                    searchCriteria.addFilter(
-                            Filter.equal(fieldName + ".name", filter.getName()));
-                }
-                break;
-
-            default:
-                throw new AssertionError();
-        }
-    }
-
-    private void addFixedStringCriteria(Search searchCriteria, String fieldName, TextFilter filter) {
-        switch (filter.getType()) {
-            case ANY:
-                throw new BadRequestServiceEx(fieldName + " should be a fixed search and can't be ANY");
-
-            case DEFAULT:
-                searchCriteria.addFilterNull(fieldName);
-                break;
-
-            case NAMEVALUE:
-                if(filter.isIncludeDefault()) {
-                    throw new BadRequestServiceEx(fieldName + " should be a fixed search");
-                } else {
-                    searchCriteria.addFilter(
-                            Filter.equal(fieldName, filter.getText()));
-                }
-                break;
-
-            case IDVALUE:
-            default:
-                throw new AssertionError();
-        }
-    }
 
     // =========================================================================
     // Limits

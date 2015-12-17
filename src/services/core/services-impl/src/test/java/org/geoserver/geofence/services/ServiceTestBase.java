@@ -1,16 +1,10 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.services;
 
-import org.geoserver.geofence.services.UserGroupAdminService;
-import org.geoserver.geofence.services.GFUserAdminService;
-import org.geoserver.geofence.services.RuleAdminService;
-import org.geoserver.geofence.services.RuleReaderService;
-import org.geoserver.geofence.services.InstanceAdminService;
-import org.geoserver.geofence.services.UserAdminService;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
@@ -27,6 +21,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.geoserver.geofence.services.dto.ShortAdminRule;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -43,6 +38,7 @@ public class ServiceTestBase extends TestCase {
     protected static UserGroupAdminService userGroupAdminService;
     protected static InstanceAdminService instanceAdminService;
     protected static RuleAdminService ruleAdminService;
+    protected static AdminRuleAdminService adminruleAdminService;
     protected static RuleReaderService ruleReaderService;
 
     protected static ClassPathXmlApplicationContext ctx = null;
@@ -58,12 +54,13 @@ public class ServiceTestBase extends TestCase {
                 };
                 ctx = new ClassPathXmlApplicationContext(paths);
 
-                userAdminService     = (UserAdminService)ctx.getBean("userAdminService");
-                gfUserAdminService   = (GFUserAdminService)ctx.getBean("gfUserAdminService");
-                userGroupAdminService  = (UserGroupAdminService)ctx.getBean("userGroupAdminService");
-                instanceAdminService = (InstanceAdminService)ctx.getBean("instanceAdminService");
-                ruleAdminService     = (RuleAdminService)ctx.getBean("ruleAdminService");
-                ruleReaderService    = (RuleReaderService)ctx.getBean("ruleReaderService");
+                userAdminService      = (UserAdminService)ctx.getBean("userAdminService");
+                gfUserAdminService    = (GFUserAdminService)ctx.getBean("gfUserAdminService");
+                userGroupAdminService = (UserGroupAdminService)ctx.getBean("userGroupAdminService");
+                instanceAdminService  = (InstanceAdminService)ctx.getBean("instanceAdminService");
+                ruleAdminService      = (RuleAdminService)ctx.getBean("ruleAdminService");
+                adminruleAdminService = (AdminRuleAdminService)ctx.getBean("adminRuleAdminService");
+                ruleReaderService     = (RuleReaderService)ctx.getBean("ruleReaderService");
             }
         }
     }
@@ -81,11 +78,13 @@ public class ServiceTestBase extends TestCase {
         assertNotNull(userGroupAdminService);
         assertNotNull(instanceAdminService);
         assertNotNull(ruleAdminService);
+        assertNotNull(adminruleAdminService);
     }
 
     protected void removeAll() throws NotFoundServiceEx {
         LOGGER.info("***** removeAll()");
         removeAllRules();
+        removeAllAdminRules();
         removeAllUsers();
         removeAllGRUsers();
         removeAllUserGroups();
@@ -101,6 +100,17 @@ public class ServiceTestBase extends TestCase {
         }
 
         assertEquals("Rules have not been properly deleted", 0, ruleAdminService.getCountAll());
+    }
+
+    protected void removeAllAdminRules() throws NotFoundServiceEx {
+        List<ShortAdminRule> list = adminruleAdminService.getAll();
+        for (ShortAdminRule item : list) {
+            LOGGER.info("Removing " + item);
+            boolean ret = adminruleAdminService.delete(item.getId());
+            assertTrue("AdminRule not removed", ret);
+        }
+
+        assertEquals("AdminRules have not been properly deleted", 0, adminruleAdminService.getCountAll());
     }
 
     protected void removeAllUsers() throws NotFoundServiceEx {

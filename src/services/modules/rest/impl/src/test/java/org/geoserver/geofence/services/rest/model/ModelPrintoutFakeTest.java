@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -9,8 +9,6 @@ import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.enums.AccessType;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.core.model.enums.LayerType;
-import org.geoserver.geofence.services.rest.model.RESTInputRule.RESTRulePosition;
-import org.geoserver.geofence.services.rest.model.RESTInputRule.RESTRulePosition.RulePosition;
 import org.geoserver.geofence.services.rest.model.util.IdName;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -21,6 +19,7 @@ import java.util.Set;
 import javax.xml.bind.JAXB;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.geoserver.geofence.services.rest.model.RESTRulePosition.RulePosition;
 
 import org.junit.Test;
 
@@ -30,39 +29,6 @@ import org.junit.Test;
  */
 public class ModelPrintoutFakeTest {
     private final static Logger LOGGER = LogManager.getLogger(ModelPrintoutFakeTest.class);
-
-    public ModelPrintoutFakeTest() {
-        LOGGER.info("RESTShortUser sample");
-        RESTShortUser user = createShortUser("01");
-        LOGGER.info(marshal(user));
-
-        LOGGER.info("RESTShortUserList sample");
-        RESTShortUserList userList = new RESTShortUserList();
-        userList.add(createShortUser("01"));
-        userList.add(createShortUser("02"));
-        LOGGER.info(marshal(userList));
-
-        LOGGER.info("RESTInputUser sample");
-        RESTInputUser inputUser = createInputUser("02");
-        LOGGER.info(marshal(inputUser));
-
-        LOGGER.info("RESTInputRule sample");
-        RESTInputRule inputRule = createInputRule("02");
-        LOGGER.info(marshal(inputRule));
-
-        LOGGER.info("RESTInputRuleList sample");
-        RESTRuleList ruleList = new RESTRuleList();
-        RESTOutputRule r1 = createOutputRule("01");
-        r1.setConstraints(null);
-        ruleList.add(r1);
-        r1 = createOutputRule("02");
-        r1.setGrant(GrantType.DENY);
-        r1.setConstraints(null);
-        ruleList.add(r1);
-
-        LOGGER.info(marshal(ruleList));
-
-    }
 
     private String marshal(Object o) {
 

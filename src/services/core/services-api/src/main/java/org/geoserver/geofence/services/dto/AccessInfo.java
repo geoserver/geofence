@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -48,6 +48,7 @@ public class AccessInfo implements Serializable {
     private Set<LayerAttribute> attributes;
     private Set<String> allowedStyles;
 
+    private boolean adminRights;
 
     public AccessInfo() {
     }
@@ -122,10 +123,20 @@ public class AccessInfo implements Serializable {
         this.grant = grant;
     }
 
+    public boolean getAdminRights() {
+        return adminRights;
+    }
+
+    public void setAdminRights(boolean adminRights) {
+        this.adminRights = adminRights;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName())
                 .append("[grant:").append(grant);
+
+        sb.append(" admin:").append(adminRights);
 
         if (defaultStyle != null) {
             sb.append(" defSty:").append(defaultStyle);
