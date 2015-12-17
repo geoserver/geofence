@@ -925,7 +925,7 @@
         <repository>
             <id>ibiblio-maven2-repository</id>
             <name>ibiblio Repository for Maven</name>
-            <url>http://mirrors.ibiblio.org/maven2</url>
+            <url>http://maven.ibiblio.org/maven2/</url>
             <layout>default</layout>
             <snapshots>
                 <enabled>false</enabled>
