@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -36,7 +36,6 @@ import org.geoserver.geofence.services.rest.model.RESTBatchOperation;
 import org.geoserver.geofence.services.rest.model.RESTInputGroup;
 import org.geoserver.geofence.services.rest.model.RESTInputInstance;
 import org.geoserver.geofence.services.rest.model.RESTInputRule;
-import org.geoserver.geofence.services.rest.model.RESTInputRule.RESTRulePosition;
 import org.geoserver.geofence.services.rest.model.RESTInputUser;
 import org.geoserver.geofence.services.rest.model.RESTLayerConstraints;
 import org.geoserver.geofence.services.rest.model.RESTOutputRule;
@@ -58,6 +57,7 @@ import java.util.ArrayList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.geoserver.geofence.services.rest.model.RESTRulePosition;
 
 
 /**

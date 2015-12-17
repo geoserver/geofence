@@ -1,12 +1,10 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.services.rest;
 
-import org.geoserver.geofence.services.rest.RuleServiceHelper;
-import org.geoserver.geofence.services.rest.GeoFenceClient;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.ShortGroup;
@@ -22,6 +20,7 @@ import java.net.ConnectException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.geoserver.geofence.services.rest.model.RESTRulePosition;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -29,7 +28,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assume.*;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 
 /**
  *
@@ -142,7 +140,7 @@ public class GeoFenceClientTest {
             rule.setRolename("group01");
             rule.setLayer("test01");
             rule.setGrant(GrantType.ALLOW);
-            rule.setPosition(new RESTInputRule.RESTRulePosition(RESTInputRule.RESTRulePosition.RulePosition.offsetFromBottom, 0));
+            rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromBottom, 0));
             client.getRuleService().insert(rule);
         }
         {
@@ -150,7 +148,7 @@ public class GeoFenceClientTest {
             rule.setRolename("group01");
             rule.setLayer("test02");
             rule.setGrant(GrantType.ALLOW);
-            rule.setPosition(new RESTInputRule.RESTRulePosition(RESTInputRule.RESTRulePosition.RulePosition.offsetFromBottom, 0));
+            rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromBottom, 0));
             client.getRuleService().insert(rule);
         }
         {
@@ -158,13 +156,13 @@ public class GeoFenceClientTest {
             rule.setRolename("group02");
             rule.setLayer("test03");
             rule.setGrant(GrantType.ALLOW);
-            rule.setPosition(new RESTInputRule.RESTRulePosition(RESTInputRule.RESTRulePosition.RulePosition.offsetFromBottom, 0));
+            rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromBottom, 0));
             client.getRuleService().insert(rule);
         }
         {
             RESTInputRule rule = new RESTInputRule();
             rule.setGrant(GrantType.DENY);
-            rule.setPosition(new RESTInputRule.RESTRulePosition(RESTInputRule.RESTRulePosition.RulePosition.offsetFromBottom, 0));
+            rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromBottom, 0));
             client.getRuleService().insert(rule);
         }
 

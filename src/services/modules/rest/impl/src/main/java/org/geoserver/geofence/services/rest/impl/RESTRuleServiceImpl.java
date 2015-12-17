@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -26,11 +26,9 @@ import org.geoserver.geofence.services.rest.exception.GeoFenceRestEx;
 import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
 import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
 import org.geoserver.geofence.services.rest.model.RESTInputRule;
-import org.geoserver.geofence.services.rest.model.RESTInputRule.RESTRulePosition.RulePosition;
 import org.geoserver.geofence.services.rest.model.RESTLayerConstraints;
 import org.geoserver.geofence.services.rest.model.RESTOutputRule;
 import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
-import org.geoserver.geofence.services.rest.model.config.RESTFullRuleList;
 import org.geoserver.geofence.services.rest.model.util.IdName;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +38,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.geoserver.geofence.services.rest.model.RESTRulePosition.RulePosition;
 
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
