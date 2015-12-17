@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -36,9 +36,13 @@ public class MD5Util {
             throw new AuthException(e.getLocalizedMessage(), e);
         }
         byte[] thedigest = md.digest(passwordByteArr);
-        StringBuffer hexString = new StringBuffer();
+        StringBuilder hexString = new StringBuilder();
         for (int i = 0; i < thedigest.length; i++) {
-            hexString.append(Integer.toHexString(0xFF & thedigest[i]));
+            String hexByte = Integer.toHexString(0xFF & thedigest[i]);
+            if(hexByte.length()==1) {
+                hexString.append('0');
+            }
+            hexString.append(hexByte);
         }
         return hexString.toString();
     }
