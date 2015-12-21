@@ -47,6 +47,13 @@ public interface RuleReaderService
     AccessInfo getAccessInfo(RuleFilter filter);
 
     /**
+     * info about admin authorization on a given workspace.
+     *
+     * Returned AccessInfo will always be ALLOW, with the computed adminRights.
+     */
+    AccessInfo getAdminAuthorization(RuleFilter filter);
+
+    /**
      * Return the unprocessed {@link Rule} list matching a given filter, sorted
      * by priority.
      * <P>

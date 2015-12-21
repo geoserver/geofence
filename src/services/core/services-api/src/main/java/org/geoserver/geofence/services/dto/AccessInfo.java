@@ -48,7 +48,7 @@ public class AccessInfo implements Serializable {
     private Set<LayerAttribute> attributes;
     private Set<String> allowedStyles;
 
-    private boolean adminRights;
+    private boolean adminRights = false;
 
     public AccessInfo() {
     }
