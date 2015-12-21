@@ -155,6 +155,14 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         return ret;
     }
 
+    @Override
+    public AccessInfo getAdminAuthorization(RuleFilter filter)
+    {
+        AccessInfo ret = new AccessInfo(GrantType.ALLOW);
+        ret.setAdminRights(getAdminAuth(filter));
+        return ret;
+    }
+
     private AccessInfoInternal enlargeAccessInfo(AccessInfoInternal baseAccess, AccessInfoInternal moreAccess)
     {
         if(baseAccess == null) {
