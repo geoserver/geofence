@@ -1,5 +1,5 @@
 <!--
-/* (c) 2014,2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014,2016 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -27,7 +27,7 @@
 	<!-- Load CXF modules from cxf.jar -->
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
-    <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
+    <!--<import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />-->
 
     <!-- ====================================================================-->
     <!-- === Service providers ==============================================-->
@@ -220,7 +220,11 @@
     <!-- ====================================================================-->
 
     <bean id="jaxbXmlProvider" class="org.apache.cxf.jaxrs.provider.JAXBElementProvider"/>
-    <bean id="jsonProvider" class="org.apache.cxf.jaxrs.provider.JSONProvider"/>
+<!--    <jaxrs:providers>
+        <bean class="org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider" />
+    </jaxrs:providers>-->
+    <bean id="jsonProvider" class="org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider"/>
+    <!--<bean id="jsonProvider" class="org.apache.cxf.jaxrs.provider.json.JSONProvider"/>-->
 <!--    <bean id="jaxbContextResolver" class="org.geoserver.geostore.services.rest.auth.JAXBContextResolver" />-->
 
     <!-- ====================================================================-->

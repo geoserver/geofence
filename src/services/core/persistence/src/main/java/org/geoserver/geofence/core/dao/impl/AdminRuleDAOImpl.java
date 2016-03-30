@@ -1,4 +1,4 @@
-/* (c) 2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2015, 2016 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -16,9 +16,9 @@ import org.geoserver.geofence.core.model.enums.InsertPosition;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.geoserver.geofence.core.dao.AdminRuleDAO;
+import org.geoserver.geofence.core.dao.DuplicateKeyException;
 import org.geoserver.geofence.core.model.AdminRule;
 
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
