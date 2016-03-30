@@ -37,7 +37,7 @@ public interface RESTRuleService
 {
     @POST
     @Path("/")
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.TEXT_PLAIN)
     Response insert(@Multipart("rule") RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx;
 
     @GET
@@ -53,7 +53,7 @@ public interface RESTRuleService
 
     @DELETE
     @Path("/id/{id}")
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.TEXT_XML)
     Response delete(@PathParam("id") Long id) throws BadRequestRestEx, NotFoundRestEx;
 
     @GET
