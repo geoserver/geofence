@@ -1,4 +1,4 @@
-/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014, 2016 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -19,8 +19,8 @@ import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.geoserver.geofence.core.dao.DuplicateKeyException;
 
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -34,7 +34,7 @@ public class RuleDAOImpl extends PrioritizableDAOImpl<Rule> implements RuleDAO {
     private static final Logger LOGGER = LogManager.getLogger(RuleDAOImpl.class);
 
     @Override
-    public void persist(Rule... entities) {
+    public void persist(Rule... entities) throws DuplicateKeyException {
 
         // TODO: check if there are any dups in the input list
 

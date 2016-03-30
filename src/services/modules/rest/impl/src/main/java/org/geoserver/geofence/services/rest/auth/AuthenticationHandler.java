@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014,2016 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -131,7 +131,8 @@ public class AuthenticationHandler extends AbstractInDatabindingInterceptor
         message.getInterceptorChain().abort();
         try
         {
-            getConduit(message).prepare(outMessage);
+            message.getExchange().getConduit(message).prepare(outMessage); // TEST ME
+//            getConduit(message).prepare(outMessage);
 
             OutputStream os = outMessage.getContent(OutputStream.class);
             String errmsg = "Error " + responseCode + ": ";
@@ -170,15 +171,15 @@ public class AuthenticationHandler extends AbstractInDatabindingInterceptor
      * @return Conduit
      * @throws IOException
      */
-    private Conduit getConduit(Message inMessage) throws IOException
-    {
-        Exchange exchange = inMessage.getExchange();
-        EndpointReferenceType target = exchange.get(EndpointReferenceType.class);
-        Conduit conduit = exchange.getDestination().getBackChannel(inMessage, null, target);
-        exchange.setConduit(conduit);
-
-        return conduit;
-    }
+//    private Conduit getConduit(Message inMessage) throws IOException
+//    {
+//        Exchange exchange = inMessage.getExchange();
+//        EndpointReferenceType target = exchange.get(EndpointReferenceType.class);
+//        Conduit conduit = exchange.getDestination().getBackChannel(inMessage, null, target);
+//        exchange.setConduit(conduit);
+//
+//        return conduit;
+//    }
 
     /**
      * @param outMessage
