@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-/* (c) 2014,2016 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014-2016 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -13,12 +13,12 @@
     <parent>
         <groupId>org.geoserver.geofence</groupId>
         <artifactId>geofence</artifactId>
-        <version>3.1-SNAPSHOT</version>
+        <version>3.2-SNAPSHOT</version>
     </parent>
 
     <groupId>org.geoserver.geofence</groupId>
     <artifactId>geofence-root</artifactId>
-    <version>3.1-SNAPSHOT</version>
+    <version>3.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>GeoFence - 0 Services </name>
@@ -29,7 +29,7 @@
     </modules>
 
     <properties>
-        <geofence-version>3.1-SNAPSHOT</geofence-version>
+        <geofence-version>3.2-SNAPSHOT</geofence-version>
         <main-prefix>geofence</main-prefix>
 
         <cxf-version>3.1.5</cxf-version>
