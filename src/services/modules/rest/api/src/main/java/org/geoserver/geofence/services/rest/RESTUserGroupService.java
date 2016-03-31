@@ -63,7 +63,7 @@ public interface RESTUserGroupService
 
     @POST
     @Path("/")
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.TEXT_PLAIN)
     Response insert(@Multipart("userGroup") RESTInputGroup group) throws BadRequestRestEx, ConflictRestEx, InternalErrorRestEx;
 
 //    @PUT

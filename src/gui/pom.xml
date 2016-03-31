@@ -1,11 +1,9 @@
 <?xml version="1.0"?>
 <!--
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014-2016 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-
-
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -27,14 +25,16 @@
         <module.name>geofence-gui</module.name>
         <geofence-version>3.1-SNAPSHOT</geofence-version>
         <gsmanager-version>1.3.3</gsmanager-version>
-        <gt-version>8.4</gt-version>
+        <gt-version>15-SNAPSHOT</gt-version>
         <geogwt-version>0.2-SNAPSHOT</geogwt-version>
-        <spring.version>3.1.1.RELEASE</spring.version>
-        <spring.security.version>3.1.0.RELEASE</spring.security.version>
+
+        <spring.version>4.2.5.RELEASE</spring.version>
+        <spring.security.version>4.0.4.RELEASE</spring.security.version>
+
         <commonsFileuploadVersion>1.2.1</commonsFileuploadVersion>
         <commonsIoVersion>1.4</commonsIoVersion>
         <jaxws-version>2.1</jaxws-version>
-        <cxf-version>2.3.2</cxf-version>
+        <cxf-version>3.1.5</cxf-version>
 
         <persistence-version>1.0</persistence-version>
         <hibernate-version>3.3.2.GA</hibernate-version>
@@ -43,7 +43,7 @@
         <hibernate-commons-annotations-version>3.3.0.ga</hibernate-commons-annotations-version>
         <hibernate-generic-dao-version>0.5.1</hibernate-generic-dao-version>
         <asm-version>2.2.3</asm-version>
-        <cglib-version>2.1_3</cglib-version>
+        <cglib-version>2.2</cglib-version>
 
         <javassist-version>3.8.0.GA</javassist-version>
 	        
@@ -75,10 +75,6 @@
         <repository>
             <id>maven2</id>
             <url>http://repo1.maven.org/maven2/</url>
-        </repository>
-        <repository>
-            <id>ibiblio</id>
-            <url>http://maven.ibiblio.org/maven2/</url>
         </repository>
         <repository>
             <id>osgeo-geotools</id>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014,2016 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-
-
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     
     <modelVersion>4.0.0</modelVersion>
 
@@ -23,9 +23,9 @@
     <name>GeoFence - Core - Persistence</name>
     
     <dependencies>
-	    <!-- =========================================================== -->
-	    <!--     GeoFence Core Modules                                    -->
-	    <!-- =========================================================== -->
+        <!-- =========================================================== -->
+        <!--     GeoFence Core Modules                                    -->
+        <!-- =========================================================== -->
 
         <dependency>
             <groupId>org.geoserver.geofence</groupId>
@@ -33,8 +33,8 @@
         </dependency>
 
         <!-- =========================================================== -->
-	    <!--     Apache commons                                          -->
-	    <!-- =========================================================== -->
+        <!--     Apache commons                                          -->
+        <!-- =========================================================== -->
 
         <dependency>
             <groupId>commons-lang</groupId>
@@ -52,7 +52,7 @@
 
         <!-- =========================================================== -->
         <!-- 4J UTILS                                                    -->
-	    <!-- =========================================================== -->
+        <!-- =========================================================== -->
     
         <dependency>
             <groupId>dom4j</groupId>
@@ -63,9 +63,14 @@
             <artifactId>log4j-api</artifactId>
         </dependency>
 	
-		<!-- =========================================================== -->
-		<!--     SPRING                                                  -->
-		<!-- =========================================================== -->
+        <!-- =========================================================== -->
+        <!--     SPRING                                                  -->
+        <!-- =========================================================== -->
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -111,8 +116,6 @@
         </dependency>
 
 
-		    
-            
             <dependency>
                 <groupId>org.hibernatespatial</groupId>
                 <artifactId>hibernate-spatial-h2-geodb</artifactId>
@@ -122,20 +125,20 @@
 
             
 
-		    <!-- =========================================================== -->
-		    <!--     JDBC                                                    -->
-		    <!-- =========================================================== -->
-            <dependency>
-                <groupId>org.postgis</groupId>
-                <artifactId>postgis-jdbc</artifactId>
-            </dependency>
+        <!-- =========================================================== -->
+        <!--     JDBC                                                    -->
+        <!-- =========================================================== -->
+        <dependency>
+            <groupId>org.postgis</groupId>
+            <artifactId>postgis-jdbc</artifactId>
+        </dependency>
 
-            <dependency>
-                <groupId>postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-            </dependency>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
 
-		    <!-- =========================================================== -->
+        <!-- =========================================================== -->
 
             <dependency>
                 <groupId>com.h2database</groupId>
@@ -232,7 +235,7 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-
+        
     </dependencies>
   
     <build>
