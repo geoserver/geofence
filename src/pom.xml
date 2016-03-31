@@ -50,10 +50,11 @@
    
    <ciManagement>
       <system>jenkins</system>
-      <url>http://build.geo-solutions.it/jenkins</url>
+      <url>http://ares.boundlessgeo.com/jenkins</url>
    </ciManagement>
    
    <repositories>
+
       <repository>
          <id>boundless</id>
          <name>Boundless Maven Repository</name>
@@ -62,6 +63,7 @@
             <enabled>true</enabled>
          </snapshots>
       </repository>
+
       <repository>
          <id>osgeo</id>
          <name>Open Source Geospatial Foundation Repository</name>
@@ -83,7 +85,7 @@
         <id>boundless</id>
         <uniqueVersion>false</uniqueVersion>
         <name>Boundless Snapshot Repository</name>
-        <url>http://repo.boundlessgeo.com/snapshot/</url>
+        <url>https://repo.boundlessgeo.com/snapshot/</url>
       </snapshotRepository>
   </distributionManagement>
    
