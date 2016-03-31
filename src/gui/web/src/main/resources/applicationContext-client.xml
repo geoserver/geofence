@@ -1,11 +1,8 @@
-
 <!--
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014-2016 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-
-
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
@@ -67,7 +64,6 @@
     <!-- Load CXF modules from cxf.jar -->
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
-    <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
 
 	<bean id="geofence-global-configurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -96,6 +92,7 @@
     <!-- ====================================================================-->
     <!-- GeoFence Global Config -->
     <!-- ====================================================================-->
+    
     <bean id="geofenceGlobalConfiguration" class="org.geoserver.geofence.gui.client.configuration.GeofenceGlobalConfiguration">
         <property name="baseLayerURL" value="${geofenceGlobalConfiguration.baseLayerURL}"/>
         <property name="baseLayerName" value="${geofenceGlobalConfiguration.baseLayerName}"/>

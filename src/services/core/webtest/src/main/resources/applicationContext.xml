@@ -1,11 +1,8 @@
-
 <!--
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014-2016 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-
-
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -34,24 +31,18 @@
         <property name="userGroupAdminService" ref="userGroupAdminService" />
         <property name="instanceAdminService" ref="instanceAdminService" />
         <property name="ruleAdminService" ref="ruleAdminService" />
-
-
     </bean>
 
     <bean id="remoteRuleReaderProxy" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" lazy-init="true">
-
         <property name="serviceUrl" value="http://localhost:9191/geofence/remoting/RuleReader"/>
         <property name="serviceInterface" value="org.geoserver.geofence.services.RuleReaderService"/>
     </bean>
 
-
-
    <!-- === CXF ======================================================== -->
    
-	<!-- Load CXF modules from cxf.jar -->
+    <!-- Load CXF modules from cxf.jar -->
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
-    <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
 
     <!-- ====================================================================-->
     <!-- === REST Services ==================================================-->

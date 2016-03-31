@@ -1,5 +1,5 @@
 <!--
-/* (c) 2014,2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014-2016 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -24,26 +24,21 @@
 
    <!-- === CXF ======================================================== -->
 
-	<!-- Load CXF modules from cxf.jar -->
+    <!-- Load CXF modules from cxf.jar -->
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
-    <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
 
     <!-- ====================================================================-->
     <!-- === Service providers ==============================================-->
     <!-- ====================================================================-->
 
     <bean id="restUserService" class="org.geoserver.geofence.services.rest.impl.RESTUserServiceImpl">
-<!--        <property name="userGroupAdminService" ref="userGroupAdminService"/>-->
-<!--        <property name="userAdminService" ref="userAdminService"/>-->
     </bean>
 
     <bean id="restUserGroupService" class="org.geoserver.geofence.services.rest.impl.RESTUserGroupServiceImpl">
-<!--        <property name="userGroupAdminService" ref="userGroupAdminService"/>-->
     </bean>
 
     <bean id="restInstanceService" class="org.geoserver.geofence.services.rest.impl.RESTInstanceServiceImpl">
-<!--        <property name="userGroupAdminService" ref="userGroupAdminService"/>-->
     </bean>
 
     <bean id="restRuleService" class="org.geoserver.geofence.services.rest.impl.RESTRuleServiceImpl">
@@ -78,15 +73,6 @@
              <cxf:logging/>
         </jaxrs:features>
 
-<!--        <jaxrs:providers>
-           <ref bean="jaxbXmlProvider"/>
-           <ref bean="jsonProvider"/>
-        </jaxrs:providers>-->
-
-        <!--jaxrs:inInterceptors>
-           <ref bean="securityInterceptor"/>
-           <<ref bean="authorizationInterceptor"/>>
-        </jaxrs:inInterceptors-->
     </jaxrs:server>
 
     <jaxrs:server id="geofenceRESTUserGroup" address="/groups">
@@ -101,14 +87,9 @@
         <jaxrs:providers>
            <ref bean="jaxbXmlProvider"/>
            <ref bean="jsonProvider"/>
-<!--           <ref bean="jaxbContextResolver"/>-->
         </jaxrs:providers>
 
         <jaxrs:inInterceptors>
-<!--            <bean class="org.geoserver.geostore.services.rest.utils.GeoStoreAuthenticationInterceptor"/>
-            <bean class="org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor">
-               <property name="securedObject" ref="restResourceService"/>
-            </bean>-->
         </jaxrs:inInterceptors>
     </jaxrs:server>
 
@@ -124,14 +105,9 @@
         <jaxrs:providers>
            <ref bean="jaxbXmlProvider"/>
            <ref bean="jsonProvider"/>
-<!--           <ref bean="jaxbContextResolver"/>-->
         </jaxrs:providers>
 
         <jaxrs:inInterceptors>
-<!--            <bean class="org.geoserver.geostore.services.rest.utils.GeoStoreAuthenticationInterceptor"/>
-            <bean class="org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor">
-               <property name="securedObject" ref="restResourceService"/>
-            </bean>-->
         </jaxrs:inInterceptors>
     </jaxrs:server>
 
@@ -147,14 +123,9 @@
         <jaxrs:providers>
            <ref bean="jaxbXmlProvider"/>
            <ref bean="jsonProvider"/>
-<!--           <ref bean="jaxbContextResolver"/>-->
         </jaxrs:providers>
 
         <jaxrs:inInterceptors>
-<!--            <bean class="org.geoserver.geostore.services.rest.utils.GeoStoreAuthenticationInterceptor"/>
-            <bean class="org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor">
-               <property name="securedObject" ref="restResourceService"/>
-            </bean>-->
         </jaxrs:inInterceptors>
     </jaxrs:server>
 
@@ -188,11 +159,6 @@
            <ref bean="jsonProvider"/>
         </jaxrs:providers>
 
-<!--        <jaxrs:inInterceptors>
-            <bean class="org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor">
-               <property name="securedObject" ref="restCategoryService"/>
-            </bean>
-        </jaxrs:inInterceptors>-->
     </jaxrs:server>
 
     <jaxrs:server id="geofenceRESTBatch" address="/batch">
@@ -208,11 +174,6 @@
            <ref bean="jaxbXmlProvider"/>
         </jaxrs:providers>
 
-<!--        <jaxrs:inInterceptors>
-            <bean class="org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor">
-               <property name="securedObject" ref="restCategoryService"/>
-            </bean>
-        </jaxrs:inInterceptors>-->
     </jaxrs:server>
 
     <!-- ====================================================================-->
@@ -220,29 +181,11 @@
     <!-- ====================================================================-->
 
     <bean id="jaxbXmlProvider" class="org.apache.cxf.jaxrs.provider.JAXBElementProvider"/>
-    <bean id="jsonProvider" class="org.apache.cxf.jaxrs.provider.JSONProvider"/>
-<!--    <bean id="jaxbContextResolver" class="org.geoserver.geostore.services.rest.auth.JAXBContextResolver" />-->
+    
+    <bean id="jsonProvider" class="org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider"/>
 
     <!-- ====================================================================-->
     <!-- === CXF Interceptors ===============================================-->
     <!-- ====================================================================-->
-
-<!--    <bean id="securityInterceptor" class="org.geoserver.geostore.services.rest.auth.AuthenticationHandler">
-    	<property name="realm" value="GeoStore REST Service"/>
-    </bean>-->
-
-<!--    <bean id="authorizationInterceptor2" class="org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor">
-       <property name="securedObject" ref="secureBean"/>
-    </bean>-->
-
-    <!--bean id="authorizationInterceptor" class="org.apache.cxf.interceptor.security.SimpleAuthorizingInterceptor">
-	   <property name="methodRolesMap">
-	      <map>
-	        <entry key="insert" value="ADMIN"/>
-	        <entry key="update" value="ADMIN USER"/>
-	        <entry key="delete" value="ADMIN USER"/>
-	      </map>
-	   </property>
-	</bean-->
 
 </beans>
