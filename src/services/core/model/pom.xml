@@ -79,18 +79,15 @@
         <plugins>
             <!-- Attach sources ============================================ -->
             <plugin>
-                <inherited>true</inherited>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.3</version>
-                <configuration>
-                    <attach>true</attach>
-                </configuration>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
+                        <phase>verify</phase>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>jar-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>
