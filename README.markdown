@@ -35,8 +35,8 @@ Here's a compatibility table for the versions of both applications:
 
 | GeoFence         | GeoServer  |   Main changes                        |
 |------------------|------------|---------------------------------------|
-| master branch: <br/>- stable: [3.2.0] <br/>- nightly: [3.2.x] | 2.9        | Spring 4, JDK 8                       |
-| 3.1.x branch:  <br/>- stable: [3.1.0] <br/>- nightly: [3.1.x] | 2.8  ([probe][2.8_probe]) ([embedded][2.8_embedded])    | Handle Workspace admin <br/> (feature for embedded version only)
+| master branch: <br/>- stable: [3.2.0] <br/>- nightly: [3.2.x] | 2.9 ([probe][2.9_probe]) ([embedded][2.9_embedded])     | Spring 4, JDK 8                       |
+| 3.1.x branch:  <br/>- stable: [3.1.0] <br/>- nightly: [3.1.x] | 2.8 ([probe][2.8_probe]) ([embedded][2.8_embedded])    | Handle Workspace admin <br/> (feature for embedded version only)
 | 3.0.x            | 2.8        | GeoFence embedded into GeoServer  <br/>(Only for older 2.8 releases; Not recommended)
 | 2.2.x branch: <br/>- stable: [2.2.0] <br/>- nightly: [2.2.x]  | [2.7], [2.6]   | 
 
@@ -48,6 +48,8 @@ Here's a compatibility table for the versions of both applications:
 [2.2.x]: http://ares.boundlessgeo.com/geofence/2.2.x/geofence-2.2.x-latest-war.zip
 [2.8_probe]:    http://ares.boundlessgeo.com/geoserver/2.8.x/community-latest/geoserver-2.8-SNAPSHOT-geofence-plugin.zip
 [2.8_embedded]: http://ares.boundlessgeo.com/geoserver/2.8.x/community-latest/geoserver-2.8-SNAPSHOT-geofence-server-plugin.zip
+[2.9_probe]:    http://ares.boundlessgeo.com/geoserver/master/community-latest/geoserver-2.9-SNAPSHOT-geofence-plugin.zip
+[2.9_embedded]: http://ares.boundlessgeo.com/geoserver/master/community-latest/geoserver-2.9-SNAPSHOT-geofence-server-plugin.zip
 [2.7]: http://ares.boundlessgeo.com/geoserver/2.7.x/community-latest/geoserver-2.7-SNAPSHOT-geofence-plugin.zip
 [2.6]: http://ares.boundlessgeo.com/geoserver/2.6.x/community-latest/geoserver-2.6-SNAPSHOT-geofence-plugin.zip
 
