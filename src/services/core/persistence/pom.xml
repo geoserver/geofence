@@ -14,7 +14,7 @@
     <parent>
         <groupId>org.geoserver.geofence</groupId>
         <artifactId>geofence-core</artifactId>
-        <version>3.1-SNAPSHOT</version>
+        <version>3.1.0</version>
     </parent>
 
     <groupId>org.geoserver.geofence</groupId>
@@ -254,14 +254,14 @@
                 <configuration>
                     <hibernatetool destdir="target/classes">
 
-                        <annotationconfiguration configurationfile="src/test/resources/hibernate.cfg.xml" />
+                        <annotationconfiguration configurationfile="src/test/resources/hibernate.cfg.xml"/>
                         <!--<jdbcconfiguration packagename="it" />-->
                         <!--<hbm2hbmxml destdir="target/generated-sources/hibernate" />-->
                         <!--<hbm2cfgxml />-->
                         <!--<hbm2dao jdk5="true" ejb3="true" />-->
                         <!--hbm2ddl-->
                         <classpath>
-                            <path location="target/classes" />
+                            <path location="target/classes"/>
                         </classpath>
 
                     </hibernatetool>

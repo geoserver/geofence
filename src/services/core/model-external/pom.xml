@@ -14,7 +14,7 @@
     <parent>
         <groupId>org.geoserver.geofence</groupId>
         <artifactId>geofence-core</artifactId>
-        <version>3.1-SNAPSHOT</version>
+        <version>3.1.0</version>
     </parent>
   
     <groupId>org.geoserver.geofence</groupId>
@@ -83,31 +83,31 @@
                         <configuration>
                             <target>
                                 <replaceregexp byline="true" replace="">
-                                    <regexp pattern="import javax\.persistence\..*" />
+                                    <regexp pattern="import javax\.persistence\..*"/>
                                     <fileset dir="${project.build.directory}/generated-sources/original">
-                                        <include name="**/*.java" />
+                                        <include name="**/*.java"/>
                                     </fileset>
                                 </replaceregexp>
 
                                 <replaceregexp byline="true">
-                                    <regexp pattern="import org\.hibernate\.annotations\..*" />
-                                    <substitution expression="" />
+                                    <regexp pattern="import org\.hibernate\.annotations\..*"/>
+                                    <substitution expression=""/>
                                     <fileset dir="${project.build.directory}/generated-sources/original">
-                                        <include name="**/*.java" />
+                                        <include name="**/*.java"/>
                                     </fileset>
                                 </replaceregexp>
 
                                 <replaceregexp byline="true" replace="">
-                                    <regexp pattern="(@Entity|@Cache|@Table|@org.hibernate.annotations.CollectionOfElements|@Fetch|@Index|@Embedded|@Embeddable|@Check).*" />
+                                    <regexp pattern="(@Entity|@Cache|@Table|@org.hibernate.annotations.CollectionOfElements|@Fetch|@Index|@Embedded|@Embeddable|@Check).*"/>
                                     <fileset dir="${project.build.directory}/generated-sources/original">
-                                        <include name="**/*.java" />
+                                        <include name="**/*.java"/>
                                     </fileset>
                                 </replaceregexp>
 
                                 <replaceregexp byline="true" replace="">
-                                    <regexp pattern="(@Id|@GeneratedValue|@Enumerated|@Column|@Type|@Temporal|@OneToOne|@ManyToOne|@ManyToMany|@ForeignKey|@UniqueConstraint|@AttributeOverride|@JoinTable).*" />
+                                    <regexp pattern="(@Id|@GeneratedValue|@Enumerated|@Column|@Type|@Temporal|@OneToOne|@ManyToOne|@ManyToMany|@ForeignKey|@UniqueConstraint|@AttributeOverride|@JoinTable).*"/>
                                     <fileset dir="${project.build.directory}/generated-sources/original">
-                                        <include name="**/*.java" />
+                                        <include name="**/*.java"/>
                                     </fileset>
                                 </replaceregexp>
 
