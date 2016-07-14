@@ -16,12 +16,13 @@ import com.vividsolutions.jts.io.WKTWriter;
 /**
  * The Class GeometryAdapter.
  * 
- * @param <G>
- *            the generic type
+ * @param <G> the generic type
  */
 public class GeometryAdapter<G extends Geometry> extends XmlAdapter<String, G> {
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.xml.bind.annotation.adapters.XmlAdapter#unmarshal(java.lang.Object)
      */
     @SuppressWarnings("unchecked")
@@ -40,7 +41,9 @@ public class GeometryAdapter<G extends Geometry> extends XmlAdapter<String, G> {
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.xml.bind.annotation.adapters.XmlAdapter#marshal(java.lang.Object)
      */
     @Override

@@ -131,49 +131,6 @@
             <artifactId>search-jpa-hibernate</artifactId>
         </dependency>
 
-
-<!--        <dependency>
-            <groupId>com.trg</groupId>
-            <artifactId>trg-dao</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.trg</groupId>
-            <artifactId>trg-search-jpa-hibernate</artifactId>
-        </dependency>-->
-
-        <!-- HIBERNATE-SPATIAL -->
-        <!-- dependency>
-            <groupId>org.hibernatespatial</groupId>
-            <artifactId>hibernate-spatial-postgis</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency -->
-	
-  		<!-- CGLIB -->
-<!--        <dependency>
-            <groupId>asm</groupId>
-            <artifactId>asm</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib-nodep</artifactId>
-        </dependency>-->
-
-    <!-- HTTP UTILS -->
-<!--        <dependency>
-            <groupId>org.codehaus.jettison</groupId>
-            <artifactId>jettison</artifactId>
-        </dependency>-->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
@@ -188,17 +145,6 @@
             <artifactId>servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
-    	      
-        <!-- CXF -->
-<!--        <dependency>
-            <groupId>javax.xml.ws</groupId>
-            <artifactId>jaxws-api</artifactId>
-        </dependency>-->
-      <!-- Velocity (Email templates) -->
-<!--        <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
-        </dependency>-->
 
 	    <!-- =========================================================== -->
         <!-- TEST -->

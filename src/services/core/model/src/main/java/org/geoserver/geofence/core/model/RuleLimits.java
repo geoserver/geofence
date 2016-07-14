@@ -5,11 +5,8 @@
 
 package org.geoserver.geofence.core.model;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
-import org.geoserver.geofence.core.model.adapter.MultiPolygonAdapter;
-import org.geoserver.geofence.core.model.enums.CatalogMode;
-import org.geoserver.geofence.core.model.enums.GrantType;
 import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -21,21 +18,26 @@ import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.geoserver.geofence.core.model.adapter.MultiPolygonAdapter;
+import org.geoserver.geofence.core.model.enums.CatalogMode;
+import org.geoserver.geofence.core.model.enums.GrantType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Check;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Type;
 
+import com.vividsolutions.jts.geom.MultiPolygon;
+
 /**
- * Defines general limits (such as an Area ) for a {@link Rule}.
- * <BR>RuleLimits may be set only for rules with a {@link GrantType#LIMIT} access type.
+ * Defines general limits (such as an Area ) for a {@link Rule}. <BR>
+ * RuleLimits may be set only for rules with a {@link GrantType#LIMIT} access type.
  *
  * @author ETj (etj at geo-solutions.it)
  */
 @Entity(name = "RuleLimits")
-@Table(name = "gf_rule_limits", uniqueConstraints=
-        @UniqueConstraint(columnNames="rule_id"))
+@Table(name = "gf_rule_limits", uniqueConstraints = @UniqueConstraint(columnNames = "rule_id"))
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "RuleLimits")
 @XmlRootElement(name = "RuleLimits")
 public class RuleLimits implements Serializable {
@@ -44,18 +46,18 @@ public class RuleLimits implements Serializable {
 
     /** The id. */
     @Id
-//    @GeneratedValue
+    // @GeneratedValue
     @Column
     private Long id;
 
-    @OneToOne(optional=false)
-    @Check(constraints="rule.access='LIMIT'") // ??? check this 
-    @ForeignKey(name="fk_limits_rule")
+    @OneToOne(optional = false)
+    @Check(constraints = "rule.access='LIMIT'") // ??? check this
+    @ForeignKey(name = "fk_limits_rule")
     private Rule rule;
 
-	@Type(type = "org.hibernatespatial.GeometryUserType")
-	@Column(name = "area")
-	private MultiPolygon allowedArea;
+    @Type(type = "org.hibernatespatial.GeometryUserType")
+    @Column(name = "area")
+    private MultiPolygon allowedArea;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "catalog_mode", nullable = true)

@@ -421,7 +421,6 @@
                 <version>2.8</version>
                 <executions>
                     <execution>
-
                         <id>copy-spatial-dependencies</id>
                         <phase>prepare-package</phase>
                         <goals>
