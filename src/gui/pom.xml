@@ -38,7 +38,7 @@
 
         <hibernate-version>3.6.0.Final</hibernate-version>
         <hibernate-spatial-version>1.1.1</hibernate-spatial-version>
-        <hibernate-generic-dao-version>1.2.0</hibernate-generic-dao-version>
+        <hibernate-generic-dao-version>1.1.0</hibernate-generic-dao-version>
         <asm-version>2.2.3</asm-version>
         <cglib-version>2.2</cglib-version>
 
