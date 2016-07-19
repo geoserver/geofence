@@ -91,7 +91,7 @@
 	<!-- =========================================================== -->
 
 
-	<!-- HIBERNATE-GENERIC-DAO -->
+		<!-- HIBERNATE-GENERIC-DAO -->
         <dependency>
             <groupId>com.googlecode.genericdao</groupId>
             <artifactId>dao</artifactId>
@@ -143,10 +143,10 @@
 		<!--     Hibernate                                               -->
 		<!-- =========================================================== -->
 
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-ehcache</artifactId>
-            </dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-ehcache</artifactId>
+		</dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -166,8 +166,8 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
-  	<!-- CGLIB -->
+		
+		<!-- CGLIB -->
         <dependency>
             <groupId>asm</groupId>
             <artifactId>asm</artifactId>
