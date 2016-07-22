@@ -45,7 +45,8 @@
     </bean>
 
     <bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
-        <property name="locations">
+	<property name="order" value="100"/>
+	<property name="locations">
             <list>
                 <value>classpath*:geofence-datasource-ovr.properties</value>
                 <value>file:${geofence.dir}/geofence-datasource-ovr.properties</value>
