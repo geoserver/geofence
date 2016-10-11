@@ -1102,58 +1102,77 @@ public class RuleGridWidget extends GeofenceGridWidget<RuleModel> {
 			protected boolean doSelect(Store<RuleModel> store, RuleModel parent,
 					RuleModel record, String property, String filter) {
 
+                                if(filter == null || filter.length() == 0) {
+                                    return true;
+                                }
+                                filter = filter.toLowerCase();
+
 				String field = ((UsernameModel) parent.get(BeanKeyValue.USERNAME.getValue())).getUsername();
-				field = field.toLowerCase();
-				if (field.indexOf(filter.toLowerCase()) != -1) {
-					return true;
-				}
+                                if(field != null) {
+                                    field = field.toLowerCase();
+                                    if (field.indexOf(filter) != -1) {
+                                            return true;
+                                    }
+                                }
 
 				field = ((RolenameModel) parent.get(BeanKeyValue.ROLENAME.getValue())).getRolename();
-				field = field.toLowerCase();
-				if (field.indexOf(filter.toLowerCase()) != -1) {
-					return true;
-				}
+                                if(field != null) {
+                                    field = field.toLowerCase();
+                                    if (field.indexOf(filter) != -1) {
+                                            return true;
+                                    }
+                                }
 
-				field = ((GSInstanceModel) parent.get(BeanKeyValue.INSTANCE
-						.getValue())).getName();
-				field = field.toLowerCase();
-				if (field.indexOf(filter.toLowerCase()) != -1) {
-					return true;
-				}
+				field = ((GSInstanceModel) parent.get(BeanKeyValue.INSTANCE.getValue())).getName();
+                                if(field != null) {
+                                    field = field.toLowerCase();
+                                    if (field.indexOf(filter) != -1) {
+                                            return true;
+                                    }
+                                }
 
 				field = parent.get(BeanKeyValue.SERVICE.getValue());
-				field = field.toLowerCase();
-				if (field.indexOf(filter.toLowerCase()) != -1) {
-					return true;
-				}
+                                if(field != null) {
+                                    field = field.toLowerCase();
+                                    if (field.indexOf(filter) != -1) {
+                                            return true;
+                                    }
+                                }
 
 				field = parent.get(BeanKeyValue.REQUEST.getValue());
-				field = field.toLowerCase();
-				if (field.indexOf(filter.toLowerCase()) != -1) {
-					return true;
-				}
+                                if(field != null) {
+                                    field = field.toLowerCase();
+                                    if (field.indexOf(filter) != -1) {
+                                            return true;
+                                    }
+                                }
 
 				field = parent.get(BeanKeyValue.WORKSPACE.getValue());
-				field = field.toLowerCase();
-				if (field.indexOf(filter.toLowerCase()) != -1) {
-					return true;
-				}
+                                if(field != null) {
+                                    field = field.toLowerCase();
+                                    if (field.indexOf(filter) != -1) {
+                                            return true;
+                                    }
+                                }
 
 				field = parent.get(BeanKeyValue.LAYER.getValue());
-				field = field.toLowerCase();
-				if (field.indexOf(filter.toLowerCase()) != -1) {
-					return true;
-				}
+                                if(field != null) {
+                                    field = field.toLowerCase();
+                                    if (field.indexOf(filter) != -1) {
+                                            return true;
+                                    }
+                                }
 
 				field = parent.get(BeanKeyValue.GRANT.getValue());
-				field = field.toLowerCase();
-				if (field.indexOf(filter.toLowerCase()) != -1) {
-					return true;
-				}
+                                if(field != null) {
+                                    field = field.toLowerCase();
+                                    if (field.indexOf(filter) != -1) {
+                                            return true;
+                                    }
+                                }
 
 				return false;
 			}
-
 		};
 
 		filter.setWidth(130);
