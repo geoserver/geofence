@@ -21,18 +21,17 @@ import javax.xml.bind.DatatypeConverter;
  */
 public class PwEncoder {
 
-    private static final byte[] KEY;
-    static {
-      String strKey = System.getProperty("GEOFENCE_PWENCODER_KEY");
-      if (strKey == null) {
-        strKey = "installation dependant key needed";
-      }
-      KEY = strKey.substring(0, 16).getBytes();
+    private static byte[] getKey() {
+        String strKey = System.getProperty("GEOFENCE_PWENCODER_KEY");
+        if (strKey == null || strKey.length() < 16) {
+          strKey = "installation dependant key needed";
+        }
+        return strKey.substring(0, 16).getBytes();
     }
 
     public static String encode(String msg) {
         try {
-            SecretKeySpec keySpec = new SecretKeySpec(KEY, "AES");
+            SecretKeySpec keySpec = new SecretKeySpec(getKey(), "AES");
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.ENCRYPT_MODE, keySpec);
 
@@ -55,7 +54,7 @@ public class PwEncoder {
 
     public static String decode(String msg) {
         try {
-            SecretKeySpec keySpec = new SecretKeySpec(KEY, "AES");
+            SecretKeySpec keySpec = new SecretKeySpec(getKey(), "AES");
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.DECRYPT_MODE, keySpec);
 

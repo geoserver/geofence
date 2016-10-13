@@ -3,7 +3,7 @@
  * application directory.
  */
 
-package org.geoserver.geofence.core.dao.util;
+package org.geoserver.geofence.core.model.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
