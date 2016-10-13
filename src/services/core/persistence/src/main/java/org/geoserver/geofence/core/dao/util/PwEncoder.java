@@ -22,9 +22,14 @@ import org.apache.commons.codec.binary.Base64;
  */
 public class PwEncoder {
 
-    // 123456789 123456789 123456789 12
-    private static final byte[] KEY = "installation dependant key needed".substring(0, 16)
-            .getBytes();
+    private static final byte[] KEY;
+    static {
+      String strKey = System.getProperty("GEOFENCE_PWENCODER_KEY");
+      if (strKey == null) {
+        strKey = "installation dependant key needed";
+      }
+      KEY = strKey.substring(0, 16).getBytes();
+    }
 
     public static String encode(String msg) {
         try {
