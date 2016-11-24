@@ -863,13 +863,13 @@
         </repository>
 
 				<!-- Hibernate Spatial -->
-        <repository>
+<!--        <repository>
             <id>Hibernate Spatial repo</id>
             <url>http://www.hibernatespatial.org/repository</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-        </repository>
+        </repository> -->
 
 				<!-- Apache -->
 <!--        <repository>
