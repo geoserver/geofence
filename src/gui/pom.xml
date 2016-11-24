@@ -116,14 +116,14 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
-        <repository>
+        <!--repository>
             <id>hibspat</id>
             <name>Hibernate Spatial</name>
             <url>http://www.hibernatespatial.org/repository</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-        </repository>
+        </repository-->
   </repositories>    
 
     <dependencyManagement>
