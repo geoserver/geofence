@@ -1,20 +1,33 @@
 GeoFence
 ==================================================
 
-**GeoFence** is a java web application that provides an advanced authentication/authorization engine for [GeoServer](http://www.geoserver.org) using the interface 
-described in [GSIP 57](http://geoserver.org/display/GEOS/GSIP+57+-+Improving+GeoServer+authorization+framework).
+**GeoFence** is an advanced authentication/authorization engine for [GeoServer](http://www.geoserver.org) 
 
-**GeoFence** can be run either as a standalone application, or embedded into GeoServer.
+Features
+--------------------------------------------------
+
+**GeoFence** allows you to create authorization rules on GeoServer resources based on multiple parameters, such as the user requesting the data, its role, the source IP address of the web request, the used OGC service/request, the requested layer or its workspace.
+
+You can setup authorization rules with the granularity you need: this means that you can allow or deny access to a given layer at a whole, or simply hide some attributes, restrict the output to only a given area, or only allow access to a subset of the features by filtering them using a CQL expression. 
+
+You can find more details on [this page](https://github.com/geoserver/geofence/wiki/Main-concepts#rules).
+
+Architecture
+--------------------------------------------------
+
+**GeoFence** can be run either as a standalone Java web application, or embedded into GeoServer.
 
 The **GeoFence** *standalone application* provides a graphical user interface to administer GeoServer users and authorization rules. Furthermore, a quite complete [REST API](https://github.com/geoserver/geofence/wiki/REST-API) allows the programmatic administration of the rules and their ancillary data.  
-In this configuration GeoServer needs a module (the **probe**) that will send authorization queries to GeoFence using a configurable internal protocol (by default it uses Spring remoting over HTTP).
+In this configuration GeoServer needs a module (the **probe**) that will send authorization queries to GeoFence using a configurable protocol (by default it uses Spring remoting over HTTP).
 
-The *embedded* configuration will make the GeoFence engine run within GeoServer itself. The administration GUI will be seamlessly embedded into GeoServer itself.
+The *embedded* configuration will make the GeoFence engine run within GeoServer itself. The administration GUI will be seamlessly embedded into GeoServer.
+
+**GeoFence** provides the authorization services using the interface described in [GSIP 57](http://geoserver.org/display/GEOS/GSIP+57+-+Improving+GeoServer+authorization+framework).
 
 
 License
 ==================================================
-**GeoFence** core modules and GUI, as well as the part of **GeoFence** that shall be installed as a module into GeoServer (either the **probe** or the **embedded** logic), are free and Open Source software, released under the [GPL v2] license,  (which is [GPL v2.0](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)), as it implements a GeoServer Java API.
+**GeoFence** core modules and GUI, as well as the part of **GeoFence** that shall be installed as a module into GeoServer (either the **probe** or the **embedded** logic), are free and Open Source software, released under the GPL license,  (which is [GPL v2.0](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)), as it implements a GeoServer Java API.
 
 Getting GeoFence
 ==================================================
