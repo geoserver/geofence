@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -50,6 +50,7 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import org.apache.commons.lang.StringUtils;
 import org.geoserver.geofence.core.model.GSInstance;
 import org.geoserver.geofence.core.model.IPAddressRange;
 import org.geoserver.geofence.core.model.Rule;
@@ -446,56 +447,56 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 
         logger.error("TODO: rule refactoring!!! custom props have been removed");
 
-        Map<String, String> props = new HashMap<String, String>();
-
-        for (LayerCustomProps prop : customProps) {
-            props.put(prop.getPropKey(), prop.getPropValue());
-        }
-
-        LayerDetails details = null;
-        try {
-            details = geofenceRemoteService.getRuleAdminService().get(ruleId)
-                    .getLayerDetails();
-
-            if (details == null) {
-                details = new LayerDetails();
-
-                org.geoserver.geofence.core.model.Rule rule = geofenceRemoteService
-                        .getRuleAdminService().get(ruleId);
-                org.geoserver.geofence.core.model.GSInstance gsInstance = rule
-                        .getInstance();
-                GeoServerRESTReader gsreader = new GeoServerRESTReader(
-                        gsInstance.getBaseURL(), gsInstance.getUsername(),
-                        gsInstance.getPassword());
-
-                if ((rule.getWorkspace() == null)
-                        && !rule.getLayer().equalsIgnoreCase("*")) {
-					// RESTLayerGroup group =
-                    // gsreader.getLayerGroup(rule.getLayer());
-                    details.setType(LayerType.LAYERGROUP);
-                } else {
-                    RESTLayer layer = gsreader.getLayer(rule.getLayer());
-
-                    if (layer.getType().equals(RESTLayer.TYPE.VECTOR)) {
-                        details.setType(LayerType.VECTOR);
-                    } else {
-                        details.setType(LayerType.RASTER);
-                    }
-                }
-
-                // REMOVED BY ETj
-//				details.setCustomProps(props); 
-//				geofenceRemoteService.getRuleAdminService().setDetails(ruleId,
-//						details);
-            } else {
-//				geofenceRemoteService.getRuleAdminService().setDetailsProps(
-//						ruleId, props);
-            }
-
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new ApplicationException(e.getMessage(), e);
-        }
+//        Map<String, String> props = new HashMap<String, String>();
+//
+//        for (LayerCustomProps prop : customProps) {
+//            props.put(prop.getPropKey(), prop.getPropValue());
+//        }
+//
+//        LayerDetails details = null;
+//        try {
+//            details = geofenceRemoteService.getRuleAdminService().get(ruleId)
+//                    .getLayerDetails();
+//
+//            if (details == null) {
+//                details = new LayerDetails();
+//
+//                org.geoserver.geofence.core.model.Rule rule = geofenceRemoteService
+//                        .getRuleAdminService().get(ruleId);
+//                org.geoserver.geofence.core.model.GSInstance gsInstance = rule
+//                        .getInstance();
+//                GeoServerRESTReader gsreader = new GeoServerRESTReader(
+//                        gsInstance.getBaseURL(), gsInstance.getUsername(),
+//                        gsInstance.getPassword());
+//
+//                if ((rule.getWorkspace() == null)
+//                        && !rule.getLayer().equalsIgnoreCase("*")) {
+//					// RESTLayerGroup group =
+//                    // gsreader.getLayerGroup(rule.getLayer());
+//                    details.setType(LayerType.LAYERGROUP);
+//                } else {
+//                    RESTLayer layer = gsreader.getLayer(rule.getLayer());
+//
+//                    if (layer.getType().equals(RESTLayer.TYPE.VECTOR)) {
+//                        details.setType(LayerType.VECTOR);
+//                    } else {
+//                        details.setType(LayerType.RASTER);
+//                    }
+//                }
+//
+//                // REMOVED BY ETj
+////				details.setCustomProps(props); 
+////				geofenceRemoteService.getRuleAdminService().setDetails(ruleId,
+////						details);
+//            } else {
+////				geofenceRemoteService.getRuleAdminService().setDetailsProps(
+////						ruleId, props);
+//            }
+//
+//        } catch (Exception e) {
+//            logger.error(e.getMessage(), e);
+//            throw new ApplicationException(e.getMessage(), e);
+//        }
     }
 
     /*
@@ -571,16 +572,23 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
         GSInstanceModel gsInstance = rule.getInstance();
         GeoServerRESTReader gsreader;
 
+        String ws = rule.getWorkspace();
+        if(StringUtils.isBlank(ws) || "*".equals(ws))
+            throw new ApplicationException("A workspace name is needed");
+
+        String layername = rule.getLayer();
+        if(StringUtils.isBlank(layername) || "*".equals(layername))
+            throw new ApplicationException("A layer name is needed");
+
         try {
-            gsreader = new GeoServerRESTReader(gsInstance.getBaseURL(),
+            gsreader = new GeoServerRESTReader(
+                    gsInstance.getBaseURL(),
                     gsInstance.getUsername(), gsInstance.getPassword());
 
-            RESTLayer layer = gsreader.getLayer(rule.getLayer());
+            RESTLayer layer = gsreader.getLayer(ws, layername);
 
-            if (layer.getType().equals(RESTLayer.TYPE.VECTOR)) {
-//				layerAttributes = new HashSet<LayerAttribute>();
-
-				// ///////////////////////
+            if (layer.getType().equals(RESTLayer.Type.VECTOR)) {
+                // ///////////////////////
                 // Vector Layer
                 // ///////////////////////
                 RESTFeatureType featureType = gsreader.getFeatureType(layer);
@@ -596,7 +604,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
                 }
 
             } else {
-				// ///////////////////////
+                // ///////////////////////
                 // Raster Layer
                 // ///////////////////////
                 layerAttributesDTO = null;
@@ -694,17 +702,27 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 
             // Reload layer info from GeoServer
             // (in the rule we may have changed the layer)
-            org.geoserver.geofence.core.model.Rule rule = geofenceRemoteService
-                    .getRuleAdminService().get(ruleId);
-            org.geoserver.geofence.core.model.GSInstance gsInstance = rule
-                    .getInstance();
+            org.geoserver.geofence.core.model.Rule rule =
+                    geofenceRemoteService.getRuleAdminService().get(ruleId);
+            org.geoserver.geofence.core.model.GSInstance gsInstance =
+                    rule.getInstance();
+
+            String ws = rule.getWorkspace();
+            if(StringUtils.isBlank(ws) || "*".equals(ws))
+                throw new ApplicationException("Rule is missing the needed workspace name");
+
+            String layername = rule.getLayer();
+            if(StringUtils.isBlank(layername) || "*".equals(layername))
+                throw new ApplicationException("Rule is missing the needed layer name");
+
             GeoServerRESTReader gsreader = new GeoServerRESTReader(
-                    gsInstance.getBaseURL(), gsInstance.getUsername(),
-                    gsInstance.getPassword());
-            RESTLayer layer = gsreader.getLayer(rule.getLayer());
+                    gsInstance.getBaseURL(), 
+                    gsInstance.getUsername(),gsInstance.getPassword());
+
+            RESTLayer layer = gsreader.getLayer(ws, layername);
 
             if (layer != null) {
-                if (layer.getType().equals(RESTLayer.TYPE.VECTOR)) {
+                if (layer.getType().equals(RESTLayer.Type.VECTOR)) {
                     details.setType(LayerType.VECTOR);
                 } else {
                     details.setType(LayerType.RASTER);
