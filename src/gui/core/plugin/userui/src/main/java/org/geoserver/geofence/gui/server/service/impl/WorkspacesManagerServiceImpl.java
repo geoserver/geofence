@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -27,6 +27,9 @@ import org.geoserver.geofence.gui.service.GeofenceRemoteService;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.decoder.RESTAbstractList;
+import it.geosolutions.geoserver.rest.decoder.RESTCoverageList;
+import it.geosolutions.geoserver.rest.decoder.RESTCoverageStoreList;
+import it.geosolutions.geoserver.rest.decoder.RESTFeatureTypeList;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 import it.geosolutions.geoserver.rest.decoder.RESTStyleList;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
@@ -34,6 +37,7 @@ import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList.RESTShortWorkspa
 import it.geosolutions.geoserver.rest.decoder.utils.NameLinkElem;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import org.apache.commons.lang.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,25 +148,19 @@ public class WorkspacesManagerServiceImpl implements IWorkspacesManagerService
                 else
                 {
                     SortedSet<String> sortedLayerNames = new TreeSet<String>();
-                    RESTAbstractList<NameLinkElem> layers = gsreader.getLayers();
 
                     if (workspace.equals("*")) { // load all layers
+                        RESTAbstractList<NameLinkElem> layers = gsreader.getLayers();
                     	if (layers != null)
                     		for (NameLinkElem layerLink : layers) {
                     			sortedLayerNames.add(layerLink.getName());
                     		}
                     } else {
-                        if ((layers != null) && !layers.isEmpty()) {
 
-                            for (NameLinkElem layerNL : layers) {
-                                // next block is really too slow
-                                RESTLayer layer = gsreader.getLayer(layerNL.getName());
-                                if(layer.getResourceUrl().contains("workspaces/" + workspace + "/"))  {
-                                    sortedLayerNames.add(layerNL.getName());
-                                    //layersListDTO.add(new Layer(layerNL.getName()));
-                                }
-                            }
-                        }
+                        if(StringUtils.isBlank(workspace))
+                            throw new ApplicationException("A workspace name is needed");
+
+                        sortedLayerNames = getWorkspaceLayers(gsreader, workspace);
                     }
                     // return the sorted layers list
                     for (String layerName : sortedLayerNames) {
@@ -176,6 +174,26 @@ public class WorkspacesManagerServiceImpl implements IWorkspacesManagerService
         }
 
         return new RpcPageLoadResult<Layer>(layersListDTO, 0, layersListDTO.size());
+    }
+
+    public SortedSet<String> getWorkspaceLayers(GeoServerRESTReader reader, String workspace) {
+
+        SortedSet<String> layerNames = new TreeSet<String>();
+
+        RESTFeatureTypeList featureTypes = reader.getFeatureTypes(workspace);
+        for (NameLinkElem ft : featureTypes) {
+            layerNames.add(ft.getName());
+        }
+
+        RESTCoverageStoreList coverageStores = reader.getCoverageStores(workspace);
+        for (NameLinkElem csName : coverageStores) {
+            RESTCoverageList coverages = reader.getCoverages(workspace, csName.getName());
+            for (NameLinkElem coverage : coverages) {
+                layerNames.add(coverage.getName());
+            }
+        }
+
+        return layerNames;
     }
 
     /*
