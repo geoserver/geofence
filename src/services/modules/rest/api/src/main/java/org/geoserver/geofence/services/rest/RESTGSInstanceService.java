@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -63,8 +63,8 @@ public interface RESTGSInstanceService
 
     @POST
     @Path("/")
-    @Produces(MediaType.APPLICATION_XML)
-    Response insert(@Multipart("userGroup") RESTInputInstance instance) throws BadRequestRestEx, ConflictRestEx, InternalErrorRestEx;
+    @Produces(MediaType.TEXT_PLAIN)
+    Response insert(@Multipart("instance") RESTInputInstance instance) throws BadRequestRestEx, ConflictRestEx, InternalErrorRestEx;
 
     @PUT
     @Path("/id/{id}")

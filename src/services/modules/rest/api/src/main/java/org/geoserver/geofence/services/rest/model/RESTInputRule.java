@@ -1,4 +1,4 @@
-/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "rule")
-@XmlType(name="Rule", propOrder={"position","grant","username","rolename","instance","service","request","workspace","layer","constraints"})
+@XmlType(name="Rule", propOrder={"position","grant","username","rolename","instance","ipaddress","service","request","workspace","layer","constraints"})
 public class RESTInputRule extends AbstractRESTPayload {
 
     private RESTRulePosition position;
@@ -27,6 +27,8 @@ public class RESTInputRule extends AbstractRESTPayload {
     private String rolename;
 
     private IdName instance;
+
+    private String ipaddress;
 
     private String service;
     private String request;
@@ -63,6 +65,16 @@ public class RESTInputRule extends AbstractRESTPayload {
 
     public void setInstanceName(String name) {
         instance = new IdName(name);
+    }
+
+    public String getIpaddress()
+    {
+        return ipaddress;
+    }
+
+    public void setIpaddress(String ipaddress)
+    {
+        this.ipaddress = ipaddress;
     }
 
     public void setInstance(IdName instance) {
@@ -155,6 +167,9 @@ public class RESTInputRule extends AbstractRESTPayload {
         }
         if (instance != null) {
             sb.append(" instance:").append(instance);
+        }
+        if (ipaddress != null) {
+            sb.append(" ipaddr:").append(ipaddress);
         }
         if (service != null) {
             sb.append(" service:").append(service);

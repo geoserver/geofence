@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "Rule")
-@XmlType(propOrder={"id", "priority","grant","username","rolename","instance","service","request","workspace","layer","constraints"})
+@XmlType(propOrder={"id", "priority","grant","username","rolename","instance","ipaddress","service","request","workspace","layer","constraints"})
 public class RESTOutputRule implements Serializable {
 
     private Long id;
@@ -30,6 +30,8 @@ public class RESTOutputRule implements Serializable {
     private String username;
     private String rolename;
     private IdName instance;
+
+    private String ipaddress;
 
     private String service;
     private String request;
@@ -68,13 +70,22 @@ public class RESTOutputRule implements Serializable {
         this.rolename = rolename;
     }
 
-
     public void setInstance(IdName instance) {
         this.instance = instance;
     }
 
     public IdName getInstance() {
         return instance;
+    }
+
+    public String getIpaddress()
+    {
+        return ipaddress;
+    }
+
+    public void setIpaddress(String ipaddress)
+    {
+        this.ipaddress = ipaddress;
     }
 
     public String getLayer() {
@@ -151,6 +162,9 @@ public class RESTOutputRule implements Serializable {
         }
         if (instance != null) {
             sb.append(" instance:").append(instance);
+        }
+        if (ipaddress != null) {
+            sb.append(" ipaddr:").append(ipaddress);
         }
         if (service != null) {
             sb.append(" service:").append(service);
