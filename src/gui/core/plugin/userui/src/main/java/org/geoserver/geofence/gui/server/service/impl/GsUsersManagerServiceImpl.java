@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.geoserver.geofence.gui.client.ApplicationException;
 import org.geoserver.geofence.gui.client.model.GSUserModel;
@@ -27,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import java.util.TreeSet;
 import org.geoserver.geofence.gui.client.model.UsernameModel;
 
 /**
@@ -86,8 +89,15 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
             throw new ApplicationException("No user found on server");
         }
 
-        for (org.geoserver.geofence.core.model.GSUser remote_user : usersList)
-        {
+        // sort users (DB users are sorted, users from other sources may not)
+        Map sortedUsers = new TreeMap();
+        for (org.geoserver.geofence.core.model.GSUser remote_user : usersList) {
+            sortedUsers.put(remote_user.getName(), remote_user);
+        }
+
+        for (Object u : sortedUsers.values()) {
+            org.geoserver.geofence.core.model.GSUser remote_user = (org.geoserver.geofence.core.model.GSUser)u;
+            
             GSUserModel local_user = new GSUserModel();
             local_user.setId(remote_user.getId());
             local_user.setName(remote_user.getName());
@@ -95,7 +105,7 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
             local_user.setEnabled(remote_user.getEnabled());
             local_user.setAdmin(remote_user.isAdmin());
             local_user.setEmailAddress(remote_user.getEmailAddress());
-            local_user.setDateCreation(remote_user.getDateCreation());            
+            local_user.setDateCreation(remote_user.getDateCreation());
             local_user.setPassword(remote_user.getPassword());
 
             /*logger.error("TODO: profile refactoring!!!");*/
@@ -147,10 +157,13 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
             throw new ApplicationException("No user found on server");
         }
 
-        for (ShortUser user : usersList)
-        {
-            UsernameModel username = new UsernameModel(user.getName());
-            returnList.add(username);
+        Set<String> sortedNames = new TreeSet<String>();
+        for (ShortUser user : usersList) {
+            sortedNames.add(user.getName());
+        }
+
+        for (String sortedName : sortedNames) {
+            returnList.add(new UsernameModel(sortedName));
         }
 
         logger.info("getGsUsernames(): returning " + returnList.size() + " users" );

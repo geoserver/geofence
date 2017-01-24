@@ -46,7 +46,7 @@ import org.springframework.beans.factory.InitializingBean;
 public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R> 
             implements RestrictedGenericDAO<R>, InitializingBean
 {
-    protected static Logger LOGGER = LogManager.getLogger(LDAPBaseDAO.class);
+    protected Logger LOGGER = LogManager.getLogger(getClass());
 
     private LdapTemplate ldapTemplate;
     private String searchBase;
@@ -55,9 +55,10 @@ public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R>
 
     private LoadingCache<String, List<R>> ldapcache;
     private long cachesize = 1000;
-    private long cacherefreshsec = 3600;
-    private long cacheexpiresec = 3600;
+    private long cacherefreshsec = 60 * 60; // 1 hour
+    private long cacheexpiresec = 60 * 60; // 1 hour
     private final AtomicLong dumpCnt = new AtomicLong(0);
+    private long cachedumpmodulo = 10;
 
     public LDAPBaseDAO()
     {
@@ -73,7 +74,7 @@ public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R>
         CacheBuilder builder = CacheBuilder.newBuilder()
                 .maximumSize(cachesize)
                 .refreshAfterWrite(cacherefreshsec, TimeUnit.SECONDS) // reloadable after x time
-                .expireAfterWrite(cacheexpiresec, TimeUnit.MILLISECONDS) // throw away entries too old
+                .expireAfterWrite(cacheexpiresec, TimeUnit.SECONDS) // throw away entries too old
                 .recordStats()
                 ;
         return builder;
@@ -87,7 +88,11 @@ public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R>
     @Override
     public List<R> findAll()
     {
-        return search(searchFilter);
+        List ret = search(searchFilter);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("findAll returned " + ret.size() + " items");
+        }
+        return ret;
     }
 
     @Override
@@ -181,11 +186,11 @@ public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R>
      */
     public List search(String filter)
     {
-        if(LOGGER.isDebugEnabled())
-            LOGGER.debug(getClass().getSimpleName() + ": searching base:'"+searchBase+"', filter: '"+filter+"'");
+        if(LOGGER.isTraceEnabled())
+            LOGGER.trace(getClass().getSimpleName() + ": searching base:'"+searchBase+"', filter: '"+filter+"'");
 
         if(LOGGER.isInfoEnabled()) {
-            if(dumpCnt.incrementAndGet() % 10 == 0) {
+            if(dumpCnt.incrementAndGet() % cachedumpmodulo == 0) {
                 LOGGER.info("LDAP Cache  :"+ ldapcache.stats());
             }
         }
@@ -201,12 +206,10 @@ public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R>
 
     private class LDAPLoader extends CacheLoader<String, List<R>>
     {
-        private Logger LOGGER = LogManager.getLogger(LDAPLoader.class);
-
         @Override
         public List<R> load(String filter) throws Exception {
-            if(LOGGER.isDebugEnabled())
-                LOGGER.debug("Loading " + filter);
+            if(LOGGER.isInfoEnabled())
+                LOGGER.info("Loading " + filter);
 
             return ldapTemplate.search(searchBase, filter, attributesMapper);
         }
@@ -214,8 +217,8 @@ public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R>
         @Override
         public ListenableFuture<List<R>> reload(final String filter, List<R> accessInfo) throws Exception
         {
-            if(LDAPBaseDAO.this.LOGGER.isDebugEnabled())
-                LOGGER.debug("RELoading " + filter);
+            if(LOGGER.isInfoEnabled())
+                LOGGER.info("RELoading " + filter);
 
             // this is a sync implementation
             List<R> ldapObjs = ldapTemplate.search(searchBase, filter, attributesMapper);
@@ -278,5 +281,9 @@ public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R>
         this.cacheexpiresec = cacheexpiresec;
     }
 
+    public void setCachedumpmodulo(long cachedumpmodulo)
+    {
+        this.cachedumpmodulo = cachedumpmodulo;
+    }
 
 }
