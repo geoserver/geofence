@@ -8,16 +8,17 @@ package org.geoserver.geofence.gui.server.service.impl;
 import org.geoserver.geofence.gui.client.ApplicationException;
 import org.geoserver.geofence.gui.client.model.UserGroupModel;
 import org.geoserver.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
+import org.geoserver.geofence.gui.client.model.RolenameModel;
 import org.geoserver.geofence.gui.server.service.IProfilesManagerService;
 import org.geoserver.geofence.gui.service.GeofenceRemoteService;
 import org.geoserver.geofence.services.dto.ShortGroup;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import org.geoserver.geofence.core.model.UserGroup;
-import org.geoserver.geofence.gui.client.model.RolenameModel;
 
 
 // TODO: Auto-generated Javadoc
@@ -136,13 +135,13 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
             throw new ApplicationException("No profile found on server");
         }
 
-        Iterator<ShortGroup> it = profilesList.iterator();
+        Set<String> sortedNames = new TreeSet<String>();
+        for (ShortGroup group : profilesList) {
+            sortedNames.add(group.getName());
+        }
 
-        while (it.hasNext())
-        {
-            ShortGroup role = it.next();
-            RolenameModel local_profile = new RolenameModel(role.getName());
-            returnList.add(local_profile);
+        for (String sortedName : sortedNames) {
+            returnList.add(new RolenameModel(sortedName));
         }
 
         return new RpcPageLoadResult<RolenameModel>(returnList, offset, t.intValue());

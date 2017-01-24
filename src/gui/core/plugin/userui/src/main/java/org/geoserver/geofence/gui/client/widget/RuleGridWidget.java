@@ -1,20 +1,16 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.gui.client.widget;
 
-import org.geoserver.geofence.gui.client.widget.GeofenceGridWidget;
-import org.geoserver.geofence.gui.client.widget.SearchFilterField;
 import org.geoserver.geofence.gui.client.Constants;
 import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.Resources;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
 import org.geoserver.geofence.gui.client.model.GSInstanceModel;
-import org.geoserver.geofence.gui.client.model.GSUserModel;
-import org.geoserver.geofence.gui.client.model.UserGroupModel;
 import org.geoserver.geofence.gui.client.model.RuleModel;
 import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
@@ -80,7 +76,7 @@ public class RuleGridWidget extends GeofenceGridWidget<RuleModel> {
 	private static final int COLUMN_USER_WIDTH = 100; // 130;
 
 	/** The Constant COLUMN_PROFILE_WIDTH. */
-	private static final int COLUMN_GROUP_WIDTH = 80; // 160;
+	private static final int COLUMN_GROUP_WIDTH = 100; // 160;
 
 	/** The Constant COLUMN_INSTANCE_WIDTH. */
 	private static final int COLUMN_INSTANCE_WIDTH = 150; // 60;

@@ -48,8 +48,8 @@ public class DefaultUserResolver implements UserResolver {
             }
         }
 
-        if(LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Groups for user " + username + ": " + ret);
+        if(LOGGER.isTraceEnabled()) {
+            LOGGER.trace("Groups for user " + username + ": " + ret);
         }
 
         return ret;
