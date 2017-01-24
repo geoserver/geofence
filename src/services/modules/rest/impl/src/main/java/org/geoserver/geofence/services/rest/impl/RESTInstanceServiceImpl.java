@@ -1,19 +1,17 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.services.rest.impl;
 
-import org.geoserver.geofence.core.model.GSInstance;
 import java.util.List;
 
-import org.geoserver.geofence.core.model.UserGroup;
+import org.geoserver.geofence.core.model.GSInstance;
 import org.geoserver.geofence.core.model.util.PwEncoder;
 import org.geoserver.geofence.services.InstanceAdminService;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
-import org.geoserver.geofence.services.dto.ShortGroup;
 import org.geoserver.geofence.services.dto.ShortInstance;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
@@ -23,15 +21,15 @@ import org.geoserver.geofence.services.rest.exception.ConflictRestEx;
 import org.geoserver.geofence.services.rest.exception.GeoFenceRestEx;
 import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
 import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
-import org.geoserver.geofence.services.rest.model.RESTInputGroup;
 import org.geoserver.geofence.services.rest.model.RESTInputInstance;
 import org.geoserver.geofence.services.rest.model.RESTOutputInstance;
 import org.geoserver.geofence.services.rest.model.RESTShortInstanceList;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -146,7 +144,7 @@ public class RESTInstanceServiceImpl
             // TODO: TO BE FIXED
             // the instance update is not homogeneous with the other services
             // where a DTO is used, and null checks are performed in the service
-            
+
             if(instance.getDescription() != null )
                 old.setDescription(instance.getDescription());
 
@@ -244,10 +242,6 @@ public class RESTInstanceServiceImpl
 
     // ==========================================================================
     // ==========================================================================
-    
-//    public void setUserGroupAdminService(UserGroupAdminService service) {
-//        this.userGroupAdminService = service;
-//    }
 
     public void setInstanceAdminService(InstanceAdminService instanceAdminService) {
         this.instanceAdminService = instanceAdminService;

@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -7,6 +7,7 @@ package org.geoserver.geofence.core.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,7 +45,8 @@ public class UserGroup implements Identifiable, Serializable {
     @Column
     private Long id;
 
-    /** External Id. An ID used in an external systems.
+    /** External Id.
+     * An ID used in an external systems.
      * This field should simplify Geofence integration in complex systems.
      */
     @Column(nullable=true, updatable=false, unique=true)
@@ -62,15 +64,6 @@ public class UserGroup implements Identifiable, Serializable {
     /** The enabled. */
     @Column(nullable=false)
     private boolean enabled;
-
-//    /** Custom properties associated to the profile */
-//    @org.hibernate.annotations.CollectionOfElements
-//    @JoinTable( name = "gf_group_custom_props",
-//                joinColumns = @JoinColumn(name = "profile_id"))
-//    @org.hibernate.annotations.MapKey(columns =@Column(name = "propkey"))
-//    @Column(name = "propvalue")
-//    @ForeignKey(name="fk_custom_profile")
-//    private Map<String, String> customProps = new HashMap<String, String>();
 
     /**
      * Instantiates a new profile.
@@ -163,102 +156,57 @@ public class UserGroup implements Identifiable, Serializable {
         this.enabled = enabled;
     }
 
-//    @XmlJavaTypeAdapter(MapAdapter.class)
-//    public Map<String, String> getCustomProps() {
-//        return customProps;
-//    }
-//
-//    public void setCustomProps(Map<String, String> customProps) {
-//        this.customProps = customProps;
-//    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((dateCreation == null) ? 0 : dateCreation.hashCode());
-        result = prime * result + Boolean.valueOf(enabled).hashCode();
-        result = prime * result + (int) (id ^ (id >>> 32));
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.id);
+        hash = 97 * hash + Objects.hashCode(this.extId);
+        hash = 97 * hash + Objects.hashCode(this.name);
+        hash = 97 * hash + Objects.hashCode(this.dateCreation);
+        hash = 97 * hash + (this.enabled ? 1 : 0);
+        return hash;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if ( obj == null ) {
+    public boolean equals(Object obj)
+    {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        if ( getClass() != obj.getClass() ) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         final UserGroup other = (UserGroup) obj;
-        if ( this.id != other.id && (this.id == null || !this.id.equals(other.id)) ) {
+        if (this.enabled != other.enabled) {
             return false;
         }
-        if ( (this.extId == null) ? (other.extId != null) : !this.extId.equals(other.extId) ) {
+        if (!Objects.equals(this.extId, other.extId)) {
             return false;
         }
-        if ( (this.name == null) ? (other.name != null) : !this.name.equals(other.name) ) {
+        if (!Objects.equals(this.name, other.name)) {
             return false;
         }
-        if ( this.dateCreation != other.dateCreation && (this.dateCreation == null || !this.dateCreation.equals(other.dateCreation)) ) {
+        if (!Objects.equals(this.id, other.id)) {
             return false;
         }
-        if ( this.enabled != other.enabled ) {
+        if (!Objects.equals(this.dateCreation, other.dateCreation)) {
             return false;
         }
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (this == obj) {
-//            return true;
-//        }
-//        if (obj == null) {
-//            return false;
-//        }
-//        if (!(obj instanceof UserGroup)) {
-//            return false;
-//        }
-//        UserGroup other = (UserGroup) obj;
-//        if (dateCreation == null) {
-//            if (other.dateCreation != null) {
-//                return false;
-//            }
-//        } else if (!dateCreation.equals(other.dateCreation)) {
-//            return false;
-//        }
-//        if ( enabled != other.enabled) {
-//            return false;
-//        }
-//        if (id != other.id) {
-//            return false;
-//        }
-//        if (name == null) {
-//            if (other.name != null) {
-//                return false;
-//            }
-//        } else if (!name.equals(other.name)) {
-//            return false;
-//        }
-//        return true;
-//    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder(this.getClass().getSimpleName());
         builder.append("[");
-        builder.append("id:").append(id);
+        if(id != null)
+            builder.append("id:").append(id);
+        if(extId != null)
+            builder.append(" ext:").append(extId);
         if (name != null)
             builder.append(" name:").append(name);
         if( ! enabled )

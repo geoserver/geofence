@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-/* (c) 2014-2016 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -114,19 +114,17 @@
             <artifactId>jt-utils</artifactId>
         </dependency>
 
-
-
         <dependency>
             <groupId>org.geoserver.geofence</groupId>
             <artifactId>geofence-services-impl</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -144,6 +142,13 @@
             <artifactId>hibernate-spatial-h2-geodb</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

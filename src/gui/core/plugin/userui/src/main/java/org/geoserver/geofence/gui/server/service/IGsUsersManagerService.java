@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,7 +10,6 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.geoserver.geofence.gui.client.ApplicationException;
 import org.geoserver.geofence.gui.client.model.GSUserModel;
 import org.geoserver.geofence.gui.client.model.UsernameModel;
-import org.geoserver.geofence.gui.client.model.data.UserLimitsInfoModel;
 
 
 /**
@@ -50,19 +49,6 @@ public interface IGsUsersManagerService
      *            the profile
      */
     public void deleteUser(GSUserModel user);
-
-
-    /**
-     * @param user
-     * @return UserLimitInfo
-     */
-    public UserLimitsInfoModel getUserLimitsInfo(GSUserModel user);
-
-    /**
-     * @param user
-     * @return UserLimitInfo
-     */
-    public UserLimitsInfoModel saveUserLimitsInfo(UserLimitsInfoModel userLimitInfo);
 	
     /**
      * @return

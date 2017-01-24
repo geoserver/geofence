@@ -1,295 +1,293 @@
 <?xml version="1.0"?>
 <!--
-/* (c) 2014-2016 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-
-
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.geoserver.geofence</groupId>
-		<artifactId>geofence-gui-plugin</artifactId>
-		<version>3.2-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>org.geoserver.geofence</groupId>
+        <artifactId>geofence-gui-plugin</artifactId>
+        <version>3.2-SNAPSHOT</version>
+    </parent>
 
-	<groupId>org.geoserver.geofence</groupId>
-	<artifactId>geofence-gui-userui</artifactId>
-	<packaging>jar</packaging>
+    <groupId>org.geoserver.geofence</groupId>
+    <artifactId>geofence-gui-userui</artifactId>
+    <packaging>jar</packaging>
 
-	<name>GeoFence - GUI - User plugin</name>
+    <name>GeoFence - GUI - User plugin</name>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
-	<dependencies>
-
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- GXT -->
-		<dependency>
-			<groupId>com.extjs</groupId>
-			<artifactId>gxt</artifactId>
-		</dependency>
-
-		<!-- ============================== -->
-		<!-- GeoFence Resources -->
-		<!-- ============================== -->
-		<dependency>
-			<groupId>org.geoserver.geofence</groupId>
-			<artifactId>geofence-gui-resources</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.geoserver.geofence</groupId>
-			<artifactId>geofence-login-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.geoserver.geofence</groupId>
-			<artifactId>geofence-generic-api</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>it.geosolutions</groupId>
-			<artifactId>geoserver-manager</artifactId>
-		</dependency>
-
-		<!-- ============================== -->
-		<!-- JSON Parser -->
-		<!-- ============================== -->
-		<dependency>
-			<groupId>net.sf.json-lib</groupId>
-			<artifactId>json-lib</artifactId>
-			<version>2.4</version>
-			<classifier>jdk15</classifier>
-		</dependency>
-		    
-		<!-- ============================== -->
-		<!-- Spring Security -->
-		<!-- ============================== -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-acl</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-expression</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-expression</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-taglibs</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-expression</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-		</dependency>
+    <dependencies>
 
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <scope>provided</scope>
         </dependency>
 
-		<!-- SCOPE TEST -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-collections</groupId>
-					<artifactId>commons-collections</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>xerces</groupId>
-					<artifactId>xercesImpl</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+        <!-- GXT -->
+        <dependency>
+            <groupId>com.extjs</groupId>
+            <artifactId>gxt</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.7</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+        <!-- ============================== -->
+        <!-- GeoFence Resources -->
+        <!-- ============================== -->
+        <dependency>
+            <groupId>org.geoserver.geofence</groupId>
+            <artifactId>geofence-gui-resources</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.geoserver.geofence</groupId>
+            <artifactId>geofence-login-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.geoserver.geofence</groupId>
+            <artifactId>geofence-generic-api</artifactId>
+        </dependency>
+		
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>geoserver-manager</artifactId>
+        </dependency>
 
-	<build>
+        <!-- ============================== -->
+        <!-- JSON Parser -->
+        <!-- ============================== -->
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <version>2.4</version>
+            <classifier>jdk15</classifier>
+        </dependency>
+		    
+        <!-- ============================== -->
+        <!-- Spring Security -->
+        <!-- ============================== -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-acl</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-expression</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-expression</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-taglibs</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-expression</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
-		<plugins>
-			<!--
-				... or ask the plugin to detect them based on gwt modules files and
-				copy the required java sources
-			-->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<version>${gwt.version}</version>
-				<configuration>
-					<inplace>true</inplace>
-					<warSourceDirectory>war</warSourceDirectory>
-					<disableCastChecking>true</disableCastChecking>
-					<disableClassMetadata>true</disableClassMetadata>
-					<extraJvmArgs>-Xmx1024M -Xss1024k -Dgwt.nowarn.legacy.tools</extraJvmArgs>
-				</configuration>
-				<executions>
-					<!-- GWT version detected from dependencyManagement -->
-					<execution>
-						<goals>
-							<goal>resources</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>clean</id>
-						<phase>clean</phase>
-						<goals>
-							<goal>clean</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>compile</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>generateAsync</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generateAsync</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+        </dependency>
 
-			<!-- tell the compiler we can use 1.5 -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+
+        <!-- SCOPE TEST -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-collections</groupId>
+                    <artifactId>commons-collections</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.7</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+
+        <plugins>
+            <!--
+                    ... or ask the plugin to detect them based on gwt modules files and
+                    copy the required java sources
+            -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>${gwt.version}</version>
+                <configuration>
+                    <inplace>true</inplace>
+                    <warSourceDirectory>war</warSourceDirectory>
+                    <disableCastChecking>true</disableCastChecking>
+                    <disableClassMetadata>true</disableClassMetadata>
+                    <extraJvmArgs>-Xmx1024M -Xss1024k -Dgwt.nowarn.legacy.tools</extraJvmArgs>
+                </configuration>
+                <executions>
+                    <!-- GWT version detected from dependencyManagement -->
+                    <execution>
+                        <goals>
+                            <goal>resources</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>generateAsync</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generateAsync</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- tell the compiler we can use 1.5 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
 
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-			</plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
 			
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>remove-build-files</id>
-						<phase>clean</phase>
-						<configuration>
-							<tasks>
-								<delete dir="war"/>
-								<delete dir="gwt-unitCache"/>
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>			
-		</plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>remove-build-files</id>
+                        <phase>clean</phase>
+                        <configuration>
+                            <tasks>
+                                <delete dir="war"/>
+                                <delete dir="gwt-unitCache"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
 
-		<!--
-			TODO: the resources stuff hardcodes paths to source + test
-			directories, we should be able to use some properties here
-		-->
-		<resources>
-			<resource>
-				<directory>${basedir}/src/main/java</directory>
-				<includes>
-					<include>**/*.txt</include>
-					<include>**/*.sql</include>
-					<include>**/*.html</include>
-					<include>**/*.xml</include>
-					<include>**/*.utf</include>
-					<include>**/*.properties</include>
-					<include>**/*.serialized</include>
-					<include>**/*.xsd</include>
-					<include>META-INF/*.jai</include>
-					<include>META-INF/mailcap</include>
-					<include>META-INF/services/**</include>
-					<include>applicationContext.xml</include>
-					<include>**/*.ftl</include>
-					<include>**/*.css</include>
-					<include>**/*.js</include>
-					<include>**/*.png</include>
-					<include>**/*.gif</include>
-					<include>**/*.sld</include>
-					<include>**/*.ico</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>${basedir}/src/main/resources</directory>
-				<includes>
-					<include>**/*</include>
-				</includes>
-			</resource>
-		</resources>
+        <!--
+                TODO: the resources stuff hardcodes paths to source + test
+                directories, we should be able to use some properties here
+        -->
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/java</directory>
+                <includes>
+                    <include>**/*.txt</include>
+                    <include>**/*.sql</include>
+                    <include>**/*.html</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.utf</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.serialized</include>
+                    <include>**/*.xsd</include>
+                    <include>META-INF/*.jai</include>
+                    <include>META-INF/mailcap</include>
+                    <include>META-INF/services/**</include>
+                    <include>applicationContext.xml</include>
+                    <include>**/*.ftl</include>
+                    <include>**/*.css</include>
+                    <include>**/*.js</include>
+                    <include>**/*.png</include>
+                    <include>**/*.gif</include>
+                    <include>**/*.sld</include>
+                    <include>**/*.ico</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
 
-	</build>
+    </build>
 	
-	<profiles>
-		<profile>
-			<id>disableUsersUI</id>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.7</version>
-						<executions>
-							<execution>
-								<phase>compile</phase>
-								<configuration>
-									<tasks>
-										<echo message="Replacing tokens, the output directory is: ${project.build.outputDirectory}"/>
-										<replace file="${project.build.outputDirectory}/org/geoserver/geofence/gui/server/service/impl/activateTabs.properties" token="true" value="false"/>
-									</tasks>
-								</configuration>
-								<goals>
-									<goal>run</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+    <profiles>
+        <profile>
+            <id>disableUsersUI</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.7</version>
+                        <executions>
+                            <execution>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <tasks>
+                                        <echo message="Replacing tokens, the output directory is: ${project.build.outputDirectory}"/>
+                                        <replace file="${project.build.outputDirectory}/org/geoserver/geofence/gui/server/service/impl/activateTabs.properties" token="true" value="false"/>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 	
 </project>

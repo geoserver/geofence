@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -77,16 +77,10 @@ public class RulesController extends Controller
         registerEventTypes(GeofenceEvents.INIT_MAPS_UI_MODULE,
             GeofenceEvents.ATTACH_BOTTOM_TAB_WIDGETS,
 
-
-
-
             GeofenceEvents.RULE_UPDATE_GRID_COMBO, GeofenceEvents.RULE_UPDATE_EDIT_GRID_COMBO,
             GeofenceEvents.RULE_APPLY_CHANGES_GRID_COMBO, GeofenceEvents.RULE_ADD,
             GeofenceEvents.RULE_DEL, GeofenceEvents.RULE_PRIORITY_UP,
             GeofenceEvents.RULE_PRIORITY_DOWN, GeofenceEvents.RULE_SAVE,
-
-
-
 
             GeofenceEvents.EDIT_RULE_DETAILS, GeofenceEvents.EDIT_RULE,
             GeofenceEvents.EDIT_RULE_UPDATE, GeofenceEvents.RULE_CUSTOM_PROP_ADD,
@@ -96,50 +90,22 @@ public class RulesController extends Controller
             
             GeofenceEvents.RULE_EDITOR_DIALOG_HIDE,GeofenceEvents.RULE_EDITOR_DIALOG_SHOW,
 
-
-
-
             GeofenceEvents.INJECT_WKT,
             GeoGWTEvents.INJECT_WKT,
 
-
             GeofenceEvents.ATTRIBUTE_UPDATE_GRID_COMBO,
-
-
-
 
             GeofenceEvents.SAVE_LAYER_DETAILS, GeofenceEvents.LOAD_LAYER_DETAILS,
 
-
-
-
             GeofenceEvents.AVAILABLE_STYLES_UPDATE_GRID,
 
-
-
-
-            GeofenceEvents.RULE_PROFILE_CUSTOM_PROP_UPDATE_KEY,
-            GeofenceEvents.RULE_PROFILE_CUSTOM_PROP_UPDATE_VALUE,
-            GeofenceEvents.RULE_PROFILE_CUSTOM_PROP_DEL,
-            GeofenceEvents.RULE_PROFILE_CUSTOM_PROP_ADD,
-            GeofenceEvents.RULE_PROFILE_CUSTOM_PROP_APPLY_CHANGES,
-
-
-
-
             GeofenceEvents.EDIT_PROFILE_DETAILS,
-
-
-
 
             GeofenceEvents.SAVE_LAYER_LIMITS, GeofenceEvents.LOAD_LAYER_LIMITS,
             GeofenceEvents.LOAD_RULES,
 
-
-
-
-            GeofenceEvents.EDIT_USER_DETAILS, GeofenceEvents.LOAD_USER_LIMITS,
-            GeofenceEvents.SAVE_USER_LIMITS, GeofenceEvents.SAVE_USER_GROUPS);
+            GeofenceEvents.EDIT_USER_DETAILS,
+            GeofenceEvents.SAVE_USER_GROUPS);
 
     }
 
@@ -889,13 +855,14 @@ public class RulesController extends Controller
             {
                 RuleModel r = (RuleModel) itr.next();
                 if ((r.getId() != rule.getId()) &&
-                        (((r.getUsername() != null) && (rule.getUsername()!= null) && r.getUsername().equals(rule.getUsername())) || ((r.getUsername() == null) && (rule.getUsername()== null))) &&
-                        (((r.getRolename() != null) && (rule.getRolename()!= null) && r.getRolename().equals(rule.getRolename())) || ((r.getRolename() == null) && (rule.getRolename()== null))) &&
-                        (((r.getInstance() != null) && (rule.getInstance()!= null) && r.getInstance().getName().equals(rule.getInstance().getName())) || ((r.getInstance() == null) && (rule.getInstance() == null))) &&
-                        (((r.getService()  != null) && (rule.getService() != null) && r.getService().equals(rule.getService()))   || ((r.getService() == null) && (rule.getService() == null))) &&
-                        (((r.getRequest()  != null) && (rule.getRequest() != null) && r.getRequest().equals(rule.getRequest()))   || ((r.getRequest() == null) && (rule.getRequest() == null))) &&
-                        (((r.getWorkspace()!= null) && (rule.getWorkspace() != null) && r.getWorkspace().equals(rule.getWorkspace())) || ((r.getWorkspace() == null) && (rule.getWorkspace() == null))) &&
-                        (((r.getLayer() != null) && (rule.getLayer() != null) && r.getLayer().equals(rule.getLayer())) || ((r.getLayer() == null) && (rule.getLayer() == null))))
+                    (isEqual(r.getUsername(), rule.getUsername())) &&
+                    (isEqual(r.getRolename(), rule.getRolename())) &&
+                    (isEqual(r.getInstance(), rule.getInstance())) &&
+                    (isEqual(r.getSourceIPRange(), rule.getSourceIPRange())) &&
+                    (isEqual(r.getService(), rule.getService())) &&
+                    (isEqual(r.getRequest(), rule.getRequest())) &&
+                    (isEqual(r.getWorkspace(), rule.getWorkspace())) &&
+                    (isEqual(r.getLayer(), rule.getLayer())))
                 {
                     res = true;
                 }
@@ -905,6 +872,10 @@ public class RulesController extends Controller
         return res;
     }
 
+    private boolean isEqual(Object s1, Object s2) {
+        return ((s1 != null) && (s2 != null) && s1.equals(s2)) ||
+                ((s1 == null) && (s2 == null));
+    }
     /**
      * Forward to tab widget.
      *

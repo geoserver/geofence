@@ -1,11 +1,9 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.gui.server.gwt;
-
-import java.util.List;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -13,7 +11,6 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.geoserver.geofence.gui.client.ApplicationException;
 import org.geoserver.geofence.gui.client.model.RolenameModel;
 import org.geoserver.geofence.gui.client.model.UserGroupModel;
-import org.geoserver.geofence.gui.client.model.data.ProfileCustomProps;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteService;
 import org.geoserver.geofence.gui.server.service.IProfilesManagerService;
 import org.geoserver.geofence.gui.spring.ApplicationContextUtil;
@@ -74,23 +71,6 @@ public class ProfilesManagerServiceImpl extends RemoteServiceServlet implements 
     public void saveProfile(UserGroupModel profile) throws ApplicationException
     {
         profilesManagerService.saveProfile(profile);
-    }
-
-    /* (non-Javadoc)
-     * @see org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteService#getProfileCustomProps(com.extjs.gxt.ui.client.data.PagingLoadConfig, org.geoserver.geofence.gui.client.model.Rule)
-     */
-    public PagingLoadResult<ProfileCustomProps> getProfileCustomProps(int offset, int limit,
-        UserGroupModel profile) throws ApplicationException
-    {
-        return profilesManagerService.getProfileCustomProps(offset, limit, profile);
-    }
-
-    /* (non-Javadoc)
-     * @see org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteService#setProfileProps(java.lang.Long, java.util.List)
-     */
-    public void setProfileProps(Long profileId, List<ProfileCustomProps> customProps) throws ApplicationException
-    {
-        profilesManagerService.setProfileProps(profileId, customProps);
     }
 
 }

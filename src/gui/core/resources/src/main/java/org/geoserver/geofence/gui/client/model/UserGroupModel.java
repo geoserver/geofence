@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -22,7 +22,7 @@ public class UserGroupModel extends BeanModel implements IsSerializable
     private static final long serialVersionUID = 3475163929906592234L;
 
     /** The id. */
-    private long id;
+    private Long id;
 
     /** The name. */
     private String name;
@@ -52,7 +52,7 @@ public class UserGroupModel extends BeanModel implements IsSerializable
      *
      * @return the id
      */
-    public long getId()
+    public Long getId()
     {
         return id;
     }
@@ -63,7 +63,7 @@ public class UserGroupModel extends BeanModel implements IsSerializable
      * @param id
      *            the new id
      */
-    public void setId(long id)
+    public void setId(Long id)
     {
         this.id = id;
     }
@@ -181,7 +181,7 @@ public class UserGroupModel extends BeanModel implements IsSerializable
 				+ ((dateCreation == null) ? 0 : dateCreation.hashCode());
 		result = prime * result + (enabled ? 1231 : 1237);
 		result = prime * result + ((extId == null) ? 0 : extId.hashCode());
-		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + ( id == null? 0 :  (int) (id ^ (id >>> 32)));
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((path == null) ? 0 : path.hashCode());
 		return result;
@@ -219,7 +219,11 @@ public class UserGroupModel extends BeanModel implements IsSerializable
 		} else if (!extId.equals(other.extId)) {
 			return false;
 		}
-		if (id != other.id) {
+		if (id == null) {
+			if (other.id != null) {
+				return false;
+			}
+		} else if (!id.equals(other.id)) {
 			return false;
 		}
 		if (name == null) {

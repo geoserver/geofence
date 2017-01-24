@@ -14,60 +14,82 @@ objectClass: top
 objectClass: organizationalUnit
 ou: Groups
 
-dn: cn=admin,ou=Groups,dc=example,dc=com
+dn: cn=adminRole,ou=Groups,dc=example,dc=com
 objectClass: top
 objectClass: organizationalRole
+cn: adminRole
+telephoneNumber: 10
+
+dn: cn=adminGroup,ou=Groups,dc=example,dc=com
+objectClass: top
 objectClass: groupOfNames
-cn: admin
-member: admin
-telephoneNumber: 1
+cn: adminGroup
+member: cn=admin,ou=People,dc=example,dc=com
 
-
-dn: uid=admin,ou=People,dc=example,dc=com
+dn: cn=admin,ou=People,dc=example,dc=com
 objectClass: top
 objectClass: inetOrgPerson
 givenName: admin
 sn: admin
-uid: admin
 cn: admin
 userPassword: {SHA}0DPiKuNIrrVmD8IUCuw1hQxNqZc=
-telephoneNumber: 1
+telephoneNumber: 20
+
 
 dn: cn=destination,ou=Groups,dc=example,dc=com
 objectClass: top
-objectClass: organizationalRole
 objectClass: groupOfNames
 cn: destination
-member: destination
-telephoneNumber: 2
+member: cn=destination1,ou=People,dc=example,dc=com
+member: cn=destination2,ou=People,dc=example,dc=com
+# test ldap server won't return the dn
+member: cn=destination1
+member: cn=destination2
 
-dn: uid=destination,ou=People,dc=example,dc=com
+
+dn: cn=otherGroup,ou=Groups,dc=example,dc=com
+objectClass: top
+objectClass: groupOfNames
+cn: otherGroup
+member: cn=destination2,ou=People,dc=example,dc=com
+member: cn=destination2
+
+
+dn: cn=destination1,ou=People,dc=example,dc=com
 objectClass: top
 objectClass: inetOrgPerson
-givenName: destination
-sn: destination
-uid: destination
-cn: destination
+givenName: destination1
+sn: destination1
+cn: destination1
 userPassword: {SHA}DPG8hLuLrKgE+QFaFY6IZC1BX/o=
-mail: destination@destination.it
-telephoneNumber: 2
+mail: destination1@destination.it
+telephoneNumber: 41
+
+
+dn: cn=destination2,ou=People,dc=example,dc=com
+objectClass: top
+objectClass: inetOrgPerson
+givenName: destination2
+sn: destination2
+cn: destination2
+userPassword: {SHA}DPG8hLuLrKgE+QFaFY6IZC1BX/o=
+mail: destination2@destination.it
+telephoneNumber: 42
+
 
 dn: cn=other,ou=Groups,dc=example,dc=com
 objectClass: top
-objectClass: organizationalRole
 objectClass: groupOfNames
 cn: other
-member: other
-telephoneNumber: 3
+member: cn=other,ou=People,dc=example,dc=com
 
 
-dn: uid=other,ou=People,dc=example,dc=com
+dn: cn=other,ou=People,dc=example,dc=com
 objectClass: top
 objectClass: inetOrgPerson
 givenName: other
 sn: other
-uid: other
 cn: other
 userPassword: {SHA}0JQeaNqPOBUf+Gph/Fn3xc+fyqI=
-telephoneNumber: 3
+telephoneNumber: 60
 

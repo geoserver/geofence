@@ -1,32 +1,26 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.core.dao;
 
-import org.geoserver.geofence.core.dao.UserGroupDAO;
-import org.geoserver.geofence.core.dao.RuleLimitsDAO;
-import org.geoserver.geofence.core.dao.RuleDAO;
-import org.geoserver.geofence.core.dao.GSUserDAO;
-import org.geoserver.geofence.core.dao.LayerDetailsDAO;
-import org.geoserver.geofence.core.dao.GFUserDAO;
+import java.util.List;
+
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+
 import org.geoserver.geofence.core.model.GFUser;
 import org.geoserver.geofence.core.model.UserGroup;
-import java.util.List;
-
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.Rule;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import org.junit.Before;
 import static org.junit.Assert.*;

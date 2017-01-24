@@ -1,16 +1,17 @@
-/* (c) 2014,2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.services.rest.impl;
 
-import org.geoserver.geofence.core.model.GSInstance;
 import java.util.List;
+import java.util.ArrayList;
 
-
+import org.geoserver.geofence.core.model.GSInstance;
 import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.UserGroup;
+import org.geoserver.geofence.services.AdminRuleAdminService;
 import org.geoserver.geofence.services.InstanceAdminService;
 import org.geoserver.geofence.services.RuleAdminService;
 import org.geoserver.geofence.services.UserGroupAdminService;
@@ -21,13 +22,9 @@ import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
 import org.geoserver.geofence.services.rest.model.RESTOutputUser;
 import org.geoserver.geofence.services.rest.model.RESTShortUser;
 import org.geoserver.geofence.services.rest.model.util.IdName;
-import java.util.ArrayList;
-import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.geoserver.geofence.services.AdminRuleAdminService;
-
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;;
 
 /**
  *
@@ -48,7 +45,7 @@ public abstract class BaseRESTServiceImpl {
 
         try {
             if (groupFilter.getId() != null) {
-                return userGroupAdminService.get(groupFilter.getId());
+                throw new BadRequestRestEx("Groups can only be referenced by name");
             } else if (groupFilter.getName() != null) {
                 return userGroupAdminService.get(groupFilter.getName());
             } else {
@@ -64,7 +61,7 @@ public abstract class BaseRESTServiceImpl {
 
         try {
             if (userFilter.getId() != null) {
-                return userAdminService.get(userFilter.getId());
+                throw new BadRequestRestEx("Users can only be referenced by name");
             } else if (userFilter.getName() != null) {
                 return userAdminService.get(userFilter.getName());
             } else {
@@ -73,22 +70,6 @@ public abstract class BaseRESTServiceImpl {
         } catch (NotFoundServiceEx e) {
             LOGGER.warn("GSUser not found " + userFilter);
             throw new NotFoundRestEx("GSUser not found " + userFilter);
-        }
-    }
-
-    protected Set<UserGroup> getUserGroups(long userId) throws BadRequestRestEx, NotFoundRestEx {
-
-        try {
-            Set<UserGroup> groups = userAdminService.getUserGroups(userId);
-            if (groups == null) {
-                LOGGER.warn("GSUser not found " + userId);
-                throw new NotFoundRestEx("GSUser not found " + userId);
-            }
-            return groups;
-
-        } catch (NotFoundServiceEx e) {
-            LOGGER.warn("GSUser not found " + userId);
-            throw new NotFoundRestEx("GSUser not found " + userId);
         }
     }
 

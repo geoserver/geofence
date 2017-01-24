@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -11,7 +11,6 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.geoserver.geofence.gui.client.ApplicationException;
 import org.geoserver.geofence.gui.client.model.GSUserModel;
 import org.geoserver.geofence.gui.client.model.UsernameModel;
-import org.geoserver.geofence.gui.client.model.data.UserLimitsInfoModel;
 import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteService;
 import org.geoserver.geofence.gui.server.service.IGsUsersManagerService;
 import org.geoserver.geofence.gui.spring.ApplicationContextUtil;
@@ -73,22 +72,6 @@ public class GsUsersManagerServiceImpl extends RemoteServiceServlet implements G
         gsUserManagerService.deleteUser(user);
     }
 
-    /* (non-Javadoc)
-     * @see org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteService#getUserLimitsInfo(org.geoserver.geofence.gui.client.model.GSUser)
-     */
-    public UserLimitsInfoModel getUserLimitsInfo(GSUserModel user) throws ApplicationException
-    {
-        return gsUserManagerService.getUserLimitsInfo(user);
-    }
-
-    /* (non-Javadoc)
-     * @see org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteService#saveUserLimitsInfo(org.geoserver.geofence.gui.client.model.GSUser)
-     */
-    public UserLimitsInfoModel saveUserLimitsInfo(UserLimitsInfoModel userLimitInfo) throws ApplicationException
-    {
-        return gsUserManagerService.saveUserLimitsInfo(userLimitInfo);
-    }
-	
     /* (non-Javadoc)
      * @see org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteService#activateUserGroupTabs()
      */

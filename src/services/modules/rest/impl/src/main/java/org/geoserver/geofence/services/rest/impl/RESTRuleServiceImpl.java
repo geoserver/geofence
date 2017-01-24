@@ -1,44 +1,51 @@
-/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.services.rest.impl;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
-import org.geoserver.geofence.core.model.LayerAttribute;
-import org.geoserver.geofence.core.model.LayerDetails;
-import org.geoserver.geofence.core.model.Rule;
-
-import org.geoserver.geofence.core.model.enums.InsertPosition;
-import org.geoserver.geofence.services.dto.RuleFilter;
-import org.geoserver.geofence.services.dto.RuleFilter.IdNameFilter;
-import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
-import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
-import org.geoserver.geofence.services.exception.BadRequestServiceEx;
-import org.geoserver.geofence.services.exception.NotFoundServiceEx;
-import org.geoserver.geofence.services.rest.RESTRuleService;
-import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
-import org.geoserver.geofence.services.rest.exception.GeoFenceRestEx;
-import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
-import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
-import org.geoserver.geofence.services.rest.model.RESTInputRule;
-import org.geoserver.geofence.services.rest.model.RESTLayerConstraints;
-import org.geoserver.geofence.services.rest.model.RESTOutputRule;
-import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
-import org.geoserver.geofence.services.rest.model.util.IdName;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.apache.commons.lang.StringUtils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
+
+import org.geoserver.geofence.core.model.IPAddressRange;
+import org.geoserver.geofence.core.model.LayerAttribute;
+import org.geoserver.geofence.core.model.LayerDetails;
+import org.geoserver.geofence.core.model.Rule;
+import org.geoserver.geofence.core.model.enums.InsertPosition;
+
+import org.geoserver.geofence.services.dto.RuleFilter;
+import org.geoserver.geofence.services.dto.RuleFilter.IdNameFilter;
+import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
+import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
+
+import org.geoserver.geofence.services.exception.BadRequestServiceEx;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
+
+import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
+import org.geoserver.geofence.services.rest.exception.GeoFenceRestEx;
+import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
+import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
+
+import org.geoserver.geofence.services.rest.RESTRuleService;
+import org.geoserver.geofence.services.rest.model.RESTInputRule;
+import org.geoserver.geofence.services.rest.model.RESTLayerConstraints;
+import org.geoserver.geofence.services.rest.model.RESTOutputRule;
+import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
 import org.geoserver.geofence.services.rest.model.RESTRulePosition.RulePosition;
+import org.geoserver.geofence.services.rest.model.util.IdName;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -465,6 +472,11 @@ public class RESTRuleServiceImpl
         if (rule.getInstance() != null) {
             out.setInstance(new IdName(rule.getInstance().getId(), rule.getInstance().getName()));
         }
+
+        if(rule.getAddressRange() != null) {
+            out.setIpaddress(rule.getAddressRange().getCidrSignature());
+        }
+
         out.setService(rule.getService());
         out.setRequest(rule.getRequest());
         out.setWorkspace(rule.getWorkspace());
@@ -507,6 +519,10 @@ public class RESTRuleServiceImpl
         
         if (in.getInstance() != null) {
             rule.setInstance(getInstance(in.getInstance()));
+        }
+
+        if(StringUtils.isNotBlank(in.getIpaddress())) {
+            rule.setAddressRange(new IPAddressRange(in.getIpaddress()));
         }
 
         rule.setService(in.getService());
