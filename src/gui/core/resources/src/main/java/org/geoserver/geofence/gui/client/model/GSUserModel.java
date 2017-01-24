@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -21,10 +21,10 @@ public class GSUserModel extends BeanModel implements IsSerializable
 {
 
     /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = 270623297309308741L;
+    private static final long serialVersionUID = 70623297309308741L;
 
     /** The id. */
-    private long id;
+    private Long id;
 
     /** The name. */
     private String name;
@@ -66,7 +66,7 @@ public class GSUserModel extends BeanModel implements IsSerializable
      *
      * @return the id
      */
-    public long getId()
+    public Long getId()
     {
         return id;
     }
@@ -77,7 +77,7 @@ public class GSUserModel extends BeanModel implements IsSerializable
      * @param id
      *            the new id
      */
-    public void setId(long id)
+    public void setId(Long id)
     {
         this.id = id;
     }
@@ -302,7 +302,7 @@ public class GSUserModel extends BeanModel implements IsSerializable
         result = (prime * result) + ((emailAddress == null) ? 0 : emailAddress.hashCode());
         result = (prime * result) + (enabled ? 1231 : 1237);
         result = (prime * result) + ((fullName == null) ? 0 : fullName.hashCode());
-        result = (prime * result) + (int) (id ^ (id >>> 32));
+        result = (prime * result) + (id == null? 0 :  (int) (id ^ (id >>> 32)));
         result = (prime * result) + ((name == null) ? 0 : name.hashCode());
         result = (prime * result) + ((password == null) ? 0 : password.hashCode());
         result = (prime * result) + ((path == null) ? 0 : path.hashCode());
@@ -367,7 +367,14 @@ public class GSUserModel extends BeanModel implements IsSerializable
         {
             return false;
         }
-        if (id != other.id)
+        if (id == null)
+        {
+            if (other.id != null)
+            {
+                return false;
+            }
+        }
+        else if (!id.equals(other.id))
         {
             return false;
         }

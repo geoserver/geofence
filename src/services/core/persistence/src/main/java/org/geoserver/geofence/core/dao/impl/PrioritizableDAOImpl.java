@@ -1,24 +1,23 @@
-/* (c) 2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2015 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.core.dao.impl;
 
-import org.geoserver.geofence.core.dao.PrioritizableDAO;
-import com.googlecode.genericdao.search.Field;
-import com.googlecode.genericdao.search.ISearch;
 import java.util.List;
-
 import javax.persistence.Query;
 
+import org.geoserver.geofence.core.dao.PrioritizableDAO;
+import org.geoserver.geofence.core.model.enums.InsertPosition;
+import org.geoserver.geofence.core.model.Prioritizable;
+
+import com.googlecode.genericdao.search.Field;
+import com.googlecode.genericdao.search.ISearch;
 import com.googlecode.genericdao.search.Search;
 
-import org.geoserver.geofence.core.model.enums.InsertPosition;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.geoserver.geofence.core.model.Prioritizable;
-import org.geoserver.geofence.core.model.Rule;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import org.springframework.transaction.annotation.Transactional;
 

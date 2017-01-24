@@ -1,11 +1,10 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.gui.client.widget.rule.detail;
 
-import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.Resources;
 import org.geoserver.geofence.gui.client.model.GSUserModel;
 import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
@@ -15,7 +14,6 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.mvc.Dispatcher;
 import com.extjs.gxt.ui.client.widget.TabItem;
 
 
@@ -53,7 +51,7 @@ public class UserDetailsTabItem extends TabItem
      *            the tab item id
      * @param model
      *            the model
-     * @param profilesManagerServiceRemote 
+     * @param profilesManagerServiceRemote
      * @param workspacesService
      *            the workspaces service
      */
@@ -72,11 +70,6 @@ public class UserDetailsTabItem extends TabItem
 
                 public void handleEvent(BaseEvent be)
                 {
-                    if (userDetailsWidget.getUserDetailsInfo().getModel() == null)
-                    {
-                        Dispatcher.forwardEvent(GeofenceEvents.LOAD_USER_LIMITS, user);
-                    }
-                    
                     if (userDetailsWidget.getProfilesInfo().getStore().getCount() < 1)
                     {
                     	userDetailsWidget.getProfilesInfo().getLoader().load();

@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,13 +6,11 @@
 package org.geoserver.geofence.services;
 
 import org.geoserver.geofence.core.model.GSUser;
-import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.services.dto.ShortUser;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 
 import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -43,9 +41,7 @@ public interface UserAdminService extends GetProviderService<GSUser>
     @Override
     GSUser get(long id) throws NotFoundServiceEx;
     GSUser get(String name) throws NotFoundServiceEx;
-    GSUser getFull(long id) throws NotFoundServiceEx;
-
-    Set<UserGroup> getUserGroups(long id);
+    GSUser getFull(String name) throws NotFoundServiceEx;
 
     long getCount(String nameLike);
 

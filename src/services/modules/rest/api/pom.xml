@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-/* (c) 2014-2016 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -121,12 +121,4 @@
         </plugins>
     </reporting>
 
-    <repositories>
-        <repository>
-            <url>http://repo1.maven.org/maven2/</url>
-            <id>junit_4</id>
-            <layout>default</layout>
-            <name>Repository for library Library[junit_4]</name>
-        </repository>
-    </repositories>
 </project>

@@ -26,7 +26,7 @@
 	</context-param>
 
     <listener>
-        <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
     </listener>
 
 	<!-- spring context loader -->
@@ -44,7 +44,7 @@
       <filter-name>Georepository CUSTOM security filter</filter-name>
       <url-pattern>/*</url-pattern>
     </filter-mapping>
-    
+
     <!-- Standard Context -->
 	<servlet>
 		<servlet-name>ConfigurationRemote</servlet-name>
@@ -69,11 +69,11 @@
 
 	<servlet>
 		<servlet-name>remoteLoggingServiceImpl</servlet-name>
-		<servlet-class>com.google.gwt.logging.server.RemoteLoggingServiceImpl</servlet-class> 
-	</servlet> 
-	<servlet-mapping> 
-	    <servlet-name>remoteLoggingServiceImpl</servlet-name> 
-	    <url-pattern>/geofence/logging</url-pattern> 
+		<servlet-class>com.google.gwt.logging.server.RemoteLoggingServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>remoteLoggingServiceImpl</servlet-name>
+	    <url-pattern>/geofence/logging</url-pattern>
 	</servlet-mapping>
 
 	<!-- *****************************************************************************************  -->
@@ -105,7 +105,7 @@
 		<servlet-name>InstancesManagerRemoteService</servlet-name>
 		<url-pattern>/geofence/InstancesManagerRemoteService</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>RulesManagerRemoteService</servlet-name>
 		<servlet-class>org.geoserver.geofence.gui.server.gwt.RulesManagerServiceImpl</servlet-class>
@@ -123,7 +123,7 @@
 		<servlet-name>WorkspacesManagerRemoteService</servlet-name>
 		<url-pattern>/geofence/WorkspacesManagerRemoteService</url-pattern>
 	</servlet-mapping>
-	
+
 	<!-- *****************************************************************************************  -->
 	<!-- **                                DISPATCHER                                           **  -->
 	<!-- *****************************************************************************************  -->
@@ -177,7 +177,7 @@
         <servlet-name>remoting</servlet-name>
         <url-pattern>/remoting/*</url-pattern>
     </servlet-mapping>
-    
+
 	<!-- Default page to serve -->
 	<welcome-file-list>
 		<welcome-file>Application.html</welcome-file>

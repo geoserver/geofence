@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -24,6 +24,12 @@ public class NotFoundServiceEx extends WebApplicationException
     {
         super(Response.Status.NOT_FOUND);
         this.message = message + " (id:" + id + ")";
+    }
+
+    public NotFoundServiceEx(String message, String name)
+    {
+        super(Response.Status.NOT_FOUND);
+        this.message = message + " (name:" + name + ")";
     }
 
     @Override

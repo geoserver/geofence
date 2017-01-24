@@ -6,7 +6,6 @@
 	   xmlns:cxf="http://cxf.apache.org/core"
 	   xmlns:jaxws="http://cxf.apache.org/jaxws"
        xmlns:jaxrs="http://cxf.apache.org/jaxrs"
-       xmlns:dgservices="http://services.dgwatch.digitalglobe.com"
 
        xsi:schemaLocation="
             http://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd

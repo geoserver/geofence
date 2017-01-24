@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,14 +10,14 @@ import org.geoserver.geofence.gui.client.configuration.GeofenceGlobalConfigurati
 import org.geoserver.geofence.gui.server.service.IStartupService;
 import org.geoserver.geofence.login.util.MD5Util;
 import org.geoserver.geofence.services.GFUserAdminServiceImpl;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.InitializingBean;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class StartupService.
  */

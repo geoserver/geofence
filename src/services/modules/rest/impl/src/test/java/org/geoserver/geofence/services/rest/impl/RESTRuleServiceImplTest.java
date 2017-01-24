@@ -1,4 +1,4 @@
-/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import javax.ws.rs.core.Response;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.services.rest.model.RESTRulePosition;
 
 import org.junit.Test;
@@ -60,7 +60,7 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
             LOGGER.info("Exception properly trapped");
         }
 
-        rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromTop, 0));        
+        rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromTop, 0));
         rule.setGrant(GrantType.ALLOW);
 
         Long rid = (Long)restRuleService.insert(rule).getEntity();
@@ -112,7 +112,7 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
             assertEquals("S0", out.getService()); // upper case?!?
             assertEquals("w0", out.getWorkspace());
             assertEquals("l0", out.getLayer());
-            
+
             RESTInputRule up = new RESTInputRule();
             up.setLayer("l1");
             up.setWorkspace("");

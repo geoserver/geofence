@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -18,8 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.googlecode.genericdao.search.ISearch;
 import com.googlecode.genericdao.search.Search;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -54,14 +54,6 @@ public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
     public List<GSUser> search(ISearch search)
     {
         return super.search(search);
-    }
-
-
-    @Override
-    public GSUser getFull(Long id) {
-        Search search = new Search(GSUser.class);
-        search.addFilterEqual("id", id);
-        return searchFull(search);
     }
 
     @Override
@@ -115,18 +107,6 @@ public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
     @Override
     public GSUser merge(GSUser entity)
     {
-//        // Workaround: if area srid has changed (and vertices did not), the geometry will not be updated on db
-//        // Check for test UserDAOTest.testUpdateSRID().
-//        MultiPolygon oldMp = entity.getAllowedArea();
-//        if (oldMp != null)
-//        {
-//            entity.setAllowedArea(null);
-//            super.merge(entity);
-//            em().flush();
-//            entity.setAllowedArea(oldMp);
-//        }
-
-        // end workaround
         return super.merge(entity);
     }
 
@@ -140,20 +120,6 @@ public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
     public boolean removeById(Long id)
     {
         return super.removeById(id);
-    }
-
-    @Override
-    public Set<UserGroup> getGroups(Long id) {
-        GSUser user = find(id);
-        if(user == null)
-            return null;
-
-        Set<UserGroup> groups = user.getGroups();
-        if ( (groups != null) && !Hibernate.isInitialized(groups) ) {
-            Hibernate.initialize(groups); // fetch the groups
-        }
-
-        return groups;
     }
 
 }

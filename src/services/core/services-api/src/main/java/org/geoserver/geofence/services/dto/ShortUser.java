@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017  Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -19,9 +19,9 @@ import java.io.Serializable;
 public class ShortUser implements Serializable
 {
 
-    private static final long serialVersionUID = -2484627092672856852L;
+    private static final long serialVersionUID = -24846270926852L;
 
-    private long id;
+    private Long id;
 
     private String name;
 
@@ -41,12 +41,12 @@ public class ShortUser implements Serializable
         this.name = user.getName();
     }
 
-    public long getId()
+    public Long getId()
     {
         return id;
     }
 
-    public void setId(long id)
+    public void setId(Long id)
     {
         this.id = id;
     }

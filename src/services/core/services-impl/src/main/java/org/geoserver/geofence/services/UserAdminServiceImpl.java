@@ -1,27 +1,23 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.services;
 
-import org.geoserver.geofence.services.UserAdminService;
 import com.googlecode.genericdao.search.Search;
 import org.geoserver.geofence.core.dao.GSUserDAO;
 import org.geoserver.geofence.core.model.GSUser;
-import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.services.dto.ShortUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
-import java.util.Set;
 
 /**
  *
@@ -78,47 +74,12 @@ public class UserAdminServiceImpl implements UserAdminService {
 
 
     @Override
-    public GSUser getFull(long id) throws NotFoundServiceEx {
+    public GSUser getFull(String name) throws NotFoundServiceEx {
 
-        GSUser user = userDAO.getFull(id);
+        GSUser user = userDAO.getFull(name);
         if(user == null)
-            throw new NotFoundServiceEx("User not found", id);
+            throw new NotFoundServiceEx("User not found", name);
         return user;
-    }
-//        Search search = new Search(GSUser.class);
-//        search.addFetch("userGroups");
-//        search.addFilterEqual("id", id);
-//        List<GSUser> users = userDAO.search(search);
-//        switch(users.size()) {
-//            case 0:
-//                throw new NotFoundServiceEx("User not found", id);
-//            case 1:
-//                return users.get(0);
-//            default:
-//                if(users.size() == users.get(0).getGroups().size()) { // normal hibernate behaviour
-//                    if(LOGGER.isDebugEnabled()) { // perform some more consistency tests only when debugging
-//                        for (GSUser user : users) {
-//                            if(user.getId() != users.get(0).getId() ||
-//                               user.getGroups().size() != users.get(0).getGroups().size()) {
-//                                LOGGER.error("Inconsistent userlist " + user);
-//                            }
-//                        }
-//                    }
-//
-//                    return users.get(0);
-//                } else {
-//                    LOGGER.error("Too many users with id " + id);
-//                    for (GSUser user : users) {
-//                        LOGGER.error("   " + user + " grp:"+user.getGroups().size());
-//                    }
-//                    throw new IllegalStateException("Found more than one user (id:"+id+")");
-//                }
-//        }
-//    }
-
-    @Override
-    public Set<UserGroup> getUserGroups(long id) {
-        return userDAO.getGroups(id);
     }
 
     @Override
@@ -179,7 +140,7 @@ public class UserAdminServiceImpl implements UserAdminService {
     // ==========================================================================
 
     private List<ShortUser> convertToShortList(List<GSUser> list) {
-        List<ShortUser> swList = new ArrayList<ShortUser>(list.size());
+        List<ShortUser> swList = new ArrayList<>(list.size());
         for (GSUser user : list) {
             swList.add(new ShortUser(user));
         }

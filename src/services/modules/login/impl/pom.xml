@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-/* (c) 2014-2016 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -44,11 +44,6 @@
         <!--  Misc support libs -->
         <!-- ================================================================-->
 
-<!--        <dependency>-->
-<!--            <groupId>org.slf4j</groupId>-->
-<!--            <artifactId>slf4j-log4j12</artifactId>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>javassist</groupId>
             <artifactId>javassist</artifactId>
@@ -59,29 +54,11 @@
             <artifactId>spring-beans</artifactId>
         </dependency>
 
-	
-<!--        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-bindings-http</artifactId>
-        </dependency>-->
-
-<!--	    <dependency>
-	      <groupId>com.sun.jmx</groupId>
-	      <artifactId>jmxri</artifactId>
-	      <version>1.2.1</version>
-	    </dependency>
-	
-	    <dependency>
-	      <groupId>com.sun.jdmk</groupId>
-	      <artifactId>jmxtools</artifactId>
-	      <version>1.2.1</version>
-	    </dependency>-->
-
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
         </dependency>
-
+        
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>

@@ -1,4 +1,4 @@
-/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,17 +10,19 @@ import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.ShortGroup;
 import org.geoserver.geofence.services.dto.ShortInstance;
 import org.geoserver.geofence.services.rest.model.RESTInputGroup;
+import org.geoserver.geofence.services.rest.model.RESTInputInstance;
 import org.geoserver.geofence.services.rest.model.RESTInputRule;
 import org.geoserver.geofence.services.rest.model.RESTInputUser;
 import org.geoserver.geofence.services.rest.model.RESTOutputRule;
 import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
+import org.geoserver.geofence.services.rest.model.RESTRulePosition;
 import org.geoserver.geofence.services.rest.model.RESTShortUser;
 import org.geoserver.geofence.services.rest.model.util.IdName;
 import java.net.ConnectException;
 import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.geoserver.geofence.services.rest.model.RESTRulePosition;
+import javax.ws.rs.core.Response;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -215,6 +217,57 @@ public class GeoFenceClientTest {
         // remove first assinged group
         client.getUserService().removeFromGroup("pippo", "group01");
         assertEquals(1, client.getUserService().get("pippo").getGroups().size());
+    }
+
+    @Test
+    public void testBaseRule() {
+        GeoFenceClient client = createClient();
+
+        String roleName = "RN0";
+        String instanceName = "I0";
+        String ipaddress = "10.11.12.0/24";
+        String service = "S0";
+        String request = "RQ0";
+        String workspace = "WS0";
+        String layer = "L0";
+
+        RESTInputInstance inputInstance = new RESTInputInstance();
+        inputInstance.setName(instanceName);
+        inputInstance.setDescription("test instance");
+        inputInstance.setBaseURL("http://localhost");
+        inputInstance.setPassword("password");
+        inputInstance.setUsername("username");
+
+        client.getGSInstanceService().insert(inputInstance);
+
+        RESTInputRule inputRule = new RESTInputRule();
+        inputRule.setRolename(roleName);
+        inputRule.setInstance(new IdName(instanceName));
+        inputRule.setIpaddress(ipaddress);
+        inputRule.setService(service);
+        inputRule.setRequest(request);
+        inputRule.setWorkspace(workspace);
+        inputRule.setLayer(layer);
+        inputRule.setGrant(GrantType.ALLOW);
+        inputRule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromTop, 0));
+
+        Response response = client.getRuleService().insert(inputRule);
+        assertNotNull(response.getEntityTag());
+        String id = response.getEntityTag().getValue();
+        assertNotNull(id);
+
+        RESTOutputRule outRule = client.getRuleService().get(Long.parseLong(id));
+        assertNotNull(outRule);
+
+        assertEquals(roleName, outRule.getRolename());
+        assertEquals(instanceName, outRule.getInstance().getName());
+        assertEquals(ipaddress, outRule.getIpaddress());
+        assertEquals(service, outRule.getService());
+        assertEquals(request, outRule.getRequest());
+        assertEquals(workspace, outRule.getWorkspace());
+        assertEquals(layer, outRule.getLayer());
+        assertEquals(GrantType.ALLOW, outRule.getGrant());
+
     }
 
     protected boolean pingGeoFence(GeoFenceClient client) {

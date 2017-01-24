@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -12,8 +12,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.geoserver.geofence.gui.client.ApplicationException;
 import org.geoserver.geofence.gui.client.model.GSUserModel;
 import org.geoserver.geofence.gui.client.model.UsernameModel;
-import org.geoserver.geofence.gui.client.model.data.UserLimitsInfoModel;
-
 
 /**
  * The Interface GsUsersManagerRemoteService.
@@ -55,20 +53,6 @@ public interface GsUsersManagerRemoteService extends RemoteService
      *             the application exception
      */
     public void deleteGsUser(GSUserModel user) throws ApplicationException;
-
-    /**
-     * @param user
-     * @return UserLimitInfo
-     * @throws ApplicationException
-     */
-    public UserLimitsInfoModel getUserLimitsInfo(GSUserModel user) throws ApplicationException;
-
-    /**
-     * @param user
-     * @return UserLimitInfo
-     * @throws ApplicationException
-     */
-    public UserLimitsInfoModel saveUserLimitsInfo(UserLimitsInfoModel userLimitInfo) throws ApplicationException;
 	
 	/**
      * This service returns to the client the information about the need for load the users and group management tabs

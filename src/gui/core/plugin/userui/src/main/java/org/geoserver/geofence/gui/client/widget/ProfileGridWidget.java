@@ -1,12 +1,10 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.gui.client.widget;
 
-import org.geoserver.geofence.gui.client.widget.GeofenceGridWidget;
-import org.geoserver.geofence.gui.client.widget.SearchFilterField;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Widget;
 
 import org.geoserver.geofence.gui.client.Constants;
 import org.geoserver.geofence.gui.client.GeofenceEvents;
@@ -113,14 +112,15 @@ public class ProfileGridWidget extends GeofenceGridWidget<UserGroupModel> {
 		ColumnConfig profileNameColumn = new ColumnConfig();
 		profileNameColumn.setId(BeanKeyValue.NAME.getValue());
 		profileNameColumn.setHeader("Role Name");
-		profileNameColumn.setWidth(160);
-		profileNameColumn.setRenderer(this.createProfileNameTextBox());
+		profileNameColumn.setWidth(200);
+//		profileNameColumn.setRenderer(this.createProfileNameTextBox());
 		configs.add(profileNameColumn);
 
 		ColumnConfig dateCreationColumn = new ColumnConfig();
 		dateCreationColumn.setId(BeanKeyValue.DATE_CREATION.getValue());
 		dateCreationColumn.setHeader("Date Creation");
 		dateCreationColumn.setWidth(180);
+		dateCreationColumn.setHidden(true);
 		configs.add(dateCreationColumn);
 
 		ColumnConfig profileEnabledColumn = new ColumnConfig();
@@ -131,14 +131,6 @@ public class ProfileGridWidget extends GeofenceGridWidget<UserGroupModel> {
 		profileEnabledColumn.setMenuDisabled(true);
 		profileEnabledColumn.setSortable(false);
 		configs.add(profileEnabledColumn);
-
-//		ColumnConfig detailsActionColumn = new ColumnConfig();
-//		detailsActionColumn.setId("detailsProfile");
-//		detailsActionColumn.setWidth(80);
-//		detailsActionColumn.setRenderer(this.createProfileDetailsButton());
-//		detailsActionColumn.setMenuDisabled(true);
-//		detailsActionColumn.setSortable(false);
-//		configs.add(detailsActionColumn);
 
 		ColumnConfig removeActionColumn = new ColumnConfig();
 		removeActionColumn.setId("removeProfile");
@@ -211,18 +203,18 @@ public class ProfileGridWidget extends GeofenceGridWidget<UserGroupModel> {
 		// TODO: temporally disabled!
 		addProfileButton.setEnabled(false);
 
-		addProfileButton.addListener(Events.OnClick,
-				new Listener<ButtonEvent>() {
+		addProfileButton.addListener(Events.OnClick, new Listener<ButtonEvent>()
+                {
+                    public void handleEvent(ButtonEvent be)
+                    {
+                        Dispatcher.forwardEvent(
+                                GeofenceEvents.SEND_INFO_MESSAGE,
+                                new String[]{ "GeoServer Group", "Add Group"});
 
-					public void handleEvent(ButtonEvent be) {
-						Dispatcher.forwardEvent(
-								GeofenceEvents.SEND_INFO_MESSAGE, new String[] {
-										"GeoServer Group", "Add Group" });
-
-						Dispatcher
-								.forwardEvent(GeofenceEvents.CREATE_NEW_PROFILE);
-					}
-				});
+                        Dispatcher.forwardEvent(
+                                GeofenceEvents.CREATE_NEW_PROFILE);
+                    }
+                });
 
 		this.toolBar.bind(loader);
 		this.toolBar.add(new SeparatorToolItem());
@@ -314,144 +306,123 @@ public class ProfileGridWidget extends GeofenceGridWidget<UserGroupModel> {
 	 * 
 	 * @return the grid cell renderer
 	 */
-	private GridCellRenderer<UserGroupModel> createProfileNameTextBox() {
-		GridCellRenderer<UserGroupModel> buttonRendered = new GridCellRenderer<UserGroupModel>() {
+    private GridCellRenderer<UserGroupModel> createProfileNameTextBox()
+    {
+        GridCellRenderer<UserGroupModel> buttonRendered = new GridCellRenderer<UserGroupModel>()
+        {
 
-			private boolean init;
+            private boolean init;
 
-			public Object render(final UserGroupModel model, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<UserGroupModel> store, Grid<UserGroupModel> grid) {
+            public Object render(final UserGroupModel model, String property,
+                    ColumnData config, int rowIndex, int colIndex,
+                    ListStore<UserGroupModel> store, Grid<UserGroupModel> grid)
+            {
 
-				if (!init) {
-					init = true;
-					grid.addListener(Events.ColumnResize,
-							new Listener<GridEvent<UserGroupModel>>() {
+                if (!init) {
+                    init = true;
+                    grid.addListener(Events.ColumnResize, new Listener<GridEvent<UserGroupModel>>()
+                    {
+                        public void handleEvent(GridEvent<UserGroupModel> be)
+                        {
+                            for (int i = 0; i < be.getGrid().getStore().getCount(); i++) {
+                                Widget w = be.getGrid().getView().getWidget(i, be.getColIndex());
+                                if (w != null && w instanceof BoxComponent) {
+                                    ((BoxComponent) w).setWidth(be.getWidth() - 10);
+                                }
+                            }
+                        }
+                    });
+                }
 
-								public void handleEvent(GridEvent<UserGroupModel> be) {
-									for (int i = 0; i < be.getGrid().getStore()
-											.getCount(); i++) {
-										if ((be.getGrid().getView()
-												.getWidget(i, be.getColIndex()) != null)
-												&& (be.getGrid()
-														.getView()
-														.getWidget(
-																i,
-																be.getColIndex()) instanceof BoxComponent)) {
-											((BoxComponent) be
-													.getGrid()
-													.getView()
-													.getWidget(i,
-															be.getColIndex()))
-													.setWidth(be.getWidth() - 10);
-										}
-									}
-								}
-							});
-				}
+                TextField<String> profileNameTextBox = new TextField<String>();
+                profileNameTextBox.setWidth(150);
+                // TODO: add correct tooltip text here!
+                // profileNameTextBox("Test");
 
-				TextField<String> profileNameTextBox = new TextField<String>();
-				profileNameTextBox.setWidth(150);
-				// TODO: add correct tooltip text here!
-				// profileNameTextBox("Test");
+                profileNameTextBox.setValue(model.getName());
 
-				profileNameTextBox.setValue(model.getName());
+                profileNameTextBox.addListener(Events.Change, new Listener<FieldEvent>()
+                {
+                    public void handleEvent(FieldEvent be)
+                    {
+                        Dispatcher.forwardEvent(
+                                GeofenceEvents.SEND_INFO_MESSAGE,
+                                new String[]{
+                                    "GeoServer role",
+                                    "Role name changed to -> "  + be.getField().getValue()});
 
-				profileNameTextBox.addListener(Events.Change,
-						new Listener<FieldEvent>() {
+                        model.setName((String) be.getField().getValue());
+                        Dispatcher.forwardEvent( GeofenceEvents.UPDATE_PROFILE, model);
+                    }
+                });
 
-							public void handleEvent(FieldEvent be) {
-								Dispatcher.forwardEvent(
-										GeofenceEvents.SEND_INFO_MESSAGE,
-										new String[] {
-												"GeoServer role",
-												"Role name changed to -> "
-														+ be.getField()
-																.getValue() });
+                return profileNameTextBox;
+            }
+        };
 
-								model.setName((String) be.getField().getValue());
-								Dispatcher.forwardEvent(
-										GeofenceEvents.UPDATE_PROFILE, model);
-							}
-						});
-
-				return profileNameTextBox;
-			}
-		};
-
-		return buttonRendered;
-	}
+        return buttonRendered;
+    }
 
 	/**
 	 * Creates the enable check box.
 	 * 
 	 * @return the grid cell renderer
 	 */
-	private GridCellRenderer<UserGroupModel> createEnableCheckBox() {
+    private GridCellRenderer<UserGroupModel> createEnableCheckBox()
+    {
+        GridCellRenderer<UserGroupModel> buttonRendered = new GridCellRenderer<UserGroupModel>()
+        {
+            private boolean init;
 
-		GridCellRenderer<UserGroupModel> buttonRendered = new GridCellRenderer<UserGroupModel>() {
+            public Object render(final UserGroupModel model, String property,
+                    ColumnData config, int rowIndex, int colIndex,
+                    ListStore<UserGroupModel> store, Grid<UserGroupModel> grid)
+            {
 
-			private boolean init;
+                if (!init) {
+                    init = true;
+                    grid.addListener(Events.ColumnResize,
+                            new Listener<GridEvent<UserGroupModel>>()
+                    {
 
-			public Object render(final UserGroupModel model, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<UserGroupModel> store, Grid<UserGroupModel> grid) {
+                        public void handleEvent(GridEvent<UserGroupModel> be)
+                        {
+                            for (int i = 0; i < be.getGrid().getStore().getCount(); i++) {
+                                if ((be.getGrid().getView().getWidget(i, be.getColIndex()) != null)
+                                        && (be.getGrid().getView().getWidget(i,be.getColIndex()) instanceof BoxComponent)) {
+                                    ((BoxComponent) be.getGrid().getView().getWidget(i,be.getColIndex())).setWidth(be.getWidth() - 10);
+                                }
+                            }
+                        }
+                    });
+                }
 
-				if (!init) {
-					init = true;
-					grid.addListener(Events.ColumnResize,
-							new Listener<GridEvent<UserGroupModel>>() {
+                CheckBox profileEnabledButton = new CheckBox();
+                // TODO: add correct tooltip text here!
+                // profileEnabledButton.setToolTip("Test");
 
-								public void handleEvent(GridEvent<UserGroupModel> be) {
-									for (int i = 0; i < be.getGrid().getStore()
-											.getCount(); i++) {
-										if ((be.getGrid().getView()
-												.getWidget(i, be.getColIndex()) != null)
-												&& (be.getGrid()
-														.getView()
-														.getWidget(
-																i,
-																be.getColIndex()) instanceof BoxComponent)) {
-											((BoxComponent) be
-													.getGrid()
-													.getView()
-													.getWidget(i,
-															be.getColIndex()))
-													.setWidth(be.getWidth() - 10);
-										}
-									}
-								}
-							});
-				}
+                profileEnabledButton.setValue(model.isEnabled());
 
-				CheckBox profileEnabledButton = new CheckBox();
-				// TODO: add correct tooltip text here!
-				// profileEnabledButton.setToolTip("Test");
+                profileEnabledButton.addListener(Events.OnClick, new Listener<FieldEvent>()
+                {
 
-				profileEnabledButton.setValue(model.isEnabled());
+                    public void handleEvent(FieldEvent be)
+                    {
+                        Dispatcher.forwardEvent(
+                                GeofenceEvents.SEND_INFO_MESSAGE,
+                                new String[]{"GeoServer Group", "Enable check!"});
 
-				profileEnabledButton.addListener(Events.OnClick,
-						new Listener<FieldEvent>() {
+                        model.setEnabled((Boolean) be.getField().getValue());
+                        Dispatcher.forwardEvent(GeofenceEvents.UPDATE_PROFILE, model);
+                    }
+                });
 
-							public void handleEvent(FieldEvent be) {
-								Dispatcher.forwardEvent(
-										GeofenceEvents.SEND_INFO_MESSAGE,
-										new String[] { "GeoServer Group",
-												"Enable check!" });
+                return profileEnabledButton;
+            }
+        };
 
-								model.setEnabled((Boolean) be.getField()
-										.getValue());
-								Dispatcher.forwardEvent(
-										GeofenceEvents.UPDATE_PROFILE, model);
-							}
-						});
-
-				return profileEnabledButton;
-			}
-		};
-
-		return buttonRendered;
-	}
+        return buttonRendered;
+    }
 
 	/**
 	 * Creates the profile delete button.
@@ -532,75 +503,6 @@ public class ProfileGridWidget extends GeofenceGridWidget<UserGroupModel> {
 						});
 
 				return removeProfileButton;
-			}
-
-		};
-
-		return buttonRendered;
-	}
-
-	/**
-	 * Creates the profile details button.
-	 * 
-	 * @return the grid cell renderer
-	 */
-	private GridCellRenderer<UserGroupModel> createProfileDetailsButton() {
-		GridCellRenderer<UserGroupModel> buttonRendered = new GridCellRenderer<UserGroupModel>() {
-
-			private boolean init;
-
-			public Object render(final UserGroupModel model, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<UserGroupModel> store, Grid<UserGroupModel> grid) {
-
-				if (!init) {
-					init = true;
-					grid.addListener(Events.ColumnResize,
-							new Listener<GridEvent<UserGroupModel>>() {
-
-								public void handleEvent(GridEvent<UserGroupModel> be) {
-									for (int i = 0; i < be.getGrid().getStore()
-											.getCount(); i++) {
-										if ((be.getGrid().getView()
-												.getWidget(i, be.getColIndex()) != null)
-												&& (be.getGrid()
-														.getView()
-														.getWidget(
-																i,
-																be.getColIndex()) instanceof BoxComponent)) {
-											((BoxComponent) be
-													.getGrid()
-													.getView()
-													.getWidget(i,
-															be.getColIndex()))
-													.setWidth(be.getWidth() - 10);
-										}
-									}
-								}
-							});
-				}
-
-				Button detailsProfileButton = new Button("Details");
-				detailsProfileButton.setIcon(Resources.ICONS.table());
-
-				detailsProfileButton.addListener(Events.OnClick,
-						new Listener<ButtonEvent>() {
-
-							public void handleEvent(ButtonEvent be) {
-								Dispatcher.forwardEvent(
-										GeofenceEvents.SEND_INFO_MESSAGE,
-										new String[] {
-												"GeoServer Group",
-												"Group Details: "
-														+ model.getName() });
-
-								Dispatcher.forwardEvent(
-										GeofenceEvents.EDIT_PROFILE_DETAILS,
-										model);
-							}
-						});
-
-				return detailsProfileButton;
 			}
 
 		};
