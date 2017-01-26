@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -24,8 +24,8 @@ import org.geoserver.geofence.services.rest.model.config.RESTFullUserGroupList;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -44,7 +44,7 @@ public class RESTUserGroupServiceImpl
         List<ShortGroup> groups = userGroupAdminService.getList(nameLike, page, entries);
         return new RESTFullUserGroupList(groups);
     }
-    
+
     @Override
     public long count(String nameLike) {
         return userGroupAdminService.getCount(nameLike);
@@ -173,12 +173,5 @@ public class RESTUserGroupServiceImpl
             throw new InternalErrorRestEx(ex.getMessage());
         }
     }
-
-    // ==========================================================================
-    // ==========================================================================
-    
-//    public void setUserGroupAdminService(UserGroupAdminService service) {
-//        this.userGroupAdminService = service;
-//    }
 
 }

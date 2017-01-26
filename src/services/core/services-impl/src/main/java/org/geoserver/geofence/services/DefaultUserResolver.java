@@ -1,14 +1,16 @@
-/* (c) 2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2015 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.services;
 
-import com.googlecode.genericdao.search.Search;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import org.geoserver.geofence.core.dao.GSUserDAO;
 import org.geoserver.geofence.core.dao.UserGroupDAO;
 import org.geoserver.geofence.core.model.GSUser;
@@ -23,33 +25,40 @@ import org.geoserver.geofence.spi.UserResolver;
  */
 public class DefaultUserResolver implements UserResolver {
 
+    private final static Logger LOGGER = LogManager.getLogger(DefaultUserResolver.class);
+
     private GSUserDAO userDAO;
     private UserGroupDAO userGroupDAO;
 
 
     @Override
+    @Deprecated
     public boolean existsUser(String username) {
-        return userDAO.getFull(username) != null;
+        throw new IllegalStateException("This method is deprecated and should not be invoked");
     }
 
     @Override
     public Set<String> getRoles(String username) {
         GSUser user = userDAO.getFull(username);
 
-        Set<String> ret = new HashSet<String>();
-        for (UserGroup role : user.getGroups()) {
-            ret.add(role.getName());
+        Set<String> ret = new HashSet<>();
+        if(user != null) {
+            for (UserGroup role : user.getGroups()) {
+                ret.add(role.getName());
+            }
         }
+
+        if(LOGGER.isTraceEnabled()) {
+            LOGGER.trace("Groups for user " + username + ": " + ret);
+        }
+
         return ret;
     }
 
     @Override
+    @Deprecated
     public boolean existsRole(String rolename) {
-        Search search = new Search(UserGroup.class);
-        search.addFilterEqual("name", rolename);
-        List<UserGroup> groups = userGroupDAO.search(search);
-
-        return ! groups.isEmpty();
+        throw new IllegalStateException("This method is deprecated and should not be invoked");
     }
 
     //=========================================================================

@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,6 +10,7 @@ import org.geoserver.geofence.core.model.util.PwEncoder;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -95,15 +96,6 @@ public class GSUser implements Identifiable, Serializable {
     @Column(nullable=false)
     private boolean admin = false;
 
-//    /** The user. */
-//    @ManyToOne(optional = false)
-//    @ForeignKey(name="fk_user_profile")
-//    private UserGroup profile;
-
-//	@Type(type = "org.hibernatespatial.GeometryUserType")
-//	@Column(name = "allowedArea")
-//	private MultiPolygon allowedArea;
-
     /** Groups to which the user is associated */
     @ManyToMany(fetch= FetchType.LAZY)
     @JoinTable( name = "gf_user_usergroups", joinColumns = @JoinColumn(name = "user_id"),  inverseJoinColumns=@JoinColumn(name = "group_id") )
@@ -111,15 +103,6 @@ public class GSUser implements Identifiable, Serializable {
     @ForeignKey(name="fk_uug_user", inverseName="fk_uug_group")
     @Fetch(FetchMode.SUBSELECT) // without this, hibernate will duplicate results(!)
     private Set<UserGroup> userGroups = new HashSet<UserGroup>();
-
-//    @org.hibernate.annotations.CollectionOfElements
-//    @JoinTable( name = "gf_user_usergroups",
-//                joinColumns = @JoinColumn(name = "gsuser_id"))
-////    @Column(name = "propvalue")
-//    @ForeignKey(name="fk_uug_group", inverseName="fk_uug_user")
-//    private Set<UserGroup> userGroups = new HashSet<UserGroup>();
-//
-
 
     /**
      * Instantiates a new user.
@@ -273,106 +256,77 @@ public class GSUser implements Identifiable, Serializable {
         this.userGroups = groups;
     }
 
-//    /**
-//     * @deprecated LIMIT rules should be used
-//     */
-//    @Deprecated
-//    @XmlJavaTypeAdapter(MultiPolygonAdapter.class)
-//    public MultiPolygon getAllowedArea() {
-//        return allowedArea;
-//    }
-//
-//    /**
-//     * @deprecated LIMIT rules should be used
-//     */
-//    @Deprecated
-//    public void setAllowedArea(MultiPolygon allowedArea) {
-//        this.allowedArea = allowedArea;
-//    }
-
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((dateCreation == null) ? 0 : dateCreation.hashCode());
-        result = prime * result + (Boolean.valueOf(enabled).hashCode());
-        result = prime * result + (Boolean.valueOf(admin).hashCode());
-        result = prime * result + (int) (id ^ (id >>> 32));
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((userGroups == null) ? 0 : userGroups.hashCode());
-//        result = prime * result + ((allowedArea == null) ? 0 : allowedArea.hashCode());
-//        result = prime * result + ((allowedArea == null) ? 0 : allowedArea.getSRID());
-        return result;
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 29 * hash + Objects.hashCode(this.id);
+        hash = 29 * hash + Objects.hashCode(this.extId);
+        hash = 29 * hash + Objects.hashCode(this.name);
+        hash = 29 * hash + Objects.hashCode(this.fullName);
+        hash = 29 * hash + Objects.hashCode(this.password);
+        hash = 29 * hash + Objects.hashCode(this.emailAddress);
+        hash = 29 * hash + Objects.hashCode(this.dateCreation);
+        hash = 29 * hash + (this.enabled ? 1 : 0);
+        hash = 29 * hash + (this.admin ? 1 : 0);
+        hash = 29 * hash + Objects.hashCode(this.userGroups);
+        return hash;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object obj)
+    {
         if (this == obj) {
             return true;
         }
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof GSUser)) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        GSUser other = (GSUser) obj;
-        if (dateCreation == null) {
-            if (other.dateCreation != null) {
-                return false;
-            }
-        } else if (!dateCreation.equals(other.dateCreation)) {
+        final GSUser other = (GSUser) obj;
+        if (this.enabled != other.enabled) {
             return false;
         }
-        if(enabled != other.enabled) {
+        if (this.admin != other.admin) {
             return false;
         }
-        if(admin != other.admin) {
+        if (!Objects.equals(this.extId, other.extId)) {
             return false;
         }
-        if (id != other.id) {
+        if (!Objects.equals(this.name, other.name)) {
             return false;
         }
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
+        if (!Objects.equals(this.fullName, other.fullName)) {
             return false;
         }
-
-//        if (allowedArea == null) {
-//            if (other.allowedArea != null) {
-//                return false;
-//            }
-//        } else if (!allowedArea.equals(other.allowedArea)) {
-//            return false;
-//        } else if(other.allowedArea != null && other.allowedArea.getSRID() != allowedArea.getSRID()) {
-//            return false;
-//        }
-
-        if ( this.userGroups != other.userGroups && (this.userGroups == null || !this.userGroups.equals(other.userGroups)) ) {
+        if (!Objects.equals(this.password, other.password)) {
             return false;
         }
-
+        if (!Objects.equals(this.emailAddress, other.emailAddress)) {
+            return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.dateCreation, other.dateCreation)) {
+            return false;
+        }
+        if (!Objects.equals(this.userGroups, other.userGroups)) {
+            return false;
+        }
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("User [");
-        builder.append("id=").append(id).append(", ");
+        if(id != null)
+            builder.append("id=").append(id).append(", ");
+        if(extId != null)
+            builder.append("extid=").append(extId).append(", ");
         if (name != null)
             builder.append("name=").append(name).append(", ");
 //        if (userGroups != null)

@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -22,8 +22,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(propOrder = {"id", "extId", "name"})
 public class ShortGroup implements Serializable {
 
-    private static final long serialVersionUID = -8410646966443187827L;
-    private long id;
+    private static final long serialVersionUID = -43187828L;
+    private Long id;
     private String name;
     private String extId;
     private Boolean enabled;
@@ -38,11 +38,11 @@ public class ShortGroup implements Serializable {
         this.extId = group.getExtId();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

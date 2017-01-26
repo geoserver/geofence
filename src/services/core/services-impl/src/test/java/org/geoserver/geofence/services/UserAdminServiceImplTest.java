@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -49,7 +49,7 @@ public class UserAdminServiceImplTest extends ServiceTestBase {
         userAdminService.insert(user);
 
         {
-            GSUser loaded = userAdminService.getFull(user.getId());
+            GSUser loaded = userAdminService.getFull(user.getName());
             assertNotNull(loaded);
             assertEquals(2, loaded.getGroups().size());
 
@@ -63,7 +63,7 @@ public class UserAdminServiceImplTest extends ServiceTestBase {
         }
 
         {
-            GSUser loaded = userAdminService.getFull(user.getId());
+            GSUser loaded = userAdminService.getFull(user.getName());
             assertNotNull(loaded);
             assertEquals(3, loaded.getGroups().size());
 
@@ -77,7 +77,7 @@ public class UserAdminServiceImplTest extends ServiceTestBase {
         }
 
         {
-            GSUser loaded = userAdminService.getFull(user.getId());
+            GSUser loaded = userAdminService.getFull(user.getName());
             assertNotNull(loaded);
             assertEquals(2, loaded.getGroups().size());
 
@@ -116,7 +116,7 @@ public class UserAdminServiceImplTest extends ServiceTestBase {
         final String NEWNAME = "NEWNAME";
 
         {
-            GSUser loaded = userAdminService.getFull(user.getId());
+            GSUser loaded = userAdminService.getFull(user.getName());
             assertNotNull(loaded);
 
             assertEquals("u1", loaded.getName());
@@ -126,24 +126,14 @@ public class UserAdminServiceImplTest extends ServiceTestBase {
             loaded.getGroups().add(ug2);
             loaded.setName(NEWNAME);
 
-//            WKTReader wktReader = new WKTReader();
-//            String allowedArea = "MULTIPOLYGON (((414699.55 130160.43, 414701.83 130149.9, 414729.2 130155.7, 414729.2 130155.7, 414733.25 130149.8, 414735.1 130140.9, 414743.75 130142.7, 414740.6 130158.15, 414742.15 130158.5, 414739.65 130169.25, 414728.05 130166.65, 414727.77 130167.93, 414724.52 130167.19, 414717.65 130165.63, 414717.85 130164.45, 414699.55 130160.43)))";
-//            MultiPolygon the_geom = (MultiPolygon) wktReader.read(allowedArea);
-//            the_geom.setSRID(4326);
-//            loaded.setAllowedArea(the_geom);
-
             userAdminService.update(loaded);
         }
         {
-            GSUser loaded = userAdminService.getFull(user.getId());
+            GSUser loaded = userAdminService.getFull(NEWNAME);
             assertNotNull(loaded);
 
-            assertEquals(NEWNAME, loaded.getName());
+            assertEquals(user.getId(), loaded.getId());
             assertEquals(2, loaded.getGroups().size());
-//            assertEquals("p2", loaded.getGroups().getName());
-
-//            assertNotNull(loaded.getAllowedArea());
-//            assertEquals(4326, loaded.getAllowedArea().getSRID());
         }
     }
 
@@ -154,15 +144,10 @@ public class UserAdminServiceImplTest extends ServiceTestBase {
         UserGroup ug2 = createRole("g2");
         UserGroup ug3 = createRole("g3");
 
-
-        Long id;        
-        {
-            id = createUser("u1", ug1).getId();
-        }
-
+        Long id = createUser("u1", ug1).getId();
 
         {
-            GSUser loaded = userAdminService.getFull(id);
+            GSUser loaded = userAdminService.getFull("u1");
             assertNotNull(loaded);
 
             assertEquals("u1", loaded.getName());
@@ -174,7 +159,7 @@ public class UserAdminServiceImplTest extends ServiceTestBase {
             userAdminService.update(loaded);
         }
         {
-            GSUser loaded = userAdminService.getFull(id);
+            GSUser loaded = userAdminService.getFull("u1");
             assertNotNull(loaded);
 
             assertEquals(2, loaded.getGroups().size());
@@ -185,7 +170,7 @@ public class UserAdminServiceImplTest extends ServiceTestBase {
             userAdminService.update(loaded);
         }
         {
-            GSUser loaded = userAdminService.getFull(id);
+            GSUser loaded = userAdminService.getFull("u1");
             assertNotNull(loaded);
 
             assertEquals(2, loaded.getGroups().size());
@@ -194,11 +179,11 @@ public class UserAdminServiceImplTest extends ServiceTestBase {
     }
 
     protected boolean hasGroups(GSUser user, String ... groupName) {
-        Set<String> names = new HashSet<String>();
+        Set<String> names = new HashSet<>();
         for (UserGroup userGroup : user.getGroups()) {
             names.add(userGroup.getName());
         }
-        
+
         return names.containsAll(Arrays.asList(groupName));
     }
 
@@ -229,7 +214,7 @@ public class UserAdminServiceImplTest extends ServiceTestBase {
         List<ShortUser> users = userAdminService.getList("%9",null,null);
         assertEquals(1, users.size());
         assertEquals("u99", users.get(0).getName());
-        assertEquals((Long)u99.getId(), (Long)users.get(0).getId());
+        assertEquals(u99.getId(), (Long)users.get(0).getId());
     }
 
 }

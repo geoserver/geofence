@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -7,19 +7,17 @@ package org.geoserver.geofence.gui.server.service.impl;
 
 import org.geoserver.geofence.gui.client.ApplicationException;
 import org.geoserver.geofence.gui.client.model.UserGroupModel;
-import org.geoserver.geofence.gui.client.model.data.ProfileCustomProps;
 import org.geoserver.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
+import org.geoserver.geofence.gui.client.model.RolenameModel;
 import org.geoserver.geofence.gui.server.service.IProfilesManagerService;
 import org.geoserver.geofence.gui.service.GeofenceRemoteService;
 import org.geoserver.geofence.services.dto.ShortGroup;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.slf4j.Logger;
@@ -28,8 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import org.geoserver.geofence.core.model.UserGroup;
-import org.geoserver.geofence.gui.client.model.RolenameModel;
 
 
 // TODO: Auto-generated Javadoc
@@ -64,7 +60,7 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
         if (full)
         {
             UserGroupModel all_profile = new UserGroupModel();
-            all_profile.setId(-1);
+            all_profile.setId(-1l);
             all_profile.setName("*");
             all_profile.setEnabled(true);
             all_profile.setDateCreation(null);
@@ -95,31 +91,11 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
         {
             ShortGroup short_profile = it.next();
 
-            org.geoserver.geofence.core.model.UserGroup remote_profile;
-            try
-            {
-                remote_profile = geofenceRemoteService.getUserGroupAdminService().get(
-                        short_profile.getId());
-            }
-            catch (NotFoundServiceEx e)
-            {
-                if (logger.isErrorEnabled())
-                {
-                    logger.error("Details for profile " + short_profile.getName() +
-                        " not found on Server!");
-                }
-                throw new ApplicationException("Details for profile " + short_profile.getName() +
-                    " not found on Server!");
-            }
-
             UserGroupModel local_profile = new UserGroupModel();
 
             local_profile.setId(short_profile.getId());
-            local_profile.setName(remote_profile.getName());
-            local_profile.setDateCreation(remote_profile.getDateCreation());
-            local_profile.setEnabled(remote_profile.getEnabled());
-            // TODO: use specific API methods in order to load UserGroup custom props
-            // local_profile.setCustomProps(remote_profile.getCustomProps());
+            local_profile.setName(short_profile.getName());
+            local_profile.setEnabled(short_profile.isEnabled());
 
             profileListDTO.add(local_profile);
         }
@@ -159,13 +135,13 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
             throw new ApplicationException("No profile found on server");
         }
 
-        Iterator<ShortGroup> it = profilesList.iterator();
+        Set<String> sortedNames = new TreeSet<String>();
+        for (ShortGroup group : profilesList) {
+            sortedNames.add(group.getName());
+        }
 
-        while (it.hasNext())
-        {
-            ShortGroup role = it.next();
-            RolenameModel local_profile = new RolenameModel(role.getName());
-            returnList.add(local_profile);
+        for (String sortedName : sortedNames) {
+            returnList.add(new RolenameModel(sortedName));
         }
 
         return new RpcPageLoadResult<RolenameModel>(returnList, offset, t.intValue());
@@ -217,13 +193,9 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
         {
             try
             {
-                remote_profile = new org.geoserver.geofence.core.model.UserGroup();
-
                 ShortGroup short_profile = new ShortGroup();
                 short_profile.setName(profile.getName());
                 short_profile.setEnabled(profile.isEnabled());
-                // removed by ETj
-//                short_profile.setDateCreation(profile.getDateCreation());
                 geofenceRemoteService.getUserGroupAdminService().insert(short_profile);
             }
             catch (Exception e)
@@ -234,89 +206,4 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.geoserver.geofence.gui.server.service.IProfilesManagerService#getProfileCustomProps(com.extjs.gxt.ui.client.data.PagingLoadConfig, org.geoserver.geofence.gui.client.model.Rule)
-     */
-    public PagingLoadResult<ProfileCustomProps> getProfileCustomProps(int offset, int limit, UserGroupModel profile)
-    {
-        int start = offset;
-        Long t = new Long(0);
-
-        List<ProfileCustomProps> customPropsDTO = new ArrayList<ProfileCustomProps>();
-
-        if ((profile != null) && (profile.getId() >= 0))
-        {
-            try
-            {
-                logger.error("TODO: profile refactoring!!! custom props have been removed");
-                Map<String, String> customProperties = new HashMap<String, String>();
-                customProperties.put("NOTE", "Custom properties are no longer supported. Code is unstable");
-//                Map<String, String> customProperties = geofenceRemoteService.getUserGroupAdminService().getCustomProps(profile.getId());
-
-                if (customProperties == null)
-                {
-                    if (logger.isErrorEnabled())
-                    {
-                        logger.error("No property found on server");
-                    }
-                    throw new ApplicationException("No rule found on server");
-                }
-
-                long rulesCount = customProperties.size();
-
-                t = new Long(rulesCount);
-
-                int page = (start == 0) ? start : (start / limit);
-
-                SortedSet<String> sortedset = new TreeSet<String>(customProperties.keySet());
-                Iterator<String> it = sortedset.iterator();
-
-                while (it.hasNext())
-                {
-                    String key = it.next();
-                    ProfileCustomProps property = new ProfileCustomProps();
-                    property.setPropKey(key);
-                    property.setPropValue(customProperties.get(key));
-                    customPropsDTO.add(property);
-                }
-
-//                for (String key : customProperties.keySet()) {
-//                    ProfileCustomProps property = new ProfileCustomProps();
-//                    property.setPropKey(key);
-//                    property.setPropValue(customProperties.get(key));
-//                    customPropsDTO.add(property);
-//                }
-            }
-            catch (Exception e)
-            {
-                // do nothing!
-            }
-        }
-
-        return new RpcPageLoadResult<ProfileCustomProps>(customPropsDTO, offset, t.intValue());
-    }
-
-    /** (non-Javadoc)
-     * @deprecated custom props have been removed
-     */
-    public void setProfileProps(Long profileId, List<ProfileCustomProps> customProps)
-    {
-        Map<String, String> props = new HashMap<String, String>();
-
-        for (ProfileCustomProps prop : customProps)
-        {
-            props.put(prop.getPropKey(), prop.getPropValue());
-        }
-
-//        LayerDetails details = null;
-//        try {
-//            details = geofenceRemoteService.getRuleAdminService().getDetails(ruleId);
-//        } catch (Exception e) {
-//            details = new LayerDetails();
-//            geofenceRemoteService.getRuleAdminService().setDetails(ruleId, details);
-//        }
-
-        logger.error("TODO: profile refactoring!!! custom props have been removed");
-//        geofenceRemoteService.getUserGroupAdminService().setCustomProps(profileId, props);
-    }
 }

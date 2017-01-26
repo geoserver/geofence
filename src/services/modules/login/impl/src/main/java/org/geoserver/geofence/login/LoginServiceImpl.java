@@ -1,11 +1,10 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.login;
 
-import org.geoserver.geofence.login.LoginService;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
@@ -16,8 +15,8 @@ import org.geoserver.geofence.api.exception.AuthException;
 import org.geoserver.geofence.login.util.GrantAll;
 import org.geoserver.geofence.login.util.SessionManager;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;

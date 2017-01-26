@@ -1,21 +1,18 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.services;
 
-import org.geoserver.geofence.services.UserGroupAdminService;
 import com.googlecode.genericdao.search.Search;
 import org.geoserver.geofence.core.dao.UserGroupDAO;
-import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.UserGroup;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import org.geoserver.geofence.services.dto.ShortGroup;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
@@ -39,7 +36,7 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
 
         if(group.isEnabled() !=null)
             p.setEnabled(group.isEnabled());
-        
+
         userGroupDAO.persist(p);
         return p.getId();
     }
@@ -133,18 +130,8 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
     }
 
     // ==========================================================================
-//    @Override
-//    public Map<String, String> getCustomProps(Long id) {
-//        return userGroupDAO.getCustomProps(id);
-//    }
-//
-//    @Override
-//    public void setCustomProps(Long id, Map<String, String> props) {
-//        userGroupDAO.setCustomProps(id, props);
-//    }
-    // ==========================================================================
     private List<ShortGroup> convertToShortList(List<UserGroup> list) {
-        List<ShortGroup> swList = new ArrayList<ShortGroup>(list.size());
+        List<ShortGroup> swList = new ArrayList<>(list.size());
         for (UserGroup group : list) {
             swList.add(new ShortGroup(group));
         }

@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -53,20 +53,11 @@ public class ProfilesController extends Controller
         registerEventTypes(
             GeofenceEvents.INIT_MAPS_UI_MODULE,
 
-
-
-
             GeofenceEvents.UPDATE_PROFILE,
             GeofenceEvents.DELETE_PROFILE,
             GeofenceEvents.SAVE_PROFILE,
 
-
-
-
             GeofenceEvents.CREATE_NEW_PROFILE,
-
-
-
 
             GeofenceEvents.ATTACH_BOTTOM_TAB_WIDGETS);
     }

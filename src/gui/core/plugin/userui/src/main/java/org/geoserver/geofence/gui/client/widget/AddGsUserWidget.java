@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -110,7 +110,7 @@ public class AddGsUserWidget extends GeofenceFormWidget
     public void execute()
     {
         this.saveStatus.setBusy("Operation in progress");
-        this.user.setId(-1);
+        this.user.setId(-1l);
         this.user.setName(userName.getValue());
         this.user.setPassword(password.getValue());
         this.user.setFullName(fullName.getValue());

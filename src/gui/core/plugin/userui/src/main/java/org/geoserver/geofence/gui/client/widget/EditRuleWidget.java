@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -629,6 +629,8 @@ public class EditRuleWidget extends GeofenceFormWidget
 
                     BasePagingLoader<PagingLoadResult<ModelData>> usersLoader = new BasePagingLoader<PagingLoadResult<ModelData>>( userProxy);
                     usersLoader.setRemoteSort(false);
+                    usersLoader.setSortField(BeanKeyValue.USERNAME.getValue());
+                    usersLoader.setSortDir(SortDir.ASC);
 
                     ListStore<UsernameModel> availableUsers = new ListStore<UsernameModel>(usersLoader);
 
@@ -820,6 +822,9 @@ public class EditRuleWidget extends GeofenceFormWidget
                         new BasePagingLoader<PagingLoadResult<ModelData>>(
                             profileProxy);
                     groupLoader.setRemoteSort(false);
+                    groupLoader.setSortField(BeanKeyValue.ROLENAME.getValue());
+                    groupLoader.setSortDir(SortDir.ASC);
+
                     groups = new ListStore<RolenameModel>(groupLoader);
 
                     return groups;

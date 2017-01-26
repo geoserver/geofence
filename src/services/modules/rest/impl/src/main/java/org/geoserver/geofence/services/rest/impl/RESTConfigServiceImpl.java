@@ -1,4 +1,4 @@
-/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -40,6 +40,7 @@ import org.geoserver.geofence.services.rest.model.RESTInputUser;
 import org.geoserver.geofence.services.rest.model.RESTLayerConstraints;
 import org.geoserver.geofence.services.rest.model.RESTOutputRule;
 import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
+import org.geoserver.geofence.services.rest.model.RESTRulePosition;
 import org.geoserver.geofence.services.rest.model.RESTShortInstanceList;
 import org.geoserver.geofence.services.rest.model.RESTShortUser;
 import org.geoserver.geofence.services.rest.model.RESTShortUserList;
@@ -55,9 +56,8 @@ import org.geoserver.geofence.services.rest.model.util.RESTBatchOperationFactory
 import org.geoserver.geofence.services.rest.utils.InstanceCleaner;
 import java.util.ArrayList;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.geoserver.geofence.services.rest.model.RESTRulePosition;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -248,7 +248,7 @@ public class RESTConfigServiceImpl implements RESTConfigService {
         RESTFullUserList users = new RESTFullUserList();
         List<GSUser> userlist = userAdminService.getFullList(null, null, null);
         for (GSUser user : userlist) {
-            user.setGroups(userAdminService.getUserGroups(user.getId()));
+            user.setGroups(userAdminService.getFull(user.getName()).getGroups());
         }
         users.setList(userlist);
         cfg.setUserList(users);
@@ -265,7 +265,7 @@ public class RESTConfigServiceImpl implements RESTConfigService {
         rules.setList(ruleAdminService.getListFull(null, null, null));
         cfg.setRuleList(rules);
 
-        if ( includeGRUsers.booleanValue() ) {
+        if ( includeGRUsers ) {
             RESTFullGRUserList grUsers = new RESTFullGRUserList();
             grUsers.setList(grUserAdminService.getFullList(null, null, null));
             cfg.setGrUserList(grUsers);

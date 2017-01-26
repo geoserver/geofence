@@ -1,4 +1,4 @@
-/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -123,7 +123,7 @@ public class ModelPrintoutFakeTest {
     protected ShortGroup createShortGroup(String base) {
         ShortGroup g1 = new ShortGroup();
         g1.setName(base);
-        g1.setId(base.hashCode());
+        g1.setId((long)base.hashCode());
         g1.setExtId("ext_"+base);
         g1.setEnabled(Boolean.TRUE);
         return g1;

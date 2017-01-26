@@ -1,12 +1,15 @@
-/* (c) 2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2015 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.services.rest.impl;
 
+import java.util.List;
 
+import org.geoserver.geofence.core.model.AdminRule;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
+
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.IdNameFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
@@ -18,18 +21,17 @@ import org.geoserver.geofence.services.rest.exception.GeoFenceRestEx;
 import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
 import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
 import org.geoserver.geofence.services.rest.model.util.IdName;
-import java.util.List;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.geoserver.geofence.core.model.AdminRule;
-import org.geoserver.geofence.services.rest.RESTAdminRuleService;
 import org.geoserver.geofence.services.rest.model.RESTInputAdminRule;
 import org.geoserver.geofence.services.rest.model.RESTOutputAdminRule;
 import org.geoserver.geofence.services.rest.model.RESTOutputAdminRuleList;
 import org.geoserver.geofence.services.rest.model.RESTRulePosition.RulePosition;
+import org.geoserver.geofence.services.rest.RESTAdminRuleService;
+
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -205,7 +207,7 @@ public class RESTAdminRuleServiceImpl
             String userName, Boolean userDefault,
             String roleName, Boolean groupDefault,
             Long instanceId, String instanceName, Boolean instanceDefault,
-            String workspace, Boolean workspaceDefault) 
+            String workspace, Boolean workspaceDefault)
             throws BadRequestRestEx
     {
         RuleFilter filter = new RuleFilter(SpecialFilterType.ANY, true);
@@ -282,7 +284,7 @@ public class RESTAdminRuleServiceImpl
     }
 
     // ==========================================================================
-    
+
     protected RESTOutputAdminRuleList toOutput(List<AdminRule> rules)
     {
         RESTOutputAdminRuleList list = new RESTOutputAdminRuleList(rules.size());
@@ -291,7 +293,7 @@ public class RESTAdminRuleServiceImpl
         }
         return list;
     }
-    
+
     // ==========================================================================
     protected RESTOutputAdminRule toOutput(AdminRule rule)
     {
@@ -319,7 +321,7 @@ public class RESTAdminRuleServiceImpl
 
         rule.setUsername(in.getUsername());
         rule.setRolename(in.getRolename());
-        
+
         if (in.getInstance() != null) {
             rule.setInstance(getInstance(in.getInstance()));
         }
