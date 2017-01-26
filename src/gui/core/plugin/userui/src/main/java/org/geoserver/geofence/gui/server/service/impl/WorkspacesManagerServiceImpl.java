@@ -129,7 +129,7 @@ public class WorkspacesManagerServiceImpl implements IWorkspacesManagerService
             try
             {
                 GeoServerRESTReader gsreader = new GeoServerRESTReader(baseURL, gsInstance.getUsername(), gsInstance.getPassword());
-                
+
                 if (workspace.equals("*") && workspaceConfigOpts.isShowDefaultGroups() && service.equals("WMS"))
                 {
                     RESTAbstractList<NameLinkElem> layerGroups = gsreader.getLayerGroups();
@@ -141,7 +141,7 @@ public class WorkspacesManagerServiceImpl implements IWorkspacesManagerService
 //                            {
 //                                layersListDTO.add(new Layer(group.getName()));
 //                            }
-                            layersListDTO.add(new Layer(lg.getName()));                            
+                            layersListDTO.add(new Layer(lg.getName()));
                         }
                     }
                 }

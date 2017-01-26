@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -49,7 +49,7 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
 
 
         insertRule(new Rule(20, "u1", null, null,null,      null, null, null, "l1", GrantType.LIMIT), null);
-        insertRule(new Rule(20, null, "g1", null,null,      null, null, null, "l1", GrantType.ALLOW), null);
+        insertRule(new Rule(21, null, "g1", null,null,      null, null, null, "l1", GrantType.ALLOW), null);
 
         LOGGER.info("SETUP ENDED, STARTING TESTS========================================");
 
@@ -77,7 +77,7 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
 
 
         insertRule(new Rule(20, "u1", null, null,null,      null, null, null, "l1", GrantType.LIMIT), null);
-        insertRule(new Rule(20, null, "g1", null,null,      null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
+        insertRule(new Rule(21, null, "g1", null,null,      null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
 
         LOGGER.info("SETUP ENDED, STARTING TESTS========================================");
 
@@ -105,7 +105,7 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
 
 
         insertRule(new Rule(20, "u1", null, null, null,     null, null, null, "l1", GrantType.LIMIT), CatalogMode.HIDE);
-        insertRule(new Rule(20, null, "g1", null, null,     null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
+        insertRule(new Rule(21, null, "g1", null, null,     null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
 
         LOGGER.info("SETUP ENDED, STARTING TESTS========================================");
 
@@ -132,7 +132,7 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
 
 
         insertRule(new Rule(20, null, "g2", null, null,  null, null, null, "l1", GrantType.ALLOW), CatalogMode.HIDE);
-        insertRule(new Rule(20, null, "g1", null, null,  null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
+        insertRule(new Rule(21, null, "g1", null, null,  null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
 
         LOGGER.info("SETUP ENDED, STARTING TESTS========================================");
 

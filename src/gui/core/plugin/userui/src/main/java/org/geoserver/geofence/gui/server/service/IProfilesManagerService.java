@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -12,7 +12,6 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.geoserver.geofence.gui.client.ApplicationException;
 import org.geoserver.geofence.gui.client.model.RolenameModel;
 import org.geoserver.geofence.gui.client.model.UserGroupModel;
-import org.geoserver.geofence.gui.client.model.data.ProfileCustomProps;
 
 
 // TODO: Auto-generated Javadoc
@@ -52,16 +51,4 @@ public interface IProfilesManagerService
      */
     public void saveProfile(UserGroupModel profile);
 
-    /**
-     * @param config
-     * @param rule
-     * @return
-     */
-    public PagingLoadResult<ProfileCustomProps> getProfileCustomProps(int offset, int limit, UserGroupModel profile);
-
-    /**
-     * @param ruleId
-     * @param customProps
-     */
-    public void setProfileProps(Long profileId, List<ProfileCustomProps> customProps);
 }

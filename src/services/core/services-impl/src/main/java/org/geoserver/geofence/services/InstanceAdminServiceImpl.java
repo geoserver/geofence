@@ -1,19 +1,17 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.services;
 
-import org.geoserver.geofence.services.InstanceAdminService;
 import com.googlecode.genericdao.search.Search;
 import org.geoserver.geofence.core.model.GSInstance;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import org.geoserver.geofence.core.dao.GSInstanceDAO;
 import org.geoserver.geofence.services.dto.ShortInstance;
@@ -57,7 +55,6 @@ public class InstanceAdminServiceImpl implements InstanceAdminService {
             throw new NotFoundServiceEx("GSInstance not found", id);
         }
 
-//        return new ShortInstance(instance);
         return instance;
     }
 
@@ -90,9 +87,7 @@ public class InstanceAdminServiceImpl implements InstanceAdminService {
 
     @Override
     public List<GSInstance> getAll() {
-        List<GSInstance> found = instanceDAO.findAll();
-        return found;
-//        return convertToShortList(found);
+        return instanceDAO.findAll();
     }
 
     @Override
@@ -114,9 +109,7 @@ public class InstanceAdminServiceImpl implements InstanceAdminService {
             searchCriteria.addFilterILike("name", nameLike);
         }
 
-        List<GSInstance> found = instanceDAO.search(searchCriteria);
-        return found;
-//        return convertToShortList(found);
+        return instanceDAO.search(searchCriteria);
     }
 
     @Override
@@ -125,7 +118,7 @@ public class InstanceAdminServiceImpl implements InstanceAdminService {
     }
 
     private List<ShortInstance> convertToShortList(List<GSInstance> list) {
-        List<ShortInstance> swList = new ArrayList<ShortInstance>(list.size());
+        List<ShortInstance> swList = new ArrayList<>(list.size());
         for (GSInstance item : list) {
             swList.add(new ShortInstance(item));
         }
@@ -145,27 +138,6 @@ public class InstanceAdminServiceImpl implements InstanceAdminService {
     }
 
     // ==========================================================================
-
-//    @Override
-//    public Map<String, String> getCustomProps(Long id) {
-//        return instanceDAO.getCustomProps(id);
-//    }
-//
-//    @Override
-//    public void setCustomProps(Long id, Map<String, String> props) {
-//        instanceDAO.setCustomProps(id, props);
-//    }
-
-    // ==========================================================================
-
-//    private List<ShortInstance> convertToShortList(List<GSInstance> list) {
-//        List<ShortInstance> swList = new ArrayList<ShortInstance>(list.size());
-//        for (GSInstance instance : list) {
-//            swList.add(new ShortInstance(instance));
-//        }
-//
-//        return swList;
-//    }
 
     public void setInstanceDAO(GSInstanceDAO instanceDAO) {
         this.instanceDAO = instanceDAO;

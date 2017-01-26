@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -199,9 +199,6 @@ public class GeofenceEvents {
     /** **/
     public static final EventType LOAD_RULES = new EventType();
 
-    /** **/
-    public static final EventType LOAD_USER_LIMITS = new EventType();
-
     /** The Constant LOAD_WATCH_AOI. */
     public static final EventType LOAD_WATCH_AOI = new EventType();
 
@@ -277,21 +274,6 @@ public class GeofenceEvents {
     /** The Constant RULE_PRIORITY_UP. */
     public static final EventType RULE_PRIORITY_UP = new EventType();
 
-    /** **/
-    public static final EventType RULE_PROFILE_CUSTOM_PROP_ADD = new EventType();
-
-    /** **/
-    public static final EventType RULE_PROFILE_CUSTOM_PROP_APPLY_CHANGES = new EventType();
-
-    /** **/
-    public static final EventType RULE_PROFILE_CUSTOM_PROP_DEL = new EventType();
-
-    /** **/
-    public static final EventType RULE_PROFILE_CUSTOM_PROP_UPDATE_KEY = new EventType();
-
-    /** **/
-    public static final EventType RULE_PROFILE_CUSTOM_PROP_UPDATE_VALUE = new EventType();
-
     /** The Constant RULE_SAVE. */
     public static final EventType RULE_SAVE = new EventType();
 
@@ -336,9 +318,6 @@ public class GeofenceEvents {
     
     /** **/
     public static final EventType SAVE_USER_GROUPS = new EventType();
-
-    /** **/
-    public static final EventType SAVE_USER_LIMITS = new EventType();
 
     /** The Constant SAVE_WATCH. */
     public static final EventType SAVE_WATCH = new EventType();

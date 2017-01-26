@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -31,8 +31,8 @@ import java.util.Set;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -86,8 +86,7 @@ public class RESTUserServiceImpl
     @Override
     public RESTOutputUser get(String name) throws NotFoundRestEx, InternalErrorRestEx {
         try {
-            GSUser ret = userAdminService.get(name);
-            ret.setGroups(userAdminService.getUserGroups(ret.getId()));
+            GSUser ret = userAdminService.getFull(name);
             return toOutputUser(ret);
         } catch (NotFoundServiceEx ex) {
             LOGGER.warn("User not found: " + name);
@@ -302,10 +301,9 @@ public class RESTUserServiceImpl
         try {
             UserGroup group = getUserGroup(groupId);
 
-            GSUser user = getUser(userId);
-            Set<UserGroup> groups = getUserGroups(user.getId());
-            groups.add(group);
-            user.setGroups(groups);
+            GSUser user = getUser(userId); // needed for param check
+            GSUser fulluser = userAdminService.getFull(user.getName());
+            fulluser.getGroups().add(group);
 
             userAdminService.update(user);
 
@@ -332,19 +330,18 @@ public class RESTUserServiceImpl
             UserGroup groupToRemove = getUserGroup(groupId);
 
             GSUser user = getUser(userId);
-            Set<UserGroup> groups = getUserGroups(user.getId());
+            GSUser fulluser = userAdminService.getFull(user.getName());
 
             UserGroup found = null;
-            for (UserGroup group : groups) {
+            for (UserGroup group : fulluser.getGroups()) {
                 if (group.getId().equals(groupToRemove.getId())) {
                     found = group;
                     break;
                 }
             }
             if (found != null) {
-                groups.remove(found);
-                user.setGroups(groups);
-                userAdminService.update(user);
+                fulluser.getGroups().remove(found);
+                userAdminService.update(fulluser);
             } else {
                 if (LOGGER.isInfoEnabled()) {
                     LOGGER.info("User " + user.getName() + " not in group " + groupToRemove);

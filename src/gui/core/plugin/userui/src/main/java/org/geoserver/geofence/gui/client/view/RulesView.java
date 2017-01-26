@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -13,8 +13,6 @@ import org.geoserver.geofence.gui.client.model.UserGroupModel;
 import org.geoserver.geofence.gui.client.model.data.LayerCustomProps;
 import org.geoserver.geofence.gui.client.model.data.LayerDetailsInfo;
 import org.geoserver.geofence.gui.client.model.data.LayerLimitsInfo;
-import org.geoserver.geofence.gui.client.model.data.ProfileCustomProps;
-import org.geoserver.geofence.gui.client.model.data.UserLimitsInfoModel;
 import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
@@ -22,22 +20,17 @@ import org.geoserver.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.widget.EditRuleWidget;
 import org.geoserver.geofence.gui.client.widget.GridStatus;
-import org.geoserver.geofence.gui.client.widget.dialog.ProfileDetailsEditDialog;
 import org.geoserver.geofence.gui.client.widget.dialog.RuleDetailsEditDialog;
 import org.geoserver.geofence.gui.client.widget.dialog.UserDetailsEditDialog;
 import org.geoserver.geofence.gui.client.widget.rule.detail.LayerAttributesGridWidget;
 import org.geoserver.geofence.gui.client.widget.rule.detail.LayerAttributesTabItem;
 import org.geoserver.geofence.gui.client.widget.rule.detail.LayerCustomPropsGridWidget;
 import org.geoserver.geofence.gui.client.widget.rule.detail.LayerCustomPropsTabItem;
-import org.geoserver.geofence.gui.client.widget.rule.detail.ProfileDetailsGridWidget;
-import org.geoserver.geofence.gui.client.widget.rule.detail.ProfileDetailsTabItem;
 import org.geoserver.geofence.gui.client.widget.rule.detail.RuleDetailsGridWidget;
 import org.geoserver.geofence.gui.client.widget.rule.detail.RuleDetailsInfoWidget;
 import org.geoserver.geofence.gui.client.widget.rule.detail.RuleDetailsTabItem;
 import org.geoserver.geofence.gui.client.widget.rule.detail.RuleLimitsInfoWidget;
 import org.geoserver.geofence.gui.client.widget.rule.detail.RuleLimitsTabItem;
-import org.geoserver.geofence.gui.client.widget.rule.detail.UserDetailsInfoWidget;
-import org.geoserver.geofence.gui.client.widget.rule.detail.UserDetailsTabItem;
 import it.geosolutions.geogwt.gui.client.GeoGWTEvents;
 
 import java.util.Map;
@@ -78,9 +71,6 @@ public class RulesView extends View {
 	/** The rule editor dialog. */
 	private RuleDetailsEditDialog ruleEditorDialog;
 
-	/** The profile editor dialog. */
-	private ProfileDetailsEditDialog profileEditorDialog;
-
 	/** The user editor dialog. */
 	private UserDetailsEditDialog userDetailsEditDialog;
 
@@ -98,10 +88,6 @@ public class RulesView extends View {
 		this.ruleEditorDialog = new RuleDetailsEditDialog(
 				rulesManagerServiceRemote, workspacesManagerServiceRemote);
 		ruleEditorDialog.setClosable(false);
-
-		this.profileEditorDialog = new ProfileDetailsEditDialog(
-				profilesManagerServiceRemote);
-		profileEditorDialog.setClosable(false);
 
 		this.userDetailsEditDialog = new UserDetailsEditDialog(
 				usersManagerServiceRemote, profilesManagerServiceRemote);
@@ -171,35 +157,11 @@ public class RulesView extends View {
 			// logger
 		}
 
-		if (event.getType() == GeofenceEvents.RULE_PROFILE_CUSTOM_PROP_UPDATE_KEY) {
-			onRuleProfileCustomPropUpdateKey(event);
-		}
-
-		if (event.getType() == GeofenceEvents.RULE_PROFILE_CUSTOM_PROP_UPDATE_VALUE) {
-			onRuleProfileCustomPropUpdateValue(event);
-		}
-
-		if (event.getType() == GeofenceEvents.RULE_PROFILE_CUSTOM_PROP_DEL) {
-			onRuleProfileCustomPropRemove(event);
-		}
-
-		if (event.getType() == GeofenceEvents.RULE_PROFILE_CUSTOM_PROP_ADD) {
-			onRuleProfileCustomPropAdd(event);
-		}
-
-		if (event.getType() == GeofenceEvents.RULE_PROFILE_CUSTOM_PROP_APPLY_CHANGES) {
-			onRuleProfileCustomPropSave(event);
-		}
-
 		if (event.getType() == GeofenceEvents.RULE_EDITOR_DIALOG_HIDE) {
 			ruleEditorDialog.hide();
 		}
 		if (event.getType() == GeofenceEvents.RULE_EDITOR_DIALOG_SHOW) {
 			ruleEditorDialog.show();
-		}
-
-		if (event.getType() == GeofenceEvents.EDIT_PROFILE_DETAILS) {
-			onEditProfileDetails(event);
 		}
 
 		if (event.getType() == GeofenceEvents.SAVE_LAYER_LIMITS) {
@@ -214,14 +176,6 @@ public class RulesView extends View {
 			onEditUserDetails(event);
 		}
 
-		if (event.getType() == GeofenceEvents.LOAD_USER_LIMITS) {
-			onLoadUserLimits(event);
-		}
-
-		if (event.getType() == GeofenceEvents.SAVE_USER_LIMITS) {
-			onSaveUserLimits(event);
-		}
-
 		if (event.getType() == GeofenceEvents.SAVE_USER_GROUPS) {
 			onSaveUserGroups(event);
 		}
@@ -231,45 +185,6 @@ public class RulesView extends View {
 			onInjectWKT(event);
 		}
 
-	}
-
-	/**
-	 * @param event
-	 */
-	private void onSaveUserLimits(AppEvent event) {
-		UserLimitsInfoModel userInfo = event.getData();
-
-		this.usersManagerServiceRemote.saveUserLimitsInfo(userInfo,
-				new AsyncCallback<UserLimitsInfoModel>() {
-
-					public void onFailure(Throwable caught) {
-						Dispatcher
-								.forwardEvent(
-										GeofenceEvents.SEND_ERROR_MESSAGE,
-										new String[] {
-												I18nProvider.getMessages()
-														.ruleServiceName(),
-												"Error occurred while saving User Details!" });
-					}
-
-					public void onSuccess(UserLimitsInfoModel result) {
-						UserDetailsTabItem userDetailsTabItem = (UserDetailsTabItem) userDetailsEditDialog
-								.getTabWidget()
-								.getItemByItemId(
-										UserDetailsEditDialog.USER_DETAILS_DIALOG_ID);
-
-						UserDetailsInfoWidget userDetailsInfoWidget = userDetailsTabItem
-								.getUserDetailsWidget().getUserDetailsInfo();
-						userDetailsInfoWidget.bindModelData(result);
-
-						Dispatcher.forwardEvent(
-								GeofenceEvents.SEND_INFO_MESSAGE, new String[] {
-										I18nProvider.getMessages()
-												.userServiceName(),
-										I18nProvider.getMessages()
-												.userFetchSuccessMessage() });
-					}
-				});
 	}
 
 	/**
@@ -298,52 +213,6 @@ public class RulesView extends View {
 												.userServiceName(),
 										I18nProvider.getMessages()
 												.userFetchSuccessMessage() });
-					}
-				});
-	}
-
-	/**
-	 * @param event
-	 */
-	private void onLoadUserLimits(AppEvent event) {
-		GSUserModel user = event.getData();
-
-		this.usersManagerServiceRemote.getUserLimitsInfo(user,
-				new AsyncCallback<UserLimitsInfoModel>() {
-
-					public void onFailure(Throwable caught) {
-						Dispatcher
-								.forwardEvent(
-										GeofenceEvents.SEND_ERROR_MESSAGE,
-										new String[] {
-												I18nProvider.getMessages()
-														.ruleServiceName(),
-												"Error occurred while getting User Details!" });
-					}
-
-					public void onSuccess(UserLimitsInfoModel result) {
-						if (result != null) {
-							UserDetailsTabItem userDetailsTabItem = (UserDetailsTabItem) userDetailsEditDialog
-									.getTabWidget()
-									.getItemByItemId(
-											UserDetailsEditDialog.USER_DETAILS_DIALOG_ID);
-
-							UserDetailsInfoWidget userDetailsWidget = userDetailsTabItem
-									.getUserDetailsWidget()
-									.getUserDetailsInfo();
-
-							userDetailsWidget.bindModelData(result);
-
-							Dispatcher
-									.forwardEvent(
-											GeofenceEvents.SEND_INFO_MESSAGE,
-											new String[] {
-													I18nProvider.getMessages()
-															.userServiceName(),
-													I18nProvider
-															.getMessages()
-															.userFetchSuccessMessage() });
-						}
 					}
 				});
 	}
@@ -446,204 +315,6 @@ public class RulesView extends View {
 												.ruleFetchSuccessMessage() });
 					}
 				});
-	}
-
-	/**
-	 * @param event
-	 */
-	private void onEditProfileDetails(AppEvent event) {
-		if ((event.getData() != null) && (event.getData() instanceof UserGroupModel)) {
-			this.profileEditorDialog.reset();
-			this.profileEditorDialog.setModel((UserGroupModel) event.getData());
-			this.profileEditorDialog.show();
-		} else {
-			// TODO: i18n!!
-			Dispatcher.forwardEvent(GeofenceEvents.SEND_ERROR_MESSAGE,
-					new String[] { "Groups Details Editor",
-							"Could not found any associated groups!" });
-		}
-	}
-
-	/**
-	 * @param event
-	 */
-	private void onRuleProfileCustomPropSave(AppEvent event) {
-
-		Long profileId = event.getData();
-
-		ProfileDetailsTabItem profileDetailsTabItem = (ProfileDetailsTabItem) this.profileEditorDialog
-				.getTabWidget().getItemByItemId(
-						ProfileDetailsEditDialog.PROFILE_DETAILS_DIALOG_ID);
-
-		final ProfileDetailsGridWidget profileCustomPropsInfo = profileDetailsTabItem
-				.getProfileDetailsWidget().getProfileDetailsInfo();
-
-		profilesManagerServiceRemote.setProfileProps(profileId,
-				profileCustomPropsInfo.getStore().getModels(),
-				new AsyncCallback<Void>() {
-
-					public void onFailure(Throwable caught) {
-
-						Dispatcher
-								.forwardEvent(
-										GeofenceEvents.SEND_ERROR_MESSAGE,
-										new String[] {
-												I18nProvider.getMessages()
-														.ruleServiceName(),
-												"Error occurred while saving Rule Custom Properties!" });
-					}
-
-					public void onSuccess(Void result) {
-						profileCustomPropsInfo.getStore().getLoader().load();
-
-						Dispatcher.forwardEvent(
-								GeofenceEvents.SEND_INFO_MESSAGE, new String[] {
-										I18nProvider.getMessages()
-												.ruleServiceName(),
-										I18nProvider.getMessages()
-												.ruleFetchSuccessMessage() });
-					}
-				});
-	}
-
-	/**
-	 * @param event
-	 */
-	private void onRuleProfileCustomPropAdd(AppEvent event) {
-
-		if (event.getData() != null) {
-
-			ProfileDetailsTabItem profileDetailsTabItem = (ProfileDetailsTabItem) this.profileEditorDialog
-					.getTabWidget().getItemByItemId(
-							ProfileDetailsEditDialog.PROFILE_DETAILS_DIALOG_ID);
-
-			final ProfileDetailsGridWidget profileCustomPropsInfo = profileDetailsTabItem
-					.getProfileDetailsWidget().getProfileDetailsInfo();
-
-			ProfileCustomProps model = new ProfileCustomProps();
-			model.setPropKey("_new");
-			profileCustomPropsInfo.getStore().add(model);
-
-			Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
-					new String[] { "GeoServer Rules: Layer Custom Properties",
-							"Add Property" });
-
-		} else {
-			// TODO: i18n!!
-			Dispatcher.forwardEvent(GeofenceEvents.SEND_ERROR_MESSAGE,
-					new String[] { "Rules Details Editor",
-							"Could not found any associated rule!" });
-		}
-	}
-
-	/**
-	 * @param event
-	 */
-	private void onRuleProfileCustomPropRemove(AppEvent event) {
-		if (event.getData() != null) {
-			Map<Long, ProfileCustomProps> updateDTO = event.getData();
-
-			ProfileDetailsTabItem profileDetailsTabItem = (ProfileDetailsTabItem) this.profileEditorDialog
-					.getTabWidget().getItemByItemId(
-							ProfileDetailsEditDialog.PROFILE_DETAILS_DIALOG_ID);
-
-			final ProfileDetailsGridWidget profileCustomPropsInfo = profileDetailsTabItem
-					.getProfileDetailsWidget().getProfileDetailsInfo();
-
-			for (Long ruleId : updateDTO.keySet()) {
-				ProfileCustomProps dto = updateDTO.get(ruleId);
-
-				for (ProfileCustomProps prop : profileCustomPropsInfo
-						.getStore().getModels()) {
-					if (prop.getPropKey().equals(dto.getPropKey())) {
-						profileCustomPropsInfo.getStore().remove(prop);
-					}
-				}
-			}
-
-			profileCustomPropsInfo.getGrid().repaint();
-
-		} else {
-			// TODO: i18n!!
-			Dispatcher.forwardEvent(GeofenceEvents.SEND_ERROR_MESSAGE,
-					new String[] { "Rules Details Editor",
-							"Could not found any associated rule!" });
-		}
-	}
-
-	/**
-	 * @param event
-	 */
-	private void onRuleProfileCustomPropUpdateValue(AppEvent event) {
-
-		if (event.getData() != null) {
-
-			ProfileDetailsTabItem profileDetailsTabItem = (ProfileDetailsTabItem) this.profileEditorDialog
-					.getTabWidget().getItemByItemId(
-							ProfileDetailsEditDialog.PROFILE_DETAILS_DIALOG_ID);
-
-			final ProfileDetailsGridWidget profileCustomPropsInfo = profileDetailsTabItem
-					.getProfileDetailsWidget().getProfileDetailsInfo();
-
-			Map<String, ProfileCustomProps> updateDTO = event.getData();
-
-			for (String key : updateDTO.keySet()) {
-				for (ProfileCustomProps prop : profileCustomPropsInfo
-						.getStore().getModels()) {
-					if (prop.getPropKey().equals(key)) {
-						profileCustomPropsInfo.getStore().remove(prop);
-
-						ProfileCustomProps newModel = updateDTO.get(key);
-						profileCustomPropsInfo.getStore().add(newModel);
-					}
-				}
-			}
-
-			profileCustomPropsInfo.getGrid().repaint();
-
-		} else {
-			// TODO: i18n!!
-			Dispatcher.forwardEvent(GeofenceEvents.SEND_ERROR_MESSAGE,
-					new String[] { "Group Details Editor",
-							"Could not found any associated rule!" });
-		}
-	}
-
-	/**
-	 * @param event
-	 */
-	private void onRuleProfileCustomPropUpdateKey(AppEvent event) {
-
-		if (event.getData() != null) {
-
-			ProfileDetailsTabItem profileDetailsTabItem = (ProfileDetailsTabItem) this.profileEditorDialog
-					.getTabWidget().getItemByItemId(
-							ProfileDetailsEditDialog.PROFILE_DETAILS_DIALOG_ID);
-
-			final ProfileDetailsGridWidget profileCustomPropsInfo = profileDetailsTabItem
-					.getProfileDetailsWidget().getProfileDetailsInfo();
-
-			Map<String, ProfileCustomProps> updateDTO = event.getData();
-
-			for (String key : updateDTO.keySet()) {
-				for (ProfileCustomProps prop : profileCustomPropsInfo
-						.getStore().getModels()) {
-					if (prop.getPropKey().equals(key)) {
-						profileCustomPropsInfo.getStore().remove(prop);
-
-						ProfileCustomProps newModel = updateDTO.get(key);
-						profileCustomPropsInfo.getStore().add(newModel);
-					}
-				}
-			}
-
-			profileCustomPropsInfo.getGrid().repaint();
-		} else {
-			// TODO: i18n!!
-			Dispatcher.forwardEvent(GeofenceEvents.SEND_ERROR_MESSAGE,
-					new String[] { "Group Details Editor",
-							"Could not found any associated rule!" });
-		}
 	}
 
 	/**

@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-/* (c) 2014-2016 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-
-
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -49,10 +47,10 @@
         <xml-apis-version>1.3.03</xml-apis-version>
         <jaxws-version>2.1</jaxws-version>
 
-		<hibernate-version>3.6.0.Final</hibernate-version>
+        <hibernate-version>3.6.0.Final</hibernate-version>
         <hibernate-spatial-version>1.1.1</hibernate-spatial-version>
         <hibernate-generic-dao-version>1.1.0</hibernate-generic-dao-version>
-		
+
         <commons-logging-version>1.1.1</commons-logging-version>
         <commons-lang-version>2.3</commons-lang-version>
         <commons-collections-version>3.2</commons-collections-version>
@@ -188,7 +186,7 @@
                 <artifactId>geofence-rest-test</artifactId>
                 <version>${geofence-version}</version>
             </dependency>
-			
+
 			<dependency>
                 <groupId>org.geoserver.geofence</groupId>
                 <artifactId>geofence-ldap</artifactId>
@@ -222,6 +220,8 @@
 		    <!-- =========================================================== -->
 		    <!--     Logging                                                 -->
 		    <!-- =========================================================== -->
+            <!-- let's use the same log4j version geoserver uses -->
+<!--
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-api</artifactId>
@@ -246,6 +246,13 @@
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-jcl</artifactId>
                 <version>2.0.2</version>
+            </dependency>-->
+
+            <!-- same as geoserver -->
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>1.2.17</version>
             </dependency>
 
 <!--            <dependency>
@@ -269,11 +276,6 @@
                 <artifactId>jdom</artifactId>
                 <version>1.1</version>
             </dependency>
-<!--        <dependency>
-                <groupId>org.jdom</groupId>
-                <artifactId>jdom</artifactId>
-                <version>1.1</version>
-            </dependency>-->
 
 		    <!-- =========================================================== -->
 		    <!--     APACHE COMMONS                                          -->
@@ -408,9 +410,9 @@
                 <version>${javax-mail-version}</version>
             </dependency>
 
-		    <!-- =========================================================== -->
-		    <!--     JAXB                                                    -->
-		    <!-- =========================================================== -->
+            <!-- =========================================================== -->
+            <!--     JAXB                                                    -->
+            <!-- =========================================================== -->
             <dependency>
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>
@@ -422,18 +424,9 @@
                 <version>2.2.11</version>
             </dependency>
 
-		    <!-- =========================================================== -->
-		    <!--     GEO-BATCH                                               -->
-		    <!-- =========================================================== -->
-<!--        <dependency>
-                <groupId>com.digitalglobe</groupId>
-                <artifactId>gb-action-geoserver-restclient</artifactId>
-                <version>${geobatch-version}</version>
-            </dependency>-->
-
-		    <!-- =========================================================== -->
-		    <!--     SPRING                                                  -->
-		    <!-- =========================================================== -->
+            <!-- =========================================================== -->
+            <!--     SPRING                                                  -->
+            <!-- =========================================================== -->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
@@ -616,7 +609,7 @@
 						<groupId>javax.persistence</groupId>
 						<artifactId>persistence-api</artifactId>
 					</exclusion>
-				</exclusions>                
+				</exclusions>
             </dependency>
             <dependency>
                 <groupId>com.googlecode.genericdao</groupId>
@@ -808,8 +801,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <debug>true</debug>
                     <encoding>UTF-8</encoding>
 					       <!--
@@ -881,7 +874,7 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>-->
-        
+<!--
         <repository>
             <id>apache.incubating</id>
             <name>Apache Incubating Repository</name>
@@ -893,7 +886,7 @@
                 <enabled>true</enabled>
             </releases>
         </repository>
-
+-->
 				<!-- JBoss -->
 <!--        <repository>
             <id>jboss-repo</id>

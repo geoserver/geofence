@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -41,9 +41,6 @@ public class UserDetailsWidget extends ContentPanel
     /** The user. */
     private GSUserModel user;
 
-    /** The user details info. */
-    private UserDetailsInfoWidget userDeatilsInfo;
-    
     /** The profiles info. */
     private ProfilesGridWidget profilesInfo;
 
@@ -66,10 +63,10 @@ public class UserDetailsWidget extends ContentPanel
      *            the model
      * @param usersService
      *            the user service
-     * @param profilesManagerServiceRemote 
+     * @param profilesManagerServiceRemote
      */
-    public UserDetailsWidget(GSUserModel model, 
-    		GsUsersManagerRemoteServiceAsync usersService, 
+    public UserDetailsWidget(GSUserModel model,
+    		GsUsersManagerRemoteServiceAsync usersService,
     		final ProfilesManagerRemoteServiceAsync profilesManagerServiceRemote)
     {
         this.user = model;
@@ -81,12 +78,9 @@ public class UserDetailsWidget extends ContentPanel
         setWidth(690);
         setLayout(new FitLayout());
 
-        userDeatilsInfo = new UserDetailsInfoWidget(this.user, usersService, this);
-        //add(userDeatilsInfo.getFormPanel());
-
         profilesInfo = new ProfilesGridWidget(this.user, usersService, profilesManagerServiceRemote, this);
         add(profilesInfo.getGrid());
-        
+
         super.setMonitorWindowResize(true);
 
         setScrollMode(Scroll.AUTOY);
@@ -109,8 +103,8 @@ public class UserDetailsWidget extends ContentPanel
                     Dispatcher.forwardEvent(GeofenceEvents.SAVE_USER_LIMITS, userInfoModel);*/
 
                     profilesManagerServiceRemote.getProfiles(-1, -1, true, new AsyncCallback<PagingLoadResult<UserGroupModel>>() {
-						
-						public void onSuccess(PagingLoadResult<UserGroupModel> result) {
+
+				public void onSuccess(PagingLoadResult<UserGroupModel> result) {
 		                    Set<UserGroupModel> groups = new HashSet<UserGroupModel>();
 		                    for (UserGroupModel gg : profilesInfo.getStore().getModels())
 		                    {
@@ -118,17 +112,17 @@ public class UserDetailsWidget extends ContentPanel
 			                    	if(gg.getName().equals(gg_r.getName()) && gg.isEnabled()){
 			                    		groups.add(gg_r);
 			                    	}
-		                    		
+
 		                    	}
 		                    }
 							user.setUserGroups(groups);
 		                    Dispatcher.forwardEvent(GeofenceEvents.SAVE_USER_GROUPS, user);
-		                    
+
 		                    Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
 		                        new String[] { "GeoServer Users: Users Roles", "Apply Changes Successfull!" });
 
 						}
-						
+
 						public void onFailure(Throwable caught) {
 		                    Dispatcher.forwardEvent(GeofenceEvents.SEND_ERROR_MESSAGE,
 			                        new String[] { "GeoServer Users: Users Roles", "Error Occurred while assigning roles to the user!" });
@@ -165,27 +159,6 @@ public class UserDetailsWidget extends ContentPanel
     protected void onWindowResize(int width, int height)
     {
         super.layout();
-    }
-
-    /**
-     * Sets the user limits info.
-     *
-     * @param userDetailsInfoWidget
-     *            the new user limits info
-     */
-    public void setUserDetailsInfo(UserDetailsInfoWidget userDetailsInfoWidget)
-    {
-        this.userDeatilsInfo = userDetailsInfoWidget;
-    }
-
-    /**
-     * Gets the user limits info.
-     *
-     * @return the user limits info
-     */
-    public UserDetailsInfoWidget getUserDetailsInfo()
-    {
-        return userDeatilsInfo;
     }
 
     /**

@@ -4,3 +4,16 @@
 target
 *iml
 *idea
+
+src/gui/core/plugin/mapsui/war/
+src/gui/core/plugin/userui/war/
+
+src/gui/web/war/WEB-INF/classes/
+src/gui/web/war/WEB-INF/deploy/
+src/gui/web/war/WEB-INF/spatial-lib/
+src/gui/web/war/geofence/
+
+**/gwt-unitCache/
+**/geofence_db/
+**/nbproject/
+

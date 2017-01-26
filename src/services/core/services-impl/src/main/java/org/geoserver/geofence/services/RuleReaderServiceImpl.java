@@ -1,4 +1,4 @@
-/* (c) 2014, 2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -38,8 +38,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.core.dao.AdminRuleDAO;
 import org.geoserver.geofence.core.model.AdminRule;
 import org.geoserver.geofence.core.model.enums.AdminGrantType;
@@ -89,15 +90,17 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     public List<ShortRule> getMatchingRules(RuleFilter filter) {
         Map<String, List<Rule>> found = getRules(filter);
 
-        Map<Long, Rule> sorted = new TreeMap<Long, Rule>();
+        Map<Long, Rule> sorted = new TreeMap<>();
         for (List<Rule> list : found.values()) {
             for (Rule rule : list) {
-                sorted.put(rule.getId(), rule);
+                sorted.put(rule.getPriority(), rule);
             }
         }
 
-        List<Rule> plainList = new ArrayList<Rule>();
+        LOGGER.warn(sorted.size() + " matching rules for filter " + filter);
+        List<Rule> plainList = new ArrayList<>();
         for (Rule rule : sorted.values()) {
+            LOGGER.warn( " -- " + rule);
             plainList.add(rule);
         }
 
@@ -278,7 +281,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
     private AccessInfoInternal resolveRuleset(List<Rule> ruleList) {
 
-        List<RuleLimits> limits = new ArrayList<RuleLimits>();
+        List<RuleLimits> limits = new ArrayList<>();
         AccessInfoInternal ret = null;
 
         for (Rule rule : ruleList) {
@@ -326,13 +329,14 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         switch(filter.getType()) {
             case NAMEVALUE:
                 String name = filter.getText();
-                if (userResolver.existsUser(name))
-                    return name;
+                if(StringUtils.isBlank(name) )
+                    throw new BadRequestServiceEx("Blank user name");
+                return name.trim();
             case DEFAULT:
             case ANY:
                 return null;
             default:
-                throw new IllegalStateException("Unknown filter type '"+filter+"'");
+                throw new BadRequestServiceEx("Unknown user filter type '"+filter+"'");
         }
     }
 
@@ -341,13 +345,14 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         switch(filter.getType()) {
             case NAMEVALUE:
                 String name = filter.getText();
-                if (userResolver.existsRole(name))
-                    return name;
+                if(StringUtils.isBlank(name) )
+                    throw new BadRequestServiceEx("Blank role name");
+                return name.trim();
             case DEFAULT:
             case ANY:
                 return null;
             default:
-                throw new IllegalStateException("Unknown filter type '"+filter+"'");
+                throw new BadRequestServiceEx("Unknown role filter type '"+filter+"'");
         }
     }
 
@@ -483,7 +488,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             return Collections.EMPTY_MAP; // shortcut here, in order to avoid loading the rules
         }
 
-        Map<String, List<Rule>> ret = new HashMap<String, List<Rule>>();
+        Map<String, List<Rule>> ret = new HashMap<>();
 
         if(finalRoleFilter.isEmpty()) {
             List<Rule> found = getRuleAux(filter, filter.getRole());
@@ -528,17 +533,18 @@ public class RuleReaderServiceImpl implements RuleReaderService {
      */
     protected Set<String> validateUserRoles(RuleFilter filter) throws BadRequestServiceEx {
 
-        // username can be null if
-        // 1) name is defined in the filter, but the user has not been found in the db
-        // 2) the user filter asks for ANY or DEFAULT
+        // username can be null if the user filter asks for ANY or DEFAULT
         String username = validateUsername(filter.getUser());
 
-        // rolename can be null if
-        // 1) id or name are defined in the filter, but the group has not been found in the db
-        // 2) the group filter asks for ANY or DEFAULT
+        // rolename can be null if the group filter asks for ANY or DEFAULT
         String rolename = validateRolename(filter.getRole());
 
-        Set<String> finalRoleFilter = new HashSet<String>();
+        // filtering by both user and role is pointless
+        if(username != null && rolename != null) {
+            throw new BadRequestServiceEx("You can filter either by user or role");
+        }
+
+        Set<String> finalRoleFilter = new HashSet<>();
 
         // If both user and group are defined in filter
         //   if user doensn't belong to group, no rule is returned
@@ -664,7 +670,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     // ==========================================================================
 
     private List<ShortRule> convertToShortList(List<Rule> list) {
-        List<ShortRule> shortList = new ArrayList<ShortRule>(list.size());
+        List<ShortRule> shortList = new ArrayList<>(list.size());
         for (Rule rule : list) {
             shortList.add(new ShortRule(rule));
         }

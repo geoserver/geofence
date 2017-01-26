@@ -1,11 +1,9 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.gui.client.service;
-
-import java.util.List;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -14,7 +12,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.geoserver.geofence.gui.client.ApplicationException;
 import org.geoserver.geofence.gui.client.model.RolenameModel;
 import org.geoserver.geofence.gui.client.model.UserGroupModel;
-import org.geoserver.geofence.gui.client.model.data.ProfileCustomProps;
 
 
 /**
@@ -57,20 +54,4 @@ public interface ProfilesManagerRemoteService extends RemoteService
      *             the application exception
      */
     public void deleteProfile(UserGroupModel profile) throws ApplicationException;
-
-    /**
-     * @param ruleId
-     * @param customProps
-     * @throws ApplicationException
-     */
-    public PagingLoadResult<ProfileCustomProps> getProfileCustomProps(int offset, int limit, UserGroupModel profile)
-        throws ApplicationException;
-
-    /**
-     * @param ruleId
-     * @param customProps
-     * @throws ApplicationException
-     */
-    public void setProfileProps(Long profileId, List<ProfileCustomProps> customProps) throws ApplicationException;
-
 }

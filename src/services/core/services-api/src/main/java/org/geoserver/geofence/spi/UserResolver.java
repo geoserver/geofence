@@ -1,4 +1,4 @@
-/* (c) 2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2015 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -13,8 +13,10 @@ import java.util.Set;
  */
 public interface UserResolver {
 
+    @Deprecated
     boolean existsUser(String username);
 
+    @Deprecated
     boolean existsRole(String rolename);
 
     Set<String> getRoles(String username);

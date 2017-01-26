@@ -31,11 +31,9 @@ import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -333,170 +331,8 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
         return remote_instance;
     }
 
-//	/**
-//	 * Gets the profile.
-//	 *
-//	 * @param profile
-//	 *            the profile
-//	 * @return the profile
-//	 */
-//	private org.geoserver.geofence.core.model.UserGroup getProfile(
-//			UserGroup profile) {
-//		org.geoserver.geofence.core.model.UserGroup remote_profile = null;
-//		try {
-//			if ((profile != null) && (profile.getId() != -1)) {
-//				remote_profile = geofenceRemoteService
-//						.getUserGroupAdminService().get(profile.getId());
-//			}
-//		} catch (Exception e) {
-//			logger.info(e.getMessage(), e);
-//		}
-//
-//		return remote_profile;
-//	}
-//
-//	/**
-//	 * Gets the profile.
-//	 *
-//	 * @param profile
-//	 *            the profile
-//	 * @return the profile
-//	 */
-//	private org.geoserver.geofence.core.model.GSUser getUser(GSUser user) {
-//		org.geoserver.geofence.core.model.GSUser remote_user = null;
-//		try {
-//			if ((user != null) && (user.getId() != -1)) {
-//				remote_user = geofenceRemoteService.getUserAdminService().get(
-//						user.getId());
-//			}
-//		} catch (Exception e) {
-//			logger.info(e.getMessage(), e);
-//		}
-//
-//		return remote_user;
-//	}
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.geoserver.geofence.gui.server.service.IRulesManagerService#
-     * getLayerCustomProps(com.extjs .gxt.ui.client.data.PagingLoadConfig,
-     * org.geoserver.geofence.gui.client.model.Rule)
-     */
-//	public PagingLoadResult<LayerCustomProps> getLayerCustomProps(int offset,
-//			int limit, Rule rule) {
-//		int start = offset;
-//		Long t = new Long(0);
-//
-//		List<LayerCustomProps> customPropsDTO = new ArrayList<LayerCustomProps>();
-//
-//		if ((rule != null) && (rule.getId() >= 0)) {
-//			try {
-//				Map<String, String> customProperties = geofenceRemoteService
-//						.getRuleAdminService().getDetailsProps(rule.getId());
-//
-//				if (customProperties == null) {
-//					if (logger.isErrorEnabled()) {
-//						logger.error("No property found on server");
-//					}
-//					throw new ApplicationException("No rule found on server");
-//				}
-//
-//				long rulesCount = customProperties.size();
-//
-//				t = new Long(rulesCount);
-//
-//				int page = (start == 0) ? start : (start / limit);
-//
-//				SortedSet<String> sortedset = new TreeSet<String>(
-//						customProperties.keySet());
-//				Iterator<String> it = sortedset.iterator();
-//
-//				while (it.hasNext()) {
-//					String key = it.next();
-//					LayerCustomProps property = new LayerCustomProps();
-//					property.setPropKey(key);
-//					property.setPropValue(customProperties.get(key));
-//					customPropsDTO.add(property);
-//				}
-//
-//				// for (String key : customProperties.keySet()) {
-//				//
-//				// LayerCustomProps property = new LayerCustomProps();
-//				// property.setPropKey(key);
-//				// property.setPropValue(customProperties.get(key));
-//				// customPropsDTO.add(property);
-//				// }
-//			} catch (Exception e) {
-//				// do nothing!
-//			}
-//		}
-//
-//		return new RpcPageLoadResult<LayerCustomProps>(customPropsDTO, offset,
-//				t.intValue());
-//	}
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.geoserver.geofence.gui.server.service.IRulesManagerService#
-     * setDetailsProps(java.lang .Long,
-     * org.geoserver.geofence.gui.client.model.data.LayerCustomProps)
-     */
     public void setDetailsProps(Long ruleId, List<LayerCustomProps> customProps) {
-
         logger.error("TODO: rule refactoring!!! custom props have been removed");
-
-//        Map<String, String> props = new HashMap<String, String>();
-//
-//        for (LayerCustomProps prop : customProps) {
-//            props.put(prop.getPropKey(), prop.getPropValue());
-//        }
-//
-//        LayerDetails details = null;
-//        try {
-//            details = geofenceRemoteService.getRuleAdminService().get(ruleId)
-//                    .getLayerDetails();
-//
-//            if (details == null) {
-//                details = new LayerDetails();
-//
-//                org.geoserver.geofence.core.model.Rule rule = geofenceRemoteService
-//                        .getRuleAdminService().get(ruleId);
-//                org.geoserver.geofence.core.model.GSInstance gsInstance = rule
-//                        .getInstance();
-//                GeoServerRESTReader gsreader = new GeoServerRESTReader(
-//                        gsInstance.getBaseURL(), gsInstance.getUsername(),
-//                        gsInstance.getPassword());
-//
-//                if ((rule.getWorkspace() == null)
-//                        && !rule.getLayer().equalsIgnoreCase("*")) {
-//					// RESTLayerGroup group =
-//                    // gsreader.getLayerGroup(rule.getLayer());
-//                    details.setType(LayerType.LAYERGROUP);
-//                } else {
-//                    RESTLayer layer = gsreader.getLayer(rule.getLayer());
-//
-//                    if (layer.getType().equals(RESTLayer.TYPE.VECTOR)) {
-//                        details.setType(LayerType.VECTOR);
-//                    } else {
-//                        details.setType(LayerType.RASTER);
-//                    }
-//                }
-//
-//                // REMOVED BY ETj
-////				details.setCustomProps(props); 
-////				geofenceRemoteService.getRuleAdminService().setDetails(ruleId,
-////						details);
-//            } else {
-////				geofenceRemoteService.getRuleAdminService().setDetailsProps(
-////						ruleId, props);
-//            }
-//
-//        } catch (Exception e) {
-//            logger.error(e.getMessage(), e);
-//            throw new ApplicationException(e.getMessage(), e);
-//        }
     }
 
     /*
@@ -600,7 +436,6 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
                     layAttrUI.setAccessType("READWRITE");
 
                     layerAttributesDTO.add(layAttrUI);
-
                 }
 
             } else {

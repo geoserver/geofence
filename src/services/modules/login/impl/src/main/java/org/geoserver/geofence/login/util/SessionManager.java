@@ -1,4 +1,4 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -11,10 +11,8 @@ import java.util.Map;
 import org.geoserver.geofence.api.dto.GrantedAuths;
 import org.geoserver.geofence.api.exception.AuthException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 /**
  *

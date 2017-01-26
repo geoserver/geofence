@@ -1,20 +1,18 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.services;
 
-import org.geoserver.geofence.services.GFUserAdminService;
 import com.googlecode.genericdao.search.Search;
 import org.geoserver.geofence.services.dto.ShortUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import org.geoserver.geofence.core.dao.GFUserDAO;
 import org.geoserver.geofence.core.model.GFUser;

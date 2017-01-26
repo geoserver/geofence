@@ -1,24 +1,20 @@
-/* (c) 2015 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2015 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.services;
 
-import com.googlecode.genericdao.search.Filter;
-import com.googlecode.genericdao.search.Search;
-import org.geoserver.geofence.core.model.enums.InsertPosition;
-import org.geoserver.geofence.services.dto.RuleFilter;
-import org.geoserver.geofence.services.dto.ShortAdminRule;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.googlecode.genericdao.search.Filter;
+import com.googlecode.genericdao.search.Search;
 import org.geoserver.geofence.core.dao.AdminRuleDAO;
 import org.geoserver.geofence.core.model.AdminRule;
-
+import org.geoserver.geofence.core.model.enums.InsertPosition;
+import org.geoserver.geofence.services.dto.RuleFilter;
+import org.geoserver.geofence.services.dto.ShortAdminRule;
 
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
@@ -27,6 +23,9 @@ import static org.geoserver.geofence.services.util.FilterUtils.addFixedCriteria;
 import static org.geoserver.geofence.services.util.FilterUtils.addFixedStringCriteria;
 import static org.geoserver.geofence.services.util.FilterUtils.addPagingConstraints;
 import static org.geoserver.geofence.services.util.FilterUtils.addStringCriteria;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 /**
  *

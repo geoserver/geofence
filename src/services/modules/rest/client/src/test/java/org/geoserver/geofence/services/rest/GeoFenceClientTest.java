@@ -21,11 +21,9 @@ import org.geoserver.geofence.services.rest.model.util.IdName;
 
 import java.net.ConnectException;
 import java.util.Arrays;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javax.ws.rs.core.Response;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -221,7 +219,7 @@ public class GeoFenceClientTest {
         client.getUserService().removeFromGroup("pippo", "group01");
         assertEquals(1, client.getUserService().get("pippo").getGroups().size());
     }
-    
+
     @Test
     public void testBaseRule() {
         GeoFenceClient client = createClient();
@@ -253,7 +251,7 @@ public class GeoFenceClientTest {
         inputRule.setLayer(layer);
         inputRule.setGrant(GrantType.ALLOW);
         inputRule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromTop, 0));
-        
+
         Response response = client.getRuleService().insert(inputRule);
         assertNotNull(response.getEntityTag());
         String id = response.getEntityTag().getValue();
@@ -270,7 +268,6 @@ public class GeoFenceClientTest {
         assertEquals(workspace, outRule.getWorkspace());
         assertEquals(layer, outRule.getLayer());
         assertEquals(GrantType.ALLOW, outRule.getGrant());
-
     }
 
     protected boolean pingGeoFence(GeoFenceClient client) {
