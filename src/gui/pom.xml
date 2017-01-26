@@ -11,19 +11,19 @@
     <parent>
         <groupId>org.geoserver.geofence</groupId>
         <artifactId>geofence</artifactId>
-        <version>3.3-SNAPSHOT</version>
+        <version>3.3.0</version>
     </parent>
     
     <groupId>org.geoserver.geofence</groupId>
     <artifactId>geofence-gui-root</artifactId>
-    <version>3.3-SNAPSHOT</version>
+    <version>3.3.0</version>
     <packaging>pom</packaging>
 
     <name>GeoFence - GUI</name>
 
     <properties>
         <module.name>geofence-gui</module.name>
-        <geofence-version>3.3-SNAPSHOT</geofence-version>
+        <geofence-version>3.3.0</geofence-version>
         <gt-version>16-SNAPSHOT</gt-version>
         <geogwt-version>0.2-SNAPSHOT</geogwt-version>
 
@@ -559,26 +559,6 @@
             <!-- =========================================================== -->
             <!--     HIBERNATE-GENERIC-DAO                                   -->
             <!-- =========================================================== -->
-            <dependency>
-                <groupId>com.trg</groupId>
-                <artifactId>trg-dao</artifactId>
-                <version>${hibernate-generic-dao-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.trg</groupId>
-                <artifactId>trg-search</artifactId>
-                <version>${hibernate-generic-dao-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.trg</groupId>
-                <artifactId>trg-search-hibernate</artifactId>
-                <version>${hibernate-generic-dao-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.trg</groupId>
-                <artifactId>trg-search-jpa-hibernate</artifactId>
-                <version>${hibernate-generic-dao-version}</version>
-            </dependency>
 
             <!-- =========================================================== -->
             <!--     POSTGRES- POSTGIS                                       -->
@@ -656,21 +636,5 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <build>
-        <!-- ======================================================== -->
-        <!--              Extensions settings for Deployment          -->
-        <!-- ======================================================== -->
-        <extensions>
-            <!--.............................................-->
-            <!--       geo-solutions (using wagon ftp)       -->
-            <!--.............................................-->
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ftp</artifactId>
-                <version>2.10</version>
-            </extension>
-        </extensions>
-    </build>
 	
 </project>
