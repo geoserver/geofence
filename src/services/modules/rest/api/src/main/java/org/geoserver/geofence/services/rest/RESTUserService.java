@@ -5,6 +5,7 @@
 
 package org.geoserver.geofence.services.rest;
 
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
 import org.geoserver.geofence.services.rest.exception.ConflictRestEx;
 import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
@@ -12,24 +13,12 @@ import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
 import org.geoserver.geofence.services.rest.model.RESTInputUser;
 import org.geoserver.geofence.services.rest.model.RESTOutputUser;
 import org.geoserver.geofence.services.rest.model.RESTShortUserList;
-import org.geoserver.geofence.services.rest.model.util.IdName;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-
 /**
- *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 @Path("/")
@@ -39,12 +28,11 @@ public interface RESTUserService {
      * Returns a paginated list of users.
      *
      * @param nameLike An optional LIKE filter on the username.
-     * @param page In a paginated list, the page number, 0-based. If not null,
-     * <code>entries</code> must be defined as well.
-     * @param entries In a paginated list, the number of entries per page. If not null,
-     * <code>page</code> must be defined as well.
-     *
-     * @throws BadRequestRestEx (HTTP code 400) if page/entries do no match
+     * @param page     In a paginated list, the page number, 0-based. If not null,
+     *                 <code>entries</code> must be defined as well.
+     * @param entries  In a paginated list, the number of entries per page. If not null,
+     *                 <code>page</code> must be defined as well.
+     * @throws BadRequestRestEx    (HTTP code 400) if page/entries do no match
      * @throws InternalErrorRestEx (HTTP code 500)
      */
     @GET
@@ -57,10 +45,16 @@ public interface RESTUserService {
             throws BadRequestRestEx, InternalErrorRestEx;
 
     /**
+     * @return {@link Long}
+     */
+    @GET
+    @Path(value = "/count")
+    Long count();
+
+    /**
      * Count users.
      *
      * @param nameLike An optional LIKE filter on the username.
-     *
      * @throws InternalErrorRestEx (HTTP code 500)
      */
     @GET
@@ -71,8 +65,7 @@ public interface RESTUserService {
      * Returns a single user.
      *
      * @param name The userName
-     *
-     * @throws NotFoundRestEx (HTTP code 404) if no user with given name exists
+     * @throws NotFoundRestEx      (HTTP code 404) if no user with given name exists
      * @throws InternalErrorRestEx (HTTP code 500)
      */
     @GET
@@ -84,11 +77,9 @@ public interface RESTUserService {
      * Inserts a new GSUser.
      *
      * @param user the GSUser as payload
-     *
      * @return the id of the newly created user, in plain text
-     *
-     * @throws BadRequestRestEx (HTTP code 400) if parameters are illegal
-     * @throws NotFoundRestEx (HTTP code 404) if the profile is not found
+     * @throws BadRequestRestEx    (HTTP code 400) if parameters are illegal
+     * @throws NotFoundRestEx      (HTTP code 404) if the profile is not found
      * @throws InternalErrorRestEx (HTTP code 500)
      */
     @POST
@@ -99,11 +90,10 @@ public interface RESTUserService {
     /**
      * Updates a GSUser.
      *
-     * @param id The id of the user to update
+     * @param id   The id of the user to update
      * @param user The new GSUser data as payload
-     *
-     * @throws BadRequestRestEx (HTTP code 400) if parameters are illegal
-     * @throws NotFoundRestEx (HTTP code 404) if the old user or the profile is not found
+     * @throws BadRequestRestEx    (HTTP code 400) if parameters are illegal
+     * @throws NotFoundRestEx      (HTTP code 404) if the old user or the profile is not found
      * @throws InternalErrorRestEx (HTTP code 500)
      */
     @PUT
@@ -116,9 +106,8 @@ public interface RESTUserService {
      *
      * @param name The name of the user to update
      * @param user The new GSUser data as payload
-     *
-     * @throws BadRequestRestEx (HTTP code 400) if parameters are illegal
-     * @throws NotFoundRestEx (HTTP code 404) if the old user or the profile is not found
+     * @throws BadRequestRestEx    (HTTP code 400) if parameters are illegal
+     * @throws NotFoundRestEx      (HTTP code 404) if the old user or the profile is not found
      * @throws InternalErrorRestEx (HTTP code 500)
      */
     @PUT
@@ -129,12 +118,11 @@ public interface RESTUserService {
     /**
      * Deletes a GSUser.
      *
-     * @param name The name of the user to delete
+     * @param name    The name of the user to delete
      * @param cascade When true, also delete all the Rules referring to that user
-     *
-     * @throws BadRequestRestEx (HTTP code 400) if parameters are illegal
-     * @throws NotFoundRestEx (HTTP code 404) if the user is not found
-     * @throws if the user is used in a rule and cascade is false
+     * @throws BadRequestRestEx    (HTTP code 400) if parameters are illegal
+     * @throws NotFoundRestEx      (HTTP code 404) if the user is not found
+     * @throws if                  the user is used in a rule and cascade is false
      * @throws InternalErrorRestEx (HTTP code 500)
      */
     @DELETE
@@ -150,11 +138,10 @@ public interface RESTUserService {
     /**
      * Adds a user into a userGroup
      *
-     * @param userName The name of the user to assign
+     * @param userName  The name of the user to assign
      * @param groupName The name of the group the user should be added into
-     *
-     * @throws BadRequestRestEx (HTTP code 400) if parameters are illegal
-     * @throws NotFoundRestEx (HTTP code 404) if the user or the group are not found
+     * @throws BadRequestRestEx    (HTTP code 400) if parameters are illegal
+     * @throws NotFoundRestEx      (HTTP code 404) if the user or the group are not found
      * @throws InternalErrorRestEx (HTTP code 500)
      */
     @PUT
@@ -171,11 +158,10 @@ public interface RESTUserService {
     /**
      * Remove a user from a userGroup
      *
-     * @param userName The name of the user
+     * @param userName  The name of the user
      * @param groupName The name of the group the user should be removed from
-     *
-     * @throws BadRequestRestEx (HTTP code 400) if parameters are illegal
-     * @throws NotFoundRestEx (HTTP code 404) if the user or the group are not found
+     * @throws BadRequestRestEx    (HTTP code 400) if parameters are illegal
+     * @throws NotFoundRestEx      (HTTP code 404) if the user or the group are not found
      * @throws InternalErrorRestEx (HTTP code 500)
      */
     @DELETE

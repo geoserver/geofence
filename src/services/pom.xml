@@ -611,13 +611,32 @@
 					</exclusion>
 				</exclusions>
             </dependency>
+            
+            <dependency>
+                <groupId>com.googlecode.genericdao</groupId>
+                <artifactId>search-hibernate</artifactId>
+                <version>${hibernate-generic-dao-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.persistence</groupId>
+                        <artifactId>persistence-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            
             <dependency>
                 <groupId>com.googlecode.genericdao</groupId>
                 <artifactId>search-jpa-hibernate</artifactId>
                 <version>${hibernate-generic-dao-version}</version>
             </dependency>
-
-		    <!-- =========================================================== -->
+            
+            <dependency>
+                <groupId>com.googlecode.genericdao</groupId>
+                <artifactId>search</artifactId>
+                <version>${hibernate-generic-dao-version}</version>
+            </dependency>
+            
+            <!-- =========================================================== -->
 		    <!--     HIBERNATE                                               -->
 		    <!-- =========================================================== -->
             <dependency>

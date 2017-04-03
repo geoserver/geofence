@@ -1,0 +1,108 @@
+################################################################################
+## GeoFence property override file
+##
+################################################################################
+## If you need more info about this file, please check the doc about
+## Spring's PropertyOverrideConfigurer
+################################################################################
+
+################################################################################
+## Override DB connection parameters
+
+################################################################################
+## When customizing the backend DBMS, make sure you have in your classpath both
+## the proper JDBC driver jar and the hibernate dialect.
+## Also make sure to only have one dialect jar in your classpath.
+
+#geofenceVendorAdapter.databasePlatform=org.hibernatespatial.postgis.PostgisDialect
+#geofenceDataSource.driverClassName=org.postgresql.Driver
+#geofenceDataSource.url=jdbc:postgresql://localhost:5432/geofence
+#geofenceDataSource.username=geofence_test
+#geofenceDataSource.password=geofence_test
+#geofenceEntityManagerFactory.jpaPropertyMap[hibernate.default_schema]=geofence_test
+
+
+################################################################################
+## Other setup entries
+################################################################################
+## hbm2ddl.auto may assume one of these values:
+## - validate: validates the DB schema at startup against the internal model. May fail on oracle spatial.
+## - update: updates the schema, according to the internal model. Updating automatically the production DB is dangerous.
+## - create-drop: drop the existing schema and recreates it according to the internal model. REALLY DANGEROUS, YOU WILL LOSE YOUR DATA.
+## You may want not to redefine the property entirely, in order to leave the defult value (no action).
+
+#geofenceEntityManagerFactory.jpaPropertyMap[hibernate.hbm2ddl.auto]=validate
+#geofenceEntityManagerFactory.jpaPropertyMap[javax.persistence.validation.mode]=none
+#geofenceEntityManagerFactory.jpaPropertyMap[hibernate.validator.apply_to_ddl]=false
+#geofenceEntityManagerFactory.jpaPropertyMap[hibernate.validator.autoregister_listeners]=false
+
+##
+## ShowSQL is set to true in the configuration file; putting showsql=false in
+## this file, you can easily check that this override file has been properly applied.
+
+# geofenceVendorAdapter.generateDdl=false
+# geofenceVendorAdapter.showSql=false
+
+################################################################################
+## Disable second level cache.
+## This is needed in a geofence-clustered environment.
+
+#geofenceEntityManagerFactory.jpaPropertyMap[hibernate.cache.use_second_level_cache]=false
+
+################################################################################
+## Use external ehcache configuration file.
+## Useful to change cache settings, for example diskStore path.
+#geofenceEntityManagerFactory.jpaPropertyMap[hibernate.cache.provider_configuration_file_resource_path]=file:/path/to/geofence-ehcache-override.xml
+
+
+################################################################################
+## Configure map base layer
+
+#geofenceGlobalConfiguration.baseLayerURL=http://vmap0.tiles.osgeo.org/wms/vmap0
+#geofenceGlobalConfiguration.baseLayerName=Vmap0
+#geofenceGlobalConfiguration.baseLayerTitle=OSGeo base map
+#geofenceGlobalConfiguration.baseLayerFormat=image/png
+#geofenceGlobalConfiguration.baseLayerStyle=
+#geofenceGlobalConfiguration.mapCenterLon=0
+#geofenceGlobalConfiguration.mapCenterLat=0
+#geofenceGlobalConfiguration.mapZoom=2
+
+################################################################################
+## LDAP
+
+##### Switch the DAOs from DB to LDAP
+#geofence_dao_registry.selectedType = LDAP
+
+##### LDAP directory connection params
+#geofenceLdapSource.url = ldap://10.10.100.4:11389
+#geofenceLdapSource.base = dc=comune,dc=intranet
+#geofenceLdapSource.userDn = cn=queryuser,ou=OU2,ou=OU1,dc=comune,dc=intranet
+#geofenceLdapSource.password = secret
+
+##### Max number of records retrieved
+#geofenceLdapTemplate.defaultCountLimit = 100
+
+##### User filters
+### Base LDAP tree node for users
+#gsUserDAO_LDAP.searchBase = ou=Users,ou=OU2,ou=OU1
+### Filter used to get all users
+#gsUserDAO_LDAP.searchFilter = objectClass=user
+
+##### Group filters
+## Base LDAP tree node for groups
+#userGroupDAO_LDAP.searchBase = OU=Groups,OU=OU3
+## Filter used to get all groups
+#userGroupDAO_LDAP.searchFilter = objectClass=group
+
+##### Mapping LDAP user attributes to internal
+#geofenceLdapUserMapper.map[id] = distinguishedName
+#geofenceLdapUserMapper.map[username] = cn
+#geofenceLdapUserMapper.map[email] = mail
+#geofenceLdapUserMapper.map[name] = givenName
+#geofenceLdapUserMapper.map[surname] = sn
+#geofenceLdapUserMapper.map[password] =
+
+##### Mapping LDAP group attributes to internal
+#geofenceLdapGroupMapper.map[id] = distinguishedName
+#geofenceLdapGroupMapper.map[groupname] = cn
+#geofenceLdapGroupMapper.map[member] = member
