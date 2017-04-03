@@ -271,7 +271,7 @@
                     </webAppConfig>
                     <connectors>
                         <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-                            <port>8080</port>
+                            <port>8181</port>
                             <maxIdleTime>60000</maxIdleTime>
                         </connector>
                     </connectors>
