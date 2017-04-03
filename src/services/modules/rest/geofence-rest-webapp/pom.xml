@@ -265,6 +265,7 @@
                 <artifactId>maven-jetty-plugin</artifactId>
                 <version>6.1.20</version>
                 <configuration>
+                    <webAppSourceDirectory>src/main/webapp</webAppSourceDirectory>
                     <webAppConfig>
                         <contextPath>/geofence</contextPath>
                     </webAppConfig>
@@ -307,7 +308,7 @@
                                 </artifactItem>
                             </artifactItems>
                             <!--<outputDirectory>${project.build.directory}/war/WEB-INF/spatial-lib/</outputDirectory>-->
-                            <outputDirectory>webapp/WEB-INF/spatial-lib/</outputDirectory>
+                            <outputDirectory>src/main/webapp/WEB-INF/spatial-lib/</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
