@@ -129,7 +129,7 @@ public class UserAdminServiceImpl implements UserAdminService {
     public long getCount(String nameLike) {
         Search searchCriteria = new Search(GSUser.class);
 
-        if (nameLike != null) {
+        if ((nameLike != null) && !(nameLike.isEmpty())) {
             searchCriteria.addFilterILike("name", nameLike);
         }
 
