@@ -293,6 +293,9 @@
     <profiles>
         <profile>
             <id>postgis</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
             <dependencies>
                 <dependency>
                     <groupId>org.hibernatespatial</groupId>

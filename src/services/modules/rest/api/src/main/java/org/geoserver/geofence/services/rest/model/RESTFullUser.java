@@ -10,7 +10,7 @@ import java.util.Date;
  * @email giuseppe.lascaleia@geosdi.org
  */
 @XmlRootElement(name = "FullUser")
-@XmlType(propOrder = {"id", "extId", "userName", "fullName", "password", "emailAddress",
+@XmlType(propOrder = {"id", "extId", "name", "fullName", "password", "emailAddress",
         "dateCreation", "enabled", "admin"})
 public class RESTFullUser implements Serializable {
 
@@ -18,7 +18,7 @@ public class RESTFullUser implements Serializable {
     //
     private Long id;
     private String extId;
-    private String userName;
+    private String name;
     private String fullName;
     private String password;
     private String emailAddress;
@@ -42,12 +42,12 @@ public class RESTFullUser implements Serializable {
         this.extId = extId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setName(String userName) {
+        this.name = userName;
     }
 
     public String getFullName() {
@@ -102,7 +102,7 @@ public class RESTFullUser implements Serializable {
     public String toString() {
         return "RESTFullUser{" +
                 "id=" + id +
-                ", userName='" + userName + '\'' +
+                ", name='" + name + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", password='" + password + '\'' +
                 ", emailAddress='" + emailAddress + '\'' +

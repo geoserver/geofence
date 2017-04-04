@@ -301,7 +301,7 @@ public class RESTUserServiceImpl
         RESTFullUser fullUser = new RESTFullUser();
         fullUser.setId(user.getId());
         fullUser.setExtId(user.getExtId());
-        fullUser.setUserName(user.getName());
+        fullUser.setName(user.getName());
         fullUser.setFullName(user.getFullName());
         fullUser.setPassword(user.getPassword());
         fullUser.setEmailAddress(user.getEmailAddress());
