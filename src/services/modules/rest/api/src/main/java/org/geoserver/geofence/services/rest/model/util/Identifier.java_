@@ -27,16 +27,16 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author ETj (etj at geo-solutions.it)
  */
-@XmlRootElement(name = "identifier")
+@XmlRootElement(userName = "identifier")
 public class Identifier {
-    public enum Type{name,id};
+    public enum Type{userName,id};
 
     private  Type type;
-    private  String name;
+    private  String userName;
     private  Long id;
 
-    public Identifier(String name) {
-        setName(name);
+    public Identifier(String userName) {
+        setName(userName);
     }
 
     public Identifier(Long id) {
@@ -50,7 +50,7 @@ public class Identifier {
 
     @XmlElement
     public String getName() {
-        return name;
+        return userName;
     }
 
 //    @XmlAttribute
@@ -71,19 +71,19 @@ public class Identifier {
         if(id == null)
             throw new NullPointerException("id is null");
         this.id = id;
-        this.name = null;
+        this.userName = null;
         type = Type.id;
     }
 
     /**
      * Needed for marshalling / unmarshalling
      */
-    public void setName(String name) {
-        if(name == null)
+    public void setName(String userName) {
+        if(userName == null)
             throw new NullPointerException("Name is null");
-        this.name = name;
+        this.userName = userName;
         this.id=null;
-        type = Type.name;
+        type = Type.userName;
     }
 
     /**

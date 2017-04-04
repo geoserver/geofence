@@ -10,6 +10,7 @@ import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
 import org.geoserver.geofence.services.rest.exception.ConflictRestEx;
 import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
 import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
+import org.geoserver.geofence.services.rest.model.RESTFullUserList;
 import org.geoserver.geofence.services.rest.model.RESTInputUser;
 import org.geoserver.geofence.services.rest.model.RESTOutputUser;
 import org.geoserver.geofence.services.rest.model.RESTShortUserList;
@@ -39,6 +40,26 @@ public interface RESTUserService {
     @Path("/")
     @Produces(MediaType.APPLICATION_XML)
     RESTShortUserList getList(
+            @QueryParam("nameLike") String nameLike,
+            @QueryParam("page") Integer page,
+            @QueryParam("entries") Integer entries)
+            throws BadRequestRestEx, InternalErrorRestEx;
+
+    /**
+     * Returns a paginated list of users.
+     *
+     * @param nameLike An optional LIKE filter on the username.
+     * @param page     In a paginated list, the page number, 0-based. If not null,
+     *                 <code>entries</code> must be defined as well.
+     * @param entries  In a paginated list, the number of entries per page. If not null,
+     *                 <code>page</code> must be defined as well.
+     * @throws BadRequestRestEx    (HTTP code 400) if page/entries do no match
+     * @throws InternalErrorRestEx (HTTP code 500)
+     */
+    @GET
+    @Path("/search/full")
+    @Produces(MediaType.APPLICATION_XML)
+    RESTFullUserList getFullList(
             @QueryParam("nameLike") String nameLike,
             @QueryParam("page") Integer page,
             @QueryParam("entries") Integer entries)

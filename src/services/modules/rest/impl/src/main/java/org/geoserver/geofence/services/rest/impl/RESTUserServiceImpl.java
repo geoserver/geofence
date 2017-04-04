@@ -15,10 +15,7 @@ import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import org.geoserver.geofence.services.rest.RESTUserService;
 import org.geoserver.geofence.services.rest.exception.*;
-import org.geoserver.geofence.services.rest.model.RESTInputUser;
-import org.geoserver.geofence.services.rest.model.RESTOutputUser;
-import org.geoserver.geofence.services.rest.model.RESTShortUser;
-import org.geoserver.geofence.services.rest.model.RESTShortUserList;
+import org.geoserver.geofence.services.rest.model.*;
 import org.geoserver.geofence.services.rest.model.util.IdName;
 
 import javax.ws.rs.core.Response;
@@ -246,6 +243,37 @@ public class RESTUserServiceImpl
     }
 
     /**
+     * Returns a paginated list of users.
+     *
+     * @param nameLike An optional LIKE filter on the username.
+     * @param page     In a paginated list, the page number, 0-based. If not null,
+     *                 <code>entries</code> must be defined as well.
+     * @param entries  In a paginated list, the number of entries per page. If not null,
+     *                 <code>page</code> must be defined as well.
+     * @throws BadRequestRestEx    (HTTP code 400) if page/entries do no match
+     * @throws InternalErrorRestEx (HTTP code 500)
+     */
+    @Override
+    public RESTFullUserList getFullList(String nameLike, Integer page, Integer entries)
+            throws BadRequestRestEx, InternalErrorRestEx {
+        try {
+            List<GSUser> list = userAdminService.getFullList(nameLike, page, entries);
+            RESTFullUserList ret = new RESTFullUserList(list.size());
+            for (GSUser user : list) {
+                ret.add(toFullUser(user));
+            }
+            return ret;
+
+        } catch (BadRequestServiceEx ex) {
+            LOGGER.warn(ex.getMessage());
+            throw new BadRequestRestEx(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warn("Unexpected exception", ex);
+            throw new InternalErrorRestEx(ex.getMessage());
+        }
+    }
+
+    /**
      * @return {@link Long}
      */
     @Override
@@ -267,6 +295,20 @@ public class RESTUserServiceImpl
         shu.setEnabled(user.getEnabled());
 
         return shu;
+    }
+
+    public static RESTFullUser toFullUser(GSUser user) {
+        RESTFullUser fullUser = new RESTFullUser();
+        fullUser.setId(user.getId());
+        fullUser.setExtId(user.getExtId());
+        fullUser.setUserName(user.getName());
+        fullUser.setFullName(user.getFullName());
+        fullUser.setPassword(user.getPassword());
+        fullUser.setEmailAddress(user.getEmailAddress());
+        fullUser.setDateCreation(user.getDateCreation());
+        fullUser.setEnabled(user.getEnabled());
+        fullUser.setAdmin(user.isAdmin());
+        return fullUser;
     }
 
     public static RESTOutputUser toOutputUser(GSUser user) {
