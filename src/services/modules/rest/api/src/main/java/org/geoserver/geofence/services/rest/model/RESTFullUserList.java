@@ -1,5 +1,7 @@
 package org.geoserver.geofence.services.rest.model;
 
+import org.geoserver.geofence.core.model.GSUser;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
@@ -11,28 +13,28 @@ import java.util.List;
  * @email giuseppe.lascaleia@geosdi.org
  */
 @XmlRootElement(name = "UserList")
-public class RESTFullUserList implements Iterable<RESTFullUser> {
+public class RESTFullUserList implements Iterable<GSUser> {
 
-    private List<RESTFullUser> list;
+    private List<GSUser> list;
 
     public RESTFullUserList() {
         this(10);
     }
 
     public RESTFullUserList(int initialCapacity) {
-        list = new ArrayList<RESTFullUser>(initialCapacity);
+        list = new ArrayList<GSUser>(initialCapacity);
     }
 
     @XmlElement(name = "User")
-    public List<RESTFullUser> getUserList() {
+    public List<GSUser> getUserList() {
         return list;
     }
 
-    public void setUserList(List<RESTFullUser> userList) {
+    public void setUserList(List<GSUser> userList) {
         this.list = userList;
     }
 
-    public void add(RESTFullUser user) {
+    public void add(GSUser user) {
         list.add(user);
     }
 
@@ -42,7 +44,7 @@ public class RESTFullUserList implements Iterable<RESTFullUser> {
     }
 
     @Override
-    public Iterator<RESTFullUser> iterator() {
+    public Iterator<GSUser> iterator() {
         return list.iterator();
     }
 }

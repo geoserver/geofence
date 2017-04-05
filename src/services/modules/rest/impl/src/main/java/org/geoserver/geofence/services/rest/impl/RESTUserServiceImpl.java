@@ -262,9 +262,10 @@ public class RESTUserServiceImpl
         try {
             List<GSUser> list = userAdminService.getFullList(nameLike, page, entries, Boolean.TRUE);
             RESTFullUserList ret = new RESTFullUserList(list.size());
-            for (GSUser user : list) {
-                ret.add(toFullUser(user));
-            }
+            ret.setUserList(list);
+//            for (GSUser user : list) {
+//                ret.add(toFullUser(user));
+//            }
             return ret;
 
         } catch (BadRequestServiceEx ex) {
