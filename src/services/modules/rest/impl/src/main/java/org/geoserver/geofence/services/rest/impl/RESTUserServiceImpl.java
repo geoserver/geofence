@@ -352,7 +352,7 @@ public class RESTUserServiceImpl
             GSUser fulluser = userAdminService.getFull(user.getName());
             fulluser.getGroups().add(group);
 
-            userAdminService.update(user);
+            userAdminService.update(fulluser);
 
         } catch (BadRequestRestEx e) {
             throw e;

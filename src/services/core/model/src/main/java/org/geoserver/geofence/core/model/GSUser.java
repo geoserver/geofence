@@ -244,7 +244,7 @@ public class GSUser implements Identifiable, Serializable {
      * @return the groups associated to the user
      */
     @XmlElement(name="groups")
-    @XmlJavaTypeAdapter(FK2UserGroupSetAdapter.class)
+//    @XmlJavaTypeAdapter(FK2UserGroupSetAdapter.class)
     public Set<UserGroup> getGroups() {
         return userGroups;
     }
