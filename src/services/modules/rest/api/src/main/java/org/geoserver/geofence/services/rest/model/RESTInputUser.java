@@ -68,8 +68,8 @@ public class RESTInputUser extends AbstractRESTPayload {
         this.fullName = fullName;
     }
 
-    @XmlElementWrapper(name = "groups")
-    @XmlElement(name = "group")
+//    @XmlElementWrapper(name = "groups")
+    @XmlElement(name = "groups")
     public List<IdName> getGroups() {
         return groups;
     }
