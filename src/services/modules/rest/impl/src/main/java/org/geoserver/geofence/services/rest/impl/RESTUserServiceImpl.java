@@ -90,7 +90,6 @@ public class RESTUserServiceImpl
     @Override
     public Response insert(RESTInputUser user) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx, ConflictRestEx {
 
-
         boolean exists;
         // check that no user with same name exists
         try {

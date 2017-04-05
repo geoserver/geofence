@@ -7,20 +7,15 @@ package org.geoserver.geofence.services.rest.model;
 
 import org.geoserver.geofence.services.rest.model.util.IdName;
 
+import javax.xml.bind.annotation.*;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 /**
- *
  * @author ETj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "user")
-@XmlType(name="User", propOrder = {"extId", "name", "password", "fullName", "emailAddress", "groups"})
+@XmlType(name = "User", propOrder = {"extId", "name", "password", "fullName",
+        "emailAddress", "enabled", "admin", "groups"})
 public class RESTInputUser extends AbstractRESTPayload {
 
     private String extId;
@@ -32,7 +27,7 @@ public class RESTInputUser extends AbstractRESTPayload {
     private Boolean admin;
     private List<IdName> groups;
 
-//    @XmlAttribute(name = "extid")
+    //    @XmlAttribute(name = "extid")
     public String getExtId() {
         return extId;
     }
@@ -41,7 +36,6 @@ public class RESTInputUser extends AbstractRESTPayload {
         this.extId = extId;
     }
 
-    @XmlAttribute(name = "admin")
     public Boolean isAdmin() {
         return admin;
     }
@@ -58,7 +52,6 @@ public class RESTInputUser extends AbstractRESTPayload {
         this.emailAddress = emailAddress;
     }
 
-    @XmlAttribute(name = "enabled")
     public Boolean isEnabled() {
         return enabled;
     }
