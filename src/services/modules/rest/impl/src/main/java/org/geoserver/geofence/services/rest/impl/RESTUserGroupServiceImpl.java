@@ -5,8 +5,8 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
-import java.util.List;
-
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
@@ -14,18 +14,13 @@ import org.geoserver.geofence.services.dto.ShortGroup;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import org.geoserver.geofence.services.rest.RESTUserGroupService;
-import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
-import org.geoserver.geofence.services.rest.exception.ConflictRestEx;
-import org.geoserver.geofence.services.rest.exception.GeoFenceRestEx;
-import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
-import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
+import org.geoserver.geofence.services.rest.exception.*;
 import org.geoserver.geofence.services.rest.model.RESTInputGroup;
 import org.geoserver.geofence.services.rest.model.config.RESTFullUserGroupList;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import java.util.List;
 
 
 /**
@@ -42,6 +37,7 @@ public class RESTUserGroupServiceImpl
     @Override
     public RESTFullUserGroupList getList(String nameLike, Integer page, Integer entries) {
         List<ShortGroup> groups = userGroupAdminService.getList(nameLike, page, entries);
+        LOGGER.info("###########################ECCOLI : " + groups);
         return new RESTFullUserGroupList(groups);
     }
 

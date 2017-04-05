@@ -111,7 +111,7 @@ public class UserAdminServiceImpl implements UserAdminService {
         searchCriteria.addSortAsc("name");
 
         if ((nameLike != null) && !(nameLike.isEmpty())) {
-            searchCriteria.addFilterILike("name", nameLike);
+            searchCriteria.addFilterILike("name", "%".concat(nameLike).concat("%"));
         }
 
         List<GSUser> found = userDAO.search(searchCriteria);
