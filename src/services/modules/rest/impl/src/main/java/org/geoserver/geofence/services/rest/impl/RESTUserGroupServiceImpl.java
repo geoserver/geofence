@@ -24,7 +24,6 @@ import java.util.List;
 
 
 /**
- *
  * @author ETj (etj at geo-solutions.it)
  */
 public class RESTUserGroupServiceImpl
@@ -37,13 +36,20 @@ public class RESTUserGroupServiceImpl
     @Override
     public RESTFullUserGroupList getList(String nameLike, Integer page, Integer entries) {
         List<ShortGroup> groups = userGroupAdminService.getList(nameLike, page, entries);
-        LOGGER.info("###########################ECCOLI : " + groups);
         return new RESTFullUserGroupList(groups);
     }
 
     @Override
     public long count(String nameLike) {
         return userGroupAdminService.getCount(nameLike);
+    }
+
+    /**
+     * @return {@link Long}
+     */
+    @Override
+    public Long count() {
+        return userGroupAdminService.getCount(null);
     }
 
     @Override
@@ -77,8 +83,8 @@ public class RESTUserGroupServiceImpl
             throw new InternalErrorRestEx(ex.getMessage());
         }
 
-        if(exists)
-            throw new ConflictRestEx("Role '"+userGroup.getName()+"' already exists");
+        if (exists)
+            throw new ConflictRestEx("Role '" + userGroup.getName() + "' already exists");
 
         // ok: insert it
         try {
@@ -106,15 +112,15 @@ public class RESTUserGroupServiceImpl
             ShortGroup newGroup = new ShortGroup();
             newGroup.setId(old.getId());
 
-            if ( (group.getExtId() != null) ) {
+            if ((group.getExtId() != null)) {
                 throw new BadRequestRestEx("ExtId can't be updated");
             }
 
-            if ( (group.getName() != null) ) {
+            if ((group.getName() != null)) {
                 throw new BadRequestRestEx("Name can't be updated");
             }
 
-            if ( group.isEnabled() != null ) {
+            if (group.isEnabled() != null) {
                 newGroup.setEnabled(group.isEnabled());
             }
 
@@ -138,21 +144,21 @@ public class RESTUserGroupServiceImpl
     @Override
     public Response delete(String name, boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
-            if ( cascade ) {
+            if (cascade) {
                 ruleAdminService.deleteRulesByRole(name);
             } else {
                 RuleFilter filter = new RuleFilter(SpecialFilterType.ANY);
                 filter.setRole(name);
                 filter.getUser().setIncludeDefault(false);
                 long cnt = ruleAdminService.count(filter);
-                if ( cnt > 0 ) {
+                if (cnt > 0) {
                     throw new ConflictRestEx("Existing rules reference the role " + name);
                 }
             }
 
             UserGroup role = userGroupAdminService.get(name);
 
-            if ( ! userGroupAdminService.delete(role.getId())) {
+            if (!userGroupAdminService.delete(role.getId())) {
                 LOGGER.warn("Role not found: " + name);
                 throw new NotFoundRestEx("Role not found: " + name);
             }
