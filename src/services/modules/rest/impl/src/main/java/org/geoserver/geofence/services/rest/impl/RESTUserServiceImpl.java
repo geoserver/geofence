@@ -260,7 +260,7 @@ public class RESTUserServiceImpl
     public RESTFullUserList getFullList(String nameLike, Integer page, Integer entries)
             throws BadRequestRestEx, InternalErrorRestEx {
         try {
-            List<GSUser> list = userAdminService.getFullList(nameLike, page, entries);
+            List<GSUser> list = userAdminService.getFullList(nameLike, page, entries, Boolean.TRUE);
             RESTFullUserList ret = new RESTFullUserList(list.size());
             for (GSUser user : list) {
                 ret.add(toFullUser(user));
