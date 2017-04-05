@@ -192,6 +192,10 @@ public class RESTUserServiceImpl
                 old.setAdmin(user.isAdmin());
             }
 
+            if (user.getFullName() != null) {
+                old.setFullName(user.getFullName());
+            }
+
             if (user.isEnabled() != null) {
                 old.setEnabled(user.isEnabled());
             }
