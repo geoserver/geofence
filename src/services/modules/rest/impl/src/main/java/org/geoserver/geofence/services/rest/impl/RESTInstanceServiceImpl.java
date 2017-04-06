@@ -253,7 +253,7 @@ public class RESTInstanceServiceImpl
         ret.setBaseURL(i.getBaseURL());
         ret.setUsername(i.getUsername());
         ret.setPassword(PwEncoder.encode(i.getPassword()));
-        ret.setCreationDate(i.getDateCreation().toString());
+        ret.setCreationDate(i.getDateCreation());
         return ret;
     }
 
