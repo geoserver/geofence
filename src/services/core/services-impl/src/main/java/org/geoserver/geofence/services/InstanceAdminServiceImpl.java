@@ -6,21 +6,18 @@
 package org.geoserver.geofence.services;
 
 import com.googlecode.genericdao.search.Search;
-import org.geoserver.geofence.core.model.GSInstance;
-
-import java.util.List;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-
 import org.geoserver.geofence.core.dao.GSInstanceDAO;
+import org.geoserver.geofence.core.model.GSInstance;
 import org.geoserver.geofence.services.dto.ShortInstance;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- *
  * @author ETj (etj at geo-solutions.it)
  */
 public class InstanceAdminServiceImpl implements InstanceAdminService {
@@ -64,9 +61,9 @@ public class InstanceAdminServiceImpl implements InstanceAdminService {
         search.addFilterEqual("name", name);
         List<GSInstance> groups = instanceDAO.search(search);
 
-        if ( groups.isEmpty() ) {
+        if (groups.isEmpty()) {
             throw new NotFoundServiceEx("GSInstance not found  '" + name + "'");
-        } else if ( groups.size() > 1 ) {
+        } else if (groups.size() > 1) {
             throw new IllegalStateException("Found more than one GSInstance with name '" + name + "'");
         } else {
             return groups.get(0);
@@ -93,20 +90,20 @@ public class InstanceAdminServiceImpl implements InstanceAdminService {
     @Override
     public List<GSInstance> getFullList(String nameLike, Integer page, Integer entries) {
 
-        if( (page != null && entries == null) || (page ==null && entries != null)) {
+        if ((page != null && entries == null) || (page == null && entries != null)) {
             throw new BadRequestServiceEx("Page and entries params should be declared together.");
         }
 
         Search searchCriteria = new Search(GSInstance.class);
 
-        if(page != null) {
+        if (page != null) {
             searchCriteria.setMaxResults(entries);
             searchCriteria.setPage(page);
         }
         searchCriteria.addSortAsc("name");
 
-        if (nameLike != null) {
-            searchCriteria.addFilterILike("name", nameLike);
+        if ((nameLike != null) && !(nameLike.isEmpty())) {
+            searchCriteria.addFilterILike("name", "%".concat(nameLike).concat("%"));
         }
 
         return instanceDAO.search(searchCriteria);
@@ -130,8 +127,8 @@ public class InstanceAdminServiceImpl implements InstanceAdminService {
     public long getCount(String nameLike) {
         Search searchCriteria = new Search(GSInstance.class);
 
-        if (nameLike != null) {
-            searchCriteria.addFilterILike("name", nameLike);
+        if ((nameLike != null) && !(nameLike.isEmpty())) {
+            searchCriteria.addFilterILike("name", "%".concat(nameLike).concat("%"));
         }
 
         return instanceDAO.count(searchCriteria);
