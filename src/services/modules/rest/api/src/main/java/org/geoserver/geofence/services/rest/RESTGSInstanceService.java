@@ -10,6 +10,7 @@ import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
 import org.geoserver.geofence.services.rest.exception.ConflictRestEx;
 import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
 import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
+import org.geoserver.geofence.services.rest.model.RESTFullInstanceList;
 import org.geoserver.geofence.services.rest.model.RESTInputInstance;
 import org.geoserver.geofence.services.rest.model.RESTOutputInstance;
 import org.geoserver.geofence.services.rest.model.RESTShortInstanceList;
@@ -33,6 +34,22 @@ public interface RESTGSInstanceService {
     @Path("/")
     @Produces(MediaType.APPLICATION_XML)
     RESTShortInstanceList getList(@QueryParam("nameLike") String nameLike,
+            @QueryParam("page") Integer page,
+            @QueryParam("entries") Integer entries) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+
+    /**
+     * @param nameLike
+     * @param page
+     * @param entries
+     * @return {@link RESTFullInstanceList}
+     * @throws BadRequestRestEx
+     * @throws NotFoundRestEx
+     * @throws InternalErrorRestEx
+     */
+    @GET
+    @Path("/search/full")
+    @Produces(MediaType.APPLICATION_XML)
+    RESTFullInstanceList getFullList(@QueryParam("nameLike") String nameLike,
             @QueryParam("page") Integer page,
             @QueryParam("entries") Integer entries) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 

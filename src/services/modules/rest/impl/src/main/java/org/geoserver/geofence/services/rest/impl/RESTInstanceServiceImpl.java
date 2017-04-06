@@ -17,6 +17,7 @@ import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import org.geoserver.geofence.services.rest.RESTGSInstanceService;
 import org.geoserver.geofence.services.rest.exception.*;
+import org.geoserver.geofence.services.rest.model.RESTFullInstanceList;
 import org.geoserver.geofence.services.rest.model.RESTInputInstance;
 import org.geoserver.geofence.services.rest.model.RESTOutputInstance;
 import org.geoserver.geofence.services.rest.model.RESTShortInstanceList;
@@ -40,6 +41,21 @@ public class RESTInstanceServiceImpl
     public RESTShortInstanceList getList(String nameLike, Integer page, Integer entries) {
         List<ShortInstance> list = instanceAdminService.getList(nameLike, page, entries);
         return new RESTShortInstanceList(list);
+    }
+
+    /**
+     * @param nameLike
+     * @param page
+     * @param entries
+     * @return {@link RESTFullInstanceList}
+     * @throws BadRequestRestEx
+     * @throws NotFoundRestEx
+     * @throws InternalErrorRestEx
+     */
+    @Override
+    public RESTFullInstanceList getFullList(String nameLike, Integer page, Integer entries)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        return new RESTFullInstanceList(this.instanceAdminService.getFullList(nameLike, page, entries));
     }
 
     @Override
