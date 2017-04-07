@@ -5,53 +5,45 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import org.apache.commons.lang.StringUtils;
-
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
-
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.core.model.IPAddressRange;
 import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.LayerDetails;
 import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
-
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.IdNameFilter;
-import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
-
+import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
-
+import org.geoserver.geofence.services.rest.RESTRuleService;
 import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
 import org.geoserver.geofence.services.rest.exception.GeoFenceRestEx;
 import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
 import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
-
-import org.geoserver.geofence.services.rest.RESTRuleService;
 import org.geoserver.geofence.services.rest.model.RESTInputRule;
 import org.geoserver.geofence.services.rest.model.RESTLayerConstraints;
 import org.geoserver.geofence.services.rest.model.RESTOutputRule;
 import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
 import org.geoserver.geofence.services.rest.model.RESTRulePosition.RulePosition;
 import org.geoserver.geofence.services.rest.model.util.IdName;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
- *
  * @author ETj (etj at geo-solutions.it)
  */
 public class RESTRuleServiceImpl
@@ -90,8 +82,8 @@ public class RESTRuleServiceImpl
 
         InsertPosition position =
                 inputRule.getPosition().getPosition() == RulePosition.fixedPriority ? InsertPosition.FIXED
-                : inputRule.getPosition().getPosition() == RulePosition.offsetFromBottom ? InsertPosition.FROM_END
-                : inputRule.getPosition().getPosition() == RulePosition.offsetFromTop ? InsertPosition.FROM_START : null;
+                        : inputRule.getPosition().getPosition() == RulePosition.offsetFromBottom ? InsertPosition.FROM_END
+                        : inputRule.getPosition().getPosition() == RulePosition.offsetFromTop ? InsertPosition.FROM_START : null;
 
         // ok: insert it
         try {
@@ -128,12 +120,12 @@ public class RESTRuleServiceImpl
             boolean isRuleUpdated = false;
             boolean isDetailUpdated = false;
 
-            if (rule.getUsername()!= null) {
-                old.setUsername(rule.getUsername().isEmpty()? null : rule.getUsername());
+            if (rule.getUsername() != null) {
+                old.setUsername(rule.getUsername().isEmpty() ? null : rule.getUsername());
                 isRuleUpdated = true;
             }
             if (rule.getRolename() != null) {
-                old.setRolename(rule.getRolename().isEmpty()? null : rule.getRolename());
+                old.setRolename(rule.getRolename().isEmpty() ? null : rule.getRolename());
                 isRuleUpdated = true;
             }
             if (rule.getInstance() != null) {
@@ -168,7 +160,7 @@ public class RESTRuleServiceImpl
                 RESTLayerConstraints constraintsNew = rule.getConstraints();
                 detailsOld = old.getLayerDetails(); // check me : may be null?
 
-                if(detailsOld == null) { // no previous details
+                if (detailsOld == null) { // no previous details
                     detailsOld = new LayerDetails();
                 }
 
@@ -258,7 +250,7 @@ public class RESTRuleServiceImpl
                     }
                 }
 
-                if(constraintsNew.getType() != null) {
+                if (constraintsNew.getType() != null) {
                     detailsOld.setType(constraintsNew.getType());
                     isDetailUpdated = true;
                 }
@@ -266,21 +258,21 @@ public class RESTRuleServiceImpl
 
             // now persist the new data
 
-            if(isRuleUpdated) {
-                if(LOGGER.isDebugEnabled())
+            if (isRuleUpdated) {
+                if (LOGGER.isDebugEnabled())
                     LOGGER.debug("Updating rule " + rule);
                 ruleAdminService.update(old);
             } else {
-                if(LOGGER.isDebugEnabled())
+                if (LOGGER.isDebugEnabled())
                     LOGGER.debug("Rule not changed " + rule);
             }
 
-            if(isDetailUpdated) {
-                if(LOGGER.isDebugEnabled())
+            if (isDetailUpdated) {
+                if (LOGGER.isDebugEnabled())
                     LOGGER.debug("Updating details " + detailsOld);
-                    ruleAdminService.setDetails(id, detailsOld);
+                ruleAdminService.setDetails(id, detailsOld);
             } else {
-                if(LOGGER.isDebugEnabled())
+                if (LOGGER.isDebugEnabled())
                     LOGGER.debug("Details not changed for rule " + rule);
             }
 
@@ -408,7 +400,7 @@ public class RESTRuleServiceImpl
 
     private void setFilter(TextFilter filter, String name, Boolean includeDefault) {
 
-        if (name != null) {
+        if ((name != null) && !(name.isEmpty())) {
             filter.setText(name);
             if (includeDefault != null) {
                 filter.setIncludeDefault(includeDefault);
@@ -451,6 +443,14 @@ public class RESTRuleServiceImpl
 
     }
 
+    /**
+     * @return {@link Long}
+     */
+    @Override
+    public Long count() {
+        return this.ruleAdminService.getCountAll();
+    }
+
     // ==========================================================================
     protected RESTOutputRuleList toOutput(List<Rule> rules) {
         RESTOutputRuleList list = new RESTOutputRuleList(rules.size());
@@ -459,7 +459,7 @@ public class RESTRuleServiceImpl
         }
         return list;
     }
-    
+
     // ==========================================================================
     protected RESTOutputRule toOutput(Rule rule) {
         RESTOutputRule out = new RESTOutputRule();
@@ -473,7 +473,7 @@ public class RESTRuleServiceImpl
             out.setInstance(new IdName(rule.getInstance().getId(), rule.getInstance().getName()));
         }
 
-        if(rule.getAddressRange() != null) {
+        if (rule.getAddressRange() != null) {
             out.setIpaddress(rule.getAddressRange().getCidrSignature());
         }
 
@@ -516,12 +516,12 @@ public class RESTRuleServiceImpl
 
         rule.setUsername(in.getUsername());
         rule.setRolename(in.getRolename());
-        
+
         if (in.getInstance() != null) {
             rule.setInstance(getInstance(in.getInstance()));
         }
 
-        if(StringUtils.isNotBlank(in.getIpaddress())) {
+        if (StringUtils.isNotBlank(in.getIpaddress())) {
             rule.setAddressRange(new IPAddressRange(in.getIpaddress()));
         }
 

@@ -5,6 +5,7 @@
 
 package org.geoserver.geofence.services.rest;
 
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
 import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
 import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
@@ -12,29 +13,17 @@ import org.geoserver.geofence.services.rest.model.RESTInputRule;
 import org.geoserver.geofence.services.rest.model.RESTOutputRule;
 import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-
 
 /**
- *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 
 @Path("/")
-public interface RESTRuleService
-{
+public interface RESTRuleService {
     @POST
     @Path("/")
     @Produces(MediaType.TEXT_PLAIN)
@@ -49,7 +38,7 @@ public interface RESTRuleService
     @Path("/id/{id}")
     @Produces(MediaType.APPLICATION_XML)
     void update(@PathParam("id") Long id,
-        @Multipart("rule") RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx;
+            @Multipart("rule") RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx;
 
     @DELETE
     @Path("/id/{id}")
@@ -60,57 +49,63 @@ public interface RESTRuleService
     @Path("/")
     @Produces(MediaType.APPLICATION_XML)
     RESTOutputRuleList get(
-        @QueryParam("page") Integer page,
-        @QueryParam("entries") Integer entries,
-        @QueryParam("full")@DefaultValue("false")  boolean full,
+            @QueryParam("page") Integer page,
+            @QueryParam("entries") Integer entries,
+            @QueryParam("full") @DefaultValue("false") boolean full,
 
-        @QueryParam("userName") String userName,
-        @QueryParam("userAny")  Boolean userAny,
+            @QueryParam("userName") String userName,
+            @QueryParam("userAny") Boolean userAny,
 
-        @QueryParam("groupName") String groupName,
-        @QueryParam("groupAny")  Boolean groupAny,
+            @QueryParam("groupName") String groupName,
+            @QueryParam("groupAny") Boolean groupAny,
 
-        @QueryParam("instanceId")   Long instanceId,
-        @QueryParam("instanceName") String  instanceName,
-        @QueryParam("instanceAny")  Boolean instanceAny,
+            @QueryParam("instanceId") Long instanceId,
+            @QueryParam("instanceName") String instanceName,
+            @QueryParam("instanceAny") Boolean instanceAny,
 
-        @QueryParam("service")     String  serviceName,
-        @QueryParam("serviceAny")  Boolean serviceAny,
+            @QueryParam("service") String serviceName,
+            @QueryParam("serviceAny") Boolean serviceAny,
 
-        @QueryParam("request")     String  requestName,
-        @QueryParam("requestAny")  Boolean requestAny,
+            @QueryParam("request") String requestName,
+            @QueryParam("requestAny") Boolean requestAny,
 
-        @QueryParam("workspace") String  workspace,
-        @QueryParam("workspaceAny")  Boolean workspaceAny,
+            @QueryParam("workspace") String workspace,
+            @QueryParam("workspaceAny") Boolean workspaceAny,
 
-        @QueryParam("layer") String  layer,
-        @QueryParam("layerAny")  Boolean layerAny
+            @QueryParam("layer") String layer,
+            @QueryParam("layerAny") Boolean layerAny
     ) throws BadRequestRestEx, InternalErrorRestEx;
 
     @GET
     @Path("/count")
     long count(
-        @QueryParam("userName") String userName,
-        @QueryParam("userAny")  Boolean userAny,
+            @QueryParam("userName") String userName,
+            @QueryParam("userAny") Boolean userAny,
 
-        @QueryParam("groupName") String groupName,
-        @QueryParam("groupAny")  Boolean groupAny,
+            @QueryParam("groupName") String groupName,
+            @QueryParam("groupAny") Boolean groupAny,
 
-        @QueryParam("instanceId")   Long instanceId,
-        @QueryParam("instanceName") String  instanceName,
-        @QueryParam("instanceAny")  Boolean instanceAny,
+            @QueryParam("instanceId") Long instanceId,
+            @QueryParam("instanceName") String instanceName,
+            @QueryParam("instanceAny") Boolean instanceAny,
 
-        @QueryParam("service")     String  serviceName,
-        @QueryParam("serviceAny")  Boolean serviceAny,
+            @QueryParam("service") String serviceName,
+            @QueryParam("serviceAny") Boolean serviceAny,
 
-        @QueryParam("request")     String  requestName,
-        @QueryParam("requestAny")  Boolean requestAny,
+            @QueryParam("request") String requestName,
+            @QueryParam("requestAny") Boolean requestAny,
 
-        @QueryParam("workspace") String  workspace,
-        @QueryParam("workspaceAny")  Boolean workspaceAny,
+            @QueryParam("workspace") String workspace,
+            @QueryParam("workspaceAny") Boolean workspaceAny,
 
-        @QueryParam("layer") String  layer,
-        @QueryParam("layerAny")  Boolean layerAny
+            @QueryParam("layer") String layer,
+            @QueryParam("layerAny") Boolean layerAny
     );
 
+    /**
+     * @return {@link Long}
+     */
+    @GET
+    @Path(value = "/count")
+    Long count();
 }

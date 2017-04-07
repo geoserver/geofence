@@ -8,12 +8,9 @@ package org.geoserver.geofence.services.rest.model;
 import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.enums.LayerType;
 
-import java.util.Set;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Set;
 
 /**
  *
@@ -32,8 +29,8 @@ public class RESTLayerConstraints {
     private Set<String> allowedStyles;
     private Set<LayerAttribute> attributes;
 
-    @XmlElementWrapper(name = "allowedStyles")
-    @XmlElement(name = "style")
+//    @XmlElementWrapper(name = "allowedStyles")
+//    @XmlElement(name = "style")
     public Set<String> getAllowedStyles() {
         return allowedStyles;
     }
@@ -42,8 +39,8 @@ public class RESTLayerConstraints {
         this.allowedStyles = allowedStyles;
     }
 
-    @XmlElementWrapper(name = "attributes")
-    @XmlElement(name = "attribute")
+//    @XmlElementWrapper(name = "attributes")
+//    @XmlElement(name = "attribute")
     public Set<LayerAttribute> getAttributes() {
         return attributes;
     }
