@@ -84,7 +84,7 @@
     <bean id="remoteRuleReaderProxy" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean"
           lazy-init="true">
 
-        <property name="serviceUrl" value="http://localhost:9191/remoting/RuleReader"/>
+        <property name="serviceUrl" value="http://localhost:8181/remoting/RuleReader"/>
         <property name="serviceInterface" value="org.geoserver.geofence.services.RuleReaderService"/>
     </bean>
 
