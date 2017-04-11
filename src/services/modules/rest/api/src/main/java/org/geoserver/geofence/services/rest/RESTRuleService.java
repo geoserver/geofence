@@ -12,6 +12,7 @@ import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
 import org.geoserver.geofence.services.rest.model.RESTInputRule;
 import org.geoserver.geofence.services.rest.model.RESTOutputRule;
 import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
+import org.geoserver.geofence.services.rest.model.RESTShortRuleList;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -75,6 +76,12 @@ public interface RESTRuleService {
             @QueryParam("layer") String layer,
             @QueryParam("layerAny") Boolean layerAny
     ) throws BadRequestRestEx, InternalErrorRestEx;
+
+    @GET
+    @Path("/search/short")
+    RESTShortRuleList search(@QueryParam("page") Integer page,
+            @QueryParam("entries") Integer entries)
+            throws BadRequestRestEx, InternalErrorRestEx;
 
     @GET
     @Path("/count")

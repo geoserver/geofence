@@ -22,6 +22,7 @@ import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.IdNameFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
 import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
+import org.geoserver.geofence.services.dto.ShortRule;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import org.geoserver.geofence.services.rest.RESTRuleService;
@@ -29,10 +30,7 @@ import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
 import org.geoserver.geofence.services.rest.exception.GeoFenceRestEx;
 import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
 import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
-import org.geoserver.geofence.services.rest.model.RESTInputRule;
-import org.geoserver.geofence.services.rest.model.RESTLayerConstraints;
-import org.geoserver.geofence.services.rest.model.RESTOutputRule;
-import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
+import org.geoserver.geofence.services.rest.model.*;
 import org.geoserver.geofence.services.rest.model.RESTRulePosition.RulePosition;
 import org.geoserver.geofence.services.rest.model.util.IdName;
 import org.springframework.transaction.annotation.Propagation;
@@ -43,6 +41,8 @@ import javax.ws.rs.core.Response.Status;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType.ANY;
 
 /**
  * @author ETj (etj at geo-solutions.it)
@@ -251,7 +251,7 @@ public class RESTRuleServiceImpl
                     }
                 }
 
-                if(constraintsNew.getCatalogMode() != null) {
+                if (constraintsNew.getCatalogMode() != null) {
                     detailsOld.setCatalogMode(constraintsNew.getCatalogMode());
                     isDetailUpdated = true;
                 }
@@ -323,6 +323,19 @@ public class RESTRuleServiceImpl
         }
     }
 
+    @Override
+    public RESTShortRuleList search(Integer page, Integer entries) throws BadRequestRestEx, InternalErrorRestEx {
+        try {
+            List<ShortRule> shortRules = ruleAdminService.getList(new RuleFilter(ANY), page, entries);
+            RESTShortRuleList restShortRuleList = new RESTShortRuleList(shortRules.size());
+            restShortRuleList.setList(shortRules);
+            return restShortRuleList;
+        } catch (Exception ex) {
+            LOGGER.error(ex);
+            throw new InternalErrorRestEx(ex.getMessage());
+        }
+    }
+
     // ==========================================================================
     // ==========================================================================
 //    public void setUserGroupAdminService(UserGroupAdminService service) {
@@ -367,7 +380,7 @@ public class RESTRuleServiceImpl
             String workspace, Boolean workspaceDefault,
             String layer, Boolean layerDefault) throws BadRequestRestEx {
 
-        RuleFilter filter = new RuleFilter(SpecialFilterType.ANY, true);
+        RuleFilter filter = new RuleFilter(ANY, true);
 
         setFilter(filter.getUser(), userName, userDefault);
         setFilter(filter.getRole(), roleName, groupDefault);
@@ -399,7 +412,7 @@ public class RESTRuleServiceImpl
             if (includeDefault != null && includeDefault) {
                 filter.setType(SpecialFilterType.DEFAULT);
             } else {
-                filter.setType(SpecialFilterType.ANY);
+                filter.setType(ANY);
             }
         }
     }
@@ -415,7 +428,7 @@ public class RESTRuleServiceImpl
             if (includeDefault != null && includeDefault) {
                 filter.setType(SpecialFilterType.DEFAULT);
             } else {
-                filter.setType(SpecialFilterType.ANY);
+                filter.setType(ANY);
             }
         }
     }
