@@ -49,10 +49,15 @@ public class ShortRule implements Serializable {
             setInstanceName(rule.getInstance().getName());
         }
 
+        if (rule.getAddressRange() != null) {
+            setIpaddress(rule.getAddressRange().getAddress());
+        }
+
         setService(rule.getService());
         setRequest(rule.getRequest());
         setWorkspace(rule.getWorkspace());
         setLayer(rule.getLayer());
+
 
         setAccess(rule.getAccess());
     }
