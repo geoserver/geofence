@@ -12,11 +12,9 @@ import java.io.Serializable;
 
 
 /**
- *
  * @author ETj (etj at geo-solutions.it)
  */
-public class ShortRule implements Serializable
-{
+public class ShortRule implements Serializable {
 
     private static final long serialVersionUID = -9127101015688510863L;
 
@@ -34,22 +32,19 @@ public class ShortRule implements Serializable
     private String request;
     private String workspace;
     private String layer;
-
+    private String ipaddress;
     private GrantType access;
 
-    public ShortRule()
-    {
+    public ShortRule() {
     }
 
-    public ShortRule(Rule rule)
-    {
+    public ShortRule(Rule rule) {
         setId(rule.getId());
         setPriority(rule.getPriority());
         setUserName(rule.getUsername());
         setRoleName(rule.getRolename());
 
-        if (rule.getInstance() != null)
-        {
+        if (rule.getInstance() != null) {
             setInstanceId(rule.getInstance().getId());
             setInstanceName(rule.getInstance().getName());
         }
@@ -62,63 +57,51 @@ public class ShortRule implements Serializable
         setAccess(rule.getAccess());
     }
 
-    public GrantType getAccess()
-    {
+    public GrantType getAccess() {
         return access;
     }
 
-    public void setAccess(GrantType access)
-    {
+    public void setAccess(GrantType access) {
         this.access = access;
     }
 
-    public Long getId()
-    {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id)
-    {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getInstanceId()
-    {
+    public Long getInstanceId() {
         return instanceId;
     }
 
-    public void setInstanceId(Long instanceId)
-    {
+    public void setInstanceId(Long instanceId) {
         this.instanceId = instanceId;
     }
 
-    public String getInstanceName()
-    {
+    public String getInstanceName() {
         return instanceName;
     }
 
-    public void setInstanceName(String instanceName)
-    {
+    public void setInstanceName(String instanceName) {
         this.instanceName = instanceName;
     }
 
-    public String getLayer()
-    {
+    public String getLayer() {
         return layer;
     }
 
-    public void setLayer(String layer)
-    {
+    public void setLayer(String layer) {
         this.layer = layer;
     }
 
-    public long getPriority()
-    {
+    public long getPriority() {
         return priority;
     }
 
-    public void setPriority(long priority)
-    {
+    public void setPriority(long priority) {
         this.priority = priority;
     }
 
@@ -130,87 +113,82 @@ public class ShortRule implements Serializable
         this.roleName = roleName;
     }
 
-    public String getRequest()
-    {
+    public String getRequest() {
         return request;
     }
 
-    public void setRequest(String request)
-    {
+    public void setRequest(String request) {
         this.request = request;
     }
 
-    public String getService()
-    {
+    public String getService() {
         return service;
     }
 
-    public void setService(String service)
-    {
+    public void setService(String service) {
         this.service = service;
     }
 
-    public String getUserName()
-    {
+    public String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName)
-    {
+    public void setUserName(String userName) {
         this.userName = userName;
     }
 
-    public String getWorkspace()
-    {
+    public String getWorkspace() {
         return workspace;
     }
 
-    public void setWorkspace(String workspace)
-    {
+    public void setWorkspace(String workspace) {
         this.workspace = workspace;
     }
 
+    public String getIpaddress() {
+        return ipaddress;
+    }
+
+    public void setIpaddress(String ipaddress) {
+        this.ipaddress = ipaddress;
+    }
+
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append("[id:").append(id).append(" pri:").append(
                 priority);
 
-        if (userName != null)
-        {
+        if (userName != null) {
             sb.append(" user:").append(userName);
         }
 
-        if (roleName != null)
-        {
+        if (roleName != null) {
             sb.append(" role:").append(roleName);
         }
 
-        if (instanceId != null)
-        {
+        if (instanceId != null) {
             sb.append(" iId:").append(instanceId);
         }
-        if (instanceName != null)
-        {
+        if (instanceName != null) {
             sb.append(" iName:").append(instanceName);
         }
 
-        if (service != null)
-        {
+        if (service != null) {
             sb.append(" srv:").append(service);
         }
-        if (request != null)
-        {
+        if (request != null) {
             sb.append(" req:").append(request);
         }
 
-        if (workspace != null)
-        {
+        if (workspace != null) {
             sb.append(" ws:").append(workspace);
         }
-        if (layer != null)
-        {
+        if (layer != null) {
             sb.append(" l:").append(layer);
+        }
+
+        if (ipaddress != null) {
+            sb.append(" ipaddress:").append(ipaddress);
         }
 
         sb.append(" acc:").append(access);
