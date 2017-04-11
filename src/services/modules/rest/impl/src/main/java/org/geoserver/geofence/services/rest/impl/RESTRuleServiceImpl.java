@@ -16,6 +16,7 @@ import org.geoserver.geofence.core.model.IPAddressRange;
 import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.LayerDetails;
 import org.geoserver.geofence.core.model.Rule;
+import org.geoserver.geofence.core.model.enums.CatalogMode;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.IdNameFilter;
@@ -248,6 +249,11 @@ public class RESTRuleServiceImpl
                             throw new BadRequestRestEx("Error parsing WKT:" + ex.getMessage());
                         }
                     }
+                }
+
+                if(constraintsNew.getCatalogMode() != null) {
+                    detailsOld.setCatalogMode(constraintsNew.getCatalogMode());
+                    isDetailUpdated = true;
                 }
 
                 if (constraintsNew.getType() != null) {
@@ -557,7 +563,7 @@ public class RESTRuleServiceImpl
                 }
                 details.setArea((MultiPolygon) g);
             }
-
+            details.setCatalogMode((constraints.getCatalogMode() != null ? constraints.getCatalogMode() : CatalogMode.HIDE));
             details.setType(constraints.getType());
 
             return details;
