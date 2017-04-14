@@ -514,6 +514,7 @@ public class RESTRuleServiceImpl
             constraints.setCqlFilterRead(details.getCqlFilterRead());
             constraints.setCqlFilterWrite(details.getCqlFilterWrite());
             constraints.setDefaultStyle(details.getDefaultStyle());
+            constraints.setCatalogMode(details.getCatalogMode());
             if (details.getArea() != null) {
                 constraints.setRestrictedAreaWkt(details.getArea().toText());
             }
