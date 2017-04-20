@@ -27,12 +27,14 @@ public class ShortRule implements Serializable {
 
     private Long instanceId;
     private String instanceName;
+    private String instanceURL;
 
     private String service;
     private String request;
     private String workspace;
     private String layer;
     private String ipaddress;
+    private String wktArea;
     private GrantType access;
 
     public ShortRule() {
@@ -47,10 +49,15 @@ public class ShortRule implements Serializable {
         if (rule.getInstance() != null) {
             setInstanceId(rule.getInstance().getId());
             setInstanceName(rule.getInstance().getName());
+            setInstanceURL(rule.getInstance().getBaseURL());
         }
 
         if (rule.getAddressRange() != null) {
             setIpaddress(rule.getAddressRange().getAddress());
+        }
+
+        if ((rule.getLayerDetails() != null) && (rule.getLayerDetails().getArea() != null)) {
+            setWktArea(rule.getLayerDetails().getArea().toString());
         }
 
         setService(rule.getService());
@@ -92,6 +99,14 @@ public class ShortRule implements Serializable {
 
     public void setInstanceName(String instanceName) {
         this.instanceName = instanceName;
+    }
+
+    public String getInstanceURL() {
+        return instanceURL;
+    }
+
+    public void setInstanceURL(String instanceURL) {
+        this.instanceURL = instanceURL;
     }
 
     public String getLayer() {
@@ -156,6 +171,14 @@ public class ShortRule implements Serializable {
 
     public void setIpaddress(String ipaddress) {
         this.ipaddress = ipaddress;
+    }
+
+    public String getWktArea() {
+        return wktArea;
+    }
+
+    public void setWktArea(String wktArea) {
+        this.wktArea = wktArea;
     }
 
     @Override
