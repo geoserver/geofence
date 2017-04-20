@@ -5,6 +5,7 @@
 
 package org.geoserver.geofence.services.dto;
 
+import org.geoserver.geofence.core.model.LayerBoundinBox;
 import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.core.model.enums.GrantType;
 
@@ -33,6 +34,7 @@ public class ShortRule implements Serializable {
     private String request;
     private String workspace;
     private String layer;
+    private LayerBoundinBox bbox;
     private String ipaddress;
     private String wktArea;
     private GrantType access;
@@ -58,6 +60,10 @@ public class ShortRule implements Serializable {
 
         if ((rule.getLayerDetails() != null) && (rule.getLayerDetails().getArea() != null)) {
             setWktArea(rule.getLayerDetails().getArea().toString());
+        }
+
+        if (rule.getBbox() != null) {
+            setBbox(rule.getBbox());
         }
 
         setService(rule.getService());
@@ -179,6 +185,14 @@ public class ShortRule implements Serializable {
 
     public void setWktArea(String wktArea) {
         this.wktArea = wktArea;
+    }
+
+    public LayerBoundinBox getBbox() {
+        return bbox;
+    }
+
+    public void setBbox(LayerBoundinBox bbox) {
+        this.bbox = bbox;
     }
 
     @Override

@@ -7,33 +7,20 @@ package org.geoserver.geofence.core.model;
 
 import org.geoserver.geofence.core.model.adapter.FKGSInstanceAdapter;
 import org.geoserver.geofence.core.model.enums.GrantType;
-import java.io.Serializable;
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
 
+import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.Serializable;
+
 /**
  * A Rule expresses if a given combination of request access is allowed or not.
- * <P>
+ * <p>
  * In a given Rule, you may specify a precise combination of filters or a general
  * behavior. <BR>
  * Filtering can be done on <UL>
@@ -48,7 +35,7 @@ import org.hibernate.annotations.Index;
  * <P><B>Example</B>: In order to allow access to every request to the WMS service in the instance GS1,
  * you will need to create a Rule, by only setting Service=WMS and Instance=GS1,
  * leaving the other fields to <TT>null</TT>.
- * <P>
+ * <p>
  * When an access has to be checked for filtering, all the matching rules are read;
  * they are then evaluated according to their priority: the first rule found having
  * accessType <TT><B>{@link GrantType#ALLOW}</B></TT> or <TT><B>{@link GrantType#DENY}</B></TT> wins,
@@ -65,18 +52,22 @@ import org.hibernate.annotations.Index;
         @UniqueConstraint(columnNames = {"username", "rolename", "instance_id", "service", "request", "workspace", "layer"})})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Rule")
 @XmlRootElement(name = "Rule")
-@XmlType(propOrder={"id","priority","username","rolename","instance","addressRange","service","request","workspace","layer","access","layerDetails","ruleLimits"})
+@XmlType(propOrder = {"id", "priority", "username", "rolename", "instance", "addressRange", "service", "request", "workspace", "layer", "access", "layerDetails", "ruleLimits"})
 public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeProvider {
 
     private static final long serialVersionUID = -5127129225384707164L;
 
-    /** The id. */
+    /**
+     * The id.
+     */
     @Id
     @GeneratedValue
     @Column
     private Long id;
 
-    /** Lower numbers have higher priority */
+    /**
+     * Lower numbers have higher priority
+     */
     @Column(nullable = false)
     @Index(name = "idx_rule_priority")
     private long priority;
@@ -97,9 +88,9 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
 
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name="low", column=@Column(name="ip_low")),
-        @AttributeOverride(name="high", column=@Column(name="ip_high")),
-        @AttributeOverride(name="size", column=@Column(name="ip_size"))   })
+            @AttributeOverride(name = "low", column = @Column(name = "ip_low")),
+            @AttributeOverride(name = "high", column = @Column(name = "ip_high")),
+            @AttributeOverride(name = "size", column = @Column(name = "ip_size"))})
     private IPAddressRange addressRange;
 
     @Column
@@ -113,6 +104,9 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
     @Column
     @Index(name = "idx_rule_layer")
     private String layer;
+
+    @Embedded
+    private LayerBoundinBox bbox;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "grant_type", nullable = false)
@@ -130,7 +124,7 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
     }
 
     public Rule(long priority, String username, String rolename, GSInstance instance, IPAddressRange addressRange,
-                               String service, String request, String workspace, String layer, GrantType access) {
+            String service, String request, String workspace, String layer, GrantType access) {
         this.priority = priority;
         this.username = username;
         this.rolename = rolename;
@@ -225,6 +219,20 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
         this.workspace = workspace;
     }
 
+    /**
+     * @return the bbox
+     */
+    public LayerBoundinBox getBbox() {
+        return bbox;
+    }
+
+    /**
+     * @param bbox the bbox to set
+     */
+    public void setBbox(LayerBoundinBox bbox) {
+        this.bbox = bbox;
+    }
+
     public GrantType getAccess() {
         return access;
     }
@@ -238,8 +246,8 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
     }
 
     /**
-     * @deprecated  This setter is only used by hibernate, should not be called by the user.
      * @param ruleLimits
+     * @deprecated This setter is only used by hibernate, should not be called by the user.
      */
     public void setRuleLimits(RuleLimits ruleLimits) {
         this.ruleLimits = ruleLimits;
@@ -293,15 +301,19 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
             sb.append(" l:").append(layer);
         }
 
+        if (bbox != null) {
+            sb.append(" bbox : ").append(bbox.toString());
+        }
+
         sb.append(" acc:").append(access);
         sb.append(']');
 
         return sb.toString();
 
     }
-    
+
     private static String prepare(String s) {
-        if(s==null)
+        if (s == null)
             return "(null)";
         else if (s.isEmpty())
             return "(empty)";

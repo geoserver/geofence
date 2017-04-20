@@ -544,6 +544,9 @@ public class RESTRuleServiceImpl
         if (StringUtils.isNotBlank(in.getIpaddress())) {
             rule.setAddressRange(new IPAddressRange(in.getIpaddress()));
         }
+        if (in.getBbox() != null) {
+            rule.setBbox(in.getBbox());
+        }
 
         rule.setService(in.getService());
         rule.setRequest(in.getRequest());
