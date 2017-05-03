@@ -106,6 +106,19 @@ public class RESTRuleServiceImpl
     }
 
     @Override
+    public void shift(Long priority) throws BadRequestRestEx, NotFoundRestEx {
+        try{
+            if(priority == null || priority < 0)
+                throw new BadRequestRestEx("Bad Priority");
+            ruleAdminService.shift(priority,1);
+
+        } catch (GeoFenceRestEx ex) {
+            // already handled
+            throw ex;
+        }
+    }
+
+    @Override
     public void update(Long id, RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
 
         try {

@@ -30,6 +30,11 @@ public interface RESTRuleService {
     @Produces(MediaType.TEXT_PLAIN)
     Response insert(@Multipart("rule") RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx;
 
+    @PUT
+    @Path("/shift/{priority}")
+    @Produces(MediaType.APPLICATION_XML)
+    void shift(@PathParam("priority") Long priority) throws BadRequestRestEx, NotFoundRestEx;
+
     @GET
     @Path("/id/{id}")
     @Produces(MediaType.APPLICATION_XML)
