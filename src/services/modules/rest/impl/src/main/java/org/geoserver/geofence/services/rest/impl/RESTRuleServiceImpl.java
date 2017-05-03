@@ -111,9 +111,7 @@ public class RESTRuleServiceImpl
             if(priority == null || priority < 0)
                 throw new BadRequestRestEx("Bad Priority");
             Integer rows = new Integer(ruleAdminService.shift(priority,1));
-            System.out.println("####ROWS: "+rows);
             return Response.status(Status.CREATED).tag(rows.toString()).entity(rows).build();
-
         } catch (GeoFenceRestEx ex) {
             // already handled
             throw ex;
