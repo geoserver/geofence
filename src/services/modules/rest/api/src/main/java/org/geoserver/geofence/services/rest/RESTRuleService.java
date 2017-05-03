@@ -32,8 +32,8 @@ public interface RESTRuleService {
 
     @PUT
     @Path("/shift/{priority}")
-    @Produces(MediaType.APPLICATION_XML)
-    void shift(@PathParam("priority") Long priority) throws BadRequestRestEx, NotFoundRestEx;
+    @Produces(MediaType.TEXT_PLAIN)
+    Response shift(@PathParam("priority") Long priority) throws BadRequestRestEx, NotFoundRestEx;
 
     @GET
     @Path("/id/{id}")
