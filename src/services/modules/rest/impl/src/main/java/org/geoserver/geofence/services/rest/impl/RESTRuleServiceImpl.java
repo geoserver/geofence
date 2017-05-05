@@ -107,11 +107,25 @@ public class RESTRuleServiceImpl
 
     @Override
     public Response shift(Long priority) throws BadRequestRestEx, NotFoundRestEx {
-        try{
-            if(priority == null || priority < 0)
+        try {
+            if (priority == null || priority < 0)
                 throw new BadRequestRestEx("Bad Priority");
-            Integer rows = new Integer(ruleAdminService.shift(priority,1));
+            Integer rows = new Integer(ruleAdminService.shift(priority, 1));
             return Response.status(Status.CREATED).tag(rows.toString()).entity(rows).build();
+        } catch (GeoFenceRestEx ex) {
+            // already handled
+            throw ex;
+        }
+    }
+
+    @Override
+    public void swap(Long id1, Long id2) throws BadRequestRestEx, NotFoundRestEx {
+        try {
+            if (id1 == null || id1 < 0)
+                throw new BadRequestRestEx("Bad id1");
+            if (id2 == null || id2 < 0)
+                throw new BadRequestRestEx("Bad id2");
+            ruleAdminService.swap(id1, id2);
         } catch (GeoFenceRestEx ex) {
             // already handled
             throw ex;
