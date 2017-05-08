@@ -136,9 +136,9 @@ public class RESTRuleServiceImpl
     public void update(Long id, RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
 
         try {
-            if ((rule.getGrant() != null)) {
+/*            if ((rule.getGrant() != null)) {
                 throw new BadRequestRestEx("GrantType can't be updated");
-            }
+            }*/
 
             if ((rule.getPosition() != null)) {
                 throw new BadRequestRestEx("Position can't be updated");
@@ -147,6 +147,11 @@ public class RESTRuleServiceImpl
             Rule old = ruleAdminService.get(id);
             boolean isRuleUpdated = false;
             boolean isDetailUpdated = false;
+
+            if (rule.getGrant() != null) {
+                old.setAccess(rule.getGrant());
+                isRuleUpdated = true;
+            }
 
             if (rule.getUsername() != null) {
                 old.setUsername(rule.getUsername().isEmpty() ? null : rule.getUsername());
