@@ -62,6 +62,10 @@ public class ShortRule implements Serializable {
             setWktArea(rule.getLayerDetails().getArea().toString());
         }
 
+        if ((rule.getRuleLimits() != null) && (rule.getRuleLimits().getAllowedArea() != null)) {
+            setWktArea(rule.getRuleLimits().getAllowedArea().toString());
+        }
+
         if (rule.getBbox() != null) {
             setBbox(rule.getBbox());
         }
