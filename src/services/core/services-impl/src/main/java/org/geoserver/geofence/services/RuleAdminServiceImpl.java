@@ -7,6 +7,8 @@ package org.geoserver.geofence.services;
 
 import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.core.dao.LayerDetailsDAO;
 import org.geoserver.geofence.core.dao.RuleDAO;
 import org.geoserver.geofence.core.dao.RuleLimitsDAO;
@@ -18,27 +20,17 @@ import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.ShortRule;
+import org.geoserver.geofence.services.exception.BadRequestServiceEx;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
-import org.geoserver.geofence.services.exception.BadRequestServiceEx;
-import org.geoserver.geofence.services.exception.NotFoundServiceEx;
-
-import static org.geoserver.geofence.services.util.FilterUtils.addCriteria;
-import static org.geoserver.geofence.services.util.FilterUtils.addFixedCriteria;
-import static org.geoserver.geofence.services.util.FilterUtils.addFixedStringCriteria;
-import static org.geoserver.geofence.services.util.FilterUtils.addPagingConstraints;
-import static org.geoserver.geofence.services.util.FilterUtils.addStringCriteria;
+import static org.geoserver.geofence.services.util.FilterUtils.*;
 
 /**
- *
- *
  * <B>Note:</B> <TT>service</TT> and <TT>request</TT> params are usually set by
  * the client, and by OGC specs they are not case sensitive, so we're going to
  * turn all of them uppercase. See also {@link RuleReaderServiceImpl}.
@@ -74,11 +66,20 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     @Override
     public long update(Rule rule) throws NotFoundServiceEx {
         Rule orig = ruleDAO.find(rule.getId());
+
         if (orig == null) {
             throw new NotFoundServiceEx("Rule not found", rule.getId());
         }
-
         sanitizeFields(rule);
+        if (orig.getAccess().equals(GrantType.ALLOW) && rule.getAccess().equals(GrantType.LIMIT)) {
+            rule.setLayerDetails(null);
+            detailsDAO.remove(orig.getLayerDetails());
+        }
+
+        if (orig.getAccess().equals(GrantType.LIMIT) &&
+                (rule.getAccess().equals(GrantType.ALLOW) || rule.getAccess().equals(GrantType.DENY)))
+            limitsDAO.remove(orig.getRuleLimits());
+
         ruleDAO.merge(rule);
         return orig.getId();
     }
@@ -86,7 +87,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     /**
      * Shifts the priority of the rules having <TT>priority &gt;= priorityStart</TT>
      * down by <TT>offset</TT>.
-     * <P/>
+     * <p/>
      * The shift will not be performed if there are no Rules with priority: <BR/>
      * <tt> startPriority &lt;= priority &lt; startPriority + offset </TT>
      *
@@ -148,11 +149,11 @@ public class RuleAdminServiceImpl implements RuleAdminService {
         searchCriteria.addFilter(Filter.equal("username", username));
 
         List<Rule> list = ruleDAO.search(searchCriteria);
-        if(LOGGER.isInfoEnabled())
-            LOGGER.info("Removing "+list.size()+" rules for user " + username);
+        if (LOGGER.isInfoEnabled())
+            LOGGER.info("Removing " + list.size() + " rules for user " + username);
         for (Rule rule : list) {
-            if(LOGGER.isInfoEnabled())
-                LOGGER.info("Removing rule for user " + username+": " + rule);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info("Removing rule for user " + username + ": " + rule);
             ruleDAO.remove(rule);
         }
     }
@@ -164,8 +165,8 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
         List<Rule> list = ruleDAO.search(searchCriteria);
         for (Rule rule : list) {
-            if(LOGGER.isInfoEnabled())
-                LOGGER.info("Removing rule for role " + rolename+": " + rule);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info("Removing rule for role " + rolename + ": " + rule);
             ruleDAO.remove(rule);
         }
     }
@@ -177,8 +178,8 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
         List<Rule> list = ruleDAO.search(searchCriteria);
         for (Rule rule : list) {
-            if(LOGGER.isInfoEnabled())
-                LOGGER.info("Removing rule for instance " + instanceId+": " + rule);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info("Removing rule for instance " + instanceId + ": " + rule);
             ruleDAO.remove(rule);
         }
     }
@@ -244,10 +245,10 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     public ShortRule getRule(RuleFilter filter) throws BadRequestServiceEx {
         Search searchCriteria = buildFixedRuleSearch(filter);
         List<Rule> found = ruleDAO.search(searchCriteria);
-        if(found.isEmpty())
+        if (found.isEmpty())
             return null;
 
-        if(found.size() > 1) {
+        if (found.size() > 1) {
             LOGGER.error("Unexpected rule count for filter " + filter + " : " + found);
         }
 
@@ -269,10 +270,10 @@ public class RuleAdminServiceImpl implements RuleAdminService {
         Search searchCriteria = new Search(Rule.class);
         searchCriteria.addFilter(Filter.equal("priority", priority));
         List<Rule> found = ruleDAO.search(searchCriteria);
-        if(found.isEmpty())
+        if (found.isEmpty())
             return null;
 
-        if(found.size() > 1) {
+        if (found.size() > 1) {
             LOGGER.error("Unexpected rule count for priority " + priority + " : " + found);
         }
 
@@ -316,7 +317,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     private Search buildRuleSearch(RuleFilter filter) {
         Search searchCriteria = new Search(Rule.class);
 
-        if(filter != null) {
+        if (filter != null) {
             addStringCriteria(searchCriteria, "username", filter.getUser());
             addStringCriteria(searchCriteria, "rolename", filter.getRole());
             addCriteria(searchCriteria, "instance", filter.getInstance());
@@ -335,7 +336,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     private Search buildFixedRuleSearch(RuleFilter filter) {
         Search searchCriteria = new Search(Rule.class);
 
-        if(filter != null) {
+        if (filter != null) {
             addFixedStringCriteria(searchCriteria, "username", filter.getUser());
             addFixedStringCriteria(searchCriteria, "rolename", filter.getRole());
             addFixedCriteria(searchCriteria, "instance", filter.getInstance());
@@ -350,7 +351,6 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     }
 
 
-
     // =========================================================================
     // Limits
     // =========================================================================
@@ -358,18 +358,18 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     @Override
     public void setLimits(Long ruleId, RuleLimits limits) {
         Rule rule = ruleDAO.find(ruleId);
-        if(rule == null)
+        if (rule == null)
             throw new NotFoundServiceEx("Rule not found");
 
-        if(rule.getAccess() != GrantType.LIMIT && limits != null)
+        if (rule.getAccess() != GrantType.LIMIT && limits != null)
             throw new BadRequestServiceEx("Rule is not of LIMIT type");
 
         // remove old limits if any
-        if(rule.getRuleLimits() != null) {
+        if (rule.getRuleLimits() != null) {
             limitsDAO.remove(rule.getRuleLimits());
         }
 
-        if(limits != null) {
+        if (limits != null) {
             limits.setId(ruleId);
             limits.setRule(rule);
             limitsDAO.persist(limits);
@@ -388,17 +388,16 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 //        throw new UnsupportedOperationException("Not supported yet.");
 //    }
 
-
     @Override
     public void setDetails(Long ruleId, LayerDetails detailsNew) {
         Rule rule = ruleDAO.find(ruleId);
-        if(rule == null)
+        if (rule == null)
             throw new NotFoundServiceEx("Rule not found");
 
-        if(rule.getLayer() == null && detailsNew != null)
+        if (rule.getLayer() == null && detailsNew != null)
             throw new BadRequestServiceEx("Rule does not refer to a fixed layer");
 
-        if(rule.getAccess() != GrantType.ALLOW && detailsNew != null)
+        if (rule.getAccess() != GrantType.ALLOW && detailsNew != null)
             throw new BadRequestServiceEx("Rule is not of ALLOW type");
 
 //        final Map<String, String> oldProps;
@@ -406,33 +405,33 @@ public class RuleAdminServiceImpl implements RuleAdminService {
         final Set<LayerAttribute> oldAttrs;
 
         // remove old details if any
-        if(rule.getLayerDetails() != null) {
+        if (rule.getLayerDetails() != null) {
 //            oldProps = detailsDAO.getCustomProps(ruleId);
             oldStyles = detailsDAO.getAllowedStyles(ruleId);
-            oldAttrs  = rule.getLayerDetails().getAttributes();
+            oldAttrs = rule.getLayerDetails().getAttributes();
             detailsDAO.remove(rule.getLayerDetails());
-        } else{
+        } else {
 //            oldProps = null;
             oldStyles = null;
             oldAttrs = null;
         }
 
         rule = ruleDAO.find(ruleId);
-        if(rule.getLayerDetails() != null)
+        if (rule.getLayerDetails() != null)
             throw new IllegalStateException("LayerDetails should be null");
 
-        if(detailsNew != null) {
+        if (detailsNew != null) {
 
-            if(detailsNew.getAttributes() == null) {
-                if( oldStyles != null) {
+            if (detailsNew.getAttributes() == null) {
+                if (oldStyles != null) {
                     LOGGER.info("Restoring " + oldAttrs.size() + " old attribs");
                     detailsNew.setAttributes(oldAttrs);
                 } else {
                     // no new, no old, nothing to do
                 }
             } else {
-                if(LOGGER.isDebugEnabled()) {
-                    if(oldAttrs!=null && oldAttrs.equals(detailsNew.getAttributes())) {
+                if (LOGGER.isDebugEnabled()) {
+                    if (oldAttrs != null && oldAttrs.equals(detailsNew.getAttributes())) {
                         LOGGER.debug("New attribs are the same as old ones:" + detailsNew.getAttributes());
                     } else
                         LOGGER.debug("Setting " + detailsNew.getAttributes().size() + " new attrs " + detailsNew.getAttributes());
@@ -453,13 +452,13 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 //                detailsDAO.setCustomProps(ruleId, newProps);
 //            }
 
-            if(detailsNew.getAllowedStyles() != null) {
+            if (detailsNew.getAllowedStyles() != null) {
                 LOGGER.info("Setting " + detailsNew.getAllowedStyles().size() + " new styles");
                 Set<String> newStyles = new HashSet<String>();
                 newStyles.addAll(detailsNew.getAllowedStyles());
                 detailsDAO.setAllowedStyles(ruleId, newStyles);
-            } else if(oldStyles != null) {  // no new style list, check for old list to restore
-                LOGGER.info("Restoring " + oldStyles.size() + " styles from older LayerDetails (id:"+ruleId+")");
+            } else if (oldStyles != null) {  // no new style list, check for old list to restore
+                LOGGER.info("Restoring " + oldStyles.size() + " styles from older LayerDetails (id:" + ruleId + ")");
                 //cannot reuse the same Map returned by Hibernate, since it is detached now.
                 Set<String> newStyles = new HashSet<String>();
                 newStyles.addAll(oldStyles);
@@ -474,10 +473,10 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     @Override
     public void setAllowedStyles(Long ruleId, Set<String> styles) {
         Rule rule = ruleDAO.find(ruleId);
-        if(rule == null)
+        if (rule == null)
             throw new NotFoundServiceEx("Rule not found");
 
-        if(rule.getLayerDetails() == null) {
+        if (rule.getLayerDetails() == null) {
             throw new NotFoundServiceEx("Rule has no details associated");
         }
 
@@ -487,10 +486,10 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     @Override
     public Set<String> getAllowedStyles(Long ruleId) {
         Rule rule = ruleDAO.find(ruleId);
-        if(rule == null)
+        if (rule == null)
             throw new NotFoundServiceEx("Rule not found");
 
-        if(rule.getLayerDetails() == null) {
+        if (rule.getLayerDetails() == null) {
             throw new NotFoundServiceEx("Rule has no details associated");
         }
         return detailsDAO.getAllowedStyles(ruleId);

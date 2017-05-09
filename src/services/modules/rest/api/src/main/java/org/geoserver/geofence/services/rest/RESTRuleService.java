@@ -9,10 +9,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
 import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
 import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
-import org.geoserver.geofence.services.rest.model.RESTInputRule;
-import org.geoserver.geofence.services.rest.model.RESTOutputRule;
-import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
-import org.geoserver.geofence.services.rest.model.RESTShortRuleList;
+import org.geoserver.geofence.services.rest.model.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -50,6 +47,12 @@ public interface RESTRuleService {
     @Produces(MediaType.APPLICATION_XML)
     void update(@PathParam("id") Long id,
             @Multipart("rule") RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx;
+
+    @PUT
+    @Path("/setlimits/{id}")
+    @Produces(MediaType.APPLICATION_XML)
+    void setLimits(@PathParam("id") Long id,
+            @Multipart("constrains") RESTLayerConstraints restLayerConstraints) throws BadRequestRestEx, NotFoundRestEx;
 
     @DELETE
     @Path("/id/{id}")

@@ -12,10 +12,7 @@ import com.vividsolutions.jts.io.WKTReader;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.geoserver.geofence.core.model.IPAddressRange;
-import org.geoserver.geofence.core.model.LayerAttribute;
-import org.geoserver.geofence.core.model.LayerDetails;
-import org.geoserver.geofence.core.model.Rule;
+import org.geoserver.geofence.core.model.*;
 import org.geoserver.geofence.core.model.enums.CatalogMode;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
 import org.geoserver.geofence.services.dto.RuleFilter;
@@ -129,6 +126,32 @@ public class RESTRuleServiceImpl
         } catch (GeoFenceRestEx ex) {
             // already handled
             throw ex;
+        }
+    }
+
+    @Override
+    public void setLimits(Long id, RESTLayerConstraints restLayerConstraints) throws BadRequestRestEx, NotFoundRestEx {
+        if(id == null)
+            throw new BadRequestRestEx("Rule Id is mandatory");
+        if(restLayerConstraints == null)
+            throw new BadRequestRestEx("RestLayerConstraints is mandatory");
+
+        try{
+        RuleLimits ruleLimits = new RuleLimits();
+        ruleLimits.setCatalogMode(restLayerConstraints.getCatalogMode());
+        Rule rule = ruleAdminService.get(id);
+        ruleLimits.setRule(rule);
+        ruleLimits.setCatalogMode(restLayerConstraints.getCatalogMode());
+
+        WKTReader wktReader = new WKTReader();
+        Geometry geometry = wktReader.read(restLayerConstraints.getRestrictedAreaWkt());
+        MultiPolygon the_geom = (MultiPolygon) geometry;
+        ruleLimits.setAllowedArea(the_geom);
+        ruleAdminService.setLimits(id,ruleLimits);
+        } catch (NotFoundServiceEx e) {
+            throw new NotFoundRestEx(e.getMessage());
+        } catch (ParseException e) {
+            throw new BadRequestRestEx("Error parsing WKT:" + e.getMessage());
         }
     }
 
