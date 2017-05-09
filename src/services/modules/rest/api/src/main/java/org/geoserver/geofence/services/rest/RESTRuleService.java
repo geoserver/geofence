@@ -35,6 +35,11 @@ public interface RESTRuleService {
     @Produces(MediaType.TEXT_PLAIN)
     Response shift(@PathParam("priority") Long priority) throws BadRequestRestEx, NotFoundRestEx;
 
+    @PUT
+    @Path("/swap")
+    @Produces(MediaType.TEXT_PLAIN)
+    void swap(@QueryParam("id1") Long idDown, @QueryParam("id2") Long idUp) throws BadRequestRestEx, NotFoundRestEx;
+
     @GET
     @Path("/id/{id}")
     @Produces(MediaType.APPLICATION_XML)

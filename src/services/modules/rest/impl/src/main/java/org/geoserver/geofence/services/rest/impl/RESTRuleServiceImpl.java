@@ -107,11 +107,25 @@ public class RESTRuleServiceImpl
 
     @Override
     public Response shift(Long priority) throws BadRequestRestEx, NotFoundRestEx {
-        try{
-            if(priority == null || priority < 0)
+        try {
+            if (priority == null || priority < 0)
                 throw new BadRequestRestEx("Bad Priority");
-            Integer rows = new Integer(ruleAdminService.shift(priority,1));
+            Integer rows = new Integer(ruleAdminService.shift(priority, 1));
             return Response.status(Status.CREATED).tag(rows.toString()).entity(rows).build();
+        } catch (GeoFenceRestEx ex) {
+            // already handled
+            throw ex;
+        }
+    }
+
+    @Override
+    public void swap(Long id1, Long id2) throws BadRequestRestEx, NotFoundRestEx {
+        try {
+            if (id1 == null || id1 < 0)
+                throw new BadRequestRestEx("Bad id1");
+            if (id2 == null || id2 < 0)
+                throw new BadRequestRestEx("Bad id2");
+            ruleAdminService.swap(id1, id2);
         } catch (GeoFenceRestEx ex) {
             // already handled
             throw ex;
@@ -122,9 +136,9 @@ public class RESTRuleServiceImpl
     public void update(Long id, RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
 
         try {
-            if ((rule.getGrant() != null)) {
+/*            if ((rule.getGrant() != null)) {
                 throw new BadRequestRestEx("GrantType can't be updated");
-            }
+            }*/
 
             if ((rule.getPosition() != null)) {
                 throw new BadRequestRestEx("Position can't be updated");
@@ -133,6 +147,11 @@ public class RESTRuleServiceImpl
             Rule old = ruleAdminService.get(id);
             boolean isRuleUpdated = false;
             boolean isDetailUpdated = false;
+
+            if (rule.getGrant() != null) {
+                old.setAccess(rule.getGrant());
+                isRuleUpdated = true;
+            }
 
             if (rule.getUsername() != null) {
                 old.setUsername(rule.getUsername().isEmpty() ? null : rule.getUsername());
