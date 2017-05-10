@@ -71,10 +71,8 @@ public class RuleAdminServiceImpl implements RuleAdminService {
             throw new NotFoundServiceEx("Rule not found", rule.getId());
         }
         sanitizeFields(rule);
-        if (orig.getAccess().equals(GrantType.ALLOW) && rule.getAccess().equals(GrantType.LIMIT)) {
-            rule.setLayerDetails(null);
+        if (orig.getAccess().equals(GrantType.ALLOW) && rule.getAccess().equals(GrantType.LIMIT))
             detailsDAO.remove(orig.getLayerDetails());
-        }
 
         if (orig.getAccess().equals(GrantType.LIMIT) &&
                 (rule.getAccess().equals(GrantType.ALLOW) || rule.getAccess().equals(GrantType.DENY)))

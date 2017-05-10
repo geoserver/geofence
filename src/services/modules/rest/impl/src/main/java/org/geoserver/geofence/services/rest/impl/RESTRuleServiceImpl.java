@@ -131,23 +131,27 @@ public class RESTRuleServiceImpl
 
     @Override
     public void setLimits(Long id, RESTLayerConstraints restLayerConstraints) throws BadRequestRestEx, NotFoundRestEx {
-        if(id == null)
+        if (id == null)
             throw new BadRequestRestEx("Rule Id is mandatory");
-        if(restLayerConstraints == null)
+        if (restLayerConstraints == null)
             throw new BadRequestRestEx("RestLayerConstraints is mandatory");
 
-        try{
-        RuleLimits ruleLimits = new RuleLimits();
-        ruleLimits.setCatalogMode(restLayerConstraints.getCatalogMode());
-        Rule rule = ruleAdminService.get(id);
-        ruleLimits.setRule(rule);
-        ruleLimits.setCatalogMode(restLayerConstraints.getCatalogMode());
+        try {
+            RuleLimits ruleLimits = new RuleLimits();
+            ruleLimits.setCatalogMode(restLayerConstraints.getCatalogMode());
+            Rule rule = ruleAdminService.get(id);
+            RuleLimits old = rule.getRuleLimits();
+            ruleLimits.setRule(rule);
 
-        WKTReader wktReader = new WKTReader();
-        Geometry geometry = wktReader.read(restLayerConstraints.getRestrictedAreaWkt());
-        MultiPolygon the_geom = (MultiPolygon) geometry;
-        ruleLimits.setAllowedArea(the_geom);
-        ruleAdminService.setLimits(id,ruleLimits);
+            if (restLayerConstraints.getRestrictedAreaWkt() != null) {
+                WKTReader wktReader = new WKTReader();
+                Geometry geometry = wktReader.read(restLayerConstraints.getRestrictedAreaWkt());
+                MultiPolygon the_geom = (MultiPolygon) geometry;
+                ruleLimits.setAllowedArea(the_geom);
+            }else
+                ruleLimits.setAllowedArea(old.getAllowedArea());
+
+            ruleAdminService.setLimits(id, ruleLimits);
         } catch (NotFoundServiceEx e) {
             throw new NotFoundRestEx(e.getMessage());
         } catch (ParseException e) {
@@ -576,6 +580,11 @@ public class RESTRuleServiceImpl
 
             constraints.setType(details.getType());
 
+            out.setConstraints(constraints);
+        }
+        else if( rule.getRuleLimits() != null){
+            RESTLayerConstraints constraints = new RESTLayerConstraints();
+            constraints.setCatalogMode(rule.getRuleLimits().getCatalogMode());
             out.setConstraints(constraints);
         }
 
