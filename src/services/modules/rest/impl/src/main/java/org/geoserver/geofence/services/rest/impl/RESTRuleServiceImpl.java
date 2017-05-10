@@ -582,7 +582,7 @@ public class RESTRuleServiceImpl
 
             out.setConstraints(constraints);
         }
-        else if( rule.getRuleLimits() != null){
+        else if( rule.getRuleLimits().getCatalogMode() != null){
             RESTLayerConstraints constraints = new RESTLayerConstraints();
             constraints.setCatalogMode(rule.getRuleLimits().getCatalogMode());
             out.setConstraints(constraints);
