@@ -5,8 +5,8 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
-import java.util.List;
-
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
@@ -14,22 +14,16 @@ import org.geoserver.geofence.services.dto.ShortGroup;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import org.geoserver.geofence.services.rest.RESTUserGroupService;
-import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
-import org.geoserver.geofence.services.rest.exception.ConflictRestEx;
-import org.geoserver.geofence.services.rest.exception.GeoFenceRestEx;
-import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
-import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
+import org.geoserver.geofence.services.rest.exception.*;
 import org.geoserver.geofence.services.rest.model.RESTInputGroup;
 import org.geoserver.geofence.services.rest.model.config.RESTFullUserGroupList;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import java.util.List;
 
 
 /**
- *
  * @author ETj (etj at geo-solutions.it)
  */
 public class RESTUserGroupServiceImpl
@@ -48,6 +42,14 @@ public class RESTUserGroupServiceImpl
     @Override
     public long count(String nameLike) {
         return userGroupAdminService.getCount(nameLike);
+    }
+
+    /**
+     * @return {@link Long}
+     */
+    @Override
+    public Long count() {
+        return userGroupAdminService.getCount(null);
     }
 
     @Override
@@ -81,8 +83,8 @@ public class RESTUserGroupServiceImpl
             throw new InternalErrorRestEx(ex.getMessage());
         }
 
-        if(exists)
-            throw new ConflictRestEx("Role '"+userGroup.getName()+"' already exists");
+        if (exists)
+            throw new ConflictRestEx("Role '" + userGroup.getName() + "' already exists");
 
         // ok: insert it
         try {
@@ -110,15 +112,15 @@ public class RESTUserGroupServiceImpl
             ShortGroup newGroup = new ShortGroup();
             newGroup.setId(old.getId());
 
-            if ( (group.getExtId() != null) ) {
+            if ((group.getExtId() != null)) {
                 throw new BadRequestRestEx("ExtId can't be updated");
             }
 
-            if ( (group.getName() != null) ) {
+            if ((group.getName() != null)) {
                 throw new BadRequestRestEx("Name can't be updated");
             }
 
-            if ( group.isEnabled() != null ) {
+            if (group.isEnabled() != null) {
                 newGroup.setEnabled(group.isEnabled());
             }
 
@@ -142,21 +144,21 @@ public class RESTUserGroupServiceImpl
     @Override
     public Response delete(String name, boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
-            if ( cascade ) {
+            if (cascade) {
                 ruleAdminService.deleteRulesByRole(name);
             } else {
                 RuleFilter filter = new RuleFilter(SpecialFilterType.ANY);
                 filter.setRole(name);
                 filter.getUser().setIncludeDefault(false);
                 long cnt = ruleAdminService.count(filter);
-                if ( cnt > 0 ) {
+                if (cnt > 0) {
                     throw new ConflictRestEx("Existing rules reference the role " + name);
                 }
             }
 
             UserGroup role = userGroupAdminService.get(name);
 
-            if ( ! userGroupAdminService.delete(role.getId())) {
+            if (!userGroupAdminService.delete(role.getId())) {
                 LOGGER.warn("Role not found: " + name);
                 throw new NotFoundRestEx("Role not found: " + name);
             }

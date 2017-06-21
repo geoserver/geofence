@@ -8,11 +8,9 @@ package org.geoserver.geofence.services.rest.model;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.services.rest.model.util.IdName;
 
-import java.io.Serializable;
-
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
 
 /**
  * A compact representation of Rule
@@ -139,7 +137,7 @@ public class RESTOutputRule implements Serializable {
     }
 
 
-    @XmlAttribute
+//    @XmlAttribute
     public GrantType getGrant() {
         return grant;
     }

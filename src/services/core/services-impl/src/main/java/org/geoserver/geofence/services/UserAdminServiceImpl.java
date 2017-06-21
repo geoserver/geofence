@@ -6,21 +6,18 @@
 package org.geoserver.geofence.services;
 
 import com.googlecode.genericdao.search.Search;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.core.dao.GSUserDAO;
 import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.services.dto.ShortUser;
+import org.geoserver.geofence.services.exception.BadRequestServiceEx;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
-import org.geoserver.geofence.services.exception.BadRequestServiceEx;
-import org.geoserver.geofence.services.exception.NotFoundServiceEx;
-
 /**
- *
  * @author ETj (etj at geo-solutions.it)
  */
 public class UserAdminServiceImpl implements UserAdminService {
@@ -64,10 +61,10 @@ public class UserAdminServiceImpl implements UserAdminService {
         search.addFilterEqual("name", name);
         List<GSUser> users = userDAO.search(search);
 
-        if(users.isEmpty())
-            throw new NotFoundServiceEx("User not found  '"+ name + "'");
-        else if(users.size() > 1)
-            throw new IllegalStateException("Found more than one user with name '"+name+"'");
+        if (users.isEmpty())
+            throw new NotFoundServiceEx("User not found  '" + name + "'");
+        else if (users.size() > 1)
+            throw new IllegalStateException("Found more than one user with name '" + name + "'");
         else
             return users.get(0);
     }
@@ -77,7 +74,7 @@ public class UserAdminServiceImpl implements UserAdminService {
     public GSUser getFull(String name) throws NotFoundServiceEx {
 
         GSUser user = userDAO.getFull(name);
-        if(user == null)
+        if (user == null)
             throw new NotFoundServiceEx("User not found", name);
         return user;
     }
@@ -96,25 +93,25 @@ public class UserAdminServiceImpl implements UserAdminService {
     @Override
     public List<GSUser> getFullList(String nameLike, Integer page, Integer entries, boolean fetchGroups) throws BadRequestServiceEx {
 
-        if( (page != null && entries == null) || (page ==null && entries != null)) {
+        if ((page != null && entries == null) || (page == null && entries != null)) {
             throw new BadRequestServiceEx("Page and entries params should be declared together.");
         }
 
         Search searchCriteria = new Search(GSUser.class);
 
-        if(page != null) {
+        if (page != null) {
             searchCriteria.setMaxResults(entries);
             searchCriteria.setPage(page);
         }
 
-        if(fetchGroups) {
+        if (fetchGroups) {
             searchCriteria.addFetch("userGroups");
         }
 
         searchCriteria.addSortAsc("name");
 
-        if (nameLike != null) {
-            searchCriteria.addFilterILike("name", nameLike);
+        if ((nameLike != null) && !(nameLike.isEmpty())) {
+            searchCriteria.addFilterILike("name", "%".concat(nameLike).concat("%"));
         }
 
         List<GSUser> found = userDAO.search(searchCriteria);
@@ -130,7 +127,7 @@ public class UserAdminServiceImpl implements UserAdminService {
     public long getCount(String nameLike) {
         Search searchCriteria = new Search(GSUser.class);
 
-        if (nameLike != null) {
+        if ((nameLike != null) && !(nameLike.isEmpty())) {
             searchCriteria.addFilterILike("name", nameLike);
         }
 

@@ -5,24 +5,18 @@
 
 package org.geoserver.geofence.gui.server.gwt;
 
-import java.util.List;
-
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-
 import org.geoserver.geofence.gui.client.ApplicationException;
 import org.geoserver.geofence.gui.client.model.RuleModel;
-import org.geoserver.geofence.gui.client.model.data.LayerAttribUI;
-import org.geoserver.geofence.gui.client.model.data.LayerCustomProps;
-import org.geoserver.geofence.gui.client.model.data.LayerDetailsInfo;
-import org.geoserver.geofence.gui.client.model.data.LayerLimitsInfo;
-import org.geoserver.geofence.gui.client.model.data.LayerStyle;
+import org.geoserver.geofence.gui.client.model.data.*;
 import org.geoserver.geofence.gui.client.service.RulesManagerRemoteService;
 import org.geoserver.geofence.gui.server.service.IRulesManagerService;
 import org.geoserver.geofence.gui.spring.ApplicationContextUtil;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 
 // TODO: Auto-generated Javadoc
@@ -168,7 +162,7 @@ public class RulesManagerServiceImpl extends RemoteServiceServlet implements Rul
      * (non-Javadoc)
      *
      * @see
-     * org.geoserver.geofence.gui.client.service.RulesManagerRemoteService#getLayerDetailsInfo(
+     * org.geoserver.geofence.gui.client.service.RulesManagerRemoteService# etLayerDetailsInfo(
      * org.geoserver.geofence.gui.client.model.Rule)
      */
     public LayerDetailsInfo getLayerDetailsInfo(RuleModel rule) throws ApplicationException

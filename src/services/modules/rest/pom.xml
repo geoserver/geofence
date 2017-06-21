@@ -27,6 +27,7 @@
         <module>impl</module>
         <module>test</module>
         <module>client</module>
+        <module>geofence-rest-webapp</module>
     </modules>
  
 </project>

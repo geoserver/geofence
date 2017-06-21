@@ -5,16 +5,15 @@
 
 package org.geoserver.geofence.core.dao.impl;
 
-import java.util.List;
-
 import com.googlecode.genericdao.search.ISearch;
-
-import org.geoserver.geofence.core.dao.GSInstanceDAO;
-import org.geoserver.geofence.core.model.GSInstance;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.geoserver.geofence.core.dao.GSInstanceDAO;
+import org.geoserver.geofence.core.model.GSInstance;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -31,6 +30,11 @@ public class GSInstanceDAOImpl extends BaseDAO<GSInstance, Long> implements GSIn
     @Override
     public void persist(GSInstance... entities)
     {
+        Date now = new Date();
+        for (GSInstance instance : entities)
+        {
+            instance.setDateCreation(now);
+        }
         super.persist(entities);
     }
 

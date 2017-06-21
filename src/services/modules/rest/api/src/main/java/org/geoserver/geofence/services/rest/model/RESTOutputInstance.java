@@ -5,10 +5,10 @@
 
 package org.geoserver.geofence.services.rest.model;
 
-import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * A compact representation of UserGroup holding only the insertable/updatadable fields
@@ -24,7 +24,7 @@ public class RESTOutputInstance implements Serializable {
     private String name;
     private String description;
 
-    private String creationDate;
+    private Date creationDate;
 
     private String baseURL;
     private String username;
@@ -50,11 +50,11 @@ public class RESTOutputInstance implements Serializable {
         this.baseURL = baseURL;
     }
 
-    public String getCreationDate() {
+    public Date getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(String creationDate) {
+    public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
 

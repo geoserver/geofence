@@ -6,25 +6,23 @@
 package org.geoserver.geofence.services.rest.model;
 
 import org.geoserver.geofence.core.model.LayerAttribute;
+import org.geoserver.geofence.core.model.enums.CatalogMode;
 import org.geoserver.geofence.core.model.enums.LayerType;
 
-import java.util.Set;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Set;
 
 /**
- *
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "LayerConstraints")
-@XmlType(propOrder = {"type", "defaultStyle", "cqlFilterRead", "cqlFilterWrite", "restrictedAreaWkt",
-    "allowedStyles", "attributes"})
+@XmlType(propOrder = {"type", "catalogMode", "defaultStyle", "cqlFilterRead", "cqlFilterWrite", "restrictedAreaWkt",
+        "allowedStyles", "attributes"})
 public class RESTLayerConstraints {
 
     private LayerType type;
+    private CatalogMode catalogMode;
     private String defaultStyle;
     private String cqlFilterRead;
     private String cqlFilterWrite;
@@ -32,8 +30,8 @@ public class RESTLayerConstraints {
     private Set<String> allowedStyles;
     private Set<LayerAttribute> attributes;
 
-    @XmlElementWrapper(name = "allowedStyles")
-    @XmlElement(name = "style")
+    //    @XmlElementWrapper(name = "allowedStyles")
+//    @XmlElement(name = "style")
     public Set<String> getAllowedStyles() {
         return allowedStyles;
     }
@@ -42,8 +40,8 @@ public class RESTLayerConstraints {
         this.allowedStyles = allowedStyles;
     }
 
-    @XmlElementWrapper(name = "attributes")
-    @XmlElement(name = "attribute")
+    //    @XmlElementWrapper(name = "attributes")
+//    @XmlElement(name = "attribute")
     public Set<LayerAttribute> getAttributes() {
         return attributes;
     }
@@ -92,22 +90,32 @@ public class RESTLayerConstraints {
         this.type = type;
     }
 
+    public CatalogMode getCatalogMode() {
+        return catalogMode;
+    }
+
+    public void setCatalogMode(CatalogMode catalogMode) {
+        this.catalogMode = catalogMode;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append('[');
-        if(type != null)
+        if (type != null)
             sb.append("type:").append(type);
-        if(defaultStyle != null)
+        if (catalogMode != null)
+            sb.append("catalogMode : ").append(catalogMode);
+        if (defaultStyle != null)
             sb.append(" defStyle:").append(defaultStyle);
-        if(cqlFilterRead != null)
+        if (cqlFilterRead != null)
             sb.append(" cqlR:").append(cqlFilterRead);
-        if(cqlFilterWrite != null)
+        if (cqlFilterWrite != null)
             sb.append(" cqlW:").append(cqlFilterWrite);
-        if(restrictedAreaWkt != null)
+        if (restrictedAreaWkt != null)
             sb.append(" wkt:").append(restrictedAreaWkt);
-        if(allowedStyles != null)
+        if (allowedStyles != null)
             sb.append(" styles(").append(allowedStyles.size()).append("):").append(allowedStyles);
-        if(attributes != null)
+        if (attributes != null)
             sb.append(" attrs:").append(attributes);
         sb.append(']');
         return sb.toString();

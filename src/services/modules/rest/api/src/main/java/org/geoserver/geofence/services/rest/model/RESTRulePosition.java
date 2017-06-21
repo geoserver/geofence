@@ -5,17 +5,15 @@
 
 package org.geoserver.geofence.services.rest.model;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 public class RESTRulePosition {
 
     public enum RulePosition {
 
         fixedPriority,
         offsetFromTop,
-        offsetFromBottom
+        offsetFromBottom;
     }
-    
+
     private RulePosition position;
     private long value;
 
@@ -27,7 +25,7 @@ public class RESTRulePosition {
         this.value = value;
     }
 
-    @XmlAttribute
+//    @XmlAttribute
     public RulePosition getPosition() {
         return position;
     }
@@ -36,7 +34,7 @@ public class RESTRulePosition {
         this.position = position;
     }
 
-    @XmlAttribute
+//    @XmlAttribute
     public long getValue() {
         return value;
     }

@@ -6,17 +6,15 @@
 package org.geoserver.geofence.core.model;
 
 import org.geoserver.geofence.core.model.enums.AccessType;
-import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import java.io.Serializable;
 
 /**
  *
@@ -62,7 +60,7 @@ public class LayerAttribute implements Serializable, Cloneable {
         this.access = access;
     }
 
-    @XmlAttribute
+//    @XmlAttribute
     public AccessType getAccess() {
         return access;
     }

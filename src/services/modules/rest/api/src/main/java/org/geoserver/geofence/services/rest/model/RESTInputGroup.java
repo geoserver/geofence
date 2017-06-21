@@ -5,7 +5,6 @@
 
 package org.geoserver.geofence.services.rest.model;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -15,7 +14,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "userGroup")
-@XmlType(name="Group", propOrder = {"extId", "name"})
+@XmlType(name = "Group", propOrder = {"extId", "name", "enabled"})
 public class RESTInputGroup extends AbstractRESTPayload {
 
     private static final long serialVersionUID = -8410646966443187827L;
@@ -26,7 +25,6 @@ public class RESTInputGroup extends AbstractRESTPayload {
     public RESTInputGroup() {
     }
 
-    @XmlAttribute(name = "enabled")
     public Boolean isEnabled() {
         return enabled;
     }
@@ -55,9 +53,9 @@ public class RESTInputGroup extends AbstractRESTPayload {
     public String toString() {
         return getClass().getSimpleName()
                 + "["
-                + (extId!=null? " extid=" + extId : "")
-                + (name != null? " name=" + name : "")
-                + (enabled != null? (enabled? " enabled" : " disabled") : "")
+                + (extId != null ? " extid=" + extId : "")
+                + (name != null ? " name=" + name : "")
+                + (enabled != null ? (enabled ? " enabled" : " disabled") : "")
                 + ']';
     }
 }

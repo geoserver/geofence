@@ -6,6 +6,7 @@
 -->
 
 <beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:util="http://www.springframework.org/schema/util"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
 
@@ -18,11 +19,12 @@
             http://cxf.apache.org/jaxws                     http://cxf.apache.org/schemas/jaxws.xsd
             http://cxf.apache.org/jaxrs                     http://cxf.apache.org/schemas/jaxrs.xsd
             http://cxf.apache.org/core                      http://cxf.apache.org/schemas/core.xsd
-            http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+            http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-3.0.xsd
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd"
 
        default-autowire="byName">
 
-   <!-- === CXF ======================================================== -->
+    <!-- === CXF ======================================================== -->
 
     <!-- Load CXF modules from cxf.jar -->
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
@@ -66,27 +68,32 @@
 
     <jaxrs:server id="geofenceRESTUser" address="/users">
         <jaxrs:serviceBeans>
-          <ref bean="restUserService"/>
+            <ref bean="restUserService"/>
         </jaxrs:serviceBeans>
 
+        <jaxrs:providers>
+            <ref bean="jaxbXmlProvider"/>
+            <ref bean="jsonProvider"/>
+        </jaxrs:providers>
+
         <jaxrs:features>
-             <cxf:logging/>
+            <cxf:logging/>
         </jaxrs:features>
 
     </jaxrs:server>
 
     <jaxrs:server id="geofenceRESTUserGroup" address="/groups">
         <jaxrs:serviceBeans>
-          <ref bean="restUserGroupService"/>
+            <ref bean="restUserGroupService"/>
         </jaxrs:serviceBeans>
 
         <jaxrs:features>
-             <cxf:logging/>
+            <cxf:logging/>
         </jaxrs:features>
 
         <jaxrs:providers>
-           <ref bean="jaxbXmlProvider"/>
-           <ref bean="jsonProvider"/>
+            <ref bean="jaxbXmlProvider"/>
+            <ref bean="jsonProvider"/>
         </jaxrs:providers>
 
         <jaxrs:inInterceptors>
@@ -95,16 +102,16 @@
 
     <jaxrs:server id="geofenceRESTInstances" address="/instances">
         <jaxrs:serviceBeans>
-          <ref bean="restInstanceService"/>
+            <ref bean="restInstanceService"/>
         </jaxrs:serviceBeans>
 
         <jaxrs:features>
-             <cxf:logging/>
+            <cxf:logging/>
         </jaxrs:features>
 
         <jaxrs:providers>
-           <ref bean="jaxbXmlProvider"/>
-           <ref bean="jsonProvider"/>
+            <ref bean="jaxbXmlProvider"/>
+            <ref bean="jsonProvider"/>
         </jaxrs:providers>
 
         <jaxrs:inInterceptors>
@@ -113,16 +120,16 @@
 
     <jaxrs:server id="geofenceRESTRules" address="/rules">
         <jaxrs:serviceBeans>
-          <ref bean="restRuleService"/>
+            <ref bean="restRuleService"/>
         </jaxrs:serviceBeans>
 
         <jaxrs:features>
-             <cxf:logging/>
+            <cxf:logging/>
         </jaxrs:features>
 
         <jaxrs:providers>
-           <ref bean="jaxbXmlProvider"/>
-           <ref bean="jsonProvider"/>
+            <ref bean="jaxbXmlProvider"/>
+            <ref bean="jsonProvider"/>
         </jaxrs:providers>
 
         <jaxrs:inInterceptors>
@@ -131,47 +138,47 @@
 
     <jaxrs:server id="geofenceRESTAdminRules" address="/adminrules">
         <jaxrs:serviceBeans>
-          <ref bean="restAdminRuleService"/>
+            <ref bean="restAdminRuleService"/>
         </jaxrs:serviceBeans>
 
         <jaxrs:features>
-             <cxf:logging/>
+            <cxf:logging/>
         </jaxrs:features>
 
         <jaxrs:providers>
-           <ref bean="jaxbXmlProvider"/>
-           <ref bean="jsonProvider"/>
+            <ref bean="jaxbXmlProvider"/>
+            <ref bean="jsonProvider"/>
         </jaxrs:providers>
 
     </jaxrs:server>
 
     <jaxrs:server id="geofenceRESTConfig" address="/config">
         <jaxrs:serviceBeans>
-          <ref bean="restConfigService"/>
+            <ref bean="restConfigService"/>
         </jaxrs:serviceBeans>
 
         <jaxrs:features>
-             <cxf:logging/>
+            <cxf:logging/>
         </jaxrs:features>
 
         <jaxrs:providers>
-           <ref bean="jaxbXmlProvider"/>
-           <ref bean="jsonProvider"/>
+            <ref bean="jaxbXmlProvider"/>
+            <ref bean="jsonProvider"/>
         </jaxrs:providers>
 
     </jaxrs:server>
 
     <jaxrs:server id="geofenceRESTBatch" address="/batch">
         <jaxrs:serviceBeans>
-          <ref bean="restBatchService"/>
+            <ref bean="restBatchService"/>
         </jaxrs:serviceBeans>
 
         <jaxrs:features>
-             <cxf:logging/>
+            <cxf:logging/>
         </jaxrs:features>
 
         <jaxrs:providers>
-           <ref bean="jaxbXmlProvider"/>
+            <ref bean="jaxbXmlProvider"/>
         </jaxrs:providers>
 
     </jaxrs:server>
@@ -180,9 +187,17 @@
     <!-- === CXF Providers ==================================================-->
     <!-- ====================================================================-->
 
-    <bean id="jaxbXmlProvider" class="org.apache.cxf.jaxrs.provider.JAXBElementProvider"/>
-    
-    <bean id="jsonProvider" class="org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider"/>
+    <bean id="jaxbXmlProvider" class="org.apache.cxf.jaxrs.provider.JAXBElementProvider">
+        <property name="marshallerProperties" ref="propertiesMap"/>
+    </bean>
+
+    <util:map id="propertiesMap">
+        <entry key="jaxb.formatted.output">
+            <value type="java.lang.Boolean">true</value>
+        </entry>
+    </util:map>
+
+    <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider"/>
 
     <!-- ====================================================================-->
     <!-- === CXF Interceptors ===============================================-->

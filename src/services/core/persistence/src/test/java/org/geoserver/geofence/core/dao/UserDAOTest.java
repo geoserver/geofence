@@ -7,10 +7,11 @@ package org.geoserver.geofence.core.dao;
 
 import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.UserGroup;
+import org.junit.Test;
+
 import java.util.Set;
 
 import static org.junit.Assert.*;
-import org.junit.Test;
 
 /**
  *

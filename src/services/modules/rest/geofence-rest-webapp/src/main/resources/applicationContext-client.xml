@@ -1,0 +1,100 @@
+<!--
+/* (c) 2014-2016 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+
+       xmlns:cxf="http://cxf.apache.org/core"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+
+       xmlns:geofence="http://geosolutions.it/geofence"
+
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-3.0.xsd
+            http://cxf.apache.org/jaxws                     http://cxf.apache.org/schemas/jaxws.xsd
+            http://cxf.apache.org/jaxrs                     http://cxf.apache.org/schemas/jaxrs.xsd
+            http://cxf.apache.org/core                      http://cxf.apache.org/schemas/core.xsd"
+
+       default-autowire="byName">
+
+    <context:annotation-config/>
+
+    <!-- ================================================================ -->
+    <!-- === Externalize property override ============================== -->
+    <!-- ================================================================ -->
+
+    <bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="order" value="5"/>
+        <property name="locations">
+            <list>
+                <value>${geofence-ovr}</value>
+            </list>
+        </property>
+        <!-- you may override some properties here if needed -->
+        <!--
+        <property name="properties">
+            <props>
+                <prop key="dataSource-gb-ftp-server.jdbcUrl">jdbc:h2:/tmp/ftpusers</prop>
+                <prop key="dataSource-gb-users.jdbcUrl">jdbc:h2:/tmp/gbusers</prop>
+            </props>
+        </property>
+        -->
+    </bean>
+
+    <!-- ====================================================================-->
+
+    <!-- Load CXF modules from cxf.jar -->
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+
+    <bean id="geofence-global-configurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+
+        <property name="locations">
+            <list>
+                <value>classpath*:geofence-datasource.properties</value>
+                <value>classpath:geofence-externalize-aux.properties</value>
+                <value>classpath*:geofence-global.properties</value>
+                <value>classpath*:geofence-ldap.properties</value>
+            </list>
+        </property>
+        <property name="ignoreResourceNotFound" value="false"/>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath*:geofence-global-ovr.properties</value>
+                <value>file:${geofence.dir}/geofence-global-ovr.properties</value>
+            </list>
+        </property>
+        <property name="ignoreResourceNotFound" value="true"/>
+    </bean>
+
+    <!-- ====================================================================-->
+    <!-- Spring Remoting for GeoServer -->
+
+    <bean id="remoteRuleReaderProxy" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean"
+          lazy-init="true">
+
+        <property name="serviceUrl" value="http://localhost:8181/remoting/RuleReader"/>
+        <property name="serviceInterface" value="org.geoserver.geofence.services.RuleReaderService"/>
+    </bean>
+
+    <!-- ====================================================================-->
+    <!-- Enable message logging using the CXF logging feature -->
+
+    <cxf:bus>
+        <cxf:features>
+            <cxf:logging/>
+        </cxf:features>
+    </cxf:bus>
+
+</beans>

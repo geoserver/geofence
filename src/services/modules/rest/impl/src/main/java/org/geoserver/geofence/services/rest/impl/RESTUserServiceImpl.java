@@ -5,14 +5,8 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
-import org.geoserver.geofence.services.rest.exception.ConflictRestEx;
-import org.geoserver.geofence.services.rest.exception.GeoFenceRestEx;
-import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
-import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
-import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
-import java.util.List;
-
-
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.services.dto.RuleFilter;
@@ -20,23 +14,19 @@ import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import org.geoserver.geofence.services.rest.RESTUserService;
-import org.geoserver.geofence.services.rest.model.RESTInputUser;
-import org.geoserver.geofence.services.rest.model.RESTOutputUser;
-import org.geoserver.geofence.services.rest.model.RESTShortUser;
-import org.geoserver.geofence.services.rest.model.RESTShortUserList;
+import org.geoserver.geofence.services.rest.exception.*;
+import org.geoserver.geofence.services.rest.model.*;
 import org.geoserver.geofence.services.rest.model.util.IdName;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 /**
- *
  * @author ETj (etj at geo-solutions.it)
  */
 public class RESTUserServiceImpl
@@ -51,21 +41,21 @@ public class RESTUserServiceImpl
     @Override
     public Response delete(String username, boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
-            if ( cascade ) {
+            if (cascade) {
                 ruleAdminService.deleteRulesByUser(username);
             } else {
                 RuleFilter filter = new RuleFilter(SpecialFilterType.ANY);
                 filter.setUser(username);
                 filter.getUser().setIncludeDefault(false);
                 long cnt = ruleAdminService.count(filter);
-                if ( cnt > 0 ) {
+                if (cnt > 0) {
                     throw new ConflictRestEx("Existing rules reference the user " + username);
                 }
             }
 
             GSUser user = userAdminService.get(username); // may throw NotFoundServiceEx
 
-            if ( ! userAdminService.delete(user.getId())) {
+            if (!userAdminService.delete(user.getId())) {
                 LOGGER.warn("ILLEGAL STATE -- User not found: " + user); // this should not happen
                 throw new NotFoundRestEx("ILLEGAL STATE -- User not found: " + user);
             }
@@ -76,7 +66,7 @@ public class RESTUserServiceImpl
             throw ex;
         } catch (NotFoundServiceEx ex) {
             LOGGER.warn("User not found: " + username);
-            throw new NotFoundRestEx("User not found: " +username);
+            throw new NotFoundRestEx("User not found: " + username);
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new InternalErrorRestEx(ex.getMessage());
@@ -100,7 +90,6 @@ public class RESTUserServiceImpl
     @Override
     public Response insert(RESTInputUser user) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx, ConflictRestEx {
 
-
         boolean exists;
         // check that no user with same name exists
         try {
@@ -115,7 +104,7 @@ public class RESTUserServiceImpl
             throw new InternalErrorRestEx(ex.getMessage());
         }
 
-        if ( exists ) {
+        if (exists) {
             throw new ConflictRestEx("User '" + user.getName() + "' already exists");
         }
 
@@ -124,12 +113,12 @@ public class RESTUserServiceImpl
             Set<UserGroup> groups = new HashSet<UserGroup>();
             // resolve groups
             List<IdName> inputGroups = user.getGroups();
-            if ( inputGroups == null || inputGroups.isEmpty() ) {
+            if (inputGroups == null || inputGroups.isEmpty()) {
 //                throw new BadRequestRestEx("Can't insert user without group");
                 LOGGER.warn("No groups defined for user " + user.getName());
             } else {
                 for (IdName identifier : inputGroups) {
-                    if ( identifier == null ) {
+                    if (identifier == null) {
                         throw new BadRequestRestEx("Bad group identifier");
                     }
                     UserGroup group = getUserGroup(identifier);
@@ -183,31 +172,35 @@ public class RESTUserServiceImpl
         try {
             GSUser old = userAdminService.get(id);
 
-            if ( (user.getExtId() != null) && !user.getExtId().equals(old.getExtId()) ) {
+            if ((user.getExtId() != null) && !user.getExtId().equals(old.getExtId())) {
                 throw new BadRequestRestEx("ExtId can't be updated");
             }
 
-            if ( (user.getName() != null) ) {
+            if ((user.getName() != null)) {
                 throw new BadRequestRestEx("Name can't be updated");
             }
 
-            if ( user.getPassword() != null ) {
+            if (user.getPassword() != null) {
                 old.setPassword(user.getPassword());
             }
 
-            if ( user.getEmailAddress() != null ) {
+            if (user.getEmailAddress() != null) {
                 old.setEmailAddress(user.getEmailAddress());
             }
 
-            if ( user.isAdmin() != null ) {
+            if (user.isAdmin() != null) {
                 old.setAdmin(user.isAdmin());
             }
 
-            if ( user.isEnabled() != null ) {
+            if (user.getFullName() != null) {
+                old.setFullName(user.getFullName());
+            }
+
+            if (user.isEnabled() != null) {
                 old.setEnabled(user.isEnabled());
             }
 
-            if ( user.getGroups() != null ) {
+            if (user.getGroups() != null) {
                 Set<UserGroup> groups = new HashSet<UserGroup>();
                 for (IdName identifier : user.getGroups()) {
                     UserGroup group = getUserGroup(identifier);
@@ -252,6 +245,46 @@ public class RESTUserServiceImpl
         }
     }
 
+    /**
+     * Returns a paginated list of users.
+     *
+     * @param nameLike An optional LIKE filter on the username.
+     * @param page     In a paginated list, the page number, 0-based. If not null,
+     *                 <code>entries</code> must be defined as well.
+     * @param entries  In a paginated list, the number of entries per page. If not null,
+     *                 <code>page</code> must be defined as well.
+     * @throws BadRequestRestEx    (HTTP code 400) if page/entries do no match
+     * @throws InternalErrorRestEx (HTTP code 500)
+     */
+    @Override
+    public RESTFullUserList getFullList(String nameLike, Integer page, Integer entries)
+            throws BadRequestRestEx, InternalErrorRestEx {
+        try {
+            List<GSUser> list = userAdminService.getFullList(nameLike, page, entries, Boolean.TRUE);
+            RESTFullUserList ret = new RESTFullUserList(list.size());
+            ret.setUserList(list);
+//            for (GSUser user : list) {
+//                ret.add(toFullUser(user));
+//            }
+            return ret;
+
+        } catch (BadRequestServiceEx ex) {
+            LOGGER.warn(ex.getMessage());
+            throw new BadRequestRestEx(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warn("Unexpected exception", ex);
+            throw new InternalErrorRestEx(ex.getMessage());
+        }
+    }
+
+    /**
+     * @return {@link Long}
+     */
+    @Override
+    public Long count() {
+        return this.userAdminService.getCount(null);
+    }
+
     @Override
     public long count(String nameLike) {
         return userAdminService.getCount(nameLike);
@@ -266,6 +299,20 @@ public class RESTUserServiceImpl
         shu.setEnabled(user.getEnabled());
 
         return shu;
+    }
+
+    public static RESTFullUser toFullUser(GSUser user) {
+        RESTFullUser fullUser = new RESTFullUser();
+        fullUser.setId(user.getId());
+        fullUser.setExtId(user.getExtId());
+        fullUser.setName(user.getName());
+        fullUser.setFullName(user.getFullName());
+        fullUser.setPassword(user.getPassword());
+        fullUser.setEmailAddress(user.getEmailAddress());
+        fullUser.setDateCreation(user.getDateCreation());
+        fullUser.setEnabled(user.getEnabled());
+        fullUser.setAdmin(user.isAdmin());
+        return fullUser;
     }
 
     public static RESTOutputUser toOutputUser(GSUser user) {
@@ -305,7 +352,7 @@ public class RESTUserServiceImpl
             GSUser fulluser = userAdminService.getFull(user.getName());
             fulluser.getGroups().add(group);
 
-            userAdminService.update(user);
+            userAdminService.update(fulluser);
 
         } catch (BadRequestRestEx e) {
             throw e;
@@ -316,7 +363,7 @@ public class RESTUserServiceImpl
             throw new InternalErrorRestEx(e.getMessage());
         }
     }
-    
+
     // ==========================================================================
     // ==========================================================================
 

@@ -98,6 +98,23 @@
             <artifactId>dao</artifactId>
             <!-- JPA1 dependency will excluded by exclusions in depenendency management -->
         </dependency>
+        
+        <dependency>
+            <groupId>com.googlecode.genericdao</groupId>
+            <artifactId>search-hibernate</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.persistence</groupId>
+                    <artifactId>persistence-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.googlecode.genericdao</groupId>
+            <artifactId>search</artifactId>
+        </dependency>
+        
         <dependency>
             <groupId>com.googlecode.genericdao</groupId>
             <artifactId>search-jpa-hibernate</artifactId>

@@ -5,8 +5,8 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
-import java.util.List;
-
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.core.model.GSInstance;
 import org.geoserver.geofence.core.model.util.PwEncoder;
 import org.geoserver.geofence.services.InstanceAdminService;
@@ -16,24 +16,18 @@ import org.geoserver.geofence.services.dto.ShortInstance;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import org.geoserver.geofence.services.rest.RESTGSInstanceService;
-import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
-import org.geoserver.geofence.services.rest.exception.ConflictRestEx;
-import org.geoserver.geofence.services.rest.exception.GeoFenceRestEx;
-import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
-import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
+import org.geoserver.geofence.services.rest.exception.*;
+import org.geoserver.geofence.services.rest.model.RESTFullInstanceList;
 import org.geoserver.geofence.services.rest.model.RESTInputInstance;
 import org.geoserver.geofence.services.rest.model.RESTOutputInstance;
 import org.geoserver.geofence.services.rest.model.RESTShortInstanceList;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import java.util.List;
 
 
 /**
- *
  * @author ETj (etj at geo-solutions.it)
  */
 public class RESTInstanceServiceImpl
@@ -49,9 +43,32 @@ public class RESTInstanceServiceImpl
         return new RESTShortInstanceList(list);
     }
 
+    /**
+     * @param nameLike
+     * @param page
+     * @param entries
+     * @return {@link RESTFullInstanceList}
+     * @throws BadRequestRestEx
+     * @throws NotFoundRestEx
+     * @throws InternalErrorRestEx
+     */
+    @Override
+    public RESTFullInstanceList getFullList(String nameLike, Integer page, Integer entries)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        return new RESTFullInstanceList(this.instanceAdminService.getFullList(nameLike, page, entries));
+    }
+
     @Override
     public long count(String nameLike) {
         return instanceAdminService.getCount(nameLike);
+    }
+
+    /**
+     * @return {@link Long}
+     */
+    @Override
+    public Long countInstances() {
+        return instanceAdminService.getCount(null);
     }
 
     @Override
@@ -99,8 +116,8 @@ public class RESTInstanceServiceImpl
             throw new InternalErrorRestEx(ex.getMessage());
         }
 
-        if(exists)
-            throw new ConflictRestEx("GSInstance '"+instance.getName()+"' already exists");
+        if (exists)
+            throw new ConflictRestEx("GSInstance '" + instance.getName() + "' already exists");
 
         // ok: insert it
         try {
@@ -137,7 +154,7 @@ public class RESTInstanceServiceImpl
         try {
             GSInstance old = instanceAdminService.get(id);
 
-            if ( (instance.getName() != null) ) {
+            if ((instance.getName() != null)) {
                 throw new BadRequestRestEx("Name can't be updated");
             }
 
@@ -145,16 +162,16 @@ public class RESTInstanceServiceImpl
             // the instance update is not homogeneous with the other services
             // where a DTO is used, and null checks are performed in the service
 
-            if(instance.getDescription() != null )
+            if (instance.getDescription() != null)
                 old.setDescription(instance.getDescription());
 
-            if(instance.getBaseURL() != null )
+            if (instance.getBaseURL() != null)
                 old.setBaseURL(instance.getBaseURL());
 
-            if(instance.getUsername() != null )
+            if (instance.getUsername() != null)
                 old.setUsername(instance.getUsername());
 
-            if(instance.getPassword() != null )
+            if (instance.getPassword() != null)
                 old.setPassword(instance.getPassword());
 
             instanceAdminService.update(old);
@@ -177,19 +194,19 @@ public class RESTInstanceServiceImpl
     @Override
     public Response delete(Long id, boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
-            if ( cascade ) {
+            if (cascade) {
                 ruleAdminService.deleteRulesByInstance(id);
             } else {
                 RuleFilter filter = new RuleFilter(SpecialFilterType.ANY);
                 filter.setInstance(id);
                 filter.getInstance().setIncludeDefault(false);
                 long cnt = ruleAdminService.count(filter);
-                if ( cnt > 0 ) {
+                if (cnt > 0) {
                     throw new ConflictRestEx("Existing rules reference the GSInstance " + id);
                 }
             }
 
-            if ( ! instanceAdminService.delete(id)) {
+            if (!instanceAdminService.delete(id)) {
                 LOGGER.warn("GSInstance not found: " + id);
                 throw new NotFoundRestEx("GSInstance not found: " + id);
             }
@@ -236,7 +253,7 @@ public class RESTInstanceServiceImpl
         ret.setBaseURL(i.getBaseURL());
         ret.setUsername(i.getUsername());
         ret.setPassword(PwEncoder.encode(i.getPassword()));
-        ret.setCreationDate(i.getDateCreation().toString());
+        ret.setCreationDate(i.getDateCreation());
         return ret;
     }
 
