@@ -109,11 +109,16 @@
             <artifactId>commons-dbcp</artifactId>
         </dependency>
 
-		<dependency>
-			<groupId>org.hibernatespatial</groupId>
-			<artifactId>hibernate-spatial-h2-geodb</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+                <groupId>org.hibernatespatial</groupId>
+                <artifactId>hibernate-spatial-h2-geodb</artifactId>
+                <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernatespatial</groupId>
+            <artifactId>hibernate-spatial</artifactId>
+        </dependency>
 
         <!-- =========================================================== -->
         <!--     JDBC                                                    -->
@@ -121,6 +126,12 @@
         <dependency>
             <groupId>org.postgis</groupId>
             <artifactId>postgis-jdbc</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.postgis</groupId>
+                    <artifactId>postgis-stubs</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
