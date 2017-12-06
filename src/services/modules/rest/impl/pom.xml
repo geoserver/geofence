@@ -142,6 +142,12 @@
             <artifactId>hibernate-spatial-h2-geodb</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.opengeo</groupId>
+            <artifactId>geodb</artifactId>
+            <version>0.6</version>
+            <scope>test</scope>
+        </dependency>        
 
         <dependency>
             <groupId>org.springframework</groupId>
