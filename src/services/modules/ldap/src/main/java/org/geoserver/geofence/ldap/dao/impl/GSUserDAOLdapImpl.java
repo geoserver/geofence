@@ -45,7 +45,10 @@ public class GSUserDAOLdapImpl extends LDAPBaseDAO<GSUserDAO, GSUser> implements
      */
     private List<UserGroup> getGroups(GSUser user)
     {
-        Filter filter;
+        Filter filter = new Filter();
+        String member;
+        List<UserGroup> groups;
+        String filterStr = null;
 
         String dn = user.getExtId();
         if(StringUtils.isNotBlank(dn)) {
@@ -54,13 +57,30 @@ public class GSUserDAOLdapImpl extends LDAPBaseDAO<GSUserDAO, GSUser> implements
             String userName = user.getName();
             LOGGER.info("User id is null, using username '"+userName+"'");
             String nameAttr = getLDAPAttribute("username");
-            String exp = nameAttr + "=" + userName;
-            filter = new Filter("member", exp);
+            String memberSearchFilterAttr = getLDAPAttribute("memberSearchFilter");
+            //e.g  memberSearchFilter = uniqueMember=uid={0},ou=users,ou=project,dc=edata,dc=comp,dc=be
+            if(memberSearchFilterAttr != null) {
+                //e.g String member = nameAttr + "=" + userName;
+                String val = memberSearchFilterAttr.split("=")[0];  //e.g  get uniqueMember part
+                member = memberSearchFilterAttr.split("=",2)[1];    //e.g  remove uniqueMember part
+                member = member.replace("{0}", userName);
+                filterStr = val + '=' + member;
+            } else {
+                String exp = nameAttr + "=" + userName;
+                filter = new Filter("member", exp);
+            }
+
+        }
+        if (filterStr == null) {
+            groups = userGroupDAOLdapImpl.search(filter);
+        } else {
+            groups = userGroupDAOLdapImpl.search(filterStr);
         }
 
-        List<UserGroup> groups = userGroupDAOLdapImpl.search(filter);
         return groups;
     }
+
+
 
     @Override
     public GSUser getFull(String name)
