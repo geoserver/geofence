@@ -8,13 +8,15 @@ package org.geoserver.geofence.services;
 import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
 import org.locationtech.jts.geom.Geometry;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.geoserver.geofence.core.dao.AdminRuleDAO;
 import org.geoserver.geofence.core.dao.LayerDetailsDAO;
 import org.geoserver.geofence.core.dao.RuleDAO;
-import org.geoserver.geofence.core.model.LayerAttribute;
-import org.geoserver.geofence.core.model.LayerDetails;
-import org.geoserver.geofence.core.model.Rule;
-import org.geoserver.geofence.core.model.RuleLimits;
+import org.geoserver.geofence.core.model.*;
 import org.geoserver.geofence.core.model.enums.AccessType;
+import org.geoserver.geofence.core.model.enums.AdminGrantType;
 import org.geoserver.geofence.core.model.enums.CatalogMode;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.services.dto.AccessInfo;
@@ -22,28 +24,19 @@ import org.geoserver.geofence.services.dto.AuthUser;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.FilterType;
 import org.geoserver.geofence.services.dto.RuleFilter.IdNameFilter;
-import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
+import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
 import org.geoserver.geofence.services.dto.ShortRule;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.util.AccessInfoInternal;
 import org.geoserver.geofence.spi.UserResolver;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeMap;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.geoserver.geofence.core.dao.AdminRuleDAO;
-import org.geoserver.geofence.core.model.AdminRule;
-import org.geoserver.geofence.core.model.enums.AdminGrantType;
+
 import static org.geoserver.geofence.services.util.FilterUtils.filterByAddress;
 
 /**
@@ -304,7 +297,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
                     break;
 
                 case ALLOW:
-                    ret = buildAllowAccessInfo(rule, limits, null); 
+                    ret = buildAllowAccessInfo(rule, limits, null);
                     break;
 
                 default:
@@ -481,7 +474,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
      * @return a Map having role names as keys, and the list of matching Rules as values. The NULL key holds the rules for the DEFAULT group.
      */
     protected Map<String, List<Rule>> getRules(RuleFilter filter) throws BadRequestServiceEx {
-        
+
         Set<String> finalRoleFilter = validateUserRoles(filter);
 
         if(finalRoleFilter == null) {
@@ -544,13 +537,24 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             throw new BadRequestServiceEx("You can filter either by user or role");
         }
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> authorities;
+        if (authentication == null) {
+            authorities = new HashSet<>();
+        } else {
+            authorities = authentication.getAuthorities();
+        }
         Set<String> finalRoleFilter = new HashSet<>();
-
         // If both user and group are defined in filter
         //   if user doensn't belong to group, no rule is returned
         //   otherwise assigned or default rules are searched for
         if(username != null) {
             Set<String> assignedRoles = userResolver.getRoles(username);
+            if (authorities != null) {
+                for (GrantedAuthority authority : authorities) {
+                    assignedRoles.add(authority.getAuthority());
+                }
+            }
             if(rolename != null) {
                 if( assignedRoles.contains(rolename)) {
                     finalRoleFilter = Collections.singleton(rolename);
@@ -562,9 +566,8 @@ public class RuleReaderServiceImpl implements RuleReaderService {
                 // User set and found, role (ANY, DEFAULT or notfound):
 
                 if(filter.getRole().getType() == FilterType.ANY) {
-                    Set<String> roles = userResolver.getRoles(username);
-                    if( ! roles.isEmpty()) {
-                        finalRoleFilter = roles;
+                    if( ! assignedRoles.isEmpty()) {
+                        finalRoleFilter = assignedRoles;
                     } else {
                         filter.setRole(SpecialFilterType.DEFAULT);
                     }

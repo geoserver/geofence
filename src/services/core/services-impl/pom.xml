@@ -52,6 +52,10 @@
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
         </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
 
         <!-- This dep is needed in core::dao, but seems not to be transitively imported-->
         <dependency>
@@ -62,6 +66,16 @@
         <!-- =========================================================== -->
         <!-- SPRING -->
 
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-expression</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
         <!-- =========================================================== -->
         <!-- MISC -->
