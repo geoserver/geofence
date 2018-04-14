@@ -34,6 +34,11 @@ import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
 import org.geoserver.geofence.services.rest.model.RESTRulePosition.RulePosition;
 import org.geoserver.geofence.services.rest.model.util.IdName;
 
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Comparator;
+
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,6 +62,12 @@ public class RESTRuleServiceImpl
         implements RESTRuleService {
 
     private static final Logger LOGGER = LogManager.getLogger(RESTRuleServiceImpl.class);
+    private static final Comparator<Rule> RULE_COMPARATOR = new Comparator<Rule>(){
+        @Override
+        public int compare(final Rule lhs, Rule rhs) {
+          return Long.compare(lhs.getPriority(), rhs.getPriority());
+          }
+    };
 
     @Override
     public RESTOutputRule get(Long id) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
@@ -447,6 +458,48 @@ public class RESTRuleServiceImpl
             throw new InternalErrorRestEx(ex.getMessage());
         }
 
+    }
+       @Override
+    public Response move(String rulesIds, Integer targetPriority)
+            throws BadRequestRestEx, InternalErrorRestEx 
+            {
+                try {
+                    List<Rule> rules = findRules(rulesIds);
+                    if (!rules.isEmpty()) {
+                        
+                        // shift priorities of rules with a priority equal or lower than the target priority
+                        ruleAdminService.shift(targetPriority, rules.size());
+                    // update moved rules priority
+                    long priority = targetPriority;
+                    for (Rule rule : rules) {
+                        rule.setPriority(priority);
+                        ruleAdminService.update(rule);
+                        priority++;
+                        }
+                    }
+                    return Response.status(Status.OK).entity("OK\n").build();
+        
+                } catch (Exception ex) {
+                    LOGGER.error(ex.getMessage(), ex);
+                    throw new InternalErrorRestEx(ex.getMessage());
+                }
+                
+    }
+
+    /**
+    * Helper method that will parse and retrieve the provided rules sorted by their priority.
+    */
+    private List<Rule> findRules(String rulesIds) {
+        //Before Java8
+        List<Rule> ruleList = new ArrayList<Rule>();
+        for (String id : Arrays.asList(rulesIds.split(","))) {
+            Rule ru = ruleAdminService.get(Long.parseLong(id)) ;
+            if(ru != null) {
+                ruleList.add(ru);
+            }
+        }
+        ruleList.sort(RULE_COMPARATOR);
+        return ruleList;
     }
 
     // ==========================================================================
