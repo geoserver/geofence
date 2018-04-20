@@ -75,45 +75,12 @@ public class LoginService implements ILoginService
             System.setProperty("javax.net.ssl.trustStorePassword", "geosolutions");
 
             GFUser matchingUser = null;
-
             
-            if (false)
-            {
-                matchingUser = new GFUser();
-                matchingUser.setName(userName);
-                
-            }
-            else
-            {
-                try {
-                    matchingUser = geofenceRemoteService.getGfUserAdminService().get(userName);
-                } catch (NotFoundServiceEx ex) {
-                    logger.warn("User not found");
-                    throw new ApplicationException("Login failed");
-                }
-//                // grantedAuthorities =
-//                List<GFUser> matchingUsers = geofenceRemoteService.getGfUserAdminService().getFullList(userName, null,
-//                        null);
-//                logger.info(matchingUsers);
-//                logger.info(matchingUsers.size());
-//
-//                if ((matchingUsers == null) || matchingUsers.isEmpty() || (matchingUsers.size() != 1))
-//                {
-//                    logger.error("Error :********** " + "Invalid username specified!");
-//                    throw new ApplicationException("Error :********** " + "Invalid username specified!");
-//                }
-//
-//                logger.info(matchingUsers.get(0).getName());
-//                logger.info(matchingUsers.get(0).getPassword());
-//                logger.info(matchingUsers.get(0).getEnabled());
-//
-//                if (!matchingUsers.get(0).getName().equals(userName) || !matchingUsers.get(0).getEnabled())
-//                {
-//                    logger.error("Error :********** " + "The specified user does not exist!");
-//                    throw new ApplicationException("Error :********** " + "The specified user does not exist!");
-//                }
-//
-//                matchingUser = matchingUsers.get(0);
+            try {
+                matchingUser = geofenceRemoteService.getGfUserAdminService().get(userName);
+            } catch (NotFoundServiceEx ex) {
+                logger.warn("User not found");
+                throw new ApplicationException("Login failed");
             }
 
             token = geofenceRemoteService.getLoginService().login(userName, password, matchingUser.getPassword());
