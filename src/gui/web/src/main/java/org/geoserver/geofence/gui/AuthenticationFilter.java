@@ -73,7 +73,7 @@ public class AuthenticationFilter implements Filter
 
             UsernamePasswordAuthenticationToken upa = new UsernamePasswordAuthenticationToken(
                     null,
-                    null
+                    null,
                     authorities);
             
 
