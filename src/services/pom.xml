@@ -647,6 +647,13 @@
 		    <!-- =========================================================== -->
 		    <!--     HIBERNATE-SPATIAL                                       -->
 		    <!-- =========================================================== -->
+
+            <dependency>
+                <groupId>org.hibernatespatial</groupId>
+                <artifactId>hibernate-spatial</artifactId>
+                <version>${hibernate-spatial-version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.hibernatespatial</groupId>
                 <artifactId>hibernate-spatial-postgis</artifactId>

@@ -461,6 +461,10 @@
          mapping geometry types:
          http://www.hibernatespatial.org/hibernate-spatial-h2-geodb/usage.html - DEAD URL
          http://web.archive.org/web/20130830010044/http://www.hibernatespatial.org/hibernate-spatial-h2-geodb/usage.html
+         
+         also check
+         
+         https://github.com/geoserver/geofence/issues/97
     -->
     <profiles>
         <profile>
@@ -482,6 +486,11 @@
                     <groupId>org.hibernatespatial</groupId>
                     <artifactId>hibernate-spatial-h2-geodb</artifactId>
                 </dependency>
+                <dependency>
+                    <groupId>org.opengeo</groupId>
+                    <artifactId>geodb</artifactId>
+                    <version>0.6</version>
+                </dependency>                
             </dependencies>
         </profile>
         <profile>
