@@ -112,5 +112,15 @@ public interface RESTRuleService
         @QueryParam("layer") String  layer,
         @QueryParam("layerAny")  Boolean layerAny
     );
-
+    /**
+     * Move the provided rules to the target priority. Rules will be sorted by their priority, first rule will be updated with a priority equal to the
+     * target priority and the next ones will get an incremented priority value.
+     */
+    @GET
+    @Path("/move")
+    @Produces(MediaType.TEXT_XML)
+    Response move(
+        @QueryParam("rulesIds") String rulesIds,
+        @QueryParam("targetPriority") Integer targetPriority
+    ) throws BadRequestRestEx, InternalErrorRestEx;
 }
