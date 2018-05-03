@@ -63,6 +63,7 @@ public class RESTRuleServiceImpl
         implements RESTRuleService {
 
     private static final Logger LOGGER = LogManager.getLogger(RESTRuleServiceImpl.class);
+
     private static final Comparator<Rule> RULE_COMPARATOR = new Comparator<Rule>(){
         @Override
         public int compare(final Rule lhs, Rule rhs) {
@@ -460,31 +461,30 @@ public class RESTRuleServiceImpl
         }
 
     }
-       @Override
+    
+    @Override
     public Response move(String rulesIds, Integer targetPriority)
-            throws BadRequestRestEx, InternalErrorRestEx 
-            {
-                try {
-                    List<Rule> rules = findRules(rulesIds);
-                    if (!rules.isEmpty()) {
-                        
-                        // shift priorities of rules with a priority equal or lower than the target priority
-                        ruleAdminService.shift(targetPriority, rules.size());
-                    // update moved rules priority
-                    long priority = targetPriority;
-                    for (Rule rule : rules) {
-                        rule.setPriority(priority);
-                        ruleAdminService.update(rule);
-                        priority++;
-                        }
-                    }
-                    return Response.status(Status.OK).entity("OK\n").build();
-        
-                } catch (Exception ex) {
-                    LOGGER.error(ex.getMessage(), ex);
-                    throw new InternalErrorRestEx(ex.getMessage());
+            throws BadRequestRestEx, InternalErrorRestEx {
+            
+        try {
+            List<Rule> rules = findRules(rulesIds);
+            if (!rules.isEmpty()) {
+                // shift priorities of rules with a priority equal or lower than the target priority
+                ruleAdminService.shift(targetPriority, rules.size());
+
+                // update moved rules priority
+                long priority = targetPriority;
+                for (Rule rule : rules) {
+                    rule.setPriority(priority);
+                    ruleAdminService.update(rule);
+                    priority++;
                 }
-                
+            }            
+            return Response.status(Status.OK).entity("OK\n").build();
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new InternalErrorRestEx(ex.getMessage());
+        }
     }
 
     /**
