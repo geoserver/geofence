@@ -11,7 +11,7 @@
    <groupId>org.geoserver.geofence</groupId>
    <artifactId>geofence</artifactId>
    <version>3.3-SNAPSHOT</version>
-   <packaging>war</packaging>
+   <packaging>pom</packaging>
    
    <name>Master GeoFence POM</name>
    <description>GeoFence is a java web application that handles authorization rules, integrating with GeoServer using the interface described in GSIP 57.</description>
