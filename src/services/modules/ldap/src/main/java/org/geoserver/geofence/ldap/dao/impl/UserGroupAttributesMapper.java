@@ -32,12 +32,7 @@ public class UserGroupAttributesMapper extends BaseAttributesMapper
         String id = getAttribute(attrs, "id");
         if(StringUtils.isBlank(id)) {
             LOGGER.warn("Empty id for UserGroup");
-            if(LOGGER.isDebugEnabled()) {
-                for(Object oa: Collections.list(attrs.getAll())) {
-                    Attribute a = (Attribute)oa;
-                    LOGGER.debug("---> " + a);
-                }
-            }
+            
         }
         group.setExtId(id);
         group.setName(getAttribute(attrs, "groupname"));
