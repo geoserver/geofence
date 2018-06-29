@@ -5,7 +5,7 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.MultiPolygon;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

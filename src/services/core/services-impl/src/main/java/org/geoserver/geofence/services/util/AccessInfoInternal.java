@@ -8,7 +8,7 @@ package org.geoserver.geofence.services.util;
 import java.io.Serializable;
 import java.util.Set;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.enums.CatalogMode;

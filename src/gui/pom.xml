@@ -24,7 +24,7 @@
     <properties>
         <module.name>geofence-gui</module.name>
         <geofence-version>3.3-SNAPSHOT</geofence-version>
-        <gt-version>16-SNAPSHOT</gt-version>
+        <gt-version>20-SNAPSHOT</gt-version>
         <geogwt-version>0.2-SNAPSHOT</geogwt-version>
 
         <spring.version>4.2.5.RELEASE</spring.version>
@@ -36,7 +36,6 @@
         <cxf-version>3.1.5</cxf-version>
 
         <hibernate-version>3.6.0.Final</hibernate-version>
-        <hibernate-spatial-version>1.1.1</hibernate-spatial-version>
         <hibernate-generic-dao-version>1.1.0</hibernate-generic-dao-version>
         <asm-version>2.2.3</asm-version>
         <cglib-version>2.2</cglib-version>
@@ -441,7 +440,7 @@
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
-                <artifactId>gt-wfs</artifactId>
+                <artifactId>gt-wfs-ng</artifactId>
                 <version>${gt-version}</version>
             </dependency>
 
@@ -580,9 +579,9 @@
                 <version>8.4-702.jdbc3</version>
             </dependency>
             <dependency>
-                <groupId>com.vividsolutions</groupId>
-                <artifactId>jts</artifactId>
-                <version>1.10</version>
+                <groupId>org.locationtech.jts</groupId>
+                <artifactId>jts-core</artifactId>
+                <version>1.15.1</version>
             </dependency>
 	    
             <!-- =========================================================== -->
@@ -626,19 +625,19 @@
             <dependency>
                 <groupId>org.hibernatespatial</groupId>
                 <artifactId>hibernate-spatial-postgis</artifactId>
-                <version>1.1.1</version>
+                <version>${hibernate-spatial-version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.hibernatespatial</groupId>
                 <artifactId>hibernate-spatial-oracle</artifactId>
-                <version>1.1.1</version>
+                <version>${hibernate-spatial-version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.hibernatespatial</groupId>
                 <artifactId>hibernate-spatial-h2-geodb</artifactId>
-                <version>1.1.1</version>
+                <version>${hibernate-spatial-version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
