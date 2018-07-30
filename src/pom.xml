@@ -14,7 +14,7 @@
    <packaging>pom</packaging>
 
    <properties>
-     <hibernate-spatial-version>1.1.3-SNAPSHOT</hibernate-spatial-version>
+     <hibernate-spatial-version>1.1.3.1</hibernate-spatial-version>
    </properties>
    
    <name>Master GeoFence POM</name>
@@ -79,19 +79,17 @@
    </repositories>
 
    <distributionManagement>
-      <repository>
-        <id>boundless</id>
-        <name>Boundless Release Repository</name>
-        <url>https://repo.boundlessgeo.com/release/</url>
-        <uniqueVersion>false</uniqueVersion>
-      </repository>
-      <snapshotRepository>
-        <id>boundless</id>
-        <uniqueVersion>false</uniqueVersion>
-        <name>Boundless Snapshot Repository</name>
-        <url>https://repo.boundlessgeo.com/snapshot/</url>
-      </snapshotRepository>
-  </distributionManagement>
+        <downloadUrl>http://maven.geo-solutions.it</downloadUrl>
+        <repository>
+          <uniqueVersion>false</uniqueVersion>
+          <id>geosolutions</id>
+          <url>ftp://maven.geo-solutions.it/</url>
+        </repository>
+        <site>
+          <id>demo.geosolutions</id>
+          <url>scp://demo.geo-solutions.it/var/www/share/github/gsman</url>
+        </site>
+   </distributionManagement>
    
    <modules>
       <module>services</module>
@@ -105,8 +103,10 @@
       <extensions>
          <extension>
             <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-webdav</artifactId>
-            <version>1.0-beta-2</version>
+            <!-- artifactId>wagon-webdav</artifactId>
+            <version>1.0-beta-2</version -->
+            <artifactId>wagon-ftp</artifactId>
+            <version>2.6</version>
          </extension>
       </extensions>
    </build>
