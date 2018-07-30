@@ -7,10 +7,10 @@ package org.geoserver.geofence.core.dao;
 
 import java.util.List;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 
 import org.geoserver.geofence.core.model.GFUser;
 import org.geoserver.geofence.core.model.UserGroup;

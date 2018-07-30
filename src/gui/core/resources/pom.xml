@@ -46,7 +46,7 @@
 			</exclusion>
 			<exclusion> <!-- includes SNAPSHOT version we don't want-->
 				<groupId>org.geotools</groupId>
-				<artifactId>gt-wfs</artifactId>
+				<artifactId>gt-wfs-ng</artifactId>
 			</exclusion>
 			<exclusion> <!-- includes SNAPSHOT version we don't want-->
 				<groupId>org.geotools</groupId>
@@ -58,7 +58,7 @@
 	<!-- re-include proper versions -->
 	<dependency>
 		<groupId>org.geotools</groupId>
-		<artifactId>gt-wfs</artifactId>
+		<artifactId>gt-wfs-ng</artifactId>
 	</dependency>
 	<dependency>
 		<groupId>org.geotools</groupId>
@@ -148,8 +148,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.vividsolutions</groupId>
-			<artifactId>jts</artifactId>
+			<groupId>org.locationtech.jts</groupId>
+			<artifactId>jts-core</artifactId>
 		</dependency>
 
 		<!-- SCOPE TEST -->

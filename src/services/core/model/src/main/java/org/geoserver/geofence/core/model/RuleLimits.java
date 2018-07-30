@@ -28,7 +28,7 @@ import org.hibernate.annotations.Check;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Type;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.MultiPolygon;
 
 /**
  * Defines general limits (such as an Area ) for a {@link Rule}. <BR>

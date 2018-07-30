@@ -5,9 +5,9 @@
 
 package org.geoserver.geofence.services;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.IPAddressRange;
 import org.geoserver.geofence.core.model.LayerAttribute;
