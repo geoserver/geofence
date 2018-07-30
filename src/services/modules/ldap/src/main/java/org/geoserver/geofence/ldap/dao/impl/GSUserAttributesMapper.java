@@ -4,8 +4,9 @@
  */
 package org.geoserver.geofence.ldap.dao.impl;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import org.geoserver.geofence.core.model.GSUser;
+
+import java.util.Collections;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
