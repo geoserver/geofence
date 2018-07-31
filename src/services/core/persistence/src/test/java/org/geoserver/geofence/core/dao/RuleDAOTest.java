@@ -6,7 +6,7 @@
 package org.geoserver.geofence.core.dao;
 
 import com.googlecode.genericdao.search.Search;
-import com.vividsolutions.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.MultiPolygon;
 import static org.geoserver.geofence.core.dao.BaseDAOTest.ruleDAO;
 import org.geoserver.geofence.core.dao.util.SearchUtil;
 import org.geoserver.geofence.core.model.GSUser;

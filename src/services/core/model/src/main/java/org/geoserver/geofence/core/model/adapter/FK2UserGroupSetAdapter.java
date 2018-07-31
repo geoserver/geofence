@@ -8,7 +8,7 @@ package org.geoserver.geofence.core.model.adapter;
 import org.geoserver.geofence.core.model.adapter.dual.IdNameBundle;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import com.vividsolutions.jts.io.ParseException;
+import org.locationtech.jts.io.ParseException;
 import org.geoserver.geofence.core.model.UserGroup;
 import java.util.ArrayList;
 import java.util.HashSet;

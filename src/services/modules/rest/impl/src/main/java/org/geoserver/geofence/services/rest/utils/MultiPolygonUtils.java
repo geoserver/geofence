@@ -5,11 +5,11 @@
 
 package org.geoserver.geofence.services.rest.utils;
 
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.simplify.TopologyPreservingSimplifier;
 
 import jaitools.jts.Utils;
 
@@ -40,7 +40,7 @@ public class MultiPolygonUtils
         for (int i = 0; i < mp.getNumGeometries(); i++)
         {
             Polygon p = (Polygon) mp.getGeometryN(i);
-            Polygon s1 = Utils.removeCollinearVertices(p);
+            Polygon s1 = p; //Utils.removeCollinearVertices(p);
             TopologyPreservingSimplifier tps = new TopologyPreservingSimplifier(s1);
             Polygon s2 = (Polygon) tps.getResultGeometry();
             simpPolys[i] = s2;

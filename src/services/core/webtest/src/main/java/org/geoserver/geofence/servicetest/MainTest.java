@@ -36,8 +36,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.io.WKTReader;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.io.WKTReader;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
