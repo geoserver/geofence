@@ -48,7 +48,7 @@ Here's a compatibility table for the versions of both applications:
 
 | GeoFence         | GeoServer  |   Main changes                        |
 |------------------|------------|---------------------------------------|
-| master branch: <br/>- stable: [3.4.0] <br/>- nightly: [3.4.x] | | JTS Version update <br/> Minor DTO changes |
+| master branch: <br/>- stable: [3.4.1] <br/>- nightly: [3.4.x] | | JTS Version update <br/> Minor DTO changes |
 | 3.3.x branch: <br/>- stable: [3.3.0] <br/>- nightly: [3.3.x] | | LDAP improvements <br/> Minor DTO changes |
 | 3.2.x branch: <br/>- stable: [3.2.3] <br/>- nightly: [3.2.x] | 2.12 ([probe][2.12_probe]) ([embedded][2.12_embedded]) <br/> 2.11 ([probe][2.11_probe]) ([embedded][2.11_embedded]) <br/> 2.10 ([probe][2.10_probe]) ([embedded][2.10_embedded]) <br/> 2.9 ([probe][2.9_probe]) ([embedded][2.9_embedded]) | Spring 4, JDK 8                       |
 | 3.1.x branch:  <br/>- stable: [3.1.0] <br/>- nightly: [3.1.x] | >=2.8.2 ([probe][2.8_probe]) ([embedded][2.8_embedded]) | Handle Workspace admin <br/> (feature for embedded version only)
