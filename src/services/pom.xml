@@ -11,12 +11,12 @@
     <parent>
         <groupId>org.geoserver.geofence</groupId>
         <artifactId>geofence</artifactId>
-        <version>3.4.0</version>
+        <version>3.4-SNAPSHOT</version>
     </parent>
 
     <groupId>org.geoserver.geofence</groupId>
     <artifactId>geofence-root</artifactId>
-    <version>3.4.0</version>
+    <version>3.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>GeoFence - 0 Services </name>
@@ -27,7 +27,7 @@
     </modules>
 
     <properties>
-        <geofence-version>3.4.0</geofence-version>
+        <geofence-version>3.4-SNAPSHOT</geofence-version>
         <main-prefix>geofence</main-prefix>
 
         <gt-version>20-SNAPSHOT</gt-version>
