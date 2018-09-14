@@ -56,7 +56,7 @@ Here's a compatibility table for the versions of both applications:
 | 2.2.x branch: <br/>- stable: [2.2.0] <br/>- nightly: [2.2.x]  | 2.7 ([probe][2.7])<br/> 2.6 ([probe][2.6])   | 
 
 [3.4.x]: http://build.geoserver.org/geofence/master/geofence-master-latest-war.zip
-[3.4.0]: http://build.geoserver.org/geofence/3.4.x/release-v3.4.0-geofence-war.zip
+[3.4.1]: http://build.geoserver.org/geofence/3.4.x/release-v3.4.1-geofence-war.zip
 [3.3.x]: http://build.geoserver.org/geofence/3.3.x/geofence-3.3.x-latest-war.zip
 [3.3.0]: http://build.geoserver.org/geofence/3.3.x/release-v3.3.0-geofence-war.zip
 [3.2.0]: http://build.geoserver.org/geofence/3.2.x/release-v3.2.0-geofence-war.zip
