@@ -37,13 +37,23 @@
             <role>architect</role>
             <role>developer</role>
          </roles>
-         <timezone>+1</timezone>
+         <timezone>+2</timezone>
+      </developer>
+      <developer>
+         <id>afabiani</id>
+         <name>Alessio Fabiani</name>
+         <organization>GeoSolutions</organization>
+         <roles>
+            <role>architect</role>
+            <role>developer</role>
+         </roles>
+         <timezone>+2</timezone>
       </developer>
    </developers>
    
    <issueManagement>
       <system>github</system>
-      <url>https://github.com/geosolutions-it/geofence/issues</url>
+      <url>https://github.com/geoserver/geofence/issues</url>
    </issueManagement>
    
    <scm>
@@ -54,7 +64,7 @@
    
    <ciManagement>
       <system>jenkins</system>
-      <url>http://ares.boundlessgeo.com/jenkins</url>
+      <url>https://build.geoserver.org</url>
    </ciManagement>
    
    <repositories>
@@ -79,6 +89,20 @@
    </repositories>
 
    <distributionManagement>
+      <repository>
+        <id>boundless</id>
+        <name>Boundless Release Repository</name>
+        <url>https://repo.boundlessgeo.com/release/</url>
+        <uniqueVersion>false</uniqueVersion>
+      </repository>
+      <snapshotRepository>
+        <id>boundless</id>
+        <uniqueVersion>false</uniqueVersion>
+        <name>Boundless Snapshot Repository</name>
+        <url>https://repo.boundlessgeo.com/snapshot/</url>
+      </snapshotRepository>
+   </distributionManagement>
+   <!-- distributionManagement>
         <downloadUrl>http://maven.geo-solutions.it</downloadUrl>
         <repository>
           <uniqueVersion>false</uniqueVersion>
@@ -89,7 +113,7 @@
           <id>demo.geosolutions</id>
           <url>scp://demo.geo-solutions.it/var/www/share/github/gsman</url>
         </site>
-   </distributionManagement>
+   </distributionManagement -->
    
    <modules>
       <module>services</module>
@@ -103,10 +127,10 @@
       <extensions>
          <extension>
             <groupId>org.apache.maven.wagon</groupId>
-            <!-- artifactId>wagon-webdav</artifactId>
-            <version>1.0-beta-2</version -->
-            <artifactId>wagon-ftp</artifactId>
-            <version>2.6</version>
+            <artifactId>wagon-webdav</artifactId>
+            <version>1.0-beta-2</version>
+            <!-- artifactId>wagon-ftp</artifactId>
+            <version>2.6</version -->
          </extension>
       </extensions>
    </build>
