@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.geoserver.geofence</groupId>
         <artifactId>geofence-core</artifactId>
-        <version>3.3-SNAPSHOT</version>
+        <version>3.4.0</version>
     </parent>
 
     <groupId>org.geoserver.geofence</groupId>
