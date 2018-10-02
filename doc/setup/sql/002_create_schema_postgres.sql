@@ -210,5 +210,5 @@ alter table gf_usergroup owner to geofence;
 
 alter sequence hibernate_sequence owner to geofence;
 
---DEFAULTS
-insert into gf_gfuser(id, datecreation, emailaddress, enabled, extid, fullname, "name", "password") values (0, 'now', null, true, 0, 'admin', 'admin', '21232f297a57a5a743894ae4a801fc3');
+--DEFAULTS admin:geofence
+insert into gf_gfuser(id, datecreation, emailaddress, enabled, extid, fullname, "name", "password") values (0, 'now', null, true, 0, 'admin', 'admin', '8738afcf5a8a38ba9212911b692293d4');
