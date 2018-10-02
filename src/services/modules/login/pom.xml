@@ -14,7 +14,7 @@
     <parent>
       <groupId>org.geoserver.geofence</groupId>
       <artifactId>geofence-modules</artifactId>
-	  <version>3.4-SNAPSHOT</version>
+	  <version>3.4.2</version>
     </parent>
 
     <groupId>org.geoserver.geofence</groupId>
