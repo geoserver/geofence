@@ -211,4 +211,10 @@ alter table gf_usergroup owner to geofence;
 alter sequence hibernate_sequence owner to geofence;
 
 --DEFAULTS admin:geofence
-insert into gf_gfuser(id, datecreation, emailaddress, enabled, extid, fullname, "name", "password") values (0, 'now', null, true, 0, 'admin', 'admin', '8738afcf5a8a38ba9212911b692293d4');
+INSERT INTO gf_gfuser (id, datecreation, emailaddress, enabled, extid, fullname, name, password) VALUES (0, 'now', NULL, true, '0', 'admin', 'admin', '8738afcf5a8a38ba9212911b692293d4');
+--DEFAULTS admin:geoserver
+INSERT INTO gf_gsuser (id, admin, datecreation, emailaddress, enabled, extid, fullname, name, password) VALUES (1, true, 'now', 'admin@geoserver.org', true, NULL, 'Admin', 'admin', 'oJhggCY0IV2ivYOfQbtoiw==');
+--DEFAULTS geoserver default-gs instance
+INSERT INTO gf_gsinstance (id, baseurl, datecreation, description, name, password, username) VALUES (3, 'http://localhost:8080/geoserver', 'now', 'default-gs', 'default-gs', 'geofence', 'admin');
+INSERT INTO gf_rule (id, grant_type, ip_high, ip_low, ip_size, layer, priority, request, rolename, service, username, workspace, instance_id) VALUES (4, 'ALLOW', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO gf_usergroup (id, datecreation, enabled, extid, name) VALUES (2, 'now', true, NULL, 'ROLE_ADMIN');
