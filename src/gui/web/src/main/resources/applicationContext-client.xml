@@ -84,6 +84,7 @@
 			<list>
 				<value>classpath*:geofence-global-ovr.properties</value>
 				<value>file:${geofence.dir}/geofence-global-ovr.properties</value>
+                <value>${geofence-ovr}</value>
 			</list>
 		</property>				
         <property name="ignoreResourceNotFound" value="true"/>        
