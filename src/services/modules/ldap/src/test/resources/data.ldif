@@ -54,6 +54,16 @@ cn: otherGroup
 member: cn=destination2,ou=People,dc=example,dc=com
 member: cn=destination2
 
+dn: cn=parent,ou=Groups,dc=example,dc=com
+objectClass: top
+objectClass: groupOfNames
+cn: parent
+member: cn=destination,ou=Groups,dc=example,dc=com
+member: cn=otherGroup,ou=Groups,dc=example,dc=com
+# test ldap server won't return the dn
+member: cn=destination
+member: cn=otherGroup
+
 
 dn: cn=destination1,ou=People,dc=example,dc=com
 objectClass: top
