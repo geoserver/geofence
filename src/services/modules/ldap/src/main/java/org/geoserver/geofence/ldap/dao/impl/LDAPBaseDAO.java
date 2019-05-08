@@ -11,6 +11,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.naming.NamingException;
+
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -19,10 +21,14 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import org.geoserver.geofence.core.dao.RestrictedGenericDAO;
+import org.geoserver.geofence.core.model.GSUser;
+import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.ldap.utils.LdapUtils;
 
 import org.springframework.ldap.core.AttributesMapper;
+import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.core.support.AbstractContextMapper;
 
 import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.ISearch;
@@ -46,6 +52,33 @@ import org.springframework.beans.factory.InitializingBean;
 public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R> 
             implements RestrictedGenericDAO<R>, InitializingBean
 {
+    
+    private static final class LDAPContextMapper extends AbstractContextMapper {
+        AttributesMapper mapper;
+        
+        public LDAPContextMapper(AttributesMapper mapper) {
+            super();
+            this.mapper = mapper;
+        }
+
+        @Override
+        protected Object doMapFromContext(DirContextOperations ctx) {
+            try {
+                Object result = mapper
+                        .mapFromAttributes(ctx.getAttributes());
+                if (result instanceof GSUser) {
+                    ((GSUser)result).setExtId(ctx.getNameInNamespace());
+                }
+                if (result instanceof UserGroup) {
+                    ((UserGroup)result).setExtId(ctx.getNameInNamespace());
+                }
+                return result;
+            } catch (NamingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        
+    }
     protected Logger LOGGER = LogManager.getLogger(getClass());
 
     private LdapTemplate ldapTemplate;
@@ -210,8 +243,8 @@ public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R>
         public List<R> load(String filter) throws Exception {
             if(LOGGER.isInfoEnabled())
                 LOGGER.info("Loading " + filter);
-
-            return ldapTemplate.search(searchBase, filter, attributesMapper);
+            
+            return ldapTemplate.search(searchBase, filter, new LDAPContextMapper(attributesMapper));
         }
 
         @Override
@@ -221,7 +254,7 @@ public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R>
                 LOGGER.info("RELoading " + filter);
 
             // this is a sync implementation
-            List<R> ldapObjs = ldapTemplate.search(searchBase, filter, attributesMapper);
+            List<R> ldapObjs = ldapTemplate.search(searchBase, filter, new LDAPContextMapper(attributesMapper));
             return Futures.immediateFuture(ldapObjs);
         }
     }
