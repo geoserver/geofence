@@ -66,6 +66,25 @@ public class GSUserDAOLdapImplTest extends BaseDAOTest
         GSUser user = users.get(0);
         assertTrue(user.getName().length() > 0);
     }
+    
+    @Test
+    public void testSearchPagination()
+    {
+        Search search = new Search();
+        List<GSUser> users = userDAO.search(search);
+        assertEquals(4, users.size());
+        
+        search.setPage(0);
+        search.setMaxResults(3);
+        users = userDAO.search(search);
+        assertEquals(3, users.size());
+        
+        search.setPage(1);
+        search.setMaxResults(3);
+        users = userDAO.search(search);
+        assertEquals(1, users.size());
+    }
+    
 
     @Test
     public void testSearch_groups()

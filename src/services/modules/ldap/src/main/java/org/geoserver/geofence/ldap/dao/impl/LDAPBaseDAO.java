@@ -141,15 +141,27 @@ public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R>
         List<R> objects = new ArrayList<>();
         if (search.getFilters().isEmpty()) {
             // no filter
-            return findAll();
+            return paginate(findAll(), search);
         }
         for (Filter filter : search.getFilters()) {
             if (filter != null) {
-                List<R> filteredObjects = search(filter);
+                List<R> filteredObjects = paginate(search(filter), search);
                 objects.addAll(filteredObjects);
             }
         }
         return objects;
+    }
+
+    protected List<R> paginate(List<R> list, ISearch search) {
+        if (search.getMaxResults() > 0 && search.getPage() >= 0) {
+           List<R> result = new ArrayList<R>();
+           int start = search.getPage() * search.getMaxResults();
+           for(int index = start ; index < start + search.getMaxResults() && index < list.size(); index++) {
+               result.add(list.get(index));
+           }
+           return result;
+        }
+        return list;
     }
 
     @Override

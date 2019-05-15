@@ -67,4 +67,27 @@ public class UserGroupDAOLdapImplTest extends BaseDAOTest
     {
         assertEquals(5, userGroupDAO.count(new Search()));
     }
+    
+    @Test
+    public void testSearchPagination()
+    {
+        Search search = new Search();
+        List<UserGroup> groups = userGroupDAO.search(search);
+        assertEquals(5, groups.size());
+        
+        search.setPage(0);
+        search.setMaxResults(2);
+        groups = userGroupDAO.search(search);
+        assertEquals(2, groups.size());
+        
+        search.setPage(1);
+        search.setMaxResults(2);
+        groups = userGroupDAO.search(search);
+        assertEquals(2, groups.size());
+        
+        search.setPage(2);
+        search.setMaxResults(2);
+        groups = userGroupDAO.search(search);
+        assertEquals(1, groups.size());
+    }
 }
