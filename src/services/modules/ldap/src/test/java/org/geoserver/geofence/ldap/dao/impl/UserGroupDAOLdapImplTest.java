@@ -34,7 +34,7 @@ public class UserGroupDAOLdapImplTest extends BaseDAOTest
         assertTrue("Empty group name", group.getName().length() > 0);
 
 
-        Set<String> expected = new HashSet<>(Arrays.asList(new String[]{"adminGroup", "other", "otherGroup", "destination"}));
+        Set<String> expected = new HashSet<>(Arrays.asList(new String[]{"adminGroup", "parent", "other", "otherGroup", "destination"}));
         Set<String> found = new HashSet<>();
         for (UserGroup g : groups) {
             LOGGER.debug("Found group " + g);
@@ -65,6 +65,29 @@ public class UserGroupDAOLdapImplTest extends BaseDAOTest
     @Test
     public void testCount()
     {
-        assertEquals(4, userGroupDAO.count(new Search()));
+        assertEquals(5, userGroupDAO.count(new Search()));
+    }
+    
+    @Test
+    public void testSearchPagination()
+    {
+        Search search = new Search();
+        List<UserGroup> groups = userGroupDAO.search(search);
+        assertEquals(5, groups.size());
+        
+        search.setPage(0);
+        search.setMaxResults(2);
+        groups = userGroupDAO.search(search);
+        assertEquals(2, groups.size());
+        
+        search.setPage(1);
+        search.setMaxResults(2);
+        groups = userGroupDAO.search(search);
+        assertEquals(2, groups.size());
+        
+        search.setPage(2);
+        search.setMaxResults(2);
+        groups = userGroupDAO.search(search);
+        assertEquals(1, groups.size());
     }
 }

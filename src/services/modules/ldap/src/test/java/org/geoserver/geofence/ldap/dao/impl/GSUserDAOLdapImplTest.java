@@ -66,6 +66,25 @@ public class GSUserDAOLdapImplTest extends BaseDAOTest
         GSUser user = users.get(0);
         assertTrue(user.getName().length() > 0);
     }
+    
+    @Test
+    public void testSearchPagination()
+    {
+        Search search = new Search();
+        List<GSUser> users = userDAO.search(search);
+        assertEquals(4, users.size());
+        
+        search.setPage(0);
+        search.setMaxResults(3);
+        users = userDAO.search(search);
+        assertEquals(3, users.size());
+        
+        search.setPage(1);
+        search.setMaxResults(3);
+        users = userDAO.search(search);
+        assertEquals(1, users.size());
+    }
+    
 
     @Test
     public void testSearch_groups()
@@ -94,6 +113,35 @@ public class GSUserDAOLdapImplTest extends BaseDAOTest
 
         assertTrue(gnames.contains("destination"));
         assertTrue(gnames.contains("otherGroup"));
+    }
+    
+    @Test
+    public void test_getFullByName_hierarchicalGroups()
+    {
+        ((GSUserDAOLdapImpl)userDAO).setEnableHierarchicalGroups(true);
+        ((GSUserDAOLdapImpl)userDAO).setMemberFilter("member={0}");
+        ((GSUserDAOLdapImpl)userDAO).setNestedMemberFilter("member={0}");
+        try {
+            GSUser user = userDAO.getFull("destination2");
+            
+            assertNotNull(user);
+            assertEquals("destination2", user.getName());
+            assertEquals(3, user.getGroups().size());
+            
+            Set<String> gnames = new HashSet<>();
+            for (UserGroup g : user.getGroups()) {
+                LOGGER.debug("group : " + g.getName());
+                gnames.add(g.getName());
+            }
+    
+            assertTrue(gnames.contains("destination"));
+            assertTrue(gnames.contains("otherGroup"));
+            assertTrue(gnames.contains("parent"));
+        } finally {
+            ((GSUserDAOLdapImpl)userDAO).setEnableHierarchicalGroups(false);
+            ((GSUserDAOLdapImpl)userDAO).setMemberFilter(null);
+            ((GSUserDAOLdapImpl)userDAO).setNestedMemberFilter(null);
+        }
     }
 
 }
