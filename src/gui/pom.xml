@@ -25,7 +25,7 @@
         <module.name>geofence-gui</module.name>
         <geofence-version>3.4.3</geofence-version>
         <gt-version>20-SNAPSHOT</gt-version>
-        <geogwt-version>0.2-SNAPSHOT</geogwt-version>
+        <geogwt-version>0.4-SNAPSHOT</geogwt-version>
 
         <spring.version>4.2.5.RELEASE</spring.version>
         <spring.security.version>4.0.4.RELEASE</spring.security.version>
