@@ -48,39 +48,24 @@ Here's a compatibility table for the versions of both applications:
 
 | GeoFence         | GeoServer  |   Main changes                        |
 |------------------|------------|---------------------------------------|
-| master branch: <br/>- stable: [3.4.1] <br/>- nightly: [3.4.x] | | JTS Version update <br/> Minor DTO changes |
+| master branch: <br/> - nightly: [3.5.x] | | JDK11 |
+| 3.4.x branch: <br/>- stable: [3.4.3] <br/>- nightly: [3.4.x] | 2.15 ([probe][2.15_probe]) ([embedded][2.15_embedded]) <br/> 2.14 ([probe][2.14_probe]) ([embedded][2.14_embedded]) | JTS Version update <br/> Minor DTO changes |
 | 3.3.x branch: <br/>- stable: [3.3.0] <br/>- nightly: [3.3.x] | | LDAP improvements <br/> Minor DTO changes |
-| 3.2.x branch: <br/>- stable: [3.2.3] <br/>- nightly: [3.2.x] | 2.12 ([probe][2.12_probe]) ([embedded][2.12_embedded]) <br/> 2.11 ([probe][2.11_probe]) ([embedded][2.11_embedded]) <br/> 2.10 ([probe][2.10_probe]) ([embedded][2.10_embedded]) <br/> 2.9 ([probe][2.9_probe]) ([embedded][2.9_embedded]) | Spring 4, JDK 8                       |
-| 3.1.x branch:  <br/>- stable: [3.1.0] <br/>- nightly: [3.1.x] | >=2.8.2 ([probe][2.8_probe]) ([embedded][2.8_embedded]) | Handle Workspace admin <br/> (feature for embedded version only)
+| 3.2.x |  <br/> 2.10  <br/> 2.9 | Spring 4, JDK 8                       |
+| 3.1.x | >=2.8.2  | Handle Workspace admin <br/> (feature for embedded version only)
 | 3.0.x            | 2.8.0, 2.8.1        | GeoFence embedded into GeoServer  <br/>(Only for older 2.8 releases; Not recommended)
-| 2.2.x branch: <br/>- stable: [2.2.0] <br/>- nightly: [2.2.x]  | 2.7 ([probe][2.7])<br/> 2.6 ([probe][2.6])   | 
+| 2.2.x| 2.7 <br/> 2.6  | 
 
-[3.4.x]: http://build.geoserver.org/geofence/master/geofence-master-latest-war.zip
-[3.4.1]: http://build.geoserver.org/geofence/3.4.x/release-v3.4.1-geofence-war.zip
-[3.3.x]: http://build.geoserver.org/geofence/3.3.x/geofence-3.3.x-latest-war.zip
-[3.3.0]: http://build.geoserver.org/geofence/3.3.x/release-v3.3.0-geofence-war.zip
-[3.2.0]: http://build.geoserver.org/geofence/3.2.x/release-v3.2.0-geofence-war.zip
-[3.2.1]: http://build.geoserver.org/geofence/3.2.x/release-v3.2.1-geofence-war.zip
-[3.2.2]: http://build.geoserver.org/geofence/3.2.x/release-v3.2.2-geofence-war.zip
-[3.2.3]: http://build.geoserver.org/geofence/3.2.x/release-v3.2.3-geofence-war.zip
-[3.2.x]: http://build.geoserver.org/geofence/3.2.x/geofence-3.2.x-latest-war.zip
-[3.1.0]: http://build.geoserver.org/geofence/3.1.x/release-v3.1.0-geofence-war.zip
-[3.1.x]: http://build.geoserver.org/geofence/3.1.x/geofence-3.1.x-latest-war.zip
-[2.2.0]: http://build.geoserver.org/geofence/2.2.x/geofence-release-v2.2.0-war.zip
-[2.2.x]: http://build.geoserver.org/geofence/2.2.x/geofence-2.2.x-latest-war.zip
+[3.5.x]: https://build.geoserver.org/geofence/master/geofence-master-latest-war.zip
+[3.4.x]: https://build.geoserver.org/geofence/3.4.x/geofence-3.4.x-latest-war.zip
+[3.4.3]: https://build.geoserver.org/geofence/TODO
+[3.3.x]: https://build.geoserver.org/geofence/3.3.x/geofence-3.3.x-latest-war.zip
+[3.3.0]: https://build.geoserver.org/geofence/TODO
 
-[2.6]:          http://ares.boundlessgeo.com/geoserver/2.6.x/community-latest/geoserver-2.6-SNAPSHOT-geofence-plugin.zip
-[2.7]:          http://ares.boundlessgeo.com/geoserver/2.7.x/community-latest/geoserver-2.7-SNAPSHOT-geofence-plugin.zip
-[2.8_probe]:    http://ares.boundlessgeo.com/geoserver/2.8.x/community-latest/geoserver-2.8-SNAPSHOT-geofence-plugin.zip
-[2.8_embedded]: http://ares.boundlessgeo.com/geoserver/2.8.x/community-latest/geoserver-2.8-SNAPSHOT-geofence-server-plugin.zip
-[2.9_probe]:    http://ares.boundlessgeo.com/geoserver/2.9.x/community-latest/geoserver-2.9-SNAPSHOT-geofence-plugin.zip
-[2.9_embedded]: http://ares.boundlessgeo.com/geoserver/2.9.x/community-latest/geoserver-2.9-SNAPSHOT-geofence-server-plugin.zip
-[2.10_probe]:    http://ares.boundlessgeo.com/geoserver/2.10.x/community-latest/geoserver-2.10-SNAPSHOT-geofence-plugin.zip
-[2.10_embedded]: http://ares.boundlessgeo.com/geoserver/2.10.x/community-latest/geoserver-2.10-SNAPSHOT-geofence-server-plugin.zip
-[2.11_probe]:    http://build.geoserver.org/geoserver/2.11.x/community-latest/geoserver-2.11-SNAPSHOT-geofence-plugin.zip
-[2.11_embedded]: http://build.geoserver.org/geoserver/2.11.x/community-latest/geoserver-2.11-SNAPSHOT-geofence-server-plugin.zip
-[2.12_probe]:    http://build.geoserver.org/geoserver/2.12.x/community-latest/geoserver-2.12-SNAPSHOT-geofence-plugin.zip
-[2.12_embedded]: http://build.geoserver.org/geoserver/2.12.x/community-latest/geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip
+[2.14_probe]:    https://build.geoserver.org/geoserver/2.14.x/community-latest/geoserver-2.11-SNAPSHOT-geofence-plugin.zip
+[2.14_embedded]: https://build.geoserver.org/geoserver/2.14.x/community-latest/geoserver-2.11-SNAPSHOT-geofence-server-plugin.zip
+[2.15_probe]:    https://build.geoserver.org/geoserver/2.15.x/ext-latest/geoserver-2.12-SNAPSHOT-geofence-plugin.zip
+[2.15_embedded]: https://build.geoserver.org/geoserver/2.15.x/ext-latest/geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip
 
 
 Once you have downloaded the resources you need, please follow the instructions on the [GeoFence installation](https://github.com/geoserver/geofence/wiki/GeoFence-installation) wiki page.
