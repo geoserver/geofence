@@ -64,10 +64,10 @@ Here's a compatibility table for the versions of both applications:
 [3.3.x]: https://build.geoserver.org/geofence/3.3.x/geofence-3.3.x-latest-war.zip
 [3.3.0]: https://build.geoserver.org/geofence/TODO
 
-[2.14_probe]:    https://build.geoserver.org/geoserver/2.14.x/community-latest/geoserver-2.11-SNAPSHOT-geofence-plugin.zip
-[2.14_embedded]: https://build.geoserver.org/geoserver/2.14.x/community-latest/geoserver-2.11-SNAPSHOT-geofence-server-plugin.zip
-[2.15_probe]:    https://build.geoserver.org/geoserver/2.15.x/ext-latest/geoserver-2.12-SNAPSHOT-geofence-plugin.zip
-[2.15_embedded]: https://build.geoserver.org/geoserver/2.15.x/ext-latest/geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip
+[2.14_probe]:    https://build.geoserver.org/geoserver/2.14.x/community-latest/geoserver-2.14-SNAPSHOT-geofence-plugin.zip
+[2.14_embedded]: https://build.geoserver.org/geoserver/2.14.x/community-latest/geoserver-2.14-SNAPSHOT-geofence-server-plugin.zip
+[2.15_probe]:    https://build.geoserver.org/geoserver/2.15.x/ext-latest/geoserver-2.15-SNAPSHOT-geofence-plugin.zip
+[2.15_embedded]: https://build.geoserver.org/geoserver/2.15.x/ext-latest/geoserver-2.15-SNAPSHOT-geofence-server-plugin.zip
 
 
 Once you have downloaded the resources you need, please follow the instructions on the [GeoFence installation](https://github.com/geoserver/geofence/wiki/GeoFence-installation) wiki page.
