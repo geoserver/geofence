@@ -5,19 +5,28 @@
 
 package org.geoserver.geofence.services;
 
-import com.googlecode.genericdao.search.Filter;
-import com.googlecode.genericdao.search.Search;
-import org.geoserver.geofence.core.model.enums.*;
-import org.geotools.geometry.jts.JTS;
-import org.geotools.referencing.CRS;
 import org.locationtech.jts.geom.Geometry;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.operation.MathTransform;
+import org.geotools.api.referencing.operation.TransformException;
+
 import org.geoserver.geofence.core.dao.AdminRuleDAO;
 import org.geoserver.geofence.core.dao.LayerDetailsDAO;
 import org.geoserver.geofence.core.dao.RuleDAO;
+import org.geoserver.geofence.core.dao.search.Filter;
+import org.geoserver.geofence.core.dao.search.Search;
 import org.geoserver.geofence.core.model.*;
+import org.geoserver.geofence.core.model.enums.AccessType;
+import org.geoserver.geofence.core.model.enums.AdminGrantType;
+import org.geoserver.geofence.core.model.enums.CatalogMode;
+import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.services.dto.AccessInfo;
 import org.geoserver.geofence.services.dto.AuthUser;
 import org.geoserver.geofence.services.dto.RuleFilter;
@@ -27,11 +36,12 @@ import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
 import org.geoserver.geofence.services.dto.ShortRule;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.util.AccessInfoInternal;
+
 import org.geoserver.geofence.spi.UserResolver;
-import org.geotools.api.referencing.FactoryException;
-import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
-import org.geotools.api.referencing.operation.MathTransform;
-import org.geotools.api.referencing.operation.TransformException;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -410,6 +420,9 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         accessInfo.setCatalogMode(cmode);
 
         if (area != null) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Attaching an area to Accessinfo: " + area.getClass().getName() + " " + area.toString());
+            }
             // if we have a clip area we apply clip type
             // since is more restrictive, otherwise we keep
             // the intersect

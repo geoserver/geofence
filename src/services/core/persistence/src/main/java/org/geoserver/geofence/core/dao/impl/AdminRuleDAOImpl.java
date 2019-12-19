@@ -7,14 +7,12 @@ package org.geoserver.geofence.core.dao.impl;
 
 import java.util.List;
 
-import com.googlecode.genericdao.search.ISearch;
-import com.googlecode.genericdao.search.Search;
-
-import static org.geoserver.geofence.core.dao.util.SearchUtil.*;
+import static org.geoserver.geofence.core.dao.search.SearchUtil.*;
 
 import org.geoserver.geofence.core.model.enums.InsertPosition;
 import org.geoserver.geofence.core.dao.AdminRuleDAO;
 import org.geoserver.geofence.core.dao.DuplicateKeyException;
+import org.geoserver.geofence.core.dao.search.Search;
 import org.geoserver.geofence.core.model.AdminRule;
 
 import org.apache.logging.log4j.LogManager;
@@ -28,9 +26,16 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 @Transactional(value = "geofenceTransactionManager")
-public class AdminRuleDAOImpl extends PrioritizableDAOImpl<AdminRule> implements AdminRuleDAO {
+public class AdminRuleDAOImpl 
+        extends PrioritizableDAOImpl<AdminRule> 
+        implements AdminRuleDAO {
 
+//    public class RuleDAOImpl extends PrioritizableDAOImpl<Rule> implements RuleDAO {
     private static final Logger LOGGER = LogManager.getLogger(AdminRuleDAOImpl.class);
+
+    public AdminRuleDAOImpl() {
+        super(AdminRule.class);
+    }
 
     @Override
     public void persist(AdminRule... entities) {
@@ -77,7 +82,7 @@ public class AdminRuleDAOImpl extends PrioritizableDAOImpl<AdminRule> implements
     }
 
     protected Search getDupSearch(AdminRule rule) {
-        Search search = new Search(AdminRule.class);
+        Search search = createSearch();
         addSearchField(search, "username", rule.getUsername());
         addSearchField(search, "rolename", rule.getRolename());
         addSearchField(search, "instance", rule.getInstance());
@@ -94,7 +99,7 @@ public class AdminRuleDAOImpl extends PrioritizableDAOImpl<AdminRule> implements
     }
 
     @Override
-    public List<AdminRule> search(ISearch search) {
+    public List<AdminRule> search(Search search) {
         return super.search(search);
     }
 
@@ -123,8 +128,8 @@ public class AdminRuleDAOImpl extends PrioritizableDAOImpl<AdminRule> implements
     }
 
     @Override
-    public boolean remove(AdminRule entity) {
-        return super.remove(entity);
+    public void remove(AdminRule entity) {
+        super.remove(entity);
     }
 
     @Override

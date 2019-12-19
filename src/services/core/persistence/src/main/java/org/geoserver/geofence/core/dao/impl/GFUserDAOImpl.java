@@ -8,13 +8,13 @@ package org.geoserver.geofence.core.dao.impl;
 
 import org.geoserver.geofence.core.dao.GFUserDAO;
 import org.geoserver.geofence.core.model.GFUser;
+import org.geoserver.geofence.core.dao.search.Search;
 
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.googlecode.genericdao.search.ISearch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,11 +25,17 @@ import org.apache.logging.log4j.Logger;
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 @Transactional(value = "geofenceTransactionManager")
-public class GFUserDAOImpl extends BaseDAO<GFUser, Long> implements GFUserDAO
+public class GFUserDAOImpl //
+        extends BaseDAO<GFUser, Long> //
+        implements GFUserDAO
 {
 
     private static final Logger LOGGER = LogManager.getLogger(GFUserDAOImpl.class);
 
+    public GFUserDAOImpl() {
+        super(GFUser.class);
+    }    
+    
     @Override
     public void persist(GFUser... entities)
     {
@@ -48,7 +54,7 @@ public class GFUserDAOImpl extends BaseDAO<GFUser, Long> implements GFUserDAO
     }
 
     @Override
-    public List<GFUser> search(ISearch search)
+    public List<GFUser> search(Search search)
     {
         return super.search(search);
     }
@@ -60,9 +66,9 @@ public class GFUserDAOImpl extends BaseDAO<GFUser, Long> implements GFUserDAO
     }
 
     @Override
-    public boolean remove(GFUser entity)
+    public void remove(GFUser entity)
     {
-        return super.remove(entity);
+        super.remove(entity);
     }
 
     @Override

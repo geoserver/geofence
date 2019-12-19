@@ -98,36 +98,36 @@
             <artifactId>spring-jdbc</artifactId>
         </dependency>
 
-	<!-- =========================================================== -->
-	<!--     Persistence libs                                        -->
-	<!-- =========================================================== -->
+        <!-- =========================================================== -->
+        <!--     Persistence libs                                        -->
+        <!-- =========================================================== -->
 
 
-	<!-- HIBERNATE-GENERIC-DAO -->
-        <dependency>
+        <!-- HIBERNATE-GENERIC-DAO -->
+        <!--        <dependency>
             <groupId>com.googlecode.genericdao</groupId>
             <artifactId>dao</artifactId>
-            <!-- JPA1 dependency will excluded by exclusions in depenendency management -->
+             JPA1 dependency will excluded by exclusions in depenendency management 
         </dependency>
         <dependency>
             <groupId>com.googlecode.genericdao</groupId>
             <artifactId>search-jpa-hibernate</artifactId>
-        </dependency>
+        </dependency>-->
 
-		<!--  -->
+        <!--  -->
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
         </dependency>
 
-        <dependency>
+        <!--        <dependency>
                 <groupId>org.hibernatespatial</groupId>
                 <artifactId>hibernate-spatial-h2-geodb</artifactId>
                 <scope>test</scope>
-        </dependency>
+        </dependency>-->
 
         <dependency>
-            <groupId>org.hibernatespatial</groupId>
+            <groupId>org.hibernate</groupId>
             <artifactId>hibernate-spatial</artifactId>
         </dependency>
 
@@ -152,23 +152,30 @@
 
         <!-- =========================================================== -->
 
-            <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-            </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
 
-		<!-- =========================================================== -->
-		<!--     Hibernate                                               -->
-		<!-- =========================================================== -->
-
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-ehcache</artifactId>
-		</dependency>
+        <!-- =========================================================== -->
+        <!--     Hibernate                                               -->
+        <!-- =========================================================== -->
 
         <dependency>
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
+            <artifactId>hibernate-jcache</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.ehcache/ehcache -->
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>3.8.1</version>
+        </dependency>
+                
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>asm</groupId>
@@ -185,14 +192,14 @@
             </exclusions>
         </dependency>
 
-		<!-- CGLIB -->
+        <!-- CGLIB -->
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
         </dependency>
 
-    <!-- HTTP UTILS -->
-<!--        <dependency>
+        <!-- HTTP UTILS -->
+        <!--        <dependency>
             <groupId>org.codehaus.jettison</groupId>
             <artifactId>jettison</artifactId>
         </dependency>    -->
@@ -205,12 +212,20 @@
             <artifactId>aspectjweaver</artifactId>
         </dependency>
 
-    <!-- JUnit -->
+        <!-- JUnit -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.26</version>
+            <scope>test</scope>     
+        </dependency>
+
 
     </dependencies>
 
@@ -274,6 +289,15 @@
                      </goals>
                   </execution>
                </executions>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <!--<version></version>-->
+                <configuration>
+                    <trimStackTrace>false</trimStackTrace>
+                </configuration>
             </plugin>
             
         </plugins>

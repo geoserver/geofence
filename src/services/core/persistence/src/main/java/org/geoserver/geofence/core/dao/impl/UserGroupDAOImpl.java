@@ -8,10 +8,9 @@ package org.geoserver.geofence.core.dao.impl;
 import java.util.Date;
 import java.util.List;
 
-import com.googlecode.genericdao.search.ISearch;
-
 import org.geoserver.geofence.core.dao.UserGroupDAO;
 import org.geoserver.geofence.core.model.UserGroup;
+import org.geoserver.geofence.core.dao.search.Search;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,6 +30,10 @@ public class UserGroupDAOImpl extends BaseDAO<UserGroup, Long>
 {
     private static final Logger LOGGER = LogManager.getLogger(UserGroupDAOImpl.class);
 
+    public UserGroupDAOImpl() {
+        super(UserGroup.class);
+    }
+    
     @Override
     public void persist(UserGroup... entities)
     {
@@ -50,7 +53,7 @@ public class UserGroupDAOImpl extends BaseDAO<UserGroup, Long>
     }
 
     @Override
-    public List<UserGroup> search(ISearch search)
+    public List<UserGroup> search(Search search)
     {
         return super.search(search);
     }
@@ -62,9 +65,9 @@ public class UserGroupDAOImpl extends BaseDAO<UserGroup, Long>
     }
 
     @Override
-    public boolean remove(UserGroup entity)
+    public void remove(UserGroup entity)
     {
-        return super.remove(entity);
+        super.remove(entity);
     }
 
     @Override

@@ -8,13 +8,13 @@ package org.geoserver.geofence.core.dao.impl;
 import java.util.List;
 import java.util.Set;
 
-import com.googlecode.genericdao.search.ISearch;
 
 import org.geoserver.geofence.core.dao.LayerDetailsDAO;
 import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.LayerDetails;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.geoserver.geofence.core.dao.search.Search;
 
 import org.hibernate.Hibernate;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,10 +25,16 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 @Transactional(value = "geofenceTransactionManager")
-public class LayerDetailsDAOImpl extends BaseDAO<LayerDetails, Long> implements LayerDetailsDAO {
+public class LayerDetailsDAOImpl 
+        extends BaseDAO<LayerDetails, Long> 
+        implements LayerDetailsDAO {
 
     private static final Logger LOGGER = LogManager.getLogger(LayerDetailsDAOImpl.class);
 
+    public LayerDetailsDAOImpl() {
+        super(LayerDetails.class);
+    }
+    
     @Override
     public void persist(LayerDetails... entities) {
         for (LayerDetails details : entities) {
@@ -56,7 +62,7 @@ public class LayerDetailsDAOImpl extends BaseDAO<LayerDetails, Long> implements 
     }
 
     @Override
-    public List<LayerDetails> search(ISearch search) {
+    public List<LayerDetails> search(Search search) {
         return super.search(search);
     }
 
@@ -66,8 +72,8 @@ public class LayerDetailsDAOImpl extends BaseDAO<LayerDetails, Long> implements 
     }
 
     @Override
-    public boolean remove(LayerDetails entity) {
-        return super.remove(entity);
+    public void remove(LayerDetails entity) {
+        super.remove(entity);
     }
 
     @Override

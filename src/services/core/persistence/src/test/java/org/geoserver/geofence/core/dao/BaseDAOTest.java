@@ -95,8 +95,8 @@ public abstract class BaseDAOTest  {
         List<GSUser> list = userDAO.findAll();
         for (GSUser item : list) {
             LOGGER.info("Removing " + item);
-            boolean ret = userDAO.remove(item);
-            assertTrue("User not removed", ret);
+            userDAO.remove(item);
+            assertNull("User not removed", userDAO.find(item.getId()));
         }
 
         assertEquals("Users have not been properly deleted", 0, userDAO.count(null));
@@ -106,8 +106,8 @@ public abstract class BaseDAOTest  {
         List<GFUser> list = gfUserDAO.findAll();
         for (GFUser item : list) {
             LOGGER.info("Removing " + item);
-            boolean ret = gfUserDAO.remove(item);
-            assertTrue("User not removed", ret);
+            gfUserDAO.remove(item);
+            assertNull("User not removed", gfUserDAO.find(item.getId()));
         }
 
         assertEquals("GRUsers have not been properly deleted", 0, gfUserDAO.count(null));
@@ -117,8 +117,8 @@ public abstract class BaseDAOTest  {
         List<Rule> list = ruleDAO.findAll();
         for (Rule item : list) {
             LOGGER.info("Removing " + item);
-            boolean ret = ruleDAO.remove(item);
-            assertTrue("Rule not removed", ret);
+            ruleDAO.remove(item);
+            assertNull("Rule not removed", ruleDAO.find(item.getId()));
         }
 
         assertEquals("Rules have not been properly deleted", 0, ruleDAO.count(null));
@@ -128,8 +128,8 @@ public abstract class BaseDAOTest  {
         List<UserGroup> list = userGroupDAO.findAll();
         for (UserGroup item : list) {
             LOGGER.info("Removing " + item);
-            boolean ret = userGroupDAO.remove(item);
-            assertTrue("UserGroup not removed", ret);
+            userGroupDAO.remove(item);
+            assertNull("UserGroup not removed", userGroupDAO.find(item.getId()));
         }
 
         assertEquals("UserGroups have not been properly deleted", 0, userGroupDAO.count(null));

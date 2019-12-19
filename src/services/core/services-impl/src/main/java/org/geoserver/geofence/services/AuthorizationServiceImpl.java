@@ -5,16 +5,15 @@
 
 package org.geoserver.geofence.services;
 
-import com.googlecode.genericdao.search.Search;
+import org.geoserver.geofence.core.model.GSUser;
+import org.geoserver.geofence.core.dao.GSUserDAO;
+import org.geoserver.geofence.core.dao.search.Search;
+import org.geoserver.geofence.services.dto.AuthUser;
 
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import org.geoserver.geofence.core.dao.GSUserDAO;
-import org.geoserver.geofence.core.model.GSUser;
-import org.geoserver.geofence.services.dto.AuthUser;
 
 /**
  *

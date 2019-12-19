@@ -41,7 +41,7 @@ import org.locationtech.jts.geom.MultiPolygon;
 @Table(name = "gf_rule_limits", uniqueConstraints = @UniqueConstraint(columnNames = "rule_id"))
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "RuleLimits")
 @XmlRootElement(name = "RuleLimits")
-public class RuleLimits implements Serializable {
+public class RuleLimits implements Identifiable, Serializable {
 
     private static final long serialVersionUID = 2829839552804345725L;
 
@@ -56,7 +56,7 @@ public class RuleLimits implements Serializable {
     @ForeignKey(name = "fk_limits_rule")
     private Rule rule;
 
-    @Type(type = "org.hibernatespatial.GeometryUserType")
+    //@Type(type = "org.hibernate.spatial.JTSGeometryType")
     @Column(name = "area")
     private MultiPolygon allowedArea;
 

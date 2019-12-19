@@ -81,26 +81,28 @@
         <property name="packagesToScan" value="org.geoserver.geofence.core.model" />
         <property name="jpaPropertyMap">
             <map>
-                <entry key="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider" />
+                <!--<entry key="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider" />-->
+                <entry key="hibernate.cache.region.factory_class" value="jcache" />                  
+                <entry key="hibernate.javax.cache.provider" value="org.ehcache.jsr107.EhcacheCachingProvider" />                  
                 <entry key="hibernate.cache.provider_configuration_file_resource_path"
                        value="geofence-ehcache.xml" />
                 <!-- hibernate.hbm2ddl.auto should not be enabled by default             -->
                 <!--   * update, create and create-drop should not be used in production -->
                 <!--   * validate will not work with oracle spatial                      -->
                 <!-- <entry key="hibernate.hbm2ddl.auto" value="validate"/> -->
-                <entry key="hibernate.cache.use_second_level_cache" value="true" />
+                <entry key="hibernate.cache.use_second_level_cache" value="false" />
                 <entry key="hibernate.connection.autocommit" value="false" />
                 <entry key="hibernate.generate_statistics" value="false" />
                 <entry key="hibernate.default_schema" value="public" />
                 <entry key="hibernate.validator.apply_to_ddl" value="false" />
-				<entry key="hibernate.validator.autoregister_listeners" value="false" />  
+                <entry key="hibernate.validator.autoregister_listeners" value="false" />  
             </map>
         </property>
     </bean>
 
     <bean id="geofenceVendorAdapter"
           class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-        <property name="databasePlatform" value="org.hibernatespatial.geodb.GeoDBDialect" />
+        <property name="databasePlatform" value="org.hibernate.spatial.dialect.h2geodb.GeoDBDialect" />
         <property name="showSql" value="false" />
         <property name="generateDdl" value="false" />
     </bean>
@@ -108,6 +110,24 @@
     <bean id="geofenceTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="geofenceEntityManagerFactory" />
     </bean>
+
+
+<!--<bean id="sessionFactory"
+  class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+    <property name="dataSource" ref="dataSource" />
+    <property name="packagesToScan" value="org.geoserver.geofence.core.model" />
+    <property name="hibernateProperties">
+        <props>
+            <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+            <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+        </props>
+    </property>
+</bean>-->
+
+<!--<bean id="geofenceTransactionManager"
+  class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+    <property name="sessionFactory" ref="sessionFactory" />
+</bean>-->
 
     <bean
         class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />

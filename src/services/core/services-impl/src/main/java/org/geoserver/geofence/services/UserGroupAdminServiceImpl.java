@@ -5,19 +5,19 @@
 
 package org.geoserver.geofence.services;
 
-import com.googlecode.genericdao.search.Search;
-import org.geoserver.geofence.core.dao.UserGroupDAO;
 import org.geoserver.geofence.core.model.UserGroup;
+import org.geoserver.geofence.core.dao.UserGroupDAO;
+import org.geoserver.geofence.core.dao.search.Search;
+import org.geoserver.geofence.services.dto.ShortGroup;
+import org.geoserver.geofence.services.exception.BadRequestServiceEx;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import org.geoserver.geofence.services.dto.ShortGroup;
-import org.geoserver.geofence.services.exception.BadRequestServiceEx;
-import org.geoserver.geofence.services.exception.NotFoundServiceEx;
-import java.util.ArrayList;
 
 /**
  *

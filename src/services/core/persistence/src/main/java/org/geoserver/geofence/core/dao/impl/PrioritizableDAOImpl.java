@@ -5,19 +5,18 @@
 
 package org.geoserver.geofence.core.dao.impl;
 
-import java.util.List;
-import javax.persistence.Query;
-
-import org.geoserver.geofence.core.dao.PrioritizableDAO;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
 import org.geoserver.geofence.core.model.Prioritizable;
-
-import com.googlecode.genericdao.search.Field;
-import com.googlecode.genericdao.search.ISearch;
-import com.googlecode.genericdao.search.Search;
+import org.geoserver.geofence.core.dao.PrioritizableDAO;
+import org.geoserver.geofence.core.dao.search.Search;
+import org.geoserver.geofence.core.dao.search.Search.Field;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.List;
+import javax.persistence.Query;
+import org.geoserver.geofence.core.model.Identifiable;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,11 +26,15 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 @Transactional(value = "geofenceTransactionManager")
-public abstract class PrioritizableDAOImpl<T extends Prioritizable> 
+public abstract class PrioritizableDAOImpl<T extends Prioritizable & Identifiable> 
         extends BaseDAO<T, Long>
         implements PrioritizableDAO<T>
 {
     private static final Logger LOGGER = LogManager.getLogger(PrioritizableDAOImpl.class);
+
+    protected PrioritizableDAOImpl(Class<T> e) {
+        super(e);
+    }
     
     protected long persist(Class<T> clazz, T entity, InsertPosition position) {
         switch(position) {
@@ -39,13 +42,13 @@ public abstract class PrioritizableDAOImpl<T extends Prioritizable>
                 // priority is already set
                 break;
             case FROM_START:
-                Search search = new Search(clazz);
+                Search search = createSearch(clazz);
                 search.setFirstResult((int)entity.getPriority());
                 search.setMaxResults(1);
                 search.addSortAsc("priority");
                 List<Prioritizable> list = super._search(search);
                 if(list.isEmpty()) { // no rule found at given position: let's find out why
-                    int count = count(new Search(clazz));
+                    long count = count(createSearch(clazz));
                     if(LOGGER.isDebugEnabled())
                         LOGGER.debug("No rule found at position " + entity.getPriority() + " -- rules count:"+count);
 
@@ -54,7 +57,7 @@ public abstract class PrioritizableDAOImpl<T extends Prioritizable>
                             LOGGER.debug("Inserting first rule");
                         entity.setPriority(1); // this is the only rule so far, let's put in an arbitrary value
                     } else { // some rules in, the requested postion is at bottom
-                        Search s1 = new Search(clazz);
+                        Search s1 = createSearch(clazz);
                         s1.addField("priority", Field.OP_MAX);
                         long maxPri = (Long)searchUnique(s1);
                         entity.setPriority(maxPri+1);
@@ -77,7 +80,7 @@ public abstract class PrioritizableDAOImpl<T extends Prioritizable>
             case FROM_END:
                 // 0 based: if set to 0, this rule will go in last position
                 long posFromEnd = entity.getPriority();
-                int count = count(new Search(clazz));
+                long count = count(createSearch(clazz));
                 if(count == 0) {
                     if(LOGGER.isDebugEnabled())
                         LOGGER.debug("Inserting first rule");
@@ -96,7 +99,7 @@ public abstract class PrioritizableDAOImpl<T extends Prioritizable>
                     }
 
 
-                    Search searchEnd = new Search(clazz);
+                    Search searchEnd = createSearch(clazz);
                     searchEnd.setFirstResult((int)posFromStart);
                     searchEnd.setMaxResults(1);
                     searchEnd.addSortAsc("priority");
@@ -144,7 +147,7 @@ public abstract class PrioritizableDAOImpl<T extends Prioritizable>
             throw new IllegalArgumentException("Positive offset required");
         }
 
-        Search search = new Search(clazz);
+        Search search = createSearch(clazz);
         search.addFilterGreaterOrEqual("priority", priorityStart);
         search.addFilterLessThan("priority", priorityStart + offset);
         if ( super.count(search) == 0 ) {
@@ -176,7 +179,7 @@ public abstract class PrioritizableDAOImpl<T extends Prioritizable>
     }
 
     @Override
-    public List<T> search(ISearch search) {
+    public List<T> search(Search search) {
         return super.search(search);
     }
 

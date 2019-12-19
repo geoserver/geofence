@@ -125,6 +125,13 @@
                                         <include name="**/*.java"/>
                                     </fileset>
                                 </replaceregexp>
+                                
+                                <replaceregexp byline="true" replace="">
+                                    <regexp pattern="(@ElementCollection).*"/>
+                                    <fileset dir="${project.build.directory}/generated-sources/original">
+                                        <include name="**/*.java"/>
+                                    </fileset>
+                                </replaceregexp>
 
                                 <replaceregexp byline="true" replace="">
                                     <regexp pattern="(@Id|@GeneratedValue|@Enumerated|@Column|@Type|@Temporal|@OneToOne|@ManyToOne|@ManyToMany|@ForeignKey|@UniqueConstraint|@AttributeOverride|@JoinTable).*"/>

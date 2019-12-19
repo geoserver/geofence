@@ -5,8 +5,13 @@
 
 package org.geoserver.geofence.core.dao;
 
-import com.googlecode.genericdao.search.Search;
 import org.geoserver.geofence.core.model.Rule;
+import org.geoserver.geofence.core.dao.search.Search;
+import org.locationtech.jts.geom.MultiPolygon;
+import static org.geoserver.geofence.core.dao.BaseDAOTest.ruleDAO;
+import org.geoserver.geofence.core.dao.search.SearchUtil;
+import org.geoserver.geofence.core.model.GSUser;
+import org.geoserver.geofence.core.model.IPAddressRange;
 import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.LayerDetails;
 import org.geoserver.geofence.core.model.IPAddressRange;
@@ -496,7 +501,7 @@ public class RuleDAOTest extends BaseDAOTest {
 
     @Test
     public void testShift() {
-        assertEquals(0, ruleDAO.count(new Search(Rule.class)));
+        assertEquals(0, ruleDAO.count(ruleDAO.createSearch()));
 
         Rule r1 = new Rule(10, null, null, null, null,     "s1", "r1", "w1", "l1", GrantType.ALLOW);
         Rule r2 = new Rule(20, null, null, null, null,     "s2", "r2", "w2", "l2", GrantType.ALLOW);
@@ -511,7 +516,7 @@ public class RuleDAOTest extends BaseDAOTest {
         int n = ruleDAO.shift(20, 5);
         assertEquals(3, n);
 
-        Search s = new Search(Rule.class);
+        Search s = ruleDAO.createSearch();
         s.addFilterEqual("service", "s3");
         List<Rule> loaded = ruleDAO.search(s);
         assertEquals(1, loaded.size());
@@ -524,7 +529,7 @@ public class RuleDAOTest extends BaseDAOTest {
 
     @Test
     public void testSwap() {
-        assertEquals(0, ruleDAO.count(new Search(Rule.class)));
+        assertEquals(0, ruleDAO.count(ruleDAO.createSearch()));
 
         Rule r1 = new Rule(10, null, null, null, null,     "s1", "r1", "w1", "l1", GrantType.ALLOW);
         Rule r2 = new Rule(20, null, null, null, null,     "s2", "r2", "w2", "l2", GrantType.ALLOW);
@@ -546,7 +551,7 @@ public class RuleDAOTest extends BaseDAOTest {
 
         long id1;
         {
-            assertEquals(0, ruleDAO.count(new Search(Rule.class)));
+            assertEquals(0, ruleDAO.count(ruleDAO.createCountSearch()));
             Rule rule1 = new Rule(1000, null, null, null, null, "s", null, null, null, GrantType.ALLOW);
             ruleDAO.persist(rule1, InsertPosition.FROM_START);
             id1 = rule1.getId();
@@ -563,7 +568,7 @@ public class RuleDAOTest extends BaseDAOTest {
         ruleDAO.persist(new Rule(20, null, null, null, null, "s20", null, null, null, GrantType.ALLOW));
 
         {
-            assertEquals(3, ruleDAO.count(new Search(Rule.class)));
+            assertEquals(3, ruleDAO.count(ruleDAO.createCountSearch()));
             Rule rule1 = new Rule(1000, null, null, null, null, "sZ", null, null, null, GrantType.ALLOW);
             long pri = ruleDAO.persist(rule1, InsertPosition.FROM_START);
             assertEquals(21, pri);
@@ -623,7 +628,7 @@ public class RuleDAOTest extends BaseDAOTest {
 
         //test search
         {
-            Search s = new Search(Rule.class);
+            Search s = ruleDAO.createSearch();
 
             SearchUtil.addAddressRangeSearch(s, new IPAddressRange("10.11.0.0/16"));
 

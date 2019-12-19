@@ -7,12 +7,8 @@ package org.geoserver.geofence.core.dao.impl;
 
 import java.util.List;
 
-
-import com.googlecode.genericdao.search.ISearch;
-import com.googlecode.genericdao.search.Search;
-
 import org.geoserver.geofence.core.dao.RuleDAO;
-import static org.geoserver.geofence.core.dao.util.SearchUtil.*;
+import static org.geoserver.geofence.core.dao.search.SearchUtil.*;
 import org.geoserver.geofence.core.model.Rule;
 
 import org.geoserver.geofence.core.model.enums.GrantType;
@@ -20,6 +16,7 @@ import org.geoserver.geofence.core.model.enums.InsertPosition;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.geoserver.geofence.core.dao.DuplicateKeyException;
+import org.geoserver.geofence.core.dao.search.Search;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +30,10 @@ public class RuleDAOImpl extends PrioritizableDAOImpl<Rule> implements RuleDAO {
 
     private static final Logger LOGGER = LogManager.getLogger(RuleDAOImpl.class);
 
+    public RuleDAOImpl() {
+        super(Rule.class);
+    }
+    
     @Override
     public void persist(Rule... entities) throws DuplicateKeyException {
 
@@ -82,7 +83,7 @@ public class RuleDAOImpl extends PrioritizableDAOImpl<Rule> implements RuleDAO {
 
 
     protected Search getDupSearch(Rule rule) {
-        Search search = new Search(Rule.class);
+        Search search = createSearch();
         addSearchField(search, "username", rule.getUsername());
         addSearchField(search, "rolename", rule.getRolename());
         addSearchField(search, "instance", rule.getInstance());
@@ -103,7 +104,7 @@ public class RuleDAOImpl extends PrioritizableDAOImpl<Rule> implements RuleDAO {
     }
 
     @Override
-    public List<Rule> search(ISearch search) {
+    public List<Rule> search(Search search) {
         return super.search(search);
     }
 
@@ -132,8 +133,8 @@ public class RuleDAOImpl extends PrioritizableDAOImpl<Rule> implements RuleDAO {
     }
 
     @Override
-    public boolean remove(Rule entity) {
-        return super.remove(entity);
+    public void remove(Rule entity) {
+        super.remove(entity);
     }
 
     @Override

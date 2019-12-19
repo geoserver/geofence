@@ -48,13 +48,12 @@
         <dependency>
             <groupId>org.springframework.ldap</groupId>
             <artifactId>spring-ldap-core</artifactId>
-            <version>2.2.1.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>20.0</version>
+            <version>28.0-jre</version>
         </dependency>
 
 
@@ -71,7 +70,6 @@
         <dependency>
             <groupId>org.springframework.ldap</groupId>
             <artifactId>spring-ldap-test</artifactId>
-            <version>2.2.1.RELEASE</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -133,8 +131,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hibernatespatial</groupId>
-            <artifactId>hibernate-spatial-h2-geodb</artifactId>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-spatial</artifactId>
             <scope>test</scope>
         </dependency>
 

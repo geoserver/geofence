@@ -7,13 +7,14 @@ package org.geoserver.geofence.core.dao.impl;
 
 import java.util.List;
 
-import com.googlecode.genericdao.search.ISearch;
 
 import org.geoserver.geofence.core.dao.GSInstanceDAO;
+import org.geoserver.geofence.core.dao.search.Search;
 import org.geoserver.geofence.core.model.GSInstance;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -28,6 +29,10 @@ public class GSInstanceDAOImpl extends BaseDAO<GSInstance, Long> implements GSIn
 
     private static final Logger LOGGER = LogManager.getLogger(GSInstanceDAOImpl.class);
 
+    public GSInstanceDAOImpl() {
+        super(GSInstance.class);
+    }    
+    
     @Override
     public void persist(GSInstance... entities)
     {
@@ -41,7 +46,7 @@ public class GSInstanceDAOImpl extends BaseDAO<GSInstance, Long> implements GSIn
     }
 
     @Override
-    public List<GSInstance> search(ISearch search)
+    public List<GSInstance> search(Search search)
     {
         return super.search(search);
     }
@@ -53,9 +58,9 @@ public class GSInstanceDAOImpl extends BaseDAO<GSInstance, Long> implements GSIn
     }
 
     @Override
-    public boolean remove(GSInstance entity)
+    public void remove(GSInstance entity)
     {
-        return super.remove(entity);
+        super.remove(entity);
     }
 
     @Override

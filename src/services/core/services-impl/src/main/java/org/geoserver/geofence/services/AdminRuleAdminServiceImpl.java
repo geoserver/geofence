@@ -8,16 +8,17 @@ package org.geoserver.geofence.services;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.googlecode.genericdao.search.Filter;
-import com.googlecode.genericdao.search.Search;
-import org.geoserver.geofence.core.dao.AdminRuleDAO;
 import org.geoserver.geofence.core.model.AdminRule;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
+import org.geoserver.geofence.core.dao.AdminRuleDAO;
+import org.geoserver.geofence.core.dao.search.Filter;
+import org.geoserver.geofence.core.dao.search.Search;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.ShortAdminRule;
 
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
+
 import static org.geoserver.geofence.services.util.FilterUtils.addCriteria;
 import static org.geoserver.geofence.services.util.FilterUtils.addFixedCriteria;
 import static org.geoserver.geofence.services.util.FilterUtils.addFixedStringCriteria;
@@ -109,8 +110,8 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
 
     @Override
     public void deleteRulesByUser(String username) throws NotFoundServiceEx {
-        Search searchCriteria = new Search(AdminRule.class);
-        searchCriteria.addFilter(Filter.equal("username", username));
+        Search searchCriteria = ruleDAO.createSearch();
+        searchCriteria.addFilterEqual("username", username);
 
         List<AdminRule> list = ruleDAO.search(searchCriteria);
         if(LOGGER.isInfoEnabled())
@@ -124,7 +125,7 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
 
     @Override
     public void deleteRulesByRole(String rolename) throws NotFoundServiceEx {
-        Search searchCriteria = new Search(AdminRule.class);
+        Search searchCriteria = ruleDAO.createSearch();
         searchCriteria.addFilter(Filter.equal("rolename", rolename));
 
         List<AdminRule> list = ruleDAO.search(searchCriteria);
@@ -137,7 +138,7 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
 
     @Override
     public void deleteRulesByInstance(long instanceId) throws NotFoundServiceEx {
-        Search searchCriteria = new Search(AdminRule.class);
+        Search searchCriteria = ruleDAO.createSearch();
         searchCriteria.addFilter(Filter.equal("instance.id", instanceId));
 
         List<AdminRule> list = ruleDAO.search(searchCriteria);
@@ -179,7 +180,7 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
 
     @Override
     public List<ShortAdminRule> getRulesByPriority(long priority, Integer page, Integer entries) {
-        Search searchCriteria = new Search(AdminRule.class);
+        Search searchCriteria = ruleDAO.createSearch();
         searchCriteria.addFilter(Filter.greaterOrEqual("priority", priority));
         searchCriteria.addSortAsc("priority");
         addPagingConstraints(searchCriteria, page, entries);
@@ -189,7 +190,7 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
 
     @Override
     public ShortAdminRule getRuleByPriority(long priority) throws BadRequestServiceEx {
-        Search searchCriteria = new Search(AdminRule.class);
+        Search searchCriteria = ruleDAO.createSearch();
         searchCriteria.addFilter(Filter.equal("priority", priority));
         List<AdminRule> found = ruleDAO.search(searchCriteria);
         if(found.isEmpty())
