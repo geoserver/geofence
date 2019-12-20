@@ -5,7 +5,7 @@
 
 package org.geoserver.geofence.core.dao.search;
 
-import javax.persistence.criteria.Join;
+import org.geoserver.geofence.core.dao.search.Search.JoinInfo;
 import org.geoserver.geofence.core.model.IPAddressRange;
 
 /**
@@ -21,7 +21,7 @@ public class SearchUtil {
     public static void addAddressRangeSearch(Search search, IPAddressRange addressRange) {
         
 //        search.addFetch("addressRange", IPAddressRange.class);
-        Join ar = search.addJoin("addressRange");
+        JoinInfo ar = search.addJoin("addressRange");
         
         if(addressRange != null ) {
             // it's embedded
@@ -53,7 +53,7 @@ public class SearchUtil {
         }
     }
     
-    public static void addSearchField(Search search, Join j, String field, Object o) {
+    public static void addSearchField(Search search, JoinInfo j, String field, Object o) {
         if ( o == null ) {
             search.addFilterNull(j, field);
         } else {

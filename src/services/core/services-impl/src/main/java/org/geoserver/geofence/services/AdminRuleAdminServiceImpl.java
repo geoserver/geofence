@@ -11,7 +11,6 @@ import java.util.List;
 import org.geoserver.geofence.core.model.AdminRule;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
 import org.geoserver.geofence.core.dao.AdminRuleDAO;
-import org.geoserver.geofence.core.dao.search.Filter;
 import org.geoserver.geofence.core.dao.search.Search;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.ShortAdminRule;
@@ -180,11 +179,11 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
 
     @Override
     public List<ShortAdminRule> getRulesByPriority(long priority, Integer page, Integer entries) {
-        Search searchCriteria = ruleDAO.createSearch();
-        searchCriteria.addFilterGreaterOrEqual("priority", priority);
-        searchCriteria.addSortAsc("priority");
-        addPagingConstraints(searchCriteria, page, entries);
-        List<AdminRule> found = ruleDAO.search(searchCriteria);
+        Search search = ruleDAO.createSearch();
+        search.addFilterGreaterOrEqual("priority", priority);
+        search.addSortAsc("priority");
+        addPagingConstraints(search, page, entries);
+        List<AdminRule> found = ruleDAO.search(search);
         return convertToShortList(found);
     }
 

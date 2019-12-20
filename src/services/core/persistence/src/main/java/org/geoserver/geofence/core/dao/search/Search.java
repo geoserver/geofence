@@ -21,8 +21,8 @@ import javax.persistence.criteria.Root;
  */
 public class Search<O, R> {
     
-    Class<O> outType;    
-    Class<R> rootClass;    
+    private final Class<O> outType;    
+    private final Class<R> rootClass;    
     private final EntityManager em;    
     private final CriteriaBuilder cb;
     private CriteriaQuery q;    
@@ -30,10 +30,24 @@ public class Search<O, R> {
     private List<Predicate> whereClauses = new ArrayList<>() ;
     private List<Order> orderBy = new ArrayList<>() ;
 
+    private Integer firstResult = null;
+    private Integer maxResults = null;
+    private Integer page = null;
     
-    Integer firstResult = null;
-    Integer maxResults = null;
-    Integer page = null;
+    public static class JoinInfo{
+        Join join;
+        String field;
+
+        public JoinInfo(Join join, String field) {
+            this.join = join;
+            this.field = field;
+        }
+
+        public String getField() {
+            return field;
+        }
+        
+    }
     
     protected Search(EntityManager em, Class<O> resultType, Class<R> rootClass) {
         this.em = em;
@@ -86,8 +100,8 @@ public class Search<O, R> {
         q.distinct(b);
     }
     
-    public Join addJoin(String field) {
-        return root.join(field, JoinType.LEFT);
+    public JoinInfo addJoin(String field) {
+        return new JoinInfo(root.join(field, JoinType.LEFT), field);
     }
     
     public Fetch addFetch(String field) {
@@ -104,13 +118,12 @@ public class Search<O, R> {
         whereClauses.add(cb.isNull(root.get(field))); // )Restrictions.isNull(field));
     }
 
-    public void addFilterNull(Join j, String field) {
-        whereClauses.add(cb.isNull(j.get(field))); 
+    public void addFilterNull(JoinInfo j, String field) {
+        whereClauses.add(cb.isNull(j.join.get(field))); 
     }
     
-    
-    public void addFilterEqual(Join j, String field, Object o) {
-        whereClauses.add(cb.equal(j.get(field), o));
+    public void addFilterEqual(JoinInfo j, String field, Object o) {
+        whereClauses.add(cb.equal(j.join.get(field), o));
 //        c.add(Restrictions.eq(field, o));
     }
 
@@ -145,6 +158,10 @@ public class Search<O, R> {
 
     public Predicate isEqual(String field, Object val) {
         return cb.equal(root.get(field), val);
+    }
+    
+    public Predicate isEqual(JoinInfo j, String field, Object val) {
+        return cb.equal(j.join.get(field), val);
     }
 
     public Predicate isGE(String field, Number val) {
@@ -206,7 +223,7 @@ public class Search<O, R> {
             if(maxResults == null) {
                 throw new IllegalStateException("Page set without maxresults");
             }
-            query.setFirstResult((page-1) * maxResults);             
+            query.setFirstResult(page * maxResults);             
         }
     }
 

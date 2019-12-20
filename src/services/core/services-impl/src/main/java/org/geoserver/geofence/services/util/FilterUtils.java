@@ -98,32 +98,32 @@ public class FilterUtils {
      *
      * We're dealing with IDs here, so <U>we'll suppose that the related object id field is called "id"</U>.
      */
-    public static void addCriteria(Search searchCriteria, String fieldName, RuleFilter.IdNameFilter filter) {
+    public static void addCriteria(Search search, String fieldName, RuleFilter.IdNameFilter filter) {
         switch (filter.getType()) {
             case ANY:
                 break; // no filtering
 
             case DEFAULT:
-                searchCriteria.addFilterNull(fieldName);
+                search.addFilterNull(fieldName);
                 break;
 
             case IDVALUE:
                 if(filter.isIncludeDefault()) {
-                    searchCriteria.addFilterOr(
-                            searchCriteria.isNull(fieldName),
-                            searchCriteria.isEqual(fieldName + ".id", filter.getId()));
+                    search.addFilterOr(
+                            search.isNull(fieldName),
+                            search.isEqual(fieldName + ".id", filter.getId()));
                 } else {
-                    searchCriteria.addFilterEqual(fieldName + ".id", filter.getId());
+                    search.addFilterEqual(fieldName + ".id", filter.getId());
                 }
                 break;
 
             case NAMEVALUE:
                 if(filter.isIncludeDefault()) {
-                    searchCriteria.addFilterOr(
-                            searchCriteria.isNull(fieldName),
-                            searchCriteria.isEqual(fieldName + ".name", filter.getName()));
+                    search.addFilterOr(
+                            search.isNull(fieldName),
+                            search.isEqual(fieldName + ".name", filter.getName()));
                 } else {
-                    searchCriteria.addFilterEqual(fieldName + ".name", filter.getName());
+                    search.addFilterEqual(fieldName + ".name", filter.getName());
                 }
                 break;
 
