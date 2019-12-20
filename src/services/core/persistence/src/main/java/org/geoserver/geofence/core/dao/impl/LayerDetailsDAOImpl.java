@@ -72,8 +72,8 @@ public class LayerDetailsDAOImpl
     }
 
     @Override
-    public void remove(LayerDetails entity) {
-        super.remove(entity);
+    public boolean remove(LayerDetails entity) {
+        return super.remove(entity);
     }
 
     @Override

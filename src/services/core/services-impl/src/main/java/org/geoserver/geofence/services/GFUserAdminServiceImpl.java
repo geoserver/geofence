@@ -59,7 +59,7 @@ public class GFUserAdminServiceImpl implements GFUserAdminService {
 
     @Override
     public GFUser get(String name) {
-        Search search = new Search(GFUser.class);
+        Search search = gfUserDAO.createSearch();
         search.addFilterEqual("name", name);
         List<GFUser> users = gfUserDAO.search(search);
 
@@ -86,7 +86,7 @@ public class GFUserAdminServiceImpl implements GFUserAdminService {
             throw new BadRequestServiceEx("Page and entries params should be declared together.");
         }
 
-        Search searchCriteria = new Search(GFUser.class);
+        Search searchCriteria = gfUserDAO.createSearch();
 
         if(page != null) {
             searchCriteria.setMaxResults(entries);
@@ -110,7 +110,7 @@ public class GFUserAdminServiceImpl implements GFUserAdminService {
 
     @Override
     public long getCount(String nameLike) {
-        Search searchCriteria = new Search(GFUser.class);
+        Search searchCriteria = gfUserDAO.createCountSearch();
 
         if (nameLike != null) {
             searchCriteria.addFilterILike("name", nameLike);

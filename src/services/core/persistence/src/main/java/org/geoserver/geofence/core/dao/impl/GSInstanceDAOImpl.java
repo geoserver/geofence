@@ -58,9 +58,9 @@ public class GSInstanceDAOImpl extends BaseDAO<GSInstance, Long> implements GSIn
     }
 
     @Override
-    public void remove(GSInstance entity)
+    public boolean remove(GSInstance entity)
     {
-        super.remove(entity);
+        return super.remove(entity);
     }
 
     @Override

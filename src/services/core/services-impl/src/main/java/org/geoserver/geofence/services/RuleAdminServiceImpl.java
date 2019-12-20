@@ -144,8 +144,8 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
     @Override
     public void deleteRulesByUser(String username) throws NotFoundServiceEx {
-        Search searchCriteria = new Search(Rule.class);
-        searchCriteria.addFilter(Filter.equal("username", username));
+        Search searchCriteria = ruleDAO.createSearch();
+        searchCriteria.addFilterEqual("username", username);
 
         List<Rule> list = ruleDAO.search(searchCriteria);
         if(LOGGER.isInfoEnabled())
@@ -159,8 +159,8 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
     @Override
     public void deleteRulesByRole(String rolename) throws NotFoundServiceEx {
-        Search searchCriteria = new Search(Rule.class);
-        searchCriteria.addFilter(Filter.equal("rolename", rolename));
+        Search searchCriteria = ruleDAO.createSearch();
+        searchCriteria.addFilterEqual("rolename", rolename);
 
         List<Rule> list = ruleDAO.search(searchCriteria);
         for (Rule rule : list) {
@@ -172,8 +172,8 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
     @Override
     public void deleteRulesByInstance(long instanceId) throws NotFoundServiceEx {
-        Search searchCriteria = new Search(Rule.class);
-        searchCriteria.addFilter(Filter.equal("instance.id", instanceId));
+        Search searchCriteria = ruleDAO.createSearch();
+        searchCriteria.addFilterEqual("instance.id", instanceId);
 
         List<Rule> list = ruleDAO.search(searchCriteria);
         for (Rule rule : list) {
@@ -256,8 +256,8 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
     @Override
     public List<ShortRule> getRulesByPriority(long priority, Integer page, Integer entries) {
-        Search searchCriteria = new Search(Rule.class);
-        searchCriteria.addFilter(Filter.greaterOrEqual("priority", priority));
+        Search searchCriteria = ruleDAO.createSearch();
+        searchCriteria.addFilterGreaterOrEqual("priority", priority);
         searchCriteria.addSortAsc("priority");
         addPagingConstraints(searchCriteria, page, entries);
         List<Rule> found = ruleDAO.search(searchCriteria);
@@ -266,8 +266,8 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
     @Override
     public ShortRule getRuleByPriority(long priority) throws BadRequestServiceEx {
-        Search searchCriteria = new Search(Rule.class);
-        searchCriteria.addFilter(Filter.equal("priority", priority));
+        Search searchCriteria = ruleDAO.createSearch();
+        searchCriteria.addFilterEqual("priority", priority);
         List<Rule> found = ruleDAO.search(searchCriteria);
         if(found.isEmpty())
             return null;
@@ -314,7 +314,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     // Search stuff
 
     private Search buildRuleSearch(RuleFilter filter) {
-        Search searchCriteria = new Search(Rule.class);
+        Search searchCriteria = ruleDAO.createSearch();
 
         if(filter != null) {
             addStringCriteria(searchCriteria, "username", filter.getUser());
@@ -333,7 +333,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     //=========================================================================
 
     private Search buildFixedRuleSearch(RuleFilter filter) {
-        Search searchCriteria = new Search(Rule.class);
+        Search searchCriteria = ruleDAO.createSearch();
 
         if(filter != null) {
             addFixedStringCriteria(searchCriteria, "username", filter.getUser());

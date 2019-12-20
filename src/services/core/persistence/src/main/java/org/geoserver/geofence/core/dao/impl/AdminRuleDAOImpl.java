@@ -128,8 +128,8 @@ public class AdminRuleDAOImpl
     }
 
     @Override
-    public void remove(AdminRule entity) {
-        super.remove(entity);
+    public boolean remove(AdminRule entity) {
+        return super.remove(entity);
     }
 
     @Override

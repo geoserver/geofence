@@ -41,7 +41,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     private GSUser getUserByName(String userName) {
-        Search search = new Search(GSUser.class);
+        Search search = userDAO.createSearch();
         search.addFilterEqual("name", userName);
         List<GSUser> users = userDAO.search(search);
         if(users.size() > 1)

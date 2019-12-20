@@ -109,9 +109,9 @@ public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
     }
 
     @Override
-    public void remove(GSUser entity)
+    public boolean remove(GSUser entity)
     {
-        super.remove(entity);
+        return super.remove(entity);
     }
 
     @Override

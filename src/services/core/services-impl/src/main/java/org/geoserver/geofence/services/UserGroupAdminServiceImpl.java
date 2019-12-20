@@ -75,7 +75,7 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
 
     @Override
     public UserGroup get(String name) {
-        Search search = new Search(UserGroup.class);
+        Search search = userGroupDAO.createSearch();
         search.addFilterEqual("name", name);
         List<UserGroup> groups = userGroupDAO.search(search);
 
@@ -117,7 +117,7 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
         if ( (page != null && entries == null) || (page == null && entries != null) ) {
             throw new BadRequestServiceEx("Page and entries params should be declared together.");
         }
-        Search searchCriteria = new Search(UserGroup.class);
+        Search searchCriteria = userGroupDAO.createSearch();
         if ( page != null ) {
             searchCriteria.setMaxResults(entries);
             searchCriteria.setPage(page);

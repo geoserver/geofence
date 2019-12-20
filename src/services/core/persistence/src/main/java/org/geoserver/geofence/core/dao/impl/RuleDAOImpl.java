@@ -133,8 +133,8 @@ public class RuleDAOImpl extends PrioritizableDAOImpl<Rule> implements RuleDAO {
     }
 
     @Override
-    public void remove(Rule entity) {
-        super.remove(entity);
+    public boolean remove(Rule entity) {
+        return super.remove(entity);
     }
 
     @Override

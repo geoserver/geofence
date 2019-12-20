@@ -65,9 +65,9 @@ public class UserGroupDAOImpl extends BaseDAO<UserGroup, Long>
     }
 
     @Override
-    public void remove(UserGroup entity)
+    public boolean remove(UserGroup entity)
     {
-        super.remove(entity);
+        return super.remove(entity);
     }
 
     @Override

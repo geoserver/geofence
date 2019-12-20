@@ -58,9 +58,9 @@ public class RuleLimitsDAOImpl //
     }
 
     @Override
-    public void remove(RuleLimits entity)
+    public boolean remove(RuleLimits entity)
     {
-        super.remove(entity);
+        return super.remove(entity);
     }
 
     @Override

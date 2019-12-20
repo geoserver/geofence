@@ -27,7 +27,7 @@ public interface RestrictedGenericDAO<ENTITY> /* extends GenericDAO<ENTITY, Long
     public ENTITY find(Long id);
     public void persist(ENTITY... entities);
     public ENTITY merge(ENTITY entity);
-    public void remove(ENTITY entity);
+    public boolean remove(ENTITY entity);
     public boolean removeById(Long id);
     public List<ENTITY> search(Search search);
     public long count(Search search);

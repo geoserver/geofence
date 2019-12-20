@@ -100,8 +100,8 @@ public class BaseDAO<E extends Identifiable, ID extends Serializable> // extends
         }
     }
 
-    public void remove(E entity) {
-        removeById(entity.getId());
+    public boolean remove(E entity) {
+        return removeById(entity.getId());
     }
 
     public boolean removeById(Long id) {

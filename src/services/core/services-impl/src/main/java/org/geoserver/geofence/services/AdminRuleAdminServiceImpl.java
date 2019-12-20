@@ -126,7 +126,7 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     @Override
     public void deleteRulesByRole(String rolename) throws NotFoundServiceEx {
         Search searchCriteria = ruleDAO.createSearch();
-        searchCriteria.addFilter(Filter.equal("rolename", rolename));
+        searchCriteria.addFilterEqual("rolename", rolename);
 
         List<AdminRule> list = ruleDAO.search(searchCriteria);
         for (AdminRule rule : list) {
@@ -139,7 +139,7 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     @Override
     public void deleteRulesByInstance(long instanceId) throws NotFoundServiceEx {
         Search searchCriteria = ruleDAO.createSearch();
-        searchCriteria.addFilter(Filter.equal("instance.id", instanceId));
+        searchCriteria.addFilterEqual("instance.id", instanceId);
 
         List<AdminRule> list = ruleDAO.search(searchCriteria);
         for (AdminRule rule : list) {
@@ -181,7 +181,7 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     @Override
     public List<ShortAdminRule> getRulesByPriority(long priority, Integer page, Integer entries) {
         Search searchCriteria = ruleDAO.createSearch();
-        searchCriteria.addFilter(Filter.greaterOrEqual("priority", priority));
+        searchCriteria.addFilterGreaterOrEqual("priority", priority);
         searchCriteria.addSortAsc("priority");
         addPagingConstraints(searchCriteria, page, entries);
         List<AdminRule> found = ruleDAO.search(searchCriteria);
@@ -191,7 +191,7 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     @Override
     public ShortAdminRule getRuleByPriority(long priority) throws BadRequestServiceEx {
         Search searchCriteria = ruleDAO.createSearch();
-        searchCriteria.addFilter(Filter.equal("priority", priority));
+        searchCriteria.addFilterEqual("priority", priority);
         List<AdminRule> found = ruleDAO.search(searchCriteria);
         if(found.isEmpty())
             return null;
@@ -211,7 +211,8 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     }
 
     protected Search buildSearch(Integer page, Integer entries, RuleFilter filter) throws BadRequestServiceEx {
-        Search searchCriteria = buildRuleSearch(filter);
+        Search searchCriteria = ruleDAO.createSearch();
+        searchCriteria = buildRuleSearch(searchCriteria, filter);
         addPagingConstraints(searchCriteria, page, entries);
         searchCriteria.addSortAsc("priority");
         return searchCriteria;
@@ -226,8 +227,8 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     public long count(RuleFilter filter) {
 //        if(LOGGER.isDebugEnabled())
 //            LOGGER.debug("Counting rules: " + filter);
-
-        Search searchCriteria = buildRuleSearch(filter);
+        Search searchCriteria = ruleDAO.createCountSearch();
+        searchCriteria = buildRuleSearch(searchCriteria, filter);
 //        if(LOGGER.isDebugEnabled())
 //            LOGGER.debug("Counting rules: " + searchCriteria);
         return ruleDAO.count(searchCriteria);
@@ -236,8 +237,8 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     // =========================================================================
     // Search stuff
 
-    private Search buildRuleSearch(RuleFilter filter) {
-        Search searchCriteria = new Search(AdminRule.class);
+    private Search buildRuleSearch(Search searchCriteria, RuleFilter filter) {
+
 
         if(filter != null) {
             addStringCriteria(searchCriteria, "username", filter.getUser());
@@ -255,7 +256,7 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     //=========================================================================
 
     private Search buildFixedRuleSearch(RuleFilter filter) {
-        Search searchCriteria = new Search(AdminRule.class);
+        Search searchCriteria = ruleDAO.createSearch();
 
         if(filter != null) {
             addFixedStringCriteria(searchCriteria, "username", filter.getUser());

@@ -33,6 +33,7 @@ public class Search<O, R> {
     
     Integer firstResult = null;
     Integer maxResults = null;
+    Integer page = null;
     
     protected Search(EntityManager em, Class<O> resultType, Class<R> rootClass) {
         this.em = em;
@@ -72,8 +73,9 @@ public class Search<O, R> {
         maxResults = i;
     }
 
-//    public void setPage(Integer page) {
-//    }
+    public void setPage(int page) {
+        this.page = page;      
+    }
     
     public void addSortAsc(String field) {
          orderBy.add(cb.asc(root.get(field)));
@@ -188,14 +190,24 @@ public class Search<O, R> {
                 
         TypedQuery<O> query = em.createQuery(q);
         
+        applyPagination(query);
+           
+        return query;
+    }
+
+    private void applyPagination(TypedQuery<O> query) throws IllegalStateException {
         if(firstResult != null) {
             query.setFirstResult(firstResult);
         }        
         if(maxResults != null) {
             query.setMaxResults(maxResults);
         }   
-           
-        return query;
+        if(page != null) {
+            if(maxResults == null) {
+                throw new IllegalStateException("Page set without maxresults");
+            }
+            query.setFirstResult((page-1) * maxResults);             
+        }
     }
 
 //    public TypedQuery<Long> _getCountQuery() {        

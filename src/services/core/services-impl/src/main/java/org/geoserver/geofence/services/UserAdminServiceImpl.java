@@ -62,7 +62,7 @@ public class UserAdminServiceImpl implements UserAdminService {
 
     @Override
     public GSUser get(String name) {
-        Search search = new Search(GSUser.class);
+        Search search = userDAO.createSearch();
         search.addFilterEqual("name", name);
         List<GSUser> users = userDAO.search(search);
 
@@ -102,7 +102,7 @@ public class UserAdminServiceImpl implements UserAdminService {
             throw new BadRequestServiceEx("Page and entries params should be declared together.");
         }
 
-        Search searchCriteria = new Search(GSUser.class);
+        Search searchCriteria = userDAO.createSearch();
 
         if(page != null) {
             searchCriteria.setMaxResults(entries);
@@ -130,7 +130,7 @@ public class UserAdminServiceImpl implements UserAdminService {
 
     @Override
     public long getCount(String nameLike) {
-        Search searchCriteria = new Search(GSUser.class);
+        Search searchCriteria = userDAO.createCountSearch();
 
         if (nameLike != null) {
             searchCriteria.addFilterILike("name", nameLike);

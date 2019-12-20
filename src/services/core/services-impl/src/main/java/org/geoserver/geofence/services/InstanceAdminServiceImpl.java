@@ -60,7 +60,7 @@ public class InstanceAdminServiceImpl implements InstanceAdminService {
 
     @Override
     public GSInstance get(String name) {
-        Search search = new Search(GSInstance.class);
+        Search search = instanceDAO.createSearch();
         search.addFilterEqual("name", name);
         List<GSInstance> groups = instanceDAO.search(search);
 
@@ -97,7 +97,7 @@ public class InstanceAdminServiceImpl implements InstanceAdminService {
             throw new BadRequestServiceEx("Page and entries params should be declared together.");
         }
 
-        Search searchCriteria = new Search(GSInstance.class);
+        Search searchCriteria = instanceDAO.createSearch();
 
         if(page != null) {
             searchCriteria.setMaxResults(entries);
@@ -128,7 +128,7 @@ public class InstanceAdminServiceImpl implements InstanceAdminService {
 
     @Override
     public long getCount(String nameLike) {
-        Search searchCriteria = new Search(GSInstance.class);
+        Search searchCriteria = instanceDAO.createCountSearch();
 
         if (nameLike != null) {
             searchCriteria.addFilterILike("name", nameLike);

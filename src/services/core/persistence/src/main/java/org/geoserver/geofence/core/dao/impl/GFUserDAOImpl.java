@@ -66,9 +66,9 @@ public class GFUserDAOImpl //
     }
 
     @Override
-    public void remove(GFUser entity)
+    public boolean remove(GFUser entity)
     {
-        super.remove(entity);
+        return super.remove(entity);
     }
 
     @Override
