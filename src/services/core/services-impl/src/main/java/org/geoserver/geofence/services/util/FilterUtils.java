@@ -98,32 +98,32 @@ public class FilterUtils {
      *
      * We're dealing with IDs here, so <U>we'll suppose that the related object id field is called "id"</U>.
      */
-    public static void addCriteria(Search search, String fieldName, RuleFilter.IdNameFilter filter) {
+    public static void addCriteria(Search search, Search.JoinInfo join, RuleFilter.IdNameFilter filter) {
         switch (filter.getType()) {
             case ANY:
                 break; // no filtering
 
             case DEFAULT:
-                search.addFilterNull(fieldName);
+                search.addFilterNull(join.getField());
                 break;
 
             case IDVALUE:
                 if(filter.isIncludeDefault()) {
                     search.addFilterOr(
-                            search.isNull(fieldName),
-                            search.isEqual(fieldName + ".id", filter.getId()));
+                            search.isNull(join.getField()),
+                            search.isEqual(join, "id", filter.getId()));
                 } else {
-                    search.addFilterEqual(fieldName + ".id", filter.getId());
+                    search.addFilterEqual(join , "id", filter.getId());
                 }
                 break;
 
             case NAMEVALUE:
                 if(filter.isIncludeDefault()) {
                     search.addFilterOr(
-                            search.isNull(fieldName),
-                            search.isEqual(fieldName + ".name", filter.getName()));
+                            search.isNull(join.getField()),
+                            search.isEqual(join, "name", filter.getName()));
                 } else {
-                    search.addFilterEqual(fieldName + ".name", filter.getName());
+                    search.addFilterEqual(join, "name", filter.getName());
                 }
                 break;
 
@@ -173,37 +173,34 @@ public class FilterUtils {
     }
 
 
-
-
-
     /**
      * Add criteria for <B>searching</B>.
      *
      * We're dealing with IDs here, so <U>we'll suppose that the related object id field is called "id"</U>.
      */
-    public static void addFixedCriteria(Search search, String fieldName, RuleFilter.IdNameFilter filter) {
+    public static void addFixedCriteria(Search search, Search.JoinInfo join, RuleFilter.IdNameFilter filter) {
         switch (filter.getType()) {
             case ANY:
-                throw new BadRequestServiceEx(fieldName + " should be a fixed search and can't be ANY");
+                throw new BadRequestServiceEx(join.getField() + " should be a fixed search and can't be ANY");
 
             case DEFAULT:
-                search.addFilterNull(fieldName);
+                search.addFilterNull(join.getField());
                 break;
 
             case IDVALUE:
                 if(filter.isIncludeDefault()) {
-                    throw new BadRequestServiceEx(fieldName + " should be a fixed search");
+                    throw new BadRequestServiceEx(join.getField() + " should be a fixed search");
                 } else {
-                    search.addFilterEqual(fieldName + ".id", filter.getId());
+                    search.addFilterEqual(join, "id", filter.getId());
                 }
                 break;
 
             case NAMEVALUE:
                 if(filter.isIncludeDefault()) {
-                    throw new BadRequestServiceEx(fieldName + " should be a fixed search");
+                    throw new BadRequestServiceEx(join.getField() + " should be a fixed search");
 
                 } else {
-                    search.addFilterEqual(fieldName + ".name", filter.getName());
+                    search.addFilterEqual(join, "name", filter.getName());
                 }
                 break;
 
@@ -211,8 +208,6 @@ public class FilterUtils {
                 throw new AssertionError();
         }
     }
-
-
 
 
     public static void addFixedStringCriteria(Search search, String fieldName, RuleFilter.TextFilter filter) {

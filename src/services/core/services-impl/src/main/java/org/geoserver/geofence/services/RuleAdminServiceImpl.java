@@ -172,7 +172,8 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     @Override
     public void deleteRulesByInstance(long instanceId) throws NotFoundServiceEx {
         Search searchCriteria = ruleDAO.createSearch();
-        searchCriteria.addFilterEqual("instance.id", instanceId);
+        Search.JoinInfo instance = searchCriteria.addJoin("instance");
+        searchCriteria.addFilterEqual(instance, "id", instanceId);
 
         List<Rule> list = ruleDAO.search(searchCriteria);
         for (Rule rule : list) {
@@ -313,39 +314,39 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     // Search stuff
 
     private Search buildRuleSearch(RuleFilter filter) {
-        Search searchCriteria = ruleDAO.createSearch();
+        Search search = ruleDAO.createSearch();
 
         if(filter != null) {
-            addStringCriteria(searchCriteria, "username", filter.getUser());
-            addStringCriteria(searchCriteria, "rolename", filter.getRole());
-            addCriteria(searchCriteria, "instance", filter.getInstance());
+            addStringCriteria(search, "username", filter.getUser());
+            addStringCriteria(search, "rolename", filter.getRole());
+            addCriteria(search, search.addJoin("instance"), filter.getInstance());
 
-            addStringCriteria(searchCriteria, "service", filter.getService()); // see class' javadoc
-            addStringCriteria(searchCriteria, "request", filter.getRequest()); // see class' javadoc
-            addStringCriteria(searchCriteria, "workspace", filter.getWorkspace());
-            addStringCriteria(searchCriteria, "layer", filter.getLayer());
+            addStringCriteria(search, "service", filter.getService()); // see class' javadoc
+            addStringCriteria(search, "request", filter.getRequest()); // see class' javadoc
+            addStringCriteria(search, "workspace", filter.getWorkspace());
+            addStringCriteria(search, "layer", filter.getLayer());
         }
 
-        return searchCriteria;
+        return search;
     }
 
     //=========================================================================
 
     private Search buildFixedRuleSearch(RuleFilter filter) {
-        Search searchCriteria = ruleDAO.createSearch();
+        Search search = ruleDAO.createSearch();
 
         if(filter != null) {
-            addFixedStringCriteria(searchCriteria, "username", filter.getUser());
-            addFixedStringCriteria(searchCriteria, "rolename", filter.getRole());
-            addFixedCriteria(searchCriteria, "instance", filter.getInstance());
+            addFixedStringCriteria(search, "username", filter.getUser());
+            addFixedStringCriteria(search, "rolename", filter.getRole());
+            addFixedCriteria(search, search.addJoin("instance"), filter.getInstance());
 
-            addFixedStringCriteria(searchCriteria, "service", filter.getService()); // see class' javadoc
-            addFixedStringCriteria(searchCriteria, "request", filter.getRequest()); // see class' javadoc
-            addFixedStringCriteria(searchCriteria, "workspace", filter.getWorkspace());
-            addFixedStringCriteria(searchCriteria, "layer", filter.getLayer());
+            addFixedStringCriteria(search, "service", filter.getService()); // see class' javadoc
+            addFixedStringCriteria(search, "request", filter.getRequest()); // see class' javadoc
+            addFixedStringCriteria(search, "workspace", filter.getWorkspace());
+            addFixedStringCriteria(search, "layer", filter.getLayer());
         }
 
-        return searchCriteria;
+        return search;
     }
 
 

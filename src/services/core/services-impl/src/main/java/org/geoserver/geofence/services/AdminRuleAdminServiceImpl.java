@@ -236,36 +236,34 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     // =========================================================================
     // Search stuff
 
-    private Search buildRuleSearch(Search searchCriteria, RuleFilter filter) {
+    private Search buildRuleSearch(Search search, RuleFilter filter) {
 
 
         if(filter != null) {
-            addStringCriteria(searchCriteria, "username", filter.getUser());
-            addStringCriteria(searchCriteria, "rolename", filter.getRole());
-            addCriteria(searchCriteria, "instance", filter.getInstance());
+            addStringCriteria(search, "username", filter.getUser());
+            addStringCriteria(search, "rolename", filter.getRole());
+            addCriteria(search, search.addJoin("instance"), filter.getInstance());
 
-            addStringCriteria(searchCriteria, "workspace", filter.getWorkspace());
+            addStringCriteria(search, "workspace", filter.getWorkspace());
         }
 
-        return searchCriteria;
+        return search;
     }
-
-
 
     //=========================================================================
 
     private Search buildFixedRuleSearch(RuleFilter filter) {
-        Search searchCriteria = ruleDAO.createSearch();
+        Search search = ruleDAO.createSearch();
 
         if(filter != null) {
-            addFixedStringCriteria(searchCriteria, "username", filter.getUser());
-            addFixedStringCriteria(searchCriteria, "rolename", filter.getRole());
-            addFixedCriteria(searchCriteria, "instance", filter.getInstance());
+            addFixedStringCriteria(search, "username", filter.getUser());
+            addFixedStringCriteria(search, "rolename", filter.getRole());
+            addFixedCriteria(search, search.addJoin("instance"), filter.getInstance());
 
-            addFixedStringCriteria(searchCriteria, "workspace", filter.getWorkspace());
+            addFixedStringCriteria(search, "workspace", filter.getWorkspace());
         }
 
-        return searchCriteria;
+        return search;
     }
 
     // ==========================================================================
