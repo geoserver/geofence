@@ -5,6 +5,7 @@
 
 package org.geoserver.geofence.core.dao;
 
+import java.util.List;
 import org.geoserver.geofence.core.model.GSUser;
 
 /**
@@ -17,4 +18,7 @@ public interface GSUserDAO extends RestrictedGenericDAO<GSUser>, RegistrableDAO 
 
     /** Fetch a GSUser with all of its related groups */
     GSUser getFull(String name);
+    
+    List<GSUser> search(String nameLike, Integer page, Integer entries, boolean fetchGroups) throws IllegalArgumentException;
+    long countByNameLike(String nameLike);    
 }

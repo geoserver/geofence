@@ -555,7 +555,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.12</version>
+                <version>4.13</version>
                 <scope>test</scope>
             </dependency>
 
@@ -785,7 +785,8 @@
                 <configuration>
                     <release>11</release>
                     <debug>true</debug>
-                    <encoding>UTF-8</encoding>                    
+                    <encoding>UTF-8</encoding>
+                    <showDeprecation>true</showDeprecation>
                 </configuration>
             </plugin>
 

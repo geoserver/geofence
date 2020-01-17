@@ -14,7 +14,8 @@ import org.geoserver.geofence.core.model.enums.InsertPosition;
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 
-public interface AdminRuleDAO extends PrioritizableDAO<AdminRule> {
+public interface AdminRuleDAO //
+        extends PrioritizableDAO<AdminRule>, SearchableDAO<AdminRule> {
 
     long persist(AdminRule entity, InsertPosition position);
 }

@@ -40,7 +40,6 @@ public interface UserAdminService extends GetProviderService<GSUser>
      */
     @Override
     GSUser get(long id) throws NotFoundServiceEx;
-    GSUser get(String name) throws NotFoundServiceEx;
     GSUser getFull(String name) throws NotFoundServiceEx;
 
     long getCount(String nameLike);

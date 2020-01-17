@@ -7,15 +7,15 @@ package org.geoserver.geofence.ldap.dao.impl;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.geoserver.geofence.core.dao.GSUserDAO;
 import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.UserGroup;
+import org.geoserver.geofence.ldap.utils.LdapUtils;
 
-import com.googlecode.genericdao.search.Filter;
-import com.googlecode.genericdao.search.Search;
 
 /**
  * GSUserDAO implementation, using an LDAP server as a primary source.
@@ -23,7 +23,10 @@ import com.googlecode.genericdao.search.Search;
  * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-public class GSUserDAOLdapImpl extends LDAPBaseDAO<GSUserDAO, GSUser> implements GSUserDAO {
+
+public class GSUserDAOLdapImpl // 
+        extends LDAPBaseDAO<GSUserDAO, GSUser> // 
+        implements GSUserDAO {
 
     private UserGroupDAOLdapImpl userGroupDAOLdapImpl;
 
@@ -52,17 +55,15 @@ public class GSUserDAOLdapImpl extends LDAPBaseDAO<GSUserDAO, GSUser> implements
      * @return
      */
     private List<UserGroup> getGroups(GSUser user) {
-        Filter filter = new Filter();
-        String member;
-        List<UserGroup> groups;
-        String filterStr = null;
+        final String filterStr;
 
         String dn = user.getExtId();
         String userName = user.getName();
+        
         if (memberFilter != null) {
-            filterStr = MessageFormat.format(memberFilter, new String[] { dn, userName });
+            filterStr = MessageFormat.format(memberFilter, dn, userName);
         } else if (StringUtils.isNotBlank(dn)) {
-            filter = new Filter("member", dn);
+            filterStr = LdapUtils.createLDAPFilterEqual("member", dn, userGroupDAOLdapImpl.getAttributesMapper());
         } else {
             LOGGER.info("User id is null, using username '" + userName + "'");
             String nameAttr = getLDAPAttribute("username");
@@ -71,19 +72,17 @@ public class GSUserDAOLdapImpl extends LDAPBaseDAO<GSUserDAO, GSUser> implements
             if (memberSearchFilterAttr != null) {
                 // e.g String member = nameAttr + "=" + userName;
                 String val = memberSearchFilterAttr.split("=")[0]; // e.g get uniqueMember part
-                member = memberSearchFilterAttr.split("=", 2)[1]; // e.g remove uniqueMember part
+                String member = memberSearchFilterAttr.split("=", 2)[1]; // e.g remove uniqueMember part
                 member = member.replace("{0}", userName);
                 filterStr = val + '=' + member;
             } else {
                 String exp = nameAttr + "=" + userName;
-                filter = new Filter("member", exp);
+                filterStr = LdapUtils.createLDAPFilterEqual("member", exp, userGroupDAOLdapImpl.getAttributesMapper());
             }
         }
-        if (filterStr == null) {
-            groups = userGroupDAOLdapImpl.search(filter);
-        } else {
-            groups = userGroupDAOLdapImpl.search(filterStr);
-        }
+        
+        List<UserGroup> groups = userGroupDAOLdapImpl.search(filterStr);
+
         if (enableHierarchicalGroups && nestedMemberFilter != null) {
             for (UserGroup group : groups) {
                 groups = addParentGroups(groups, group, 0);
@@ -96,8 +95,7 @@ public class GSUserDAOLdapImpl extends LDAPBaseDAO<GSUserDAO, GSUser> implements
         if (level < maxLevelGroupsSearch) {
             List<UserGroup> newGroups = new ArrayList<UserGroup>();
             newGroups.addAll(groups);
-            String filter = MessageFormat.format(nestedMemberFilter,
-                    new String[] { group.getExtId(), group.getName() });
+            String filter = MessageFormat.format(nestedMemberFilter, group.getExtId(), group.getName());
             for(UserGroup parentGroup : (List<UserGroup>)userGroupDAOLdapImpl.search(filter)) {
                 if (!newGroups.contains(parentGroup)) {
                     newGroups.add(parentGroup);
@@ -131,9 +129,8 @@ public class GSUserDAOLdapImpl extends LDAPBaseDAO<GSUserDAO, GSUser> implements
 
     public GSUser searchByName(String name) {
 
-        Search search = new Search();
-        search.addFilter(new Filter("username", name));
-        List<GSUser> users = search(search);
+        String filter = LdapUtils.createLDAPFilterEqual("username", name, getAttributesMapper());
+        List<GSUser> users = search(filter);
 
         if (users.isEmpty())
             return null;
@@ -161,5 +158,52 @@ public class GSUserDAOLdapImpl extends LDAPBaseDAO<GSUserDAO, GSUser> implements
 
     public void setEnableHierarchicalGroups(boolean enableHierarchicalGroups) {
         this.enableHierarchicalGroups = enableHierarchicalGroups;
+    }
+
+    @Override
+    public List<GSUser> search(String nameLike, Integer page, Integer entries, boolean fetchGroups) throws IllegalArgumentException {
+
+        if (StringUtils.isBlank(nameLike)) {
+            return paginate(findAll(), entries, page);
+        }
+
+        // filtering needed -- we'll perform filtering by hand, and contectually
+        // pagination will be evalueated, in order to save memory and time
+        
+        int firstIndex = getFirstPaginationIndex(entries, page);
+        int lastIndex = getLastPaginationIndex(entries, page);
+        
+        List<GSUser> ret = new LinkedList<>();
+        int index = 0;        
+        for (GSUser user : findAll()) { 
+            if(user.getName().contains(nameLike)) {
+                if(++index > firstIndex ) {
+                    ret.add(user); 
+                }
+                
+                if(index >= lastIndex) {
+                    break;
+                }
+            }
+        }
+        
+        return ret;
+    }
+    
+    @Override
+    public long countByNameLike(String nameLike) {
+        
+        if (StringUtils.isBlank(nameLike)) {
+            return findAll().size();
+        }
+
+        int cnt = 0;        
+        for (GSUser user : findAll()) { 
+            if(user.getName().contains(nameLike)) {
+                ++cnt;
+            }
+        }
+        
+        return cnt;
     }
 }

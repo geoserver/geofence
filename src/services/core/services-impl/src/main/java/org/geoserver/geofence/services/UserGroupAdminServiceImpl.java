@@ -7,9 +7,7 @@ package org.geoserver.geofence.services;
 
 import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.core.dao.UserGroupDAO;
-import org.geoserver.geofence.core.dao.search.Search;
 import org.geoserver.geofence.services.dto.ShortGroup;
-import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 
 import java.util.List;
@@ -74,18 +72,14 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
     }
 
     @Override
-    public UserGroup get(String name) {
-        Search search = userGroupDAO.createSearch();
-        search.addFilterEqual("name", name);
-        List<UserGroup> groups = userGroupDAO.search(search);
+    public UserGroup get(String name) {        
+        UserGroup group = userGroupDAO.get(name);
 
-        if ( groups.isEmpty() ) {
+        if ( group == null ) {
             throw new NotFoundServiceEx("UserGroup not found  '" + name + "'");
-        } else if ( groups.size() > 1 ) {
-            throw new IllegalStateException("Found more than one UserGroup with name '" + name + "'");
-        } else {
-            return groups.get(0);
-        }
+        } 
+        
+        return group;
     }
 
     @Override
@@ -102,31 +96,13 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
 
     @Override
     public List<ShortGroup> getList(String nameLike, Integer page, Integer entries) {
-        Search searchCriteria = buildCriteria(page, entries, nameLike);
-        List<UserGroup> found = userGroupDAO.search(searchCriteria);
+        List<UserGroup> found = userGroupDAO.search(nameLike, page, entries);
         return convertToShortList(found);
     }
 
     @Override
     public long getCount(String nameLike) {
-        Search searchCriteria = buildCriteria(null, null, nameLike);
-        return userGroupDAO.count(searchCriteria);
-    }
-
-    protected Search buildCriteria(Integer page, Integer entries, String nameLike) throws BadRequestServiceEx {
-        if ( (page != null && entries == null) || (page == null && entries != null) ) {
-            throw new BadRequestServiceEx("Page and entries params should be declared together.");
-        }
-        Search searchCriteria = userGroupDAO.createSearch();
-        if ( page != null ) {
-            searchCriteria.setMaxResults(entries);
-            searchCriteria.setPage(page);
-        }
-        searchCriteria.addSortAsc("name");
-        if ( nameLike != null ) {
-            searchCriteria.addFilterILike("name", nameLike);
-        }
-        return searchCriteria;
+        return userGroupDAO.countByNameLike(nameLike);
     }
 
     // ==========================================================================

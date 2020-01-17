@@ -8,8 +8,6 @@ import org.geoserver.geofence.ldap.LdapAttributesMapper;
 
 import org.springframework.ldap.core.AttributesMapper;
 
-import com.googlecode.genericdao.search.Filter;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,28 +18,12 @@ public class LdapUtils
 {
     private static Logger LOGGER = LogManager.getLogger(LdapUtils.class);
 
-
-    /**
-     * Creates and LDAP filter from the DAO search filter. Currently only "property = value" filters are supported.
-     *
-     * @param filter
-     * @return
-     */
-    public static String createLDAPFilter(Filter filter, AttributesMapper mapper)
+    public static String createLDAPFilterEqual(String propertyName, String value, AttributesMapper mapper)
     {
-        // TODO add other filter types
-        if (filter.getOperator() == Filter.OP_EQUAL) {
-            String propertyName = filter.getProperty();
-            if (mapper instanceof LdapAttributesMapper) {
-                propertyName = ((LdapAttributesMapper) mapper)
-                        .getLdapAttribute(propertyName);
-            }
-            return propertyName + "=" + filter.getValue().toString();
-        } else {
-            LOGGER.error("MISSING IMPLEMENTATION FOR " + filter);
+        if (mapper instanceof LdapAttributesMapper) {
+            propertyName = ((LdapAttributesMapper) mapper)
+                    .getLdapAttribute(propertyName);
         }
-        return null;
+        return propertyName + "=" + value;
     }
-
-
 }

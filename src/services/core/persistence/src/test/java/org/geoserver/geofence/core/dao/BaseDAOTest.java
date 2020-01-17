@@ -99,7 +99,7 @@ public abstract class BaseDAOTest  {
             assertNull("User not removed", userDAO.find(item.getId()));
         }
 
-        assertEquals("Users have not been properly deleted", 0, userDAO.count(null));
+        assertEquals("Users have not been properly deleted", 0, userDAO.countByNameLike(null));
     }
 
     protected void removeAllGRUsers() {
@@ -132,7 +132,7 @@ public abstract class BaseDAOTest  {
             assertNull("UserGroup not removed", userGroupDAO.find(item.getId()));
         }
 
-        assertEquals("UserGroups have not been properly deleted", 0, userGroupDAO.count(null));
+        assertEquals("UserGroups have not been properly deleted", 0, userGroupDAO.countByNameLike(null));
     }
 
     protected GSUser createUser(String base, UserGroup userGroup) {

@@ -11,9 +11,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.googlecode.genericdao.search.Filter;
-import com.googlecode.genericdao.search.Search;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -53,41 +50,32 @@ public class UserGroupDAOLdapImplTest extends BaseDAOTest
     @Test
     public void testSearch()
     {
-        Search search = new Search();
-        search.addFilter(new Filter("groupname", "adminGroup"));
+        assertNotNull(userGroupDAO.get("adminGroup"));        
 
-        List<UserGroup> groups = userGroupDAO.search(search);
-        assertTrue(groups.size() == 1);
-        UserGroup group = groups.get(0);
-        assertEquals("adminGroup", group.getName());
+        List<UserGroup> groups = userGroupDAO.search("adminGroup", null, null);
+        assertEquals(1, groups.size());
+        assertEquals("adminGroup", groups.get(0).getName());
     }
 
     @Test
     public void testCount()
     {
-        assertEquals(5, userGroupDAO.count(new Search()));
+        assertEquals(5, userGroupDAO.countByNameLike(null));
     }
     
     @Test
     public void testSearchPagination()
     {
-        Search search = new Search();
-        List<UserGroup> groups = userGroupDAO.search(search);
+        List<UserGroup> groups = userGroupDAO.search(null, null, null);
         assertEquals(5, groups.size());
         
-        search.setPage(0);
-        search.setMaxResults(2);
-        groups = userGroupDAO.search(search);
+        groups = userGroupDAO.search(null, 0,2);
         assertEquals(2, groups.size());
         
-        search.setPage(1);
-        search.setMaxResults(2);
-        groups = userGroupDAO.search(search);
+        groups = userGroupDAO.search(null, 1, 2);
         assertEquals(2, groups.size());
         
-        search.setPage(2);
-        search.setMaxResults(2);
-        groups = userGroupDAO.search(search);
+        groups = userGroupDAO.search(null, 2, 2);
         assertEquals(1, groups.size());
     }
 }

@@ -19,16 +19,10 @@ import org.geoserver.geofence.core.model.Identifiable;
  */
 
 public interface RestrictedGenericDAO<ENTITY> /* extends GenericDAO<ENTITY, Long> */{
-
-    public Search createSearch();
-    public Search createCountSearch();
-    
     public List<ENTITY> findAll();
     public ENTITY find(Long id);
     public void persist(ENTITY... entities);
     public ENTITY merge(ENTITY entity);
     public boolean remove(ENTITY entity);
     public boolean removeById(Long id);
-    public List<ENTITY> search(Search search);
-    public long count(Search search);
 }

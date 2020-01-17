@@ -5,6 +5,7 @@
 
 package org.geoserver.geofence.core.dao;
 
+import java.util.List;
 import org.geoserver.geofence.core.model.UserGroup;
 
 /**
@@ -13,5 +14,11 @@ import org.geoserver.geofence.core.model.UserGroup;
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 
-public interface UserGroupDAO extends RestrictedGenericDAO<UserGroup>, RegistrableDAO {
+public interface UserGroupDAO //
+        extends RestrictedGenericDAO<UserGroup>, RegistrableDAO {
+    
+    UserGroup get(String name);    
+    
+    List<UserGroup> search(String nameLike, Integer page, Integer entries) throws IllegalArgumentException;
+    long countByNameLike(String nameLike);    
 }

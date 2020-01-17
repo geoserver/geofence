@@ -13,5 +13,6 @@ import org.geoserver.geofence.core.model.GFUser;
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 
-public interface GFUserDAO extends RestrictedGenericDAO<GFUser> {
+public interface GFUserDAO // 
+        extends RestrictedGenericDAO<GFUser>, SearchableDAO<GFUser> {
 }

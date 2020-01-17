@@ -63,7 +63,7 @@ public abstract class BaseRESTServiceImpl {
             if (userFilter.getId() != null) {
                 throw new BadRequestRestEx("Users can only be referenced by name");
             } else if (userFilter.getName() != null) {
-                return userAdminService.get(userFilter.getName());
+                return userAdminService.getFull(userFilter.getName());
             } else {
                 throw new BadRequestRestEx("Bad GSUser filter " + userFilter);
             }

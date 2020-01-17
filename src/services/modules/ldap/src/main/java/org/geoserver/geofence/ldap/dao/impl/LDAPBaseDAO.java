@@ -23,15 +23,12 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.geoserver.geofence.core.dao.RestrictedGenericDAO;
 import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.UserGroup;
-import org.geoserver.geofence.ldap.utils.LdapUtils;
 
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.AbstractContextMapper;
 
-import com.googlecode.genericdao.search.Filter;
-import com.googlecode.genericdao.search.ISearch;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,7 +50,7 @@ public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R>
             implements RestrictedGenericDAO<R>, InitializingBean
 {
     
-    private static final class LDAPContextMapper extends AbstractContextMapper {
+    protected static final class LDAPContextMapper extends AbstractContextMapper {
         AttributesMapper mapper;
         
         public LDAPContextMapper(AttributesMapper mapper) {
@@ -135,39 +132,32 @@ public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R>
         return null;
     }
 
-    @Override
-    public List<R> search(ISearch search)
-    {
-        List<R> objects = new ArrayList<>();
-        if (search.getFilters().isEmpty()) {
-            // no filter
-            return paginate(findAll(), search);
-        }
-        for (Filter filter : search.getFilters()) {
-            if (filter != null) {
-                List<R> filteredObjects = paginate(search(filter), search);
-                objects.addAll(filteredObjects);
-            }
-        }
-        return objects;
-    }
-
-    protected List<R> paginate(List<R> list, ISearch search) {
-        if (search.getMaxResults() > 0 && search.getPage() >= 0) {
-           List<R> result = new ArrayList<R>();
-           int start = search.getPage() * search.getMaxResults();
-           for(int index = start ; index < start + search.getMaxResults() && index < list.size(); index++) {
+    protected List<R> paginate(List<R> list, Integer entries, Integer page) {
+        if (entries != null && page != null && entries > 0 && page >= 0) {
+           List<R> result = new ArrayList<>(entries);
+           int start = page * entries;
+           for(int index = start ; index < start + entries && index < list.size(); index++) {
                result.add(list.get(index));
            }
            return result;
         }
         return list;
     }
-
-    @Override
-    public int count(ISearch search)
-    {
-        return search(search).size();
+    
+    protected int getFirstPaginationIndex(Integer entries, Integer page) {
+        if (entries != null && page != null && entries > 0 && page >= 0) {
+            return page * entries;
+        } else {
+            return 0;
+        }
+    }
+    
+    protected int getLastPaginationIndex(Integer entries, Integer page) {
+        if (entries != null && page != null && entries > 0 && page >= 0) {
+            return page * entries + entries;
+        } else {
+            return Integer.MAX_VALUE;
+        }
     }
 
     @Override
@@ -211,28 +201,13 @@ public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R>
     /**
      * Search using the given filter on the LDAP server. Uses default base, filter and mapper.
      *
-     * @param base
-     * @param filter
-     * @param mapper
+     * @param ldapFilter
      * @return
      */
-    public List search(Filter filter)
-    {
-        return search(LdapUtils.createLDAPFilter(filter, attributesMapper));
-    }
-
-    /**
-     * Search using the given filter on the LDAP server. Uses default base, filter and mapper.
-     *
-     * @param base
-     * @param filter
-     * @param mapper
-     * @return
-     */
-    public List search(String filter)
+    public List search(String ldapFilter)
     {
         if(LOGGER.isTraceEnabled())
-            LOGGER.trace(getClass().getSimpleName() + ": searching base:'"+searchBase+"', filter: '"+filter+"'");
+            LOGGER.trace(getClass().getSimpleName() + ": searching base:'"+searchBase+"', filter: '"+ldapFilter+"'");
 
         if(LOGGER.isInfoEnabled()) {
             if(dumpCnt.incrementAndGet() % cachedumpmodulo == 0) {
@@ -241,7 +216,7 @@ public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R>
         }
 
         try {
-            return ldapcache.get(filter);
+            return ldapcache.get(ldapFilter);
             //return search(ldapTemplate, searchBase, filter, attributesMapper);
         } catch (ExecutionException ex) {
             LOGGER.warn("Error while getting LDAP info: " + ex.getMessage(), ex);
@@ -301,6 +276,10 @@ public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R>
         this.attributesMapper = attributesMapper;
     }
 
+    protected AttributesMapper getAttributesMapper() {
+        return attributesMapper;
+    }
+    
     /**
      * Sets the LDAP communication object.
      *
