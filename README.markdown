@@ -49,7 +49,7 @@ Here's a compatibility table for the versions of both applications:
 | GeoFence         | GeoServer  |   Main changes                        |
 |------------------|------------|---------------------------------------|
 | master branch: <br/> - nightly: [3.5.x] | | JDK11 |
-| 3.4.x branch: <br/>- stable: [3.4.3] <br/>- nightly: [3.4.x] | 2.15 \* ([probe][2.15_probe]) ([embedded][2.15_embedded]) <br/> 2.14 ([probe][2.14_probe]) ([embedded][2.14_embedded]) | JTS Version update <br/> Minor DTO changes |
+| 3.4.x branch: <br/>- stable: [3.4.4] <br/>- nightly: [3.4.x] | 2.15 \* ([probe][2.15_probe]) ([embedded][2.15_embedded]) <br/> 2.14 ([probe][2.14_probe]) ([embedded][2.14_embedded]) | JTS Version update <br/> Minor DTO changes |
 | 3.3.x branch: <br/>- stable: [3.3.0] <br/>- nightly: [3.3.x] | | LDAP improvements <br/> Minor DTO changes |
 | 3.2.x | 2.12  <br/> 2.11  <br/> 2.10  <br/> 2.9 | Spring 4, JDK 8                       |
 | 3.1.x | >=2.8.2  | Handle Workspace admin <br/> (feature for embedded version only)
@@ -60,9 +60,10 @@ Here's a compatibility table for the versions of both applications:
 
 [3.5.x]: https://build.geoserver.org/geofence/master/geofence-master-latest-war.zip
 [3.4.x]: https://build.geoserver.org/geofence/3.4.x/geofence-3.4.x-latest-war.zip
-[3.4.3]: https://build.geoserver.org/geofence/TODO
+[3.4.4]: https://github.com/geoserver/geofence/releases/download/v3.4.4/geofence.war
 [3.3.x]: https://build.geoserver.org/geofence/3.3.x/geofence-3.3.x-latest-war.zip
 [3.3.0]: https://build.geoserver.org/geofence/TODO
+
 
 [2.14_probe]:    https://build.geoserver.org/geoserver/2.14.x/community-latest/geoserver-2.14-SNAPSHOT-geofence-plugin.zip
 [2.14_embedded]: https://build.geoserver.org/geoserver/2.14.x/community-latest/geoserver-2.14-SNAPSHOT-geofence-server-plugin.zip
