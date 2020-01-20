@@ -10,7 +10,7 @@
 
    <groupId>org.geoserver.geofence</groupId>
    <artifactId>geofence</artifactId>
-   <version>3.4-SNAPSHOT</version>
+   <version>3.4.4</version>
    <packaging>pom</packaging>
 
    <properties>
