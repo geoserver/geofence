@@ -5,6 +5,7 @@
 
 package org.geoserver.geofence.services.dto;
 
+import org.geoserver.geofence.core.model.IPAddressRange;
 import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.core.model.enums.GrantType;
 
@@ -34,6 +35,7 @@ public class ShortRule implements Serializable
     private String request;
     private String workspace;
     private String layer;
+    private String addressRange;
 
     private GrantType access;
 
@@ -58,8 +60,9 @@ public class ShortRule implements Serializable
         setRequest(rule.getRequest());
         setWorkspace(rule.getWorkspace());
         setLayer(rule.getLayer());
-
+        setAddressRange(rule.getAddressRange().toString());
         setAccess(rule.getAccess());
+        
     }
 
     public GrantType getAccess()
@@ -72,7 +75,15 @@ public class ShortRule implements Serializable
         this.access = access;
     }
 
-    public Long getId()
+    public String getAddressRange() {
+		return addressRange;
+	}
+
+	
+	  public void setAddressRange(String ipAddressRange) { this.addressRange = ipAddressRange; }
+	 
+	
+	public Long getId()
     {
         return id;
     }
