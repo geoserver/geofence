@@ -60,7 +60,7 @@ public class ShortRule implements Serializable
         setRequest(rule.getRequest());
         setWorkspace(rule.getWorkspace());
         setLayer(rule.getLayer());
-        setAddressRange(rule.getAddressRange().toString());
+        setAddressRange(rule.getAddressRange() == null ? "" : rule.getAddressRange().toString());
         setAccess(rule.getAccess());
         
     }
@@ -80,7 +80,9 @@ public class ShortRule implements Serializable
 	}
 
 	
-	  public void setAddressRange(String ipAddressRange) { this.addressRange = ipAddressRange; }
+	public void setAddressRange(String ipAddressRange) {
+		this.addressRange = ipAddressRange;
+	}
 	 
 	
 	public Long getId()
