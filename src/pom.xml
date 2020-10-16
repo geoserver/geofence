@@ -76,20 +76,35 @@
    <repositories>
 
      <repository>
-      <id>osgeo-releases</id>
-      <name>OSGeo Nexus Release Repository</name>
-      <url>https://repo.osgeo.org/repository/release/</url>
-      <snapshots><enabled>false</enabled></snapshots>
-      <releases><enabled>true</enabled></releases>
-     </repository>
+        <id>osgeo</id>
+        <name>OSGeo Release Repository</name>
+        <url>https://repo.osgeo.org/repository/release/</url>
+        <snapshots><enabled>false</enabled></snapshots>
+        <releases><enabled>true</enabled></releases>
+      </repository>
+
+      <repository>
+        <id>osgeo-snapshot</id>
+        <name>OSGeo Snapshot Repository</name>
+        <url>https://repo.osgeo.org/repository/snapshot/</url>
+        <snapshots><enabled>true</enabled></snapshots>
+        <releases><enabled>false</enabled></releases>
+      </repository>
 
      <repository>
-      <id>osgeo-snapshots</id>
-      <name>OSGeo Nexus Snapshot Repository</name>
-      <url>https://repo.osgeo.org/repository/snapshot/</url>
+      <id>GeoSolutions</id>
+      <name>GeoSolutions Repository</name>
+      <url>http://maven.geo-solutions.it/</url>
       <snapshots><enabled>true</enabled></snapshots>
+      <releases><enabled>true</enabled></releases>
+    </repository>
+    <repository>
+      <id>Boundless</id>
+      <name>Boundless Repository</name>
+      <url>https://repo.boundlessgeo.com/</url>
+      <snapshots><enabled>false</enabled></snapshots>
       <releases><enabled>false</enabled></releases>
-     </repository>
+    </repository>
    </repositories>
 
    <distributionManagement>
