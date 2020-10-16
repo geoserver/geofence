@@ -607,6 +607,13 @@
                 <artifactId>hibernate-spatial-h2-geodb</artifactId>
                 <version>${hibernate-spatial-version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit-version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 	
