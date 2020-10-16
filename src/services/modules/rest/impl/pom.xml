@@ -90,11 +90,13 @@
             <artifactId>spring-tx</artifactId>
         </dependency>
 
+<!--
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-api</artifactId>
             <type>jar</type>
         </dependency>
+        -->
 
         <dependency>
             <groupId>net.sf.json-lib</groupId>
@@ -209,12 +211,4 @@
         </plugins>
     </reporting>
 
-    <repositories>
-        <repository>
-            <url>http://repo1.maven.org/maven2/</url>
-            <id>junit_4</id>
-            <layout>default</layout>
-            <name>Repository for library Library[junit_4]</name>
-        </repository>
-    </repositories>
 </project>
