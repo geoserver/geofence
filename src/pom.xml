@@ -131,7 +131,7 @@
    
    <modules>
       <module>services</module>
-      <module>gui</module>
+      <!-- <module>gui</module> -->
    </modules>
    
    <build>
