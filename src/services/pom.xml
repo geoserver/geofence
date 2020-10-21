@@ -30,7 +30,7 @@
         <geofence-version>3.4-SNAPSHOT</geofence-version>
         <main-prefix>geofence</main-prefix>
 
-        <gt-version>21-SNAPSHOT</gt-version>
+        <gt-version>21.4</gt-version>
 
         <cxf-version>3.1.5</cxf-version>
         <activemq-version>5.3.0.4-fuse</activemq-version>
@@ -753,11 +753,6 @@
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
-                <artifactId>gt-api</artifactId>
-                <version>${gt-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.geotools</groupId>
                 <artifactId>gt-referencing</artifactId>
                 <version>${gt-version}</version>
             </dependency>
@@ -869,57 +864,9 @@
 
     </build>
 
-    <repositories>
-    		<!-- GeoSolutions -->
-        <repository>
-            <id>geosolutions</id>
-            <name>GeoSolutions Repository</name>
-            <url>http://maven.geo-solutions.it</url>
-        </repository>
+<!--    <repositories>
 
-				<!-- Hibernate Spatial -->
-<!--        <repository>
-            <id>Hibernate Spatial repo</id>
-            <url>http://www.hibernatespatial.org/repository</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository> -->
-
-				<!-- Apache -->
-<!--        <repository>
-            <id>maven2-repository.dev.java.net</id>
-            <name>Java.net Repository for Maven</name>
-            <url>http://download.java.net/maven/2/</url>
-            <layout>default</layout>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>-->
-<!--
-        <repository>
-            <id>apache.incubating</id>
-            <name>Apache Incubating Repository</name>
-            <url>http://people.apache.org/repo/m2-incubating-repository</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
--->
-				<!-- JBoss -->
-<!--        <repository>
-            <id>jboss-repo</id>
-            <name>JBoss Maven2 Repository</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>-->
-
-				<!-- Spring -->
+				 Spring 
         <repository>
             <id>spring-release</id>
             <name>Spring Portfolio Release Repository</name>
@@ -936,36 +883,7 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-
-        <!-- Java.net -->
-<!--        <repository>
-            <id>java.net</id>
-            <url>http://download.java.net/maven/1</url>
-            <layout>legacy</layout>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>-->
-
-				<!-- OSGEO -->
-        <repository>
-            <id>boundless</id>
-            <name>Boundless Maven Repository</name>
-            <url>http://repo.boundlessgeo.com/main/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-
-        <repository>
-            <id>osgeo</id>
-            <name>Open Source Geospatial Foundation Repository</name>
-            <url>http://download.osgeo.org/webdav/geotools/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
+    </repositories>-->
 
     <pluginRepositories>
 

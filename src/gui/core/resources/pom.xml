@@ -71,17 +71,25 @@
 	
     	<!-- =============================================================== -->
 
-		<!-- GeoGWT -->
-		<dependency>
-			<groupId>it.geosolutions.geogwt.widgets.map</groupId>
-			<artifactId>maptoolbar</artifactId>
+        <!-- GeoGWT -->
+        <dependency>
+            <groupId>it.geosolutions.geogwt.widgets.map</groupId>
+            <artifactId>maptoolbar</artifactId>
             <exclusions>
+                <exclusion> <!-- no longer exists -->
+                    <groupId>org.geotools</groupId>
+                    <artifactId>gt-wfs</artifactId>
+                </exclusion>
+                <exclusion> <!-- no longer exists -->
+                    <groupId>org.geotools</groupId>
+                    <artifactId>gt-api</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>log4j</groupId>
                     <artifactId>log4j</artifactId>
                 </exclusion>
             </exclusions>
-		</dependency>
+        </dependency>
 		
 		<dependency>
 			<groupId>com.google.gwt</groupId>

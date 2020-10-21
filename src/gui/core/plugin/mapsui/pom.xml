@@ -104,10 +104,10 @@
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-main</artifactId>
 		</dependency>
-		<dependency>
+<!--		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-api</artifactId>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-referencing</artifactId>
