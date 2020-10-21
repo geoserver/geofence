@@ -18,13 +18,13 @@
     </appender>
 
     <logger name="org.geoserver.geofence">
-        <level value="debug"/>
+        <level value="info"/>
     </logger>
 
     <root>
         <priority value ="info" />
         <appender-ref ref="stdout" />
-	<!--        <appender-ref ref="R" /> -->
+        <appender-ref ref="R" />
     </root>
 
 </log4j:configuration>
