@@ -30,7 +30,7 @@
         <geofence-version>3.4-SNAPSHOT</geofence-version>
         <main-prefix>geofence</main-prefix>
 
-        <gt-version>21.4</gt-version>
+        <gt-version>25-SNAPSHOT</gt-version>
 
         <cxf-version>3.1.5</cxf-version>
         <activemq-version>5.3.0.4-fuse</activemq-version>
