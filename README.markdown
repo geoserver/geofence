@@ -27,7 +27,7 @@ The *embedded* configuration will make the GeoFence engine run within GeoServer 
 
 License
 ==================================================
-lines**GeoFence** core modules and GUI, as well as the part of **GeoFence** that shall be installed as a module into GeoServer (either the **probe** or the **embedded** logic), are free and Open Source software, released under the GPL license,  (which is [GPL v2.0](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)), as it implements a GeoServer Java API.
+**GeoFence** core modules and GUI, as well as the part of **GeoFence** that shall be installed as a module into GeoServer (either the **probe** or the **embedded** logic), are free and Open Source software, released under the GPL license,  (which is [GPL v2.0](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)), as it implements a GeoServer Java API.
 
 Getting GeoFence
 ==================================================
@@ -49,7 +49,7 @@ Here's a compatibility table for the versions of both applications:
 | GeoFence         | GeoServer  |   Main changes                        |
 |------------------|------------|---------------------------------------|
 | master<br/> - nightly: [3.5.x] | | JDK11 |
-| 3.4.x<br/>- stable: [3.4.4] <br/>- nightly: [3.4.x] | 2.15 \* ([probe][2.15_probe]) ([embedded][2.15_embedded]) <br/> 2.14 ([probe][2.14_probe]) ([embedded][2.14_embedded]) | JTS Version update <br/> Minor DTO changes |
+| 3.4.x<br/>- stable: [3.4.5] <br/>- nightly: [3.4.x] | 2.15 \* ([probe][2.15_probe]) ([embedded][2.15_embedded]) <br/> 2.14 ([probe][2.14_probe]) ([embedded][2.14_embedded]) | JTS Version update <br/> Minor DTO changes |
 | 3.3.x            | | LDAP improvements <br/> Minor DTO changes |
 | 3.2.x            | 2.12  <br/> 2.11  <br/> 2.10  <br/> 2.9 | Spring 4, JDK 8                       |
 | 3.1.x            | >=2.8.2  | Handle Workspace admin <br/> (feature for embedded version only)
@@ -60,7 +60,7 @@ Here's a compatibility table for the versions of both applications:
 
 [3.5.x]: https://build.geoserver.org/geofence/master/geofence-master-latest-war.zip
 [3.4.x]: https://build.geoserver.org/geofence/3.4.x/geofence-3.4.x-latest-war.zip
-[3.4.4]: https://github.com/geoserver/geofence/releases/download/v3.4.4/geofence.war
+[3.4.5]: https://github.com/geoserver/geofence/releases/download/v3.4.5/geofence.war
 [3.3.x]: https://build.geoserver.org/geofence/3.3.x/geofence-3.3.x-latest-war.zip
 [3.3.0]: https://build.geoserver.org/geofence/TODO
 
