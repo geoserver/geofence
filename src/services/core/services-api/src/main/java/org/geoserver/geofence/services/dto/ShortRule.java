@@ -30,6 +30,8 @@ public class ShortRule implements Serializable
     private Long instanceId;
     private String instanceName;
 
+    private String addressRange;
+
     private String service;
     private String request;
     private String workspace;
@@ -55,11 +57,15 @@ public class ShortRule implements Serializable
         }
 
         setService(rule.getService());
+        if(rule.getAddressRange() != null) 
+        {
+            setAddressRange(rule.getAddressRange().toString());
+        }
         setRequest(rule.getRequest());
         setWorkspace(rule.getWorkspace());
         setLayer(rule.getLayer());
-
         setAccess(rule.getAccess());
+        
     }
 
     public GrantType getAccess()
@@ -70,6 +76,16 @@ public class ShortRule implements Serializable
     public void setAccess(GrantType access)
     {
         this.access = access;
+    }
+
+    public String getAddressRange() 
+    {
+        return addressRange;
+    }
+
+    public void setAddressRange(String ipAddressRange) 
+    {
+        this.addressRange = ipAddressRange;
     }
 
     public Long getId()
@@ -173,8 +189,9 @@ public class ShortRule implements Serializable
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append("[id:").append(id).append(" pri:").append(
-                priority);
+        StringBuilder sb = new StringBuilder(getClass().getSimpleName())
+                .append("[id:").append(id)
+                .append(" pri:").append(priority);
 
         if (userName != null)
         {
@@ -193,6 +210,11 @@ public class ShortRule implements Serializable
         if (instanceName != null)
         {
             sb.append(" iName:").append(instanceName);
+        }
+
+        if (addressRange != null)
+        {
+            sb.append(" ip:").append(addressRange);
         }
 
         if (service != null)
