@@ -5,7 +5,6 @@
 
 package org.geoserver.geofence.services.dto;
 
-import org.geoserver.geofence.core.model.IPAddressRange;
 import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.core.model.enums.GrantType;
 
@@ -31,11 +30,12 @@ public class ShortRule implements Serializable
     private Long instanceId;
     private String instanceName;
 
+    private String addressRange;
+
     private String service;
     private String request;
     private String workspace;
     private String layer;
-    private String addressRange;
 
     private GrantType access;
 
@@ -57,10 +57,13 @@ public class ShortRule implements Serializable
         }
 
         setService(rule.getService());
+        if(rule.getAddressRange() != null) 
+        {
+            setAddressRange(rule.getAddressRange().toString());
+        }
         setRequest(rule.getRequest());
         setWorkspace(rule.getWorkspace());
         setLayer(rule.getLayer());
-        setAddressRange(rule.getAddressRange() == null ? "" : rule.getAddressRange().toString());
         setAccess(rule.getAccess());
         
     }
@@ -75,17 +78,17 @@ public class ShortRule implements Serializable
         this.access = access;
     }
 
-    public String getAddressRange() {
-		return addressRange;
-	}
+    public String getAddressRange() 
+    {
+        return addressRange;
+    }
 
-	
-	public void setAddressRange(String ipAddressRange) {
-		this.addressRange = ipAddressRange;
-	}
-	 
-	
-	public Long getId()
+    public void setAddressRange(String ipAddressRange) 
+    {
+        this.addressRange = ipAddressRange;
+    }
+
+    public Long getId()
     {
         return id;
     }
@@ -186,8 +189,9 @@ public class ShortRule implements Serializable
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append("[id:").append(id).append(" pri:").append(
-                priority);
+        StringBuilder sb = new StringBuilder(getClass().getSimpleName())
+                .append("[id:").append(id)
+                .append(" pri:").append(priority);
 
         if (userName != null)
         {
@@ -206,6 +210,11 @@ public class ShortRule implements Serializable
         if (instanceName != null)
         {
             sb.append(" iName:").append(instanceName);
+        }
+
+        if (addressRange != null)
+        {
+            sb.append(" ip:").append(addressRange);
         }
 
         if (service != null)
