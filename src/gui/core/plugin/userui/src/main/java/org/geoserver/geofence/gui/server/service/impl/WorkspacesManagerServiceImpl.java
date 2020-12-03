@@ -13,6 +13,7 @@ import java.util.Set;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
+import it.geosolutions.geoserver.rest.decoder.*;
 import org.geoserver.geofence.core.model.LayerDetails;
 import org.geoserver.geofence.gui.client.ApplicationException;
 import org.geoserver.geofence.gui.client.configuration.WorkspaceConfigOpts;
@@ -26,13 +27,6 @@ import org.geoserver.geofence.gui.server.service.IWorkspacesManagerService;
 import org.geoserver.geofence.gui.service.GeofenceRemoteService;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
-import it.geosolutions.geoserver.rest.decoder.RESTAbstractList;
-import it.geosolutions.geoserver.rest.decoder.RESTCoverageList;
-import it.geosolutions.geoserver.rest.decoder.RESTCoverageStoreList;
-import it.geosolutions.geoserver.rest.decoder.RESTFeatureTypeList;
-import it.geosolutions.geoserver.rest.decoder.RESTLayer;
-import it.geosolutions.geoserver.rest.decoder.RESTStyleList;
-import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList.RESTShortWorkspace;
 import it.geosolutions.geoserver.rest.decoder.utils.NameLinkElem;
 import java.util.SortedSet;
@@ -151,10 +145,15 @@ public class WorkspacesManagerServiceImpl implements IWorkspacesManagerService
 
                     if (workspace.equals("*")) { // load all layers
                         RESTAbstractList<NameLinkElem> layers = gsreader.getLayers();
+                        RESTAbstractList<NameLinkElem> layersGroups=gsreader.getLayerGroups();
                     	if (layers != null)
                     		for (NameLinkElem layerLink : layers) {
                     			sortedLayerNames.add(layerLink.getName());
                     		}
+                        if (layersGroups != null)
+                            for (NameLinkElem layerLink : layersGroups) {
+                                sortedLayerNames.add(layerLink.getName());
+                            }
                     } else {
 
                         if(StringUtils.isBlank(workspace))
@@ -190,6 +189,13 @@ public class WorkspacesManagerServiceImpl implements IWorkspacesManagerService
             RESTCoverageList coverages = reader.getCoverages(workspace, csName.getName());
             for (NameLinkElem coverage : coverages) {
                 layerNames.add(coverage.getName());
+            }
+        }
+
+        RESTLayerGroupList groupList = reader.getLayerGroups(workspace);
+        if (groupList!=null){
+            for (NameLinkElem lg:groupList){
+                layerNames.add(lg.getName());
             }
         }
 
@@ -275,5 +281,7 @@ public class WorkspacesManagerServiceImpl implements IWorkspacesManagerService
 
         return layerStyles;
     }
+
+
 
 }
