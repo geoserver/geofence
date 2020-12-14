@@ -148,8 +148,13 @@ public class AccessInfoInternal implements Serializable {
         ret.setAttributes(attributes == null ? null : new HashSet<LayerAttribute>(attributes));
         ret.setCqlFilterRead(cqlFilterRead);
         ret.setCqlFilterWrite(cqlFilterWrite);
-        if(area != null)
-            ret.setAreaWkt(area.toText());
+        if(area != null) {
+            String txtArea = area.toText();
+            if (area.getSRID()!=0){
+                txtArea="SRID="+area.getSRID()+";"+txtArea;
+            }
+            ret.setAreaWkt(txtArea);
+        }
         ret.setCatalogMode(mapCatalogModeDTO(catalogMode));
 
         return ret;
