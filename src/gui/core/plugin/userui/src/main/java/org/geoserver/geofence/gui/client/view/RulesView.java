@@ -346,13 +346,18 @@ public class RulesView extends View {
 							RuleDetailsInfoWidget ruleDetailsWidget = ruleDetailsTabItem
 									.getRuleDetailsWidget()
 									.getRuleDetailsInfo();
-
 							ruleDetailsWidget.bindModelData(result);
 
-							if (result.getType().equalsIgnoreCase("raster")) {
-								ruleDetailsWidget.disableCQLFilterButtons();
-							} else {
+							if (result.getType().equalsIgnoreCase("vector")) {
 								ruleDetailsWidget.enableCQLFilterButtons();
+							} else {
+								ruleDetailsWidget.disableCQLFilterButtons();
+							}
+
+							if (result.getType().equalsIgnoreCase("layergroup")) {
+								ruleDetailsWidget.disableStyleCombo();
+							} else {
+								ruleDetailsWidget.enableStyleCombo();
 							}
 
 							Dispatcher

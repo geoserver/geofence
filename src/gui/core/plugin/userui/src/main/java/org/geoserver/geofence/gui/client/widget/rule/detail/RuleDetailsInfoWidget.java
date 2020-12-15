@@ -230,10 +230,10 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
 
         draw.setIcon(Resources.ICONS.drawFeature());
 
-        
+
         fp.add(fieldSet);
         ruleDetailsWidget.getToolBar().add(draw);
-        
+
         return fp;
     }
 
@@ -433,6 +433,15 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
         nameMode.put(ClientCatalogMode.NAME_HIDE, ClientCatalogMode.HIDE);
         nameMode.put(ClientCatalogMode.NAME_MIXED, ClientCatalogMode.MIXED);
         nameMode.put(ClientCatalogMode.NAME_CHALLENGE, ClientCatalogMode.CHALLENGE);
+    }
+
+    public void enableStyleCombo(){
+        this.comboStyles.enable();
+    }
+
+
+    public void disableStyleCombo(){
+        this.comboStyles.disable();
     }
 
 }

@@ -4,6 +4,7 @@
  */
 package org.geoserver.geofence.gui.server.service.impl;
 
+import it.geosolutions.geoserver.rest.decoder.RESTLayerGroup;
 import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.LayerDetails;
 import org.geoserver.geofence.core.model.RuleLimits;
@@ -352,7 +353,8 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
             layerDetails = geofenceRemoteService.getRuleAdminService()
                     .get(rule.getId()).getLayerDetails();
 
-            layerAttributesDTO = loadAttribute(rule);
+            if (!layerDetails.getType().equals(LayerType.LAYERGROUP))
+                layerAttributesDTO = loadAttribute(rule);
 
             if ((layerDetails != null) && (layerAttributesDTO != null)) {
                 Set<LayerAttribute> layerAttributes = layerDetails
@@ -543,32 +545,39 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
                     rule.getInstance();
 
             String ws = rule.getWorkspace();
-            if(StringUtils.isBlank(ws) || "*".equals(ws))
-                throw new ApplicationException("Rule is missing the needed workspace name");
+
 
             String layername = rule.getLayer();
             if(StringUtils.isBlank(layername) || "*".equals(layername))
                 throw new ApplicationException("Rule is missing the needed layer name");
 
             GeoServerRESTReader gsreader = new GeoServerRESTReader(
-                    gsInstance.getBaseURL(), 
+                    gsInstance.getBaseURL(),
                     gsInstance.getUsername(),gsInstance.getPassword());
 
-            RESTLayer layer = gsreader.getLayer(ws, layername);
-
-            if (layer != null) {
-                if (layer.getType().equals(RESTLayer.Type.VECTOR)) {
-                    details.setType(LayerType.VECTOR);
-                } else {
-                    details.setType(LayerType.RASTER);
-                }
+            RESTLayerGroup layerGroup=gsreader.getLayerGroup(ws,layername);
+            if (layerGroup!=null){
+                details.setType(LayerType.LAYERGROUP);
             } else {
-                // error encountered while loading data from GeoServer
-                if (oldDetails == null) {
-                    logger.error("Error loading layer info from GeoServer");
-                    throw new ApplicationException("Error loading layer info from GeoServer");
+
+                if(StringUtils.isBlank(ws) || "*".equals(ws))
+                    throw new ApplicationException("Rule is missing the needed workspace name");
+                RESTLayer layer = gsreader.getLayer(ws, layername);
+
+                if (layer != null) {
+                    if (layer.getType().equals(RESTLayer.Type.VECTOR)) {
+                        details.setType(LayerType.VECTOR);
+                    } else {
+                        details.setType(LayerType.RASTER);
+                    }
                 } else {
-                    logger.warn("Error reloading layer info from GeoServer");
+                    // error encountered while loading data from GeoServer
+                    if (oldDetails == null) {
+                        logger.error("Error loading layer info from GeoServer");
+                        throw new ApplicationException("Error loading layer info from GeoServer");
+                    } else {
+                        logger.warn("Error reloading layer info from GeoServer");
+                    }
                 }
             }
 
@@ -700,6 +709,8 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 
                 if (layerDetails.getType().equals(LayerType.RASTER)) {
                     layerDetailsInfo.setType("raster");
+                } else if (layerDetails.getType().equals(LayerType.LAYERGROUP)){
+                    layerDetailsInfo.setType("layergroup");
                 } else {
                     layerDetailsInfo.setType("vector");
                 }
