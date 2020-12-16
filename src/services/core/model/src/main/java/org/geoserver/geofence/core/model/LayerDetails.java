@@ -75,6 +75,10 @@ public class LayerDetails implements Serializable {
 	@Column(name = "area")
 	private MultiPolygon area;
 
+	@Enumerated(EnumType.STRING)
+    @Column(name="spatial_filter_type",nullable = true)
+	private SpatialFilterType spatialFilterType;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "catalog_mode", nullable = true)
     private CatalogMode catalogMode;
@@ -185,7 +189,15 @@ public class LayerDetails implements Serializable {
 
     public void setType(LayerType type) {
         this.type = type;
-    }    
+    }
+
+    public SpatialFilterType getSpatialFilterType() {
+        return spatialFilterType;
+    }
+
+    public void setSpatialFilterType(SpatialFilterType spatialFilterType) {
+        this.spatialFilterType = spatialFilterType;
+    }
 
     @Override
     public String toString() {

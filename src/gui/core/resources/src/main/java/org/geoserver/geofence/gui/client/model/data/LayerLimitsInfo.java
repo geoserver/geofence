@@ -8,6 +8,7 @@ package org.geoserver.geofence.gui.client.model.data;
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import org.geoserver.geofence.core.model.SpatialFilterType;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
 
 
@@ -30,6 +31,8 @@ public class LayerLimitsInfo extends BeanModel implements IsSerializable
     private String srid;
 
     private ClientCatalogMode catalogMode;
+
+    private ClientSpatialFilterType spatialFilterType;
 
 
     /**
@@ -97,6 +100,15 @@ public class LayerLimitsInfo extends BeanModel implements IsSerializable
     public void setCatalogMode(ClientCatalogMode catalogMode) {
         this.catalogMode = catalogMode;
         set(BeanKeyValue.CATALOG_MODE.getValue(), catalogMode);
+    }
+
+    public ClientSpatialFilterType getSpatialFilterType() {
+        return spatialFilterType;
+    }
+
+    public void setSpatialFilterType(ClientSpatialFilterType spatialFilterType) {
+        this.spatialFilterType = spatialFilterType;
+        set(BeanKeyValue.SPATIAL_FILTER_TYPE.getValue(),spatialFilterType);
     }
 
     /* (non-Javadoc)

@@ -65,6 +65,8 @@ public class RuleDetailsTabItem extends TabItem {
 		add(getRuleDetailsWidget());
 
 		setScrollMode(Scroll.NONE);
+		Dispatcher.forwardEvent(
+				GeofenceEvents.LOAD_LAYER_DETAILS, theRule);
 
 			this.addListener(Events.Select, new Listener<BaseEvent>() {
 

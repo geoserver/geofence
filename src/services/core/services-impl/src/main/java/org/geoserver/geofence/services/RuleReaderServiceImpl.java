@@ -196,7 +196,12 @@ public class RuleReaderServiceImpl implements RuleReaderService {
                 ret.setAllowedStyles(unionAllowedStyles(baseAccess.getAllowedStyles(), moreAccess.getAllowedStyles()));
                 ret.setAttributes(unionAttributes(baseAccess.getAttributes(), moreAccess.getAttributes()));
                 ret.setArea(unionGeometry(baseAccess.getArea(), moreAccess.getArea()));
-
+                if (baseAccess.getSpatialFilterType().equals(SpatialFilterType.CLIP))
+                    ret.setSpatialFilterType(SpatialFilterType.CLIP);
+                else if(moreAccess.getSpatialFilterType().equals(SpatialFilterType.CLIP))
+                    ret.setSpatialFilterType(SpatialFilterType.CLIP);
+                else
+                    ret.setSpatialFilterType(SpatialFilterType.INTERSECTS);
                 return ret;
             }
         }        
@@ -282,7 +287,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
         List<RuleLimits> limits = new ArrayList<>();
         AccessInfoInternal ret = null;
-
+        int size=ruleList.size();
         for (Rule rule : ruleList) {
             if(ret != null)
                 break;
@@ -294,6 +299,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
                    if(rl != null) {
                        LOGGER.info("Collecting limits: " + rl);
                        limits.add(rl);
+                       if(size==1) ret=buildAllowAccessInfo(rule,limits,null);
                     } else
                        LOGGER.warn(rule + " has no associated limits");
                     break;
@@ -383,6 +389,8 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             accessInfo.setArea(area);
         }
 
+        accessInfo.setSpatialFilterType(resolveSpatialFilterType(limits));
+
         return accessInfo;
     }
 
@@ -442,6 +450,18 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             ret = getStricter(ret, limit.getCatalogMode());
         }
         return ret;
+    }
+
+    /**
+     * Return a Clip spatialFilterType if found otherwise INTERSECTS.
+     */
+    private SpatialFilterType resolveSpatialFilterType(List<RuleLimits> limits) {
+        for (RuleLimits limit : limits) {
+            if (limit !=null && limit.getSpatialFilterType()!=null &&
+                    limit.getSpatialFilterType().equals(SpatialFilterType.CLIP));
+            return SpatialFilterType.CLIP;
+        }
+        return SpatialFilterType.INTERSECTS;
     }
 
     protected static CatalogMode getStricter(CatalogMode m1, CatalogMode m2) {

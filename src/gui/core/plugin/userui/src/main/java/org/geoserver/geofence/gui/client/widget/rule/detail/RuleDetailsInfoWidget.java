@@ -9,6 +9,7 @@ import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
 import org.geoserver.geofence.gui.client.model.RuleModel;
+import org.geoserver.geofence.gui.client.model.data.ClientSpatialFilterType;
 import org.geoserver.geofence.gui.client.model.data.LayerDetailsInfo;
 import org.geoserver.geofence.gui.client.model.data.LayerStyle;
 import org.geoserver.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
@@ -71,12 +72,16 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
 
     private ComboBox<ClientCatalogMode> catalogModeBox;
 
+    private ComboBox<ClientSpatialFilterType> spatialFilterTypeBox;
+
     /** The allowed area. */
     private TextArea allowedArea;
 
 	private Button draw;
 
     private Map<String, ClientCatalogMode> nameMode = new HashMap<String, ClientCatalogMode>();
+
+    private Map<String, ClientSpatialFilterType> spatialFilterTypeMap = new HashMap<String, ClientSpatialFilterType>();
 
 
     /**
@@ -98,6 +103,8 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
         formPanel = createFormPanel();
 
         initModeMap();
+
+        initSpatialFilterTypeMap();
     }
 
     /* (non-Javadoc)
@@ -216,6 +223,27 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
 
         fieldSet.add(allowedArea);
 
+        spatialFilterTypeBox = new ComboBox<ClientSpatialFilterType>();
+        spatialFilterTypeBox.setFieldLabel("Spatial Filter Type");
+        spatialFilterTypeBox.setId(BeanKeyValue.SPATIAL_FILTER_TYPE.getValue());
+        spatialFilterTypeBox.setName(BeanKeyValue.SPATIAL_FILTER_TYPE.getValue());
+        spatialFilterTypeBox.setDisplayField(BeanKeyValue.SPATIAL_FILTER_TYPE.getValue());
+        spatialFilterTypeBox.setVisible(true);
+        spatialFilterTypeBox.setTypeAhead(true);
+        spatialFilterTypeBox.setWidth(70);
+        spatialFilterTypeBox.setEditable(false);
+        spatialFilterTypeBox.setStore(getAvailableSpatialFilterTypes());
+        spatialFilterTypeBox.setTriggerAction(ComboBox.TriggerAction.ALL);
+        spatialFilterTypeBox.addListener(Events.Select,
+                new Listener<FieldEvent>()
+                {
+                    public void handleEvent(FieldEvent be) {
+                        ruleDetailsWidget.enableSaveButton();
+                    }
+                }
+        );
+        fieldSet.add(spatialFilterTypeBox);
+
         draw = new Button(I18nProvider.getMessages().drawAoiButton(),
                 new SelectionListener<ButtonEvent>()
                 {
@@ -228,10 +256,8 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
                     }
                 });
 
-        draw.setIcon(Resources.ICONS.drawFeature());
-
-
         fp.add(fieldSet);
+        draw.setIcon(Resources.ICONS.drawFeature());
         ruleDetailsWidget.getToolBar().add(draw);
 
         return fp;
@@ -271,6 +297,7 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
         }
 
         layerDetailsForm.setAllowedArea(wkt);
+        layerDetailsForm.setSpatialFilterType(spatialFilterTypeBox.getValue());
         layerDetailsForm.setSrid(srid);
         layerDetailsForm.setCqlFilterRead(cqlFilterRead.getValue());
         layerDetailsForm.setCqlFilterWrite(cqlFilterWrite.getValue());
@@ -333,6 +360,11 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
         if ((area != null) && (srid != null))
         {
             allowedArea.setValue("SRID=" + srid + ";" + area);
+        }
+
+        if (layerDetailsInfo.getSpatialFilterType()!=null){
+            ClientSpatialFilterType csft=spatialFilterTypeMap.get(layerDetailsInfo.getSpatialFilterType().getType());
+            spatialFilterTypeBox.setValue(csft);
         }
 
         if(layerDetailsInfo.getCatalogMode() != null) {
@@ -410,6 +442,19 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
 		return allowedArea;
 	}
 
+    private ListStore<ClientSpatialFilterType> getAvailableSpatialFilterTypes()
+    {
+        ListStore<ClientSpatialFilterType> ret = new ListStore<ClientSpatialFilterType>();
+        List<ClientSpatialFilterType> list = new ArrayList<ClientSpatialFilterType>();
+
+        list.add(ClientSpatialFilterType.INTERSECTS);
+        list.add(ClientSpatialFilterType.CLIP);
+
+        ret.add(list);
+
+        return ret;
+    }
+
 	/**
     * Disable cql filter buttons.
     */
@@ -439,9 +484,13 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
         this.comboStyles.enable();
     }
 
-
     public void disableStyleCombo(){
         this.comboStyles.disable();
+    }
+
+    private void initSpatialFilterTypeMap() {
+        spatialFilterTypeMap.put(ClientSpatialFilterType.CLIP_NAME, ClientSpatialFilterType.CLIP);
+        spatialFilterTypeMap.put(ClientSpatialFilterType.INTERSECTS_NAME, ClientSpatialFilterType.INTERSECTS);
     }
 
 }

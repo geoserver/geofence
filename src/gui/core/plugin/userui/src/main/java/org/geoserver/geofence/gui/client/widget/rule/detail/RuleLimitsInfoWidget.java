@@ -8,6 +8,7 @@ package org.geoserver.geofence.gui.client.widget.rule.detail;
 import org.geoserver.geofence.gui.client.GeofenceEvents;
 import org.geoserver.geofence.gui.client.i18n.I18nProvider;
 import org.geoserver.geofence.gui.client.model.RuleModel;
+import org.geoserver.geofence.gui.client.model.data.ClientSpatialFilterType;
 import org.geoserver.geofence.gui.client.model.data.LayerLimitsInfo;
 import org.geoserver.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
 import org.geoserver.geofence.gui.client.widget.GeofenceFormBindingWidget;
@@ -52,11 +53,16 @@ public class RuleLimitsInfoWidget extends GeofenceFormBindingWidget<LayerLimitsI
     /** The allowed area. */
     private TextArea allowedArea;
 
+    private ComboBox<ClientSpatialFilterType> spatialFilterTypeBox;
+
     private ComboBox<ClientCatalogMode> catalogModeBox;
 
     private Button draw;
 
     private Map<String, ClientCatalogMode> nameMode = new HashMap<String, ClientCatalogMode>();
+
+    private Map<String, ClientSpatialFilterType> spatialFilterTypeMap = new HashMap<String, ClientSpatialFilterType>();
+
 
     /**
      * Instantiates a new rule details info widget.
@@ -78,6 +84,8 @@ public class RuleLimitsInfoWidget extends GeofenceFormBindingWidget<LayerLimitsI
         formPanel = createFormPanel();
 
         initModeMap();
+
+        initSpatialFilterTypeMap();
     }
 
     /* (non-Javadoc)
@@ -89,7 +97,7 @@ public class RuleLimitsInfoWidget extends GeofenceFormBindingWidget<LayerLimitsI
         FormPanel fp = new FormPanel();
         fp.setFrame(true);
         fp.setHeaderVisible(false);
-        fp.setHeight(400);
+        fp.setHeight(500);
         fp.setWidth(650);
 
         FieldSet fieldSet = new FieldSet();
@@ -115,6 +123,17 @@ public class RuleLimitsInfoWidget extends GeofenceFormBindingWidget<LayerLimitsI
 
         fieldSet.add(allowedArea);
 
+        spatialFilterTypeBox = getSpatialFilterTypeCombo();
+        spatialFilterTypeBox.addListener(Events.Select,
+                new Listener<FieldEvent>()
+                {
+                    public void handleEvent(FieldEvent be) {
+                        ruleLimitsWidget.enableSaveButton();
+                    }
+                }
+        );
+        fieldSet.add(spatialFilterTypeBox);
+
         catalogModeBox = getCatalogModeCombo();
         catalogModeBox.addListener(Events.Select,
                 new Listener<FieldEvent>()
@@ -127,6 +146,7 @@ public class RuleLimitsInfoWidget extends GeofenceFormBindingWidget<LayerLimitsI
 
         fieldSet.add(catalogModeBox);
 
+        fp.add(fieldSet);
         draw = new Button(I18nProvider.getMessages().drawAoiButton(),
                 new SelectionListener<ButtonEvent>()
                 {
@@ -141,7 +161,6 @@ public class RuleLimitsInfoWidget extends GeofenceFormBindingWidget<LayerLimitsI
 
         draw.setIcon(Resources.ICONS.drawFeature());
 
-        fp.add(fieldSet);
         ruleLimitsWidget.getToolBar().add(draw);
 
         return fp;
@@ -183,7 +202,7 @@ public class RuleLimitsInfoWidget extends GeofenceFormBindingWidget<LayerLimitsI
         layerLimitsInfo.setAllowedArea(wkt);
         layerLimitsInfo.setSrid(srid);
         layerLimitsInfo.setRuleId(theRule.getId());
-
+        layerLimitsInfo.setSpatialFilterType(spatialFilterTypeBox.getValue());
         layerLimitsInfo.setCatalogMode(catalogModeBox.getValue());
 
         Dispatcher.forwardEvent(
@@ -249,6 +268,13 @@ public class RuleLimitsInfoWidget extends GeofenceFormBindingWidget<LayerLimitsI
                         "Info", "CatalogMode is null"});
         }
 
+        ClientSpatialFilterType csft=layerLimitsInfo.getSpatialFilterType();
+
+        if (csft!=null){
+            spatialFilterTypeBox.setValue(spatialFilterTypeMap.get(csft.getType()));
+
+        }
+
     }
 
     private ComboBox<ClientCatalogMode> getCatalogModeCombo() {
@@ -283,11 +309,48 @@ public class RuleLimitsInfoWidget extends GeofenceFormBindingWidget<LayerLimitsI
         return ret;
     }
 
+
+    private ComboBox<ClientSpatialFilterType> getSpatialFilterTypeCombo() {
+
+        final ComboBox<ClientSpatialFilterType> combo = new ComboBox<ClientSpatialFilterType>();
+        combo.setId("limitSpatialFilterType");
+        combo.setName("limitSpatialFilterType");
+
+        combo.setFieldLabel("Spatial Filter Type");
+
+        combo.setDisplayField(BeanKeyValue.SPATIAL_FILTER_TYPE.getValue());
+        combo.setEditable(false);
+        combo.setStore(getAvailableSpatialFilterTypes());
+        combo.setTriggerAction(ComboBox.TriggerAction.ALL);
+        combo.setWidth(70);
+
+        return combo;
+    }
+
+    private ListStore<ClientSpatialFilterType> getAvailableSpatialFilterTypes()
+    {
+        ListStore<ClientSpatialFilterType> ret = new ListStore<ClientSpatialFilterType>();
+        List<ClientSpatialFilterType> list = new ArrayList<ClientSpatialFilterType>();
+
+        list.add(ClientSpatialFilterType.INTERSECTS);
+        list.add(ClientSpatialFilterType.CLIP);
+
+        ret.add(list);
+
+        return ret;
+    }
+
+
     private void initModeMap() {
         nameMode.put(ClientCatalogMode.NAME_DEFAULT, ClientCatalogMode.DEFAULT);
         nameMode.put(ClientCatalogMode.NAME_HIDE, ClientCatalogMode.HIDE);
         nameMode.put(ClientCatalogMode.NAME_MIXED, ClientCatalogMode.MIXED);
         nameMode.put(ClientCatalogMode.NAME_CHALLENGE, ClientCatalogMode.CHALLENGE);
+    }
+
+    private void initSpatialFilterTypeMap() {
+        spatialFilterTypeMap.put(ClientSpatialFilterType.CLIP_NAME, ClientSpatialFilterType.CLIP);
+        spatialFilterTypeMap.put(ClientSpatialFilterType.INTERSECTS_NAME, ClientSpatialFilterType.INTERSECTS);
     }
 
 }

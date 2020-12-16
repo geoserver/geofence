@@ -7,6 +7,8 @@ package org.geoserver.geofence.services;
 
 import org.geoserver.geofence.core.model.*;
 import org.locationtech.jts.geom.Geometry;
+import org.geoserver.geofence.core.model.enums.CatalogMode;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
@@ -790,9 +792,9 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
     public void testRuleLimitsAllowedAreaReprojectionWithDifferentSrid() throws NotFoundServiceEx, ParseException {
         // test that the original SRID is present in the allowedArea wkt representation,
         // when retrieving it from the AccessInfo object
-        Long id =null;
-        Long id2=null;
-        Long id3=null;
+        Long id = null;
+        Long id2 = null;
+        Long id3 = null;
         try {
             {
                 Rule r1 = new Rule(999, null, null, null, null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
@@ -808,7 +810,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
             // save limits and check it has been saved
             {
                 RuleLimits limits = new RuleLimits();
-                String wkt="MultiPolygon (((1680529.71478682174347341 4849746.00902365241199732, 1682436.7076464940328151 4849731.7422441728413105, 1682446.21883281995542347 4849208.62699576932936907, 1680524.95919364970177412 4849279.96089325752109289, 1680529.71478682174347341 4849746.00902365241199732)))";
+                String wkt = "MultiPolygon (((1680529.71478682174347341 4849746.00902365241199732, 1682436.7076464940328151 4849731.7422441728413105, 1682446.21883281995542347 4849208.62699576932936907, 1680524.95919364970177412 4849279.96089325752109289, 1680529.71478682174347341 4849746.00902365241199732)))";
                 Geometry allowedArea = new WKTReader().read(wkt);
                 allowedArea.setSRID(3003);
                 limits.setAllowedArea((MultiPolygon) allowedArea);
@@ -823,7 +825,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
             // save limits and check it has been saved
             {
                 RuleLimits limits = new RuleLimits();
-                String wkt="MultiPolygon (((680588.67850254673976451 4850060.34823693986982107, 681482.71827003755606711 4850469.32878803834319115, 682633.56349697941914201 4849499.20374245755374432, 680588.67850254673976451 4850060.34823693986982107)))";
+                String wkt = "MultiPolygon (((680588.67850254673976451 4850060.34823693986982107, 681482.71827003755606711 4850469.32878803834319115, 682633.56349697941914201 4849499.20374245755374432, 680588.67850254673976451 4850060.34823693986982107)))";
                 Geometry allowedArea = new WKTReader().read(wkt);
                 allowedArea.setSRID(23032);
                 limits.setAllowedArea((MultiPolygon) allowedArea);
@@ -843,14 +845,36 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
             }
         } finally {
 
-            if(id!=null)
+            if (id != null)
                 ruleAdminService.delete(id);
-            if (id2!=null)
+            if (id2 != null)
                 ruleAdminService.delete(id2);
-            if(id3!=null)
+            if (id3 != null)
                 ruleAdminService.delete(id3);
 
         }
+    }
+
+
+    public void testRuleWithSpatialFilterType() {
+
+        GSUser user = createUser("auth00");
+        long id=ruleAdminService.insert(new Rule(10, user.getName(), null, null, null,     "s1", "r1", "w1", "l1", GrantType.LIMIT));
+        RuleLimits limits = new RuleLimits();
+        limits.setSpatialFilterType(SpatialFilterType.CLIP);
+        limits.setCatalogMode(CatalogMode.HIDE);
+        GeometryFactory facotry = new GeometryFactory();
+        MultiPolygon poly=facotry.createMultiPolygon();
+        limits.setAllowedArea(poly);
+        ruleAdminService.setLimits(id, limits);
+        RuleFilter filter = new RuleFilter(SpecialFilterType.ANY, true);
+        filter.setWorkspace("w1");
+        filter.setLayer("l1");
+
+        AccessInfo accessInfo = ruleReaderService.getAccessInfo(filter);
+        assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+        assertFalse(accessInfo.getAdminRights());
+        assertEquals(SpatialFilterType.CLIP, accessInfo.getSpatialFilterType());
     }
 
 }

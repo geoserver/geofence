@@ -60,6 +60,10 @@ public class RuleLimits implements Serializable {
     private MultiPolygon allowedArea;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "spatial_filter_type", nullable = true)
+    private SpatialFilterType spatialFilterType;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "catalog_mode", nullable = true)
     private CatalogMode catalogMode;
 
@@ -78,6 +82,14 @@ public class RuleLimits implements Serializable {
 
     public void setCatalogMode(CatalogMode catalogMode) {
         this.catalogMode = catalogMode;
+    }
+
+    public SpatialFilterType getSpatialFilterType() {
+        return spatialFilterType;
+    }
+
+    public void setSpatialFilterType(SpatialFilterType spatialFilterType) {
+        this.spatialFilterType = spatialFilterType;
     }
 
     public Long getId() {

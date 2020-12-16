@@ -8,6 +8,7 @@ package org.geoserver.geofence.services.util;
 import java.io.Serializable;
 import java.util.Set;
 
+import org.geoserver.geofence.core.model.SpatialFilterType;
 import org.locationtech.jts.geom.Geometry;
 
 import org.geoserver.geofence.core.model.LayerAttribute;
@@ -46,6 +47,8 @@ public class AccessInfoInternal implements Serializable {
 
 //    private Geometry area;
     private Geometry area;
+
+    private SpatialFilterType spatialFilterType;
 
     private CatalogMode catalogMode;
 
@@ -129,6 +132,14 @@ public class AccessInfoInternal implements Serializable {
         this.catalogMode = catalogMode;
     }
 
+    public SpatialFilterType getSpatialFilterType() {
+        return spatialFilterType;
+    }
+
+    public void setSpatialFilterType(SpatialFilterType spatialFilterType) {
+        this.spatialFilterType = spatialFilterType;
+    }
+
     public GrantType getGrant() {
         return grant;
     }
@@ -155,6 +166,7 @@ public class AccessInfoInternal implements Serializable {
             }
             ret.setAreaWkt(txtArea);
         }
+        ret.setSpatialFilterType(spatialFilterType);
         ret.setCatalogMode(mapCatalogModeDTO(catalogMode));
 
         return ret;
