@@ -5,6 +5,7 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
+import org.geoserver.geofence.services.RuleAdminService;
 import org.geoserver.geofence.services.dto.ShortGroup;
 import org.geoserver.geofence.services.rest.RESTRuleService;
 import org.geoserver.geofence.services.rest.RESTUserGroupService;

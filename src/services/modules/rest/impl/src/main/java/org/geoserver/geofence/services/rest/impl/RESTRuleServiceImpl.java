@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Set;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+
 import org.apache.commons.lang.StringUtils;
 
 import org.locationtech.jts.geom.Geometry;
@@ -260,8 +262,8 @@ public class RESTRuleServiceImpl
                         detailsOld.setArea(null);
                     } else {
                         try {
-                            WKTReader reader = new WKTReader();
-                            Geometry g = reader.read(constraintsNew.getRestrictedAreaWkt());
+
+                            Geometry g = toGeometryAllowedArea(constraintsNew.getRestrictedAreaWkt());
                             detailsOld.setArea((MultiPolygon) g);
                         } catch (ParseException ex) {
                             throw new BadRequestRestEx("Error parsing WKT:" + ex.getMessage());
@@ -313,6 +315,22 @@ public class RESTRuleServiceImpl
             LOGGER.error("Unexpected exception: " + ex.getMessage(), ex);
             throw new InternalErrorRestEx(ex.getMessage());
         }
+    }
+
+
+    private Geometry toGeometryAllowedArea(String areaWKT) throws ParseException {
+        WKTReader reader = new WKTReader();
+        Geometry result;
+        if(areaWKT.indexOf("SRID=")==-1){
+            result=reader.read(areaWKT);
+            result.setSRID(4326);
+        } else {
+            String [] areaAr=areaWKT.split(";");
+            String srid=areaAr[0].split("=")[1];
+            result=reader.read(areaAr[1]);
+            result.setSRID(Integer.valueOf(srid));
+        }
+        return result;
     }
 
     @Override
@@ -547,8 +565,10 @@ public class RESTRuleServiceImpl
             constraints.setCqlFilterRead(details.getCqlFilterRead());
             constraints.setCqlFilterWrite(details.getCqlFilterWrite());
             constraints.setDefaultStyle(details.getDefaultStyle());
-            if (details.getArea() != null) {
-                constraints.setRestrictedAreaWkt(details.getArea().toText());
+            MultiPolygon area=details.getArea();
+            if (area != null) {
+                String areaWKT="SRID="+area.getSRID()+";"+area.toText();
+                constraints.setRestrictedAreaWkt(areaWKT);
             }
 
             constraints.setType(details.getType());
@@ -600,10 +620,9 @@ public class RESTRuleServiceImpl
             details.setCqlFilterWrite(constraints.getCqlFilterWrite());
             details.setDefaultStyle(constraints.getDefaultStyle());
             if (constraints.getRestrictedAreaWkt() != null) {
-                WKTReader reader = new WKTReader();
                 Geometry g;
                 try {
-                    g = reader.read(constraints.getRestrictedAreaWkt());
+                    g = toGeometryAllowedArea(constraints.getRestrictedAreaWkt());
                 } catch (ParseException ex) {
                     throw new BadRequestRestEx("Error parsing WKT:" + ex.getMessage());
                 }
