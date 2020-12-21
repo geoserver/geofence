@@ -72,6 +72,7 @@ CREATE TABLE gf_layer_attributes (
 CREATE TABLE gf_layer_details (
     id bigint NOT NULL,
     area geometry,
+    spatial_filter_type character varying(255),
     catalog_mode character varying(255),
     cqlfilterread character varying(4000),
     cqlfilterwrite character varying(4000),
@@ -104,6 +105,7 @@ CREATE TABLE gf_rule (
 CREATE TABLE gf_rule_limits (
     id bigint NOT NULL,
     area geometry,
+    spatial_filter_type character varying(255),
     catalog_mode character varying(255),
     rule_id bigint NOT NULL
 );

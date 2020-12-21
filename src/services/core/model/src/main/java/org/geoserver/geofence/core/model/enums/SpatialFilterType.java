@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package org.geoserver.geofence.core.model;
+package org.geoserver.geofence.core.model.enums;
 
 public enum SpatialFilterType {
     INTERSECTS,CLIP

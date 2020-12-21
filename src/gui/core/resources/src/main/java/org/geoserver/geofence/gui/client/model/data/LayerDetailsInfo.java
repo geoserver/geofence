@@ -8,7 +8,6 @@ package org.geoserver.geofence.gui.client.model.data;
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import org.geoserver.geofence.core.model.SpatialFilterType;
 import org.geoserver.geofence.gui.client.model.BeanKeyValue;
 
 

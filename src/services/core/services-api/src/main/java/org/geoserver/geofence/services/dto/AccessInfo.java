@@ -6,7 +6,6 @@
 package org.geoserver.geofence.services.dto;
 
 import org.geoserver.geofence.core.model.LayerAttribute;
-import org.geoserver.geofence.core.model.SpatialFilterType;
 import org.geoserver.geofence.core.model.enums.GrantType;
 
 import java.io.Serializable;
@@ -39,7 +38,7 @@ public class AccessInfo implements Serializable {
 //    private Geometry area;
     private String areaWkt;
 
-    private SpatialFilterType spatialFilterType;
+    private String clipAreaWkt;
 
     private CatalogModeDTO catalogMode;
 
@@ -68,12 +67,12 @@ public class AccessInfo implements Serializable {
         this.areaWkt = areaWkt;
     }
 
-    public SpatialFilterType getSpatialFilterType() {
-        return spatialFilterType;
+    public String getClipAreaWkt() {
+        return clipAreaWkt;
     }
 
-    public void setSpatialFilterType(SpatialFilterType spatialFilterType) {
-        this.spatialFilterType = spatialFilterType;
+    public void setClipAreaWkt(String clipAreaWkt) {
+        this.clipAreaWkt = clipAreaWkt;
     }
 
     public Set<LayerAttribute> getAttributes() {

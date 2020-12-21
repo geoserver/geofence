@@ -5,6 +5,7 @@
 
 package org.geoserver.geofence.core.model;
 
+import org.geoserver.geofence.core.model.enums.SpatialFilterType;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.geoserver.geofence.core.model.adapter.MultiPolygonAdapter;
 import org.geoserver.geofence.core.model.enums.CatalogMode;
@@ -192,7 +193,7 @@ public class LayerDetails implements Serializable {
     }
 
     public SpatialFilterType getSpatialFilterType() {
-        return spatialFilterType;
+        return spatialFilterType!=null?spatialFilterType:SpatialFilterType.INTERSECTS;
     }
 
     public void setSpatialFilterType(SpatialFilterType spatialFilterType) {

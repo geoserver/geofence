@@ -7,8 +7,7 @@ package org.geoserver.geofence.services;
 
 import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
-import org.geotools.geometry.jts.JTS;
-import org.geotools.referencing.CRS;
+import org.geoserver.geofence.core.model.enums.*;
 import org.locationtech.jts.geom.Geometry;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
@@ -17,10 +16,6 @@ import org.geoserver.geofence.core.dao.AdminRuleDAO;
 import org.geoserver.geofence.core.dao.LayerDetailsDAO;
 import org.geoserver.geofence.core.dao.RuleDAO;
 import org.geoserver.geofence.core.model.*;
-import org.geoserver.geofence.core.model.enums.AccessType;
-import org.geoserver.geofence.core.model.enums.AdminGrantType;
-import org.geoserver.geofence.core.model.enums.CatalogMode;
-import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.services.dto.AccessInfo;
 import org.geoserver.geofence.services.dto.AuthUser;
 import org.geoserver.geofence.services.dto.RuleFilter;
@@ -32,16 +27,13 @@ import org.geoserver.geofence.services.dto.ShortRule;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.util.AccessInfoInternal;
 import org.geoserver.geofence.spi.UserResolver;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 import static org.geoserver.geofence.services.util.FilterUtils.filterByAddress;
 
@@ -195,16 +187,41 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
                 ret.setAllowedStyles(unionAllowedStyles(baseAccess.getAllowedStyles(), moreAccess.getAllowedStyles()));
                 ret.setAttributes(unionAttributes(baseAccess.getAttributes(), moreAccess.getAttributes()));
-                ret.setArea(unionGeometry(baseAccess.getArea(), moreAccess.getArea()));
-                if (baseAccess.getSpatialFilterType().equals(SpatialFilterType.CLIP))
-                    ret.setSpatialFilterType(SpatialFilterType.CLIP);
-                else if(moreAccess.getSpatialFilterType().equals(SpatialFilterType.CLIP))
-                    ret.setSpatialFilterType(SpatialFilterType.CLIP);
-                else
-                    ret.setSpatialFilterType(SpatialFilterType.INTERSECTS);
+                setAllowedAreas(baseAccess,moreAccess,ret);
                 return ret;
             }
         }        
+    }
+
+
+    // takes care of properly setting the allowedAreas to returned accessInfo
+    // if the union results is not null set them
+    // otherwise checks that if allowed area in one access is not null
+    // and the other access has a not null area of the otherType
+    // if yes set it to the return otherwise do nothing
+    private void setAllowedAreas(AccessInfoInternal baseAccess, AccessInfoInternal moreAccess, AccessInfoInternal ret){
+        Geometry baseIntersects = baseAccess.getArea();
+        Geometry baseClip = baseAccess.getClipArea();
+        Geometry moreIntersects = moreAccess.getArea();
+        Geometry moreClip=moreAccess.getClipArea();
+        Geometry unionIntersects=unionGeometry(baseAccess.getArea(), moreAccess.getArea());
+        Geometry unionClip=unionGeometry(baseAccess.getClipArea(), moreAccess.getClipArea());
+        if (unionIntersects==null){
+            if (baseIntersects!=null && moreClip!=null)
+                ret.setArea(baseIntersects);
+            else if (moreIntersects!=null && baseClip!=null)
+                ret.setArea(moreIntersects);
+        } else {
+            ret.setArea(unionIntersects);
+        }
+        if (unionClip==null){
+            if (baseClip!=null && moreIntersects!=null)
+                ret.setClipArea(baseClip);
+            else if (moreClip!=null && baseIntersects!=null)
+                ret.setClipArea(moreClip);
+        } else {
+            ret.setClipArea(unionClip);
+        }
     }
 
     private String unionCQL(String c1, String c2) {
@@ -287,7 +304,6 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
         List<RuleLimits> limits = new ArrayList<>();
         AccessInfoInternal ret = null;
-        int size=ruleList.size();
         for (Rule rule : ruleList) {
             if(ret != null)
                 break;
@@ -299,7 +315,6 @@ public class RuleReaderServiceImpl implements RuleReaderService {
                    if(rl != null) {
                        LOGGER.info("Collecting limits: " + rl);
                        limits.add(rl);
-                       if(size==1) ret=buildAllowAccessInfo(rule,limits,null);
                     } else
                        LOGGER.warn(rule + " has no associated limits");
                     break;
@@ -364,12 +379,21 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     private AccessInfoInternal buildAllowAccessInfo(Rule rule, List<RuleLimits> limits, IdNameFilter userFilter) {
         AccessInfoInternal accessInfo = new AccessInfoInternal(GrantType.ALLOW);
 
-        Geometry area = intersect(limits);
-        CatalogMode cmode = resolveCatalogMode(limits);
+        // first intersects geometry of same type
+        Geometry area = intersect(limits, (type)-> type.equals(SpatialFilterType.INTERSECTS));
+        Geometry clipArea = intersect(limits,(type)->type.equals(SpatialFilterType.CLIP));
 
+        CatalogMode cmode = resolveCatalogMode(limits);
         LayerDetails details = rule.getLayerDetails();
         if(details != null ) {
-            area = intersect(area, details.getArea());
+
+            // intersect the allowed area of the rule to the proper type
+            SpatialFilterType spatialFilterType=getSpatialFilterType(rule);
+            if(spatialFilterType.equals(SpatialFilterType.CLIP))
+                area = intersect(clipArea, details.getArea());
+            else
+                area = intersect(area, details.getArea());
+
             cmode = getStricter(cmode, details.getCatalogMode());
 
             accessInfo.setAttributes(details.getAttributes());
@@ -382,23 +406,38 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         accessInfo.setCatalogMode(cmode);
 
         if (area != null) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Attaching an area to Accessinfo: " + area.getClass().getName() + " " + area.toString());
-            }
-//            accessInfo.setAreaWkt(area.toText());
-            accessInfo.setArea(area);
+            // if we have a clip area we apply clip type
+            // since is more restrictive, otherwise we keep
+            // the intersect
+            if (clipArea!=null)
+                accessInfo.setClipArea(intersect(area,clipArea));
+            else
+                accessInfo.setArea(area);
+        } else if (clipArea!=null){
+            accessInfo.setClipArea(clipArea);
         }
-
-        accessInfo.setSpatialFilterType(resolveSpatialFilterType(limits));
 
         return accessInfo;
     }
 
-    private Geometry intersect(List<RuleLimits> limits) {
+
+    private SpatialFilterType getSpatialFilterType(Rule rule) {
+        SpatialFilterType spatialFilterType;
+        if (rule.getAccess().equals(GrantType.LIMIT)){
+            spatialFilterType=rule.getRuleLimits().getSpatialFilterType();
+        }else{
+            spatialFilterType=rule.getLayerDetails().getSpatialFilterType();
+        }
+        if (spatialFilterType==null)
+            spatialFilterType=SpatialFilterType.INTERSECTS;
+        return spatialFilterType;
+    }
+
+    private Geometry intersect(List<RuleLimits> limits, Predicate<SpatialFilterType> areaTypePredicate) {
         Geometry g = null;
         for (RuleLimits limit : limits) {
             Geometry area = limit.getAllowedArea();
-            if(area != null) {
+            if(area != null && areaTypePredicate.test(limit.getSpatialFilterType())) {
                 if( g == null) {
                     g = area;
                 } else {

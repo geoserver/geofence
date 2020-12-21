@@ -7,9 +7,9 @@ package org.geoserver.geofence.core.dao;
 
 import com.googlecode.genericdao.search.Search;
 import org.geoserver.geofence.core.model.*;
+import org.geoserver.geofence.core.model.enums.SpatialFilterType;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.MultiPolygon;
-import static org.geoserver.geofence.core.dao.BaseDAOTest.ruleDAO;
 import org.geoserver.geofence.core.dao.util.SearchUtil;
 import org.geoserver.geofence.core.model.enums.AccessType;
 import org.geoserver.geofence.core.model.enums.GrantType;

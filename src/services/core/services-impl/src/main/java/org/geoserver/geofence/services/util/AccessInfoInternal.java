@@ -8,7 +8,7 @@ package org.geoserver.geofence.services.util;
 import java.io.Serializable;
 import java.util.Set;
 
-import org.geoserver.geofence.core.model.SpatialFilterType;
+import org.geoserver.geofence.core.model.enums.SpatialFilterType;
 import org.locationtech.jts.geom.Geometry;
 
 import org.geoserver.geofence.core.model.LayerAttribute;
@@ -47,6 +47,8 @@ public class AccessInfoInternal implements Serializable {
 
 //    private Geometry area;
     private Geometry area;
+
+    private Geometry clipArea;
 
     private SpatialFilterType spatialFilterType;
 
@@ -150,6 +152,14 @@ public class AccessInfoInternal implements Serializable {
         this.grant = grant;
     }
 
+    public Geometry getClipArea() {
+        return clipArea;
+    }
+
+    public void setClipArea(Geometry clipArea) {
+        this.clipArea = clipArea;
+    }
+
     public AccessInfo toAccessInfo() {
         AccessInfo ret = new AccessInfo();
 
@@ -166,10 +176,19 @@ public class AccessInfoInternal implements Serializable {
             }
             ret.setAreaWkt(txtArea);
         }
-        ret.setSpatialFilterType(spatialFilterType);
+        if (clipArea !=null){
+            ret.setClipAreaWkt(getClipArea(clipArea,area));
+        }
         ret.setCatalogMode(mapCatalogModeDTO(catalogMode));
 
         return ret;
+    }
+
+
+    private String getClipArea(Geometry clipArea,Geometry intersectArea){
+        if (intersectArea!=null && clipArea.overlaps(intersectArea))
+            return clipArea.difference(intersectArea).toText();
+        return clipArea.toText();
     }
 
     protected static CatalogModeDTO mapCatalogModeDTO(CatalogMode cm) {

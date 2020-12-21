@@ -9,9 +9,8 @@ import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.LayerDetails;
 import org.geoserver.geofence.core.model.RuleLimits;
 import org.geoserver.geofence.core.model.*;
+import org.geoserver.geofence.core.model.enums.*;
 import org.geoserver.geofence.core.model.enums.AccessType;
-import org.geoserver.geofence.core.model.enums.GrantType;
-import org.geoserver.geofence.core.model.enums.LayerType;
 import org.geoserver.geofence.gui.client.ApplicationException;
 import org.geoserver.geofence.gui.client.model.GSInstanceModel;
 import org.geoserver.geofence.gui.client.model.RuleModel;
@@ -47,7 +46,6 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.apache.commons.lang.StringUtils;
-import org.geoserver.geofence.core.model.enums.CatalogMode;
 import org.geoserver.geofence.services.util.IPUtils;
 import org.springframework.dao.DuplicateKeyException;
 

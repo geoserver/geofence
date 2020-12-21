@@ -44,6 +44,7 @@
     create table gr_layer_details (
         id number(19,0) not null,
         area MDSYS.SDO_GEOMETRY,
+        spatial_filter_type varchar2(255,char),
         cqlFilterRead varchar2(4000 char),
         cqlFilterWrite varchar2(4000 char),
         defaultStyle varchar2(255 char),
@@ -92,6 +93,7 @@
     create table gr_rule_limits (
         id number(19,0) not null,
         area MDSYS.SDO_GEOMETRY,
+        spatial_filter_type varchar2(255,char),
         rule_id number(19,0) not null,
         primary key (id),
         unique (rule_id)

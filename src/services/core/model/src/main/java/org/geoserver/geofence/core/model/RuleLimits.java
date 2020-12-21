@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.geoserver.geofence.core.model.adapter.MultiPolygonAdapter;
 import org.geoserver.geofence.core.model.enums.CatalogMode;
 import org.geoserver.geofence.core.model.enums.GrantType;
+import org.geoserver.geofence.core.model.enums.SpatialFilterType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Check;
@@ -85,7 +86,7 @@ public class RuleLimits implements Serializable {
     }
 
     public SpatialFilterType getSpatialFilterType() {
-        return spatialFilterType;
+        return spatialFilterType!=null?spatialFilterType:SpatialFilterType.INTERSECTS;
     }
 
     public void setSpatialFilterType(SpatialFilterType spatialFilterType) {
