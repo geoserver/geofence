@@ -332,7 +332,7 @@ public class RuleLimitsInfoWidget extends GeofenceFormBindingWidget<LayerLimitsI
         ListStore<ClientSpatialFilterType> ret = new ListStore<ClientSpatialFilterType>();
         List<ClientSpatialFilterType> list = new ArrayList<ClientSpatialFilterType>();
 
-        list.add(ClientSpatialFilterType.INTERSECTS);
+        list.add(ClientSpatialFilterType.INTERSECT);
         list.add(ClientSpatialFilterType.CLIP);
 
         ret.add(list);
@@ -350,7 +350,7 @@ public class RuleLimitsInfoWidget extends GeofenceFormBindingWidget<LayerLimitsI
 
     private void initSpatialFilterTypeMap() {
         spatialFilterTypeMap.put(ClientSpatialFilterType.CLIP_NAME, ClientSpatialFilterType.CLIP);
-        spatialFilterTypeMap.put(ClientSpatialFilterType.INTERSECTS_NAME, ClientSpatialFilterType.INTERSECTS);
+        spatialFilterTypeMap.put(ClientSpatialFilterType.INTERSECT_NAME, ClientSpatialFilterType.INTERSECT);
     }
 
 }

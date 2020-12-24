@@ -177,7 +177,11 @@ public class AccessInfoInternal implements Serializable {
             ret.setAreaWkt(txtArea);
         }
         if (clipArea !=null){
-            ret.setClipAreaWkt(getClipArea(clipArea,area));
+            String clipAreaTxt=clipArea.toText();
+            if(clipArea.getSRID()!=0){
+                clipAreaTxt="SRID="+clipArea.getSRID()+";"+clipAreaTxt;
+            }
+            ret.setClipAreaWkt(clipAreaTxt);
         }
         ret.setCatalogMode(mapCatalogModeDTO(catalogMode));
 
@@ -185,11 +189,6 @@ public class AccessInfoInternal implements Serializable {
     }
 
 
-    private String getClipArea(Geometry clipArea,Geometry intersectArea){
-        if (intersectArea!=null && clipArea.overlaps(intersectArea))
-            return clipArea.difference(intersectArea).toText();
-        return clipArea.toText();
-    }
 
     protected static CatalogModeDTO mapCatalogModeDTO(CatalogMode cm) {
         if(cm == null)

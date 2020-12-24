@@ -13,10 +13,10 @@ public class ClientSpatialFilterType extends BeanModel implements IsSerializable
 
     private static final long serialVersionUID = 545243241879482276L;
 
-    public static String INTERSECTS_NAME="INTERSECTS";
+    public static String INTERSECT_NAME ="INTERSECT";
     public static String CLIP_NAME="CLIP";
 
-    public static ClientSpatialFilterType INTERSECTS = new ClientSpatialFilterType(INTERSECTS_NAME);
+    public static ClientSpatialFilterType INTERSECT = new ClientSpatialFilterType(INTERSECT_NAME);
 
     public static ClientSpatialFilterType CLIP = new ClientSpatialFilterType(CLIP_NAME);
 

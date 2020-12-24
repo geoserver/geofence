@@ -830,7 +830,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
     }
 
     private static ClientSpatialFilterType toClientSpatialFilterType(SpatialFilterType type) {
-        ClientSpatialFilterType csft = ClientSpatialFilterType.INTERSECTS;
+        ClientSpatialFilterType csft = ClientSpatialFilterType.INTERSECT;
 
         if (type!=null && type.name().equals(SpatialFilterType.CLIP.name()))
             csft = ClientSpatialFilterType.CLIP;
@@ -842,7 +842,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
         if (csft!=null && csft.getType().equals(ClientSpatialFilterType.CLIP_NAME))
             spatialFilterType=SpatialFilterType.CLIP;
         else
-            spatialFilterType=SpatialFilterType.INTERSECTS;
+            spatialFilterType=SpatialFilterType.INTERSECT;
 
         return spatialFilterType;
     }

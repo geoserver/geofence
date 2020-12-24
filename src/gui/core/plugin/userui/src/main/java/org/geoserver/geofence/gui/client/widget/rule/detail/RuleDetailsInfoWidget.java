@@ -447,7 +447,7 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
         ListStore<ClientSpatialFilterType> ret = new ListStore<ClientSpatialFilterType>();
         List<ClientSpatialFilterType> list = new ArrayList<ClientSpatialFilterType>();
 
-        list.add(ClientSpatialFilterType.INTERSECTS);
+        list.add(ClientSpatialFilterType.INTERSECT);
         list.add(ClientSpatialFilterType.CLIP);
 
         ret.add(list);
@@ -490,7 +490,23 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
 
     private void initSpatialFilterTypeMap() {
         spatialFilterTypeMap.put(ClientSpatialFilterType.CLIP_NAME, ClientSpatialFilterType.CLIP);
-        spatialFilterTypeMap.put(ClientSpatialFilterType.INTERSECTS_NAME, ClientSpatialFilterType.INTERSECTS);
+        spatialFilterTypeMap.put(ClientSpatialFilterType.INTERSECT_NAME, ClientSpatialFilterType.INTERSECT);
+    }
+
+    /**
+     * Disable spatialFilterType combo.
+     */
+    public void disableSpatialFilterType()
+    {
+        this.spatialFilterTypeBox.disable();
+    }
+
+    /**
+     * Enable spatialFilterType combo.
+     */
+    public void enableSpatialFilterType()
+    {
+        this.spatialFilterTypeBox.enable();
     }
 
 }

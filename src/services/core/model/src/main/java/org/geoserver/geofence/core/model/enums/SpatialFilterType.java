@@ -5,5 +5,5 @@
 package org.geoserver.geofence.core.model.enums;
 
 public enum SpatialFilterType {
-    INTERSECTS,CLIP
+    INTERSECT,CLIP
 }

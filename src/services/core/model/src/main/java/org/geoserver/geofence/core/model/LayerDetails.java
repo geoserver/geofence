@@ -193,7 +193,7 @@ public class LayerDetails implements Serializable {
     }
 
     public SpatialFilterType getSpatialFilterType() {
-        return spatialFilterType!=null?spatialFilterType:SpatialFilterType.INTERSECTS;
+        return spatialFilterType!=null?spatialFilterType:SpatialFilterType.INTERSECT;
     }
 
     public void setSpatialFilterType(SpatialFilterType spatialFilterType) {

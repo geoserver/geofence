@@ -327,7 +327,6 @@ public class RESTAdminRuleServiceImpl
         }
 
         rule.setWorkspace(in.getWorkspace());
-        rule.setWorkspace(in.getWorkspace());
 
         return rule;
     }
