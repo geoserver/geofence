@@ -5,15 +5,11 @@
 
 package org.geoserver.geofence.services;
 
+import org.geoserver.geofence.core.model.*;
+import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
-import org.geoserver.geofence.core.model.GSUser;
-import org.geoserver.geofence.core.model.IPAddressRange;
-import org.geoserver.geofence.core.model.LayerAttribute;
-import org.geoserver.geofence.core.model.LayerDetails;
-import org.geoserver.geofence.core.model.UserGroup;
-import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.core.model.enums.AccessType;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.services.dto.AccessInfo;
@@ -26,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import org.geoserver.geofence.core.model.AdminRule;
+
 import org.geoserver.geofence.core.model.enums.AdminGrantType;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -738,6 +734,123 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         accessInfo = ruleReaderService.getAccessInfo(filter);
         assertEquals(GrantType.ALLOW, accessInfo.getGrant());
         assertTrue(accessInfo.getAdminRights());
+    }
+
+    @Test
+    public void testRuleLimitsAllowedAreaSRIDIsPreserved() throws NotFoundServiceEx, ParseException {
+        // test that the original SRID is present in the allowedArea wkt representation,
+        // when retrieving it from the AccessInfo object
+        Long id =null;
+        Long id2=null;
+        try {
+            {
+                Rule r1 = new Rule(10, null, null, null, null, "s1", "r1", "w1", "l1", GrantType.LIMIT);
+                ruleAdminService.insert(r1);
+                id = r1.getId();
+            }
+
+            {
+                Rule r2 = new Rule(11, null, null, null, null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
+                id2 = ruleAdminService.insert(r2);
+            }
+
+            // save limits and check it has been saved
+            {
+                RuleLimits limits = new RuleLimits();
+                String wkt = "MULTIPOLYGON(((0.0016139656066815888 -0.0006386457758059581,0.0019599705696027314 -0.0006386457758059581,0.0019599705696027314 -0.0008854090051601674,0.0016139656066815888 -0.0008854090051601674,0.0016139656066815888 -0.0006386457758059581)))";
+                Geometry allowedArea = new WKTReader().read(wkt);
+                allowedArea.setSRID(3857);
+                limits.setAllowedArea((MultiPolygon) allowedArea);
+                ruleAdminService.setLimits(id, limits);
+            }
+
+            {
+                RuleFilter filter = new RuleFilter(SpecialFilterType.ANY, true);
+                filter.setWorkspace("w1");
+                filter.setService("s1");
+                filter.setRequest("r1");
+                filter.setLayer("l1");
+                AccessInfo accessInfo = ruleReaderService.getAccessInfo(filter);
+                String[] wktAr = accessInfo.getAreaWkt().split(";");
+                assertEquals("SRID=3857", wktAr[0]);
+
+            }
+        } finally {
+
+            if(id!=null)
+                ruleAdminService.delete(id);
+            if (id2!=null)
+                ruleAdminService.delete(id2);
+
+        }
+    }
+
+
+    @Test
+    public void testRuleLimitsAllowedAreaReprojectionWithDifferentSrid() throws NotFoundServiceEx, ParseException {
+        // test that the original SRID is present in the allowedArea wkt representation,
+        // when retrieving it from the AccessInfo object
+        Long id =null;
+        Long id2=null;
+        Long id3=null;
+        try {
+            {
+                Rule r1 = new Rule(999, null, null, null, null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
+                ruleAdminService.insert(r1);
+                id = r1.getId();
+            }
+
+            {
+                Rule r2 = new Rule(11, null, null, null, null, "s1", "r1", "w1", "l1", GrantType.LIMIT);
+                id2 = ruleAdminService.insert(r2);
+            }
+
+            // save limits and check it has been saved
+            {
+                RuleLimits limits = new RuleLimits();
+                String wkt="MultiPolygon (((1680529.71478682174347341 4849746.00902365241199732, 1682436.7076464940328151 4849731.7422441728413105, 1682446.21883281995542347 4849208.62699576932936907, 1680524.95919364970177412 4849279.96089325752109289, 1680529.71478682174347341 4849746.00902365241199732)))";
+                Geometry allowedArea = new WKTReader().read(wkt);
+                allowedArea.setSRID(3003);
+                limits.setAllowedArea((MultiPolygon) allowedArea);
+                ruleAdminService.setLimits(id2, limits);
+            }
+
+            {
+                Rule r3 = new Rule(12, null, null, null, null, "s1", "r1", "w1", "l1", GrantType.LIMIT);
+                id3 = ruleAdminService.insert(r3);
+            }
+
+            // save limits and check it has been saved
+            {
+                RuleLimits limits = new RuleLimits();
+                String wkt="MultiPolygon (((680588.67850254673976451 4850060.34823693986982107, 681482.71827003755606711 4850469.32878803834319115, 682633.56349697941914201 4849499.20374245755374432, 680588.67850254673976451 4850060.34823693986982107)))";
+                Geometry allowedArea = new WKTReader().read(wkt);
+                allowedArea.setSRID(23032);
+                limits.setAllowedArea((MultiPolygon) allowedArea);
+                ruleAdminService.setLimits(id3, limits);
+            }
+
+            {
+                RuleFilter filter = new RuleFilter(SpecialFilterType.ANY, true);
+                filter.setWorkspace("w1");
+                filter.setService("s1");
+                filter.setRequest("r1");
+                filter.setLayer("l1");
+                AccessInfo accessInfo = ruleReaderService.getAccessInfo(filter);
+                String[] wktAr = accessInfo.getAreaWkt().split(";");
+                assertEquals("SRID=3003", wktAr[0]);
+
+            }
+        } finally {
+
+            if(id!=null)
+                ruleAdminService.delete(id);
+            if (id2!=null)
+                ruleAdminService.delete(id2);
+            if(id3!=null)
+                ruleAdminService.delete(id3);
+
+        }
     }
 
 }

@@ -5,6 +5,8 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
+import org.geoserver.geofence.core.model.Rule;
+import org.geoserver.geofence.services.RuleAdminService;
 import org.geoserver.geofence.services.rest.model.RESTInputUser;
 import org.geoserver.geofence.services.rest.model.RESTInputRule;
 import org.geoserver.geofence.services.rest.model.RESTOutputRule;
@@ -269,7 +271,7 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
             assertNotNull(out);
             LOGGER.debug("Constraints " + out.getConstraints());
             assertNotNull(out.getConstraints());
-            assertEquals(allowedArea, out.getConstraints().getRestrictedAreaWkt());
+            assertEquals("SRID=4326;"+allowedArea, out.getConstraints().getRestrictedAreaWkt());
             // check that attribs have not been changed
             assertEquals(new HashSet<LayerAttribute>(Arrays.asList(
                                 new LayerAttribute("attr1", AccessType.NONE),
@@ -280,5 +282,55 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
 
 
     }
+
+
+    @Test
+    public void testAllowedAreaSRID() {
+
+        Long rid;
+
+        {
+            RESTInputRule rule = new RESTInputRule();
+            rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.fixedPriority, 42));
+            rule.setGrant(GrantType.ALLOW);
+            rule.setWorkspace("w0");
+            rule.setLayer("l0");
+
+            RESTLayerConstraints constraints = new RESTLayerConstraints();
+            constraints.setAttributes(new HashSet<LayerAttribute>(Arrays.asList(
+                    new LayerAttribute("attr1", AccessType.NONE),
+                    new LayerAttribute("attr2", AccessType.READWRITE)
+            )));
+            rule.setConstraints(constraints);
+
+            rid = (Long)restRuleService.insert(rule).getEntity();
+            assertNotNull(rid);
+        }
+
+        String allowedArea = "SRID=3857;MULTIPOLYGON (((4146.5 1301.4, 4147.5 1301.1, 4147.8 1301.4, 4146.5 1301.4)))";
+
+        {
+            RESTInputRule up = new RESTInputRule();
+            RESTLayerConstraints constraints = new RESTLayerConstraints();
+            constraints.setRestrictedAreaWkt(allowedArea);
+
+            up.setConstraints(constraints);
+            restRuleService.update(rid, up);
+        }
+
+        {
+            RESTOutputRule out = restRuleService.get(rid);
+
+            assertEquals(allowedArea, out.getConstraints().getRestrictedAreaWkt());
+
+            RuleAdminService ruleAdminService=(RuleAdminService)ctx.getBean("ruleAdminService");
+            Rule r=ruleAdminService.get(rid);
+            assertEquals(3857,r.getLayerDetails().getArea().getSRID());
+
+        }
+
+
+    }
+
 
 }

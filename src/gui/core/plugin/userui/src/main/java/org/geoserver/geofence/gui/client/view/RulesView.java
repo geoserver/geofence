@@ -823,7 +823,11 @@ public class RulesView extends View {
 						.getRuleDetailsWidget().getRuleDetailsInfo();
 
                 // ETJ: FIXME
-				ruleDetailsInfoWidget.getAllowedArea().setValue("SRID=4326;" + area);
+				String areaWithSRID;
+				if (area.indexOf("SRID=")==-1)
+					areaWithSRID="SRID=4326;" + area;
+				else areaWithSRID=area;
+				ruleDetailsInfoWidget.getAllowedArea().setValue(areaWithSRID);
 				
 				rulesManagerServiceRemote.getLayerDetailsInfo(rule,
                         new AsyncCallback<LayerDetailsInfo>() {

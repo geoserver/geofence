@@ -7,6 +7,8 @@ package org.geoserver.geofence.services;
 
 import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
 import org.locationtech.jts.geom.Geometry;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
@@ -30,6 +32,10 @@ import org.geoserver.geofence.services.dto.ShortRule;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.util.AccessInfoInternal;
 import org.geoserver.geofence.spi.UserResolver;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -388,7 +394,9 @@ public class RuleReaderServiceImpl implements RuleReaderService {
                 if( g == null) {
                     g = area;
                 } else {
-                    g = g.intersection(area);
+                    int targetSRID=g.getSRID();
+                    g = g.intersection(reprojectGeometry(targetSRID,area));
+                    g.setSRID(targetSRID);
                 }
             }
         }
@@ -397,10 +405,14 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
     private Geometry intersect(Geometry g1, Geometry g2) {
         if(g1!=null) {
-            if(g2==null)
+            if(g2==null) {
                 return g1;
-            else
-                return g1.intersection(g2);
+            } else {
+                int targetSRID=g1.getSRID();
+                Geometry result= g1.intersection(reprojectGeometry(targetSRID,g2));
+                result.setSRID(targetSRID);
+                return result;
+            }
         } else {
             return g2;
         }
@@ -408,10 +420,14 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
     private Geometry union(Geometry g1, Geometry g2) {
         if(g1!=null) {
-            if(g2==null)
+            if(g2==null) {
                 return g1;
-            else
-                return g1.union(g2);
+            }else {
+                int targetSRID=g1.getSRID();
+                Geometry result= g1.union(reprojectGeometry(targetSRID,g2));
+                result.setSRID(targetSRID);
+                return result;
+            }
         } else {
             return g2;
         }
@@ -755,6 +771,24 @@ public class RuleReaderServiceImpl implements RuleReaderService {
                 // should not happen
                 throw new IllegalStateException("Too many admin auth rules");
         }
+    }
+
+    private Geometry reprojectGeometry(int targetSRID, Geometry geom) {
+        if (targetSRID == geom.getSRID())
+            return geom;
+        try {
+            CoordinateReferenceSystem crs = CRS.decode("EPSG:" + geom.getSRID());
+            CoordinateReferenceSystem target = CRS.decode("EPSG:" + targetSRID);
+            MathTransform transformation = CRS.findMathTransform(crs, target);
+            Geometry result= JTS.transform(geom, transformation);
+            result.setSRID(targetSRID);
+            return result;
+        } catch (FactoryException e) {
+            throw new RuntimeException("Unable to find transformation for SRIDs: " + geom.getSRID() + " to " + targetSRID);
+        } catch (TransformException e) {
+            throw new RuntimeException("Unable to reproject geometry from "+geom.getSRID() + " to " + targetSRID);
+        }
+
     }
 
 
