@@ -8,6 +8,7 @@ package org.geoserver.geofence.services.util;
 import java.io.Serializable;
 import java.util.Set;
 
+import org.geoserver.geofence.core.model.enums.SpatialFilterType;
 import org.locationtech.jts.geom.Geometry;
 
 import org.geoserver.geofence.core.model.LayerAttribute;
@@ -46,6 +47,10 @@ public class AccessInfoInternal implements Serializable {
 
 //    private Geometry area;
     private Geometry area;
+
+    private Geometry clipArea;
+
+    private SpatialFilterType spatialFilterType;
 
     private CatalogMode catalogMode;
 
@@ -129,6 +134,14 @@ public class AccessInfoInternal implements Serializable {
         this.catalogMode = catalogMode;
     }
 
+    public SpatialFilterType getSpatialFilterType() {
+        return spatialFilterType;
+    }
+
+    public void setSpatialFilterType(SpatialFilterType spatialFilterType) {
+        this.spatialFilterType = spatialFilterType;
+    }
+
     public GrantType getGrant() {
         return grant;
     }
@@ -137,6 +150,14 @@ public class AccessInfoInternal implements Serializable {
         if(grant != GrantType.ALLOW && grant != GrantType.DENY)
             throw new IllegalArgumentException("Bad grant type " + grant);
         this.grant = grant;
+    }
+
+    public Geometry getClipArea() {
+        return clipArea;
+    }
+
+    public void setClipArea(Geometry clipArea) {
+        this.clipArea = clipArea;
     }
 
     public AccessInfo toAccessInfo() {
@@ -155,10 +176,19 @@ public class AccessInfoInternal implements Serializable {
             }
             ret.setAreaWkt(txtArea);
         }
+        if (clipArea !=null){
+            String clipAreaTxt=clipArea.toText();
+            if(clipArea.getSRID()!=0){
+                clipAreaTxt="SRID="+clipArea.getSRID()+";"+clipAreaTxt;
+            }
+            ret.setClipAreaWkt(clipAreaTxt);
+        }
         ret.setCatalogMode(mapCatalogModeDTO(catalogMode));
 
         return ret;
     }
+
+
 
     protected static CatalogModeDTO mapCatalogModeDTO(CatalogMode cm) {
         if(cm == null)

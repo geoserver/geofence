@@ -570,6 +570,9 @@ public class RESTRuleServiceImpl
                 String areaWKT="SRID="+area.getSRID()+";"+area.toText();
                 constraints.setRestrictedAreaWkt(areaWKT);
             }
+            if (details.getSpatialFilterType()!=null){
+                constraints.setSpatialFilterType(details.getSpatialFilterType());
+            }
 
             constraints.setType(details.getType());
 
@@ -628,6 +631,8 @@ public class RESTRuleServiceImpl
                 }
                 details.setArea((MultiPolygon) g);
             }
+
+            details.setSpatialFilterType(constraints.getSpatialFilterType());
 
             details.setType(constraints.getType());
 

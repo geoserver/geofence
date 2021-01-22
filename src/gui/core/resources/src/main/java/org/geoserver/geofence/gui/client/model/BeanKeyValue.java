@@ -110,7 +110,9 @@ public enum BeanKeyValue {
     
     LAYER_ALLOWED_AREA_SRID("layer_allowed_area_srid"),
     
-    RULE_ALLOWED_AREA_SRID("rule_allowed_area_srid");
+    RULE_ALLOWED_AREA_SRID("rule_allowed_area_srid"),
+
+    SPATIAL_FILTER_TYPE("spatialFilterType");
     
     
     /** The value. */

@@ -350,14 +350,16 @@ public class RulesView extends View {
 
 							if (result.getType().equalsIgnoreCase("vector")) {
 								ruleDetailsWidget.enableCQLFilterButtons();
+								ruleDetailsWidget.enableStyleCombo();
+								ruleDetailsWidget.enableSpatialFilterType();
+							} else if (result.getType().equalsIgnoreCase("layergroup")){
+								ruleDetailsWidget.disableCQLFilterButtons();
+								ruleDetailsWidget.disableStyleCombo();
+								ruleDetailsWidget.enableSpatialFilterType();
 							} else {
 								ruleDetailsWidget.disableCQLFilterButtons();
-							}
-
-							if (result.getType().equalsIgnoreCase("layergroup")) {
-								ruleDetailsWidget.disableStyleCombo();
-							} else {
 								ruleDetailsWidget.enableStyleCombo();
+								ruleDetailsWidget.disableSpatialFilterType();
 							}
 
 							Dispatcher

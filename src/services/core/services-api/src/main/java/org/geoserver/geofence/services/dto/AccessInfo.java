@@ -38,6 +38,8 @@ public class AccessInfo implements Serializable {
 //    private Geometry area;
     private String areaWkt;
 
+    private String clipAreaWkt;
+
     private CatalogModeDTO catalogMode;
 
     private String defaultStyle;
@@ -63,6 +65,14 @@ public class AccessInfo implements Serializable {
 
     public void setAreaWkt(String areaWkt) {
         this.areaWkt = areaWkt;
+    }
+
+    public String getClipAreaWkt() {
+        return clipAreaWkt;
+    }
+
+    public void setClipAreaWkt(String clipAreaWkt) {
+        this.clipAreaWkt = clipAreaWkt;
     }
 
     public Set<LayerAttribute> getAttributes() {

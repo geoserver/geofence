@@ -37,6 +37,8 @@ public class LayerDetailsInfo extends BeanModel implements IsSerializable
 
     private String srid;
 
+    private ClientSpatialFilterType spatialFilterType;
+
     private ClientCatalogMode catalogMode;
 
     /**
@@ -175,6 +177,15 @@ public class LayerDetailsInfo extends BeanModel implements IsSerializable
     public void setCatalogMode(ClientCatalogMode catalogMode) {
         this.catalogMode = catalogMode;
         set(BeanKeyValue.CATALOG_MODE.getValue(), this.catalogMode);
+    }
+
+    public ClientSpatialFilterType getSpatialFilterType() {
+        return spatialFilterType;
+    }
+
+    public void setSpatialFilterType(ClientSpatialFilterType spatialFilterType) {
+        this.spatialFilterType = spatialFilterType;
+        set(BeanKeyValue.SPATIAL_FILTER_TYPE.getValue(), this.spatialFilterType);
     }
 
 

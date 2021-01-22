@@ -8,17 +8,13 @@ import it.geosolutions.geoserver.rest.decoder.RESTLayerGroup;
 import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.LayerDetails;
 import org.geoserver.geofence.core.model.RuleLimits;
+import org.geoserver.geofence.core.model.*;
+import org.geoserver.geofence.core.model.enums.*;
 import org.geoserver.geofence.core.model.enums.AccessType;
-import org.geoserver.geofence.core.model.enums.GrantType;
-import org.geoserver.geofence.core.model.enums.LayerType;
 import org.geoserver.geofence.gui.client.ApplicationException;
 import org.geoserver.geofence.gui.client.model.GSInstanceModel;
 import org.geoserver.geofence.gui.client.model.RuleModel;
-import org.geoserver.geofence.gui.client.model.data.LayerAttribUI;
-import org.geoserver.geofence.gui.client.model.data.LayerCustomProps;
-import org.geoserver.geofence.gui.client.model.data.LayerDetailsInfo;
-import org.geoserver.geofence.gui.client.model.data.LayerLimitsInfo;
-import org.geoserver.geofence.gui.client.model.data.LayerStyle;
+import org.geoserver.geofence.gui.client.model.data.*;
 import org.geoserver.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
 import org.geoserver.geofence.gui.server.service.IRulesManagerService;
 import org.geoserver.geofence.gui.service.GeofenceRemoteService;
@@ -50,11 +46,6 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.apache.commons.lang.StringUtils;
-import org.geoserver.geofence.core.model.GSInstance;
-import org.geoserver.geofence.core.model.IPAddressRange;
-import org.geoserver.geofence.core.model.Rule;
-import org.geoserver.geofence.core.model.enums.CatalogMode;
-import org.geoserver.geofence.gui.client.model.data.ClientCatalogMode;
 import org.geoserver.geofence.services.util.IPUtils;
 import org.springframework.dao.DuplicateKeyException;
 
@@ -436,7 +427,6 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
                     layAttrUI.setName(attrFromGS.getName());
                     layAttrUI.setDataType(attrFromGS.getBinding());
                     layAttrUI.setAccessType("READWRITE");
-
                     layerAttributesDTO.add(layAttrUI);
                 }
 
@@ -688,6 +678,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
                 ClientCatalogMode ccm = toClientCM(layerDetails.getCatalogMode());
                 layerDetailsInfo.setCatalogMode(ccm);
 
+
                 MultiPolygon the_geom = null;
                 Geometry geometry = layerDetails.getArea();
 
@@ -698,14 +689,20 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
                     the_geom = new MultiPolygon(new Polygon[]{(Polygon) geometry}, factory);
                 }
 
+
                 if (the_geom != null) {
                     layerDetailsInfo.setAllowedArea(the_geom.toText());
                     layerDetailsInfo
                             .setSrid(String.valueOf(the_geom.getSRID()));
+
                 } else {
                     layerDetailsInfo.setAllowedArea(null);
                     layerDetailsInfo.setSrid(null);
                 }
+
+                ClientSpatialFilterType csft = toClientSpatialFilterType(layerDetails.getSpatialFilterType());
+
+                layerDetailsInfo.setSpatialFilterType(csft);
 
                 if (layerDetails.getType().equals(LayerType.RASTER)) {
                     layerDetailsInfo.setType("raster");
@@ -793,6 +790,9 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
             CatalogMode cm = fromClientCM(layerLimitsForm.getCatalogMode());
             ruleLimits.setCatalogMode(cm);
 
+            ClientSpatialFilterType csft= layerLimitsForm.getSpatialFilterType();
+            ruleLimits.setSpatialFilterType(fromClientSpatialFilterType(csft));
+
             geofenceRemoteService.getRuleAdminService().setLimits(ruleId,
                     ruleLimits);
 
@@ -827,6 +827,24 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
         }
 
         return ccm;
+    }
+
+    private static ClientSpatialFilterType toClientSpatialFilterType(SpatialFilterType type) {
+        ClientSpatialFilterType csft = ClientSpatialFilterType.INTERSECT;
+
+        if (type!=null && type.name().equals(SpatialFilterType.CLIP.name()))
+            csft = ClientSpatialFilterType.CLIP;
+        return csft;
+    }
+
+    private static SpatialFilterType fromClientSpatialFilterType(ClientSpatialFilterType csft) {
+        SpatialFilterType spatialFilterType=null;
+        if (csft!=null && csft.getType().equals(ClientSpatialFilterType.CLIP_NAME))
+            spatialFilterType=SpatialFilterType.CLIP;
+        else
+            spatialFilterType=SpatialFilterType.INTERSECT;
+
+        return spatialFilterType;
     }
 
     private static CatalogMode fromClientCM(ClientCatalogMode ccm) {
@@ -864,7 +882,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
                 layerLimitsInfo = new LayerLimitsInfo();
                 layerLimitsInfo.setRuleId(ruleId);
 
-                MultiPolygon the_geom = ruleLimits.getAllowedArea();
+                MultiPolygon the_geom = (MultiPolygon) ruleLimits.getAllowedArea();
 
                 if (the_geom != null) {
                     layerLimitsInfo.setAllowedArea(the_geom.toText());
@@ -873,6 +891,8 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
                     layerLimitsInfo.setAllowedArea(null);
                     layerLimitsInfo.setSrid(null);
                 }
+
+                layerLimitsInfo.setSpatialFilterType(toClientSpatialFilterType(ruleLimits.getSpatialFilterType()));
 
                 ClientCatalogMode ccm = toClientCM(ruleLimits.getCatalogMode());
                 layerLimitsInfo.setCatalogMode(ccm);

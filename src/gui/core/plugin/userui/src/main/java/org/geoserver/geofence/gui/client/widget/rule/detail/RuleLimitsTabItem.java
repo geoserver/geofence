@@ -70,6 +70,7 @@ public class RuleLimitsTabItem extends TabItem {
 					if (ruleLimitsWidget.getRuleLimitsInfo().getModel() == null) {
 						Dispatcher.forwardEvent(
 								GeofenceEvents.LOAD_LAYER_LIMITS, theRule);
+						Dispatcher.forwardEvent(GeofenceEvents.LOAD_LAYER_DETAILS,theRule);
 					}
 				}
 

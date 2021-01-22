@@ -5,6 +5,7 @@
 
 package org.geoserver.geofence.core.model;
 
+import org.geoserver.geofence.core.model.enums.SpatialFilterType;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.geoserver.geofence.core.model.adapter.MultiPolygonAdapter;
 import org.geoserver.geofence.core.model.enums.CatalogMode;
@@ -74,6 +75,10 @@ public class LayerDetails implements Serializable {
 	@Type(type = "org.hibernatespatial.GeometryUserType")
 	@Column(name = "area")
 	private MultiPolygon area;
+
+	@Enumerated(EnumType.STRING)
+    @Column(name="spatial_filter_type",nullable = true)
+	private SpatialFilterType spatialFilterType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "catalog_mode", nullable = true)
@@ -185,7 +190,15 @@ public class LayerDetails implements Serializable {
 
     public void setType(LayerType type) {
         this.type = type;
-    }    
+    }
+
+    public SpatialFilterType getSpatialFilterType() {
+        return spatialFilterType!=null?spatialFilterType:SpatialFilterType.INTERSECT;
+    }
+
+    public void setSpatialFilterType(SpatialFilterType spatialFilterType) {
+        this.spatialFilterType = spatialFilterType;
+    }
 
     @Override
     public String toString() {

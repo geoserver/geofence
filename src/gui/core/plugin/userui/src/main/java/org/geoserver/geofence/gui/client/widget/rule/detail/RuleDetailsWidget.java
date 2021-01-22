@@ -64,16 +64,16 @@ public class RuleDetailsWidget extends ContentPanel
 
         setHeaderVisible(false);
         setFrame(true);
-        setHeight(330);
+        setHeight(350);
         setWidth(690);
         setLayout(new FitLayout());
 
         ruleDetailsInfo = new RuleDetailsInfoWidget(this.theRule, workspacesService, this);
         add(ruleDetailsInfo.getFormPanel());
 
+        ruleDetailsInfo.getModelData();
         ruleDetailsGrid = new RuleDetailsGridWidget(this.theRule, workspacesService, this);
         add(ruleDetailsGrid.getGrid());
-
         super.setMonitorWindowResize(true);
 
         setScrollMode(Scroll.AUTOY);

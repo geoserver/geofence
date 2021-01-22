@@ -31,6 +31,8 @@ public class LayerLimitsInfo extends BeanModel implements IsSerializable
 
     private ClientCatalogMode catalogMode;
 
+    private ClientSpatialFilterType spatialFilterType;
+
 
     /**
      * Instantiates a new limits.
@@ -97,6 +99,15 @@ public class LayerLimitsInfo extends BeanModel implements IsSerializable
     public void setCatalogMode(ClientCatalogMode catalogMode) {
         this.catalogMode = catalogMode;
         set(BeanKeyValue.CATALOG_MODE.getValue(), catalogMode);
+    }
+
+    public ClientSpatialFilterType getSpatialFilterType() {
+        return spatialFilterType;
+    }
+
+    public void setSpatialFilterType(ClientSpatialFilterType spatialFilterType) {
+        this.spatialFilterType = spatialFilterType;
+        set(BeanKeyValue.SPATIAL_FILTER_TYPE.getValue(),spatialFilterType);
     }
 
     /* (non-Javadoc)

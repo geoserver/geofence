@@ -6,19 +6,19 @@
 package org.geoserver.geofence.core.dao;
 
 import com.googlecode.genericdao.search.Search;
-import org.locationtech.jts.geom.MultiPolygon;
-import static org.geoserver.geofence.core.dao.BaseDAOTest.ruleDAO;
-import org.geoserver.geofence.core.dao.util.SearchUtil;
-import org.geoserver.geofence.core.model.GSUser;
-import org.geoserver.geofence.core.model.IPAddressRange;
+import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.LayerDetails;
-import org.geoserver.geofence.core.model.Rule;
+import org.geoserver.geofence.core.model.IPAddressRange;
+import org.geoserver.geofence.core.model.GSUser;
+import org.geoserver.geofence.core.model.enums.SpatialFilterType;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.geoserver.geofence.core.dao.util.SearchUtil;
 import org.geoserver.geofence.core.model.enums.AccessType;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
 import java.util.List;
-
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -221,6 +221,53 @@ public class RuleDAOTest extends BaseDAOTest {
             }
         }
 
+    }
+
+    @Test
+    public void testPersistLayerDetailsWithSpatailFilterType() throws Exception {
+
+        long rid = createRule().getId();
+
+        // add details
+        {
+            Rule loaded = ruleDAO.find(rid);
+            assertNotNull("Can't retrieve rule", loaded);
+
+            assertNull(loaded.getLayerDetails());
+
+            LayerDetails details = new LayerDetails();
+            details.setRule(loaded);
+            details.setDefaultStyle("default");
+            details.getAttributes().add(new LayerAttribute("a1", AccessType.NONE));
+            details.getAttributes().add(new LayerAttribute("a2", AccessType.READONLY));
+            details.getAttributes().add(new LayerAttribute("a3", AccessType.READWRITE));
+            details.getAttributes().add(new LayerAttribute("a4", AccessType.READWRITE));
+
+            GeometryFactory factory = new GeometryFactory();
+            details.setArea(factory.createMultiPolygon());
+            details.setSpatialFilterType(SpatialFilterType.INTERSECT);
+
+            detailsDAO.persist(details);
+        }
+
+        // check everything's fine
+        {
+            Rule loaded2 = ruleDAO.find(rid);
+            assertNotNull("Can't retrieve rule", loaded2);
+            LayerDetails details = loaded2.getLayerDetails();
+            assertNotNull(details);
+
+            assertEquals(SpatialFilterType.INTERSECT, details.getSpatialFilterType());
+        }
+
+        // try removing the details
+        {
+            Rule loaded2 = ruleDAO.find(rid);
+            LayerDetails details = loaded2.getLayerDetails();
+            assertNotNull(details);
+
+            detailsDAO.remove(details);
+        }
     }
 
 
