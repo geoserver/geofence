@@ -21,9 +21,11 @@ import org.geoserver.geofence.services.rest.model.util.IdName;
 
 import java.net.ConnectException;
 import java.util.Arrays;
+import java.util.List;
 import javax.ws.rs.core.Response;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.geoserver.geofence.services.rest.model.RESTOutputAdminRule;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -104,6 +106,14 @@ public class GeoFenceClientTest {
         RuleServiceHelper rsh = new RuleServiceHelper(client.getRuleService());
         for (RESTOutputRule entry : rsh.getAll().getList()) {
             LOGGER.debug("Removing rule " + entry);
+            client.getRuleService().delete(entry.getId());
+        }
+    }
+
+   protected void removeAdminRules(GeoFenceClient client) {
+        AdminRuleServiceHelper rsh = new AdminRuleServiceHelper(client.getAdminRuleService());
+        for (RESTOutputAdminRule entry : rsh.getAll().getList()) {
+            LOGGER.debug("Removing adminrule " + entry);
             client.getRuleService().delete(entry.getId());
         }
     }
@@ -209,7 +219,12 @@ public class GeoFenceClientTest {
 
         // add a group
         client.getUserService().addIntoGroup("pippo", "group02");
-        assertEquals(2, client.getUserService().get("pippo").getGroups().size());
+        {
+            List<IdName> groups = client.getUserService().get("pippo").getGroups();
+            assertTrue("group01 not found", groups.stream().anyMatch(g -> g.getName().equals("group01")));
+            assertTrue("group02 not found", groups.stream().anyMatch(g -> g.getName().equals("group02")));
+            assertEquals(2, groups.size());
+        }
 
         // readd some group, size should not change
         client.getUserService().addIntoGroup("pippo", "group02");

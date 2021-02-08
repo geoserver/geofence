@@ -5,11 +5,6 @@
 
 package org.geoserver.geofence.services.rest;
 
-import org.geoserver.geofence.services.rest.RESTBatchService;
-import org.geoserver.geofence.services.rest.RESTUserGroupService;
-import org.geoserver.geofence.services.rest.RESTUserService;
-import org.geoserver.geofence.services.rest.RESTGSInstanceService;
-import org.geoserver.geofence.services.rest.RESTRuleService;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.cxf.common.util.Base64Utility;
@@ -72,6 +67,10 @@ public class GeoFenceClient {
 
     public RESTRuleService getRuleService() {
         return getService(RESTRuleService.class, "rules");
+    }
+    
+    public RESTAdminRuleService getAdminRuleService() {
+        return getService(RESTAdminRuleService.class, "adminrules");
     }
 
     public RESTBatchService getBatchService() {

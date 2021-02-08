@@ -1,23 +1,22 @@
-/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2020 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.geofence.services.rest;
 
-import org.geoserver.geofence.services.rest.RESTRuleService;
 import org.geoserver.geofence.services.dto.RuleFilter;
-import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
+import org.geoserver.geofence.services.rest.model.RESTOutputAdminRuleList;
 
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class RuleServiceHelper {
+public class AdminRuleServiceHelper {
 
-    private RESTRuleService ruleService;
+    private RESTAdminRuleService ruleService;
 
-    public RuleServiceHelper(RESTRuleService ruleService) {
+    public AdminRuleServiceHelper(RESTAdminRuleService ruleService) {
         this.ruleService = ruleService;
     }
 
@@ -33,18 +32,16 @@ public class RuleServiceHelper {
     }
 
 
-    public long count(RuleFilter.TextFilter userFilter, RuleFilter.TextFilter ruleFilter, RuleFilter.IdNameFilter instanceFilter,
+    public long count(RuleFilter.TextFilter userFilter, RuleFilter.TextFilter roleFilter, RuleFilter.IdNameFilter instanceFilter,
                 RuleFilter.TextFilter serviceFilter, RuleFilter.TextFilter requestFilter,
                 RuleFilter.TextFilter workspaceFilter, RuleFilter.TextFilter layerFilter) {
 
         return ruleService.count(
                 getFilterName(userFilter), getFilterDefault(userFilter),
-                getFilterName(ruleFilter), getFilterDefault(ruleFilter),
+                getFilterName(roleFilter), getFilterDefault(roleFilter),
                 getFilterId(instanceFilter), getFilterName(instanceFilter), getFilterDefault(instanceFilter),
-                getFilterName(serviceFilter), getFilterDefault(serviceFilter),
-                getFilterName(requestFilter), getFilterDefault(requestFilter),
-                getFilterName(workspaceFilter), getFilterDefault(workspaceFilter),
-                getFilterName(layerFilter), getFilterDefault(layerFilter));
+                getFilterName(workspaceFilter), getFilterDefault(workspaceFilter)
+        );
     }
 
     private static Long getFilterId(RuleFilter.IdNameFilter filter) {
@@ -80,11 +77,11 @@ public class RuleServiceHelper {
                     (filter.isIncludeDefault() || filter .getType()==RuleFilter.FilterType.DEFAULT);
     }
 
-    public RESTOutputRuleList getAll() {
+    public RESTOutputAdminRuleList getAll() {
         return get(null, null, false, null, null, null, null, null, null, null);
     }
 
-    public RESTOutputRuleList get(Integer page, Integer entries, boolean full, RuleFilter ruleFilter) {
+    public RESTOutputAdminRuleList get(Integer page, Integer entries, boolean full, RuleFilter ruleFilter) {
         return get(
                 page, entries, full,
                 ruleFilter.getUser(), ruleFilter.getRole(), ruleFilter.getInstance(),
@@ -92,22 +89,17 @@ public class RuleServiceHelper {
                 ruleFilter.getWorkspace(), ruleFilter.getLayer());
     }
 
-    public RESTOutputRuleList get(
+    public RESTOutputAdminRuleList get(
                 Integer page, Integer entries, boolean full,
-                RuleFilter.TextFilter userFilter, RuleFilter.TextFilter ruleFilter, RuleFilter.IdNameFilter instanceFilter,
+                RuleFilter.TextFilter userFilter, RuleFilter.TextFilter roleFilter, RuleFilter.IdNameFilter instanceFilter,
                 RuleFilter.TextFilter serviceFilter, RuleFilter.TextFilter requestFilter,
                 RuleFilter.TextFilter workspaceFilter, RuleFilter.TextFilter layerFilter) {
 
         return ruleService.get(page,entries,full,
                 getFilterName(userFilter),    getFilterDefault(userFilter),
-                getFilterName(ruleFilter),    getFilterDefault(ruleFilter),
+                getFilterName(roleFilter),    getFilterDefault(roleFilter),
                 getFilterId(instanceFilter),  getFilterName(instanceFilter), getFilterDefault(instanceFilter),
-                getFilterName(serviceFilter), getFilterDefault(serviceFilter),
-                getFilterName(requestFilter), getFilterDefault(requestFilter),
-                getFilterName(workspaceFilter), getFilterDefault(workspaceFilter),
-                getFilterName(layerFilter),   getFilterDefault(layerFilter));
+                getFilterName(workspaceFilter), getFilterDefault(workspaceFilter));
     }
-
-
 
 }
