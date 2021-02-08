@@ -224,7 +224,7 @@ public class RuleDAOTest extends BaseDAOTest {
     }
 
     @Test
-    public void testPersistLayerDetailsWithSpatailFilterType() throws Exception {
+    public void testPersistLayerDetailsWithSpatialFilterType() throws Exception {
 
         long rid = createRule().getId();
 
@@ -243,8 +243,7 @@ public class RuleDAOTest extends BaseDAOTest {
             details.getAttributes().add(new LayerAttribute("a3", AccessType.READWRITE));
             details.getAttributes().add(new LayerAttribute("a4", AccessType.READWRITE));
 
-            GeometryFactory factory = new GeometryFactory();
-            details.setArea(factory.createMultiPolygon());
+            details.setArea(buildMultiPolygon());
             details.setSpatialFilterType(SpatialFilterType.INTERSECT);
 
             detailsDAO.persist(details);

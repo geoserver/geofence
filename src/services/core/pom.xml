@@ -29,7 +29,15 @@
         <module>services-api</module>
         <module>services-impl</module>
         <module>webtest</module>  
-
     </modules>
+
+    <profiles>
+        <profile>
+            <id>postgis</id>
+            <modules>
+                <module>persistence-pg-test</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>
