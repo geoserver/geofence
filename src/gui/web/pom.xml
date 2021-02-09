@@ -367,6 +367,7 @@
                                 <delete dir="gwt-unitCache"/>
                                 <delete dir="war/WEB-INF/deploy"/>
                                 <delete dir="war/WEB-INF/classes"/>
+                                <delete dir="war/WEB-INF/spatial-lib"/>
                                 <!-- 								 -->
                                 <!--
                               these entries are in the gitignore file

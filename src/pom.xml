@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-/* (c) 2014-2016 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2014-2021 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -14,12 +14,13 @@
    <packaging>pom</packaging>
 
    <properties>
+     <geofence-version>3.4.6.1</geofence-version>
      <hibernate-version>3.6.9.Final</hibernate-version>
      <hibernate-generic-dao-version>1.1.0</hibernate-generic-dao-version>
-     <hibernate-spatial-version>1.1.3.1</hibernate-spatial-version>
-     <hibernate-spatial-h2-version>1.1.3.1</hibernate-spatial-h2-version>
-     <postgresql.jdbc.version>42.1.1</postgresql.jdbc.version>
+     <hibernate-spatial-version>1.1.3.2</hibernate-spatial-version>
+     <postgresql.jdbc.version>42.2.18</postgresql.jdbc.version>
      <postgis.jdbc.version>1.3.3</postgis.jdbc.version>
+     <jts.version>1.17.1</jts.version>
    </properties>
    
    <name>Master GeoFence POM</name>

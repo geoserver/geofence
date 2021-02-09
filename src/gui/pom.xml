@@ -35,8 +35,6 @@
         <jaxws-version>2.1</jaxws-version>
         <cxf-version>3.1.5</cxf-version>
 
-        <hibernate-version>3.6.0.Final</hibernate-version>
-        <hibernate-generic-dao-version>1.1.0</hibernate-generic-dao-version>
         <asm-version>2.2.3</asm-version>
         <cglib-version>2.2</cglib-version>
 
@@ -566,7 +564,7 @@
             <dependency>
                 <groupId>org.locationtech.jts</groupId>
                 <artifactId>jts-core</artifactId>
-                <version>1.15.1</version>
+                <version>${jts.version}</version>
             </dependency>
 	    
             <!-- =========================================================== -->
