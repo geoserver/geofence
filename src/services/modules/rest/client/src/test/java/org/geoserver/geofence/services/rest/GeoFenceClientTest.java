@@ -33,6 +33,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assume.*;
 import static org.junit.Assert.*;
+import org.junit.rules.TestName;
 
 /**
  *
@@ -41,10 +42,11 @@ import static org.junit.Assert.*;
 public class GeoFenceClientTest {
     private final static Logger LOGGER = LogManager.getLogger(GeoFenceClientTest.class);
 
+    @org.junit.Rule
+    public TestName name = new TestName();
+    
     public GeoFenceClientTest() {
     }
-
-
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -56,6 +58,8 @@ public class GeoFenceClientTest {
 
     @Before
     public void before() throws Exception {
+        LOGGER.info("### Running " + getClass().getSimpleName() + "::" + name.getMethodName() );
+
         GeoFenceClient client = createClient();
         assumeTrue(pingGeoFence(client));
 
