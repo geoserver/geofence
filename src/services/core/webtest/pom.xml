@@ -58,14 +58,6 @@
         </dependency>
 
         <!-- =============================================================== -->
-        <!-- =============================================================== -->
-
-        <dependency>
-            <groupId>org.hibernatespatial</groupId>
-            <artifactId>hibernate-spatial-h2-geodb</artifactId>
-        </dependency>
-
-        <!-- =============================================================== -->
         <!-- APACHE COMMONS -->
         <!-- =============================================================== -->
         <dependency>
@@ -274,6 +266,37 @@
 		</dependency>
 
 	</dependencies>
+
+
+        <profiles>
+           <profile>
+              <id>postgis</id>            
+              <dependencies>
+                 <dependency>
+                    <groupId>org.hibernatespatial</groupId>
+                    <artifactId>hibernate-spatial-postgis</artifactId>
+                 </dependency>
+              </dependencies>
+           </profile>
+           <profile>
+              <id>h2</id>    
+              <activation>
+                 <activeByDefault>true</activeByDefault>
+              </activation>
+              <dependencies>
+                 <dependency>
+                    <groupId>org.hibernatespatial</groupId>
+                    <artifactId>hibernate-spatial-h2-geodb</artifactId>
+                 </dependency>
+                 <dependency>
+                    <groupId>org.opengeo</groupId>
+                    <artifactId>geodb</artifactId>
+                    <version>0.9</version>
+                 </dependency>                
+              </dependencies>
+           </profile>
+        </profiles>
+
 
 	<build>
 

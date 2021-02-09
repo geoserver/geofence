@@ -50,6 +50,7 @@
             <list>
                 <value>classpath*:geofence-datasource-ovr.properties</value>
                 <value>file:${geofence.dir}/geofence-datasource-ovr.properties</value>
+                <value>file:${geofence-datasource-file}</value>
             </list>
         </property>
         <property name="ignoreResourceNotFound" value="true"/>        
