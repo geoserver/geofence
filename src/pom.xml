@@ -25,6 +25,8 @@
 
       <fmt.action>format</fmt.action>
       <fmt.skip>false</fmt.skip>
+      <pom.fmt.action>sort</pom.fmt.action>
+      <pom.fmt.skip>${fmt.skip}</pom.fmt.skip>
    </properties>
    
    <name>Master GeoFence POM</name>
@@ -249,6 +251,26 @@
             <filesNamePattern>.*\.java</filesNamePattern>
             <skip>${fmt.skip}</skip>
             <style>aosp</style>
+          </configuration>
+        </plugin>
+  
+        <plugin>
+          <groupId>com.github.ekryd.sortpom</groupId>
+          <artifactId>sortpom-maven-plugin</artifactId>
+          <version>2.11.0</version>
+          <executions>
+            <execution>
+              <phase>verify</phase>
+              <goals>
+                <goal>${pom.fmt.action}</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <skip>${pom.fmt.skip}</skip>
+            <keepBlankLines>true</keepBlankLines>
+            <spaceBeforeCloseEmptyElement>false</spaceBeforeCloseEmptyElement>
+            <createBackupFile>false</createBackupFile>
           </configuration>
         </plugin>
       </plugins>
