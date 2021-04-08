@@ -16,8 +16,6 @@
         <artifactId>geofence-modules</artifactId>
         <version>3.5-SNAPSHOT</version>
     </parent>
-
-    <groupId>org.geoserver.geofence</groupId>
     <artifactId>geofence-rest-root</artifactId>
     <name>GeoFence - Modules - REST root</name>
     <packaging>pom</packaging>

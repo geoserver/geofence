@@ -15,7 +15,6 @@
         <version>3.5-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.geoserver.geofence</groupId>
     <artifactId>geofence-ldap</artifactId>
     <packaging>jar</packaging>
     <name>GeoFence - Module - LDAP Support</name>

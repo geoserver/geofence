@@ -13,10 +13,7 @@
         <artifactId>geofence</artifactId>
         <version>3.5-SNAPSHOT</version>
     </parent>
-
-    <groupId>org.geoserver.geofence</groupId>
     <artifactId>geofence-root</artifactId>
-    <version>3.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>GeoFence - 0 Services </name>

@@ -16,8 +16,7 @@
         <artifactId>geofence-root</artifactId>
         <version>3.5-SNAPSHOT</version>
     </parent>
-  
-    <groupId>org.geoserver.geofence</groupId>
+
     <artifactId>geofence-core</artifactId>
     <name>GeoFence - Core</name>
     <packaging>pom</packaging>
