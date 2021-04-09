@@ -5,22 +5,15 @@
 
 package org.geoserver.geofence.core.dao.impl;
 
-import org.geoserver.geofence.core.dao.GSUserDAO;
-import org.geoserver.geofence.core.model.GSUser;
-import org.geoserver.geofence.core.model.UserGroup;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import org.hibernate.Hibernate;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.googlecode.genericdao.search.ISearch;
 import com.googlecode.genericdao.search.Search;
+import java.util.Date;
+import java.util.List;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-
+import org.geoserver.geofence.core.dao.GSUserDAO;
+import org.geoserver.geofence.core.model.GSUser;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Public implementation of the GSUserDAO interface
@@ -28,31 +21,26 @@ import org.apache.log4j.Logger;
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 @Transactional(value = "geofenceTransactionManager")
-public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
-{
+public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO {
 
     private static final Logger LOGGER = LogManager.getLogger(GSUserDAOImpl.class);
 
     @Override
-    public void persist(GSUser... entities)
-    {
+    public void persist(GSUser... entities) {
         Date now = new Date();
-        for (GSUser user : entities)
-        {
+        for (GSUser user : entities) {
             user.setDateCreation(now);
         }
         super.persist(entities);
     }
 
     @Override
-    public List<GSUser> findAll()
-    {
+    public List<GSUser> findAll() {
         return super.findAll();
     }
 
     @Override
-    public List<GSUser> search(ISearch search)
-    {
+    public List<GSUser> search(ISearch search) {
         return super.search(search);
     }
 
@@ -63,63 +51,62 @@ public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
         return searchFull(search);
     }
 
-    /**
-     * Fetch a GSUser with all of its related groups
-     */
+    /** Fetch a GSUser with all of its related groups */
     protected GSUser searchFull(Search search) {
         search.addFetch("userGroups");
         search.setDistinct(true);
         List<GSUser> users = super.search(search);
 
-        // When fetching users with multiple groups, the gsusers list id multiplied for the number of groups found.
+        // When fetching users with multiple groups, the gsusers list id multiplied for the number
+        // of groups found.
         // Next there is a workaround to this problem; maybe this:
         //    search.setDistinct(true);
-        // Dunno if some annotations in the GSUser definition are wrong, some deeper checks have to be performed.
+        // Dunno if some annotations in the GSUser definition are wrong, some deeper checks have to
+        // be performed.
 
-        switch(users.size()) {
+        switch (users.size()) {
             case 0:
                 return null;
             case 1:
                 return users.get(0);
             default:
-//                if(users.size() == users.get(0).getGroups().size()) { // normal hibernate behaviour
-//                    if(LOGGER.isDebugEnabled()) { // perform some more consistency tests only when debugging
-//                        for (GSUser user : users) {
-//                            if(user.getId() != users.get(0).getId() ||
-//                               user.getGroups().size() != users.get(0).getGroups().size()) {
-//                                LOGGER.error("Inconsistent userlist " + user);
-//                            }
-//                        }
-//                    }
-//
-//                    return users.get(0);
-//                } else {
-//                    LOGGER.error("Too many users in unique search " + search);
-//                    for (GSUser user : users) {
-//                        LOGGER.error("   " + user + " grp:"+user.getGroups().size());
-//                    }
-                    throw new IllegalStateException("Found more than one user (search:"+search+")");
-//                }
+                //                if(users.size() == users.get(0).getGroups().size()) { // normal
+                // hibernate behaviour
+                //                    if(LOGGER.isDebugEnabled()) { // perform some more consistency
+                // tests only when debugging
+                //                        for (GSUser user : users) {
+                //                            if(user.getId() != users.get(0).getId() ||
+                //                               user.getGroups().size() !=
+                // users.get(0).getGroups().size()) {
+                //                                LOGGER.error("Inconsistent userlist " + user);
+                //                            }
+                //                        }
+                //                    }
+                //
+                //                    return users.get(0);
+                //                } else {
+                //                    LOGGER.error("Too many users in unique search " + search);
+                //                    for (GSUser user : users) {
+                //                        LOGGER.error("   " + user + "
+                // grp:"+user.getGroups().size());
+                //                    }
+                throw new IllegalStateException("Found more than one user (search:" + search + ")");
+                //                }
         }
     }
 
-
     @Override
-    public GSUser merge(GSUser entity)
-    {
+    public GSUser merge(GSUser entity) {
         return super.merge(entity);
     }
 
     @Override
-    public boolean remove(GSUser entity)
-    {
+    public boolean remove(GSUser entity) {
         return super.remove(entity);
     }
 
     @Override
-    public boolean removeById(Long id)
-    {
+    public boolean removeById(Long id) {
         return super.removeById(id);
     }
-
 }

@@ -8,10 +8,7 @@ package org.geoserver.geofence.services.rest.model.util;
 import org.geoserver.geofence.services.rest.model.RESTBatchOperation;
 import org.geoserver.geofence.services.rest.model.RESTInputGroup;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class RESTBatchOperationFactory {
 
     public static RESTBatchOperation createUserInputOp() {
@@ -60,7 +57,7 @@ public class RESTBatchOperationFactory {
         op.setService(RESTBatchOperation.ServiceName.groups);
         op.setType(RESTBatchOperation.TypeName.insert);
         op.setPayload(group);
-        
+
         return op;
     }
 
@@ -71,5 +68,4 @@ public class RESTBatchOperationFactory {
         op.setId(ruleId);
         return op;
     }
-
 }

@@ -5,11 +5,8 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
-import org.geoserver.geofence.services.rest.exception.ConflictRestEx;
-import org.geoserver.geofence.services.rest.model.RESTInputGroup;
-import org.geoserver.geofence.services.rest.model.RESTInputUser;
-import org.geoserver.geofence.services.rest.model.RESTOutputUser;
-import org.geoserver.geofence.services.rest.model.util.IdName;
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -17,25 +14,23 @@ import java.util.Set;
 import javax.ws.rs.core.Response;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-
+import org.geoserver.geofence.services.rest.exception.ConflictRestEx;
+import org.geoserver.geofence.services.rest.model.RESTInputGroup;
+import org.geoserver.geofence.services.rest.model.RESTInputUser;
+import org.geoserver.geofence.services.rest.model.RESTOutputUser;
+import org.geoserver.geofence.services.rest.model.util.IdName;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class RESTUserServiceImplTest extends RESTBaseTest {
     private static final Logger LOGGER = LogManager.getLogger(RESTUserServiceImplTest.class);
-
 
     @Test
     public void testInsert() {
         RESTInputGroup group = new RESTInputGroup();
         group.setName("g1");
         Response res = restUserGroupService.insert(group);
-        long gid1 = (Long)res.getEntity();
-
+        long gid1 = (Long) res.getEntity();
 
         RESTInputUser user = new RESTInputUser();
         user.setName("user0");
@@ -44,14 +39,13 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
         user.getGroups().add(new IdName("g1"));
 
         Response userResp = restUserService.insert(user);
-        Long id = (Long)userResp.getEntity();
+        Long id = (Long) userResp.getEntity();
 
         {
             RESTOutputUser out = restUserService.get("user0");
             assertNotNull(out);
             assertEquals("user0", out.getName());
         }
-
     }
 
     @Test
@@ -59,7 +53,7 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
         RESTInputGroup group = new RESTInputGroup();
         group.setName("g1");
         Response res = restUserGroupService.insert(group);
-        long gid1 = (Long)res.getEntity();
+        long gid1 = (Long) res.getEntity();
 
         {
             RESTInputUser user = new RESTInputUser();
@@ -69,7 +63,7 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
             user.getGroups().add(new IdName("g1"));
 
             Response userResp = restUserService.insert(user);
-            Long id = (Long)userResp.getEntity();
+            Long id = (Long) userResp.getEntity();
         }
 
         LOGGER.info("Inserting dup");
@@ -82,9 +76,9 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
 
             try {
                 Response userResp = restUserService.insert(user);
-                Long id = (Long)userResp.getEntity();
+                Long id = (Long) userResp.getEntity();
                 fail("409 not trapped");
-            } catch(ConflictRestEx e) {
+            } catch (ConflictRestEx e) {
                 LOGGER.info("Exception properly trapped");
             }
         }
@@ -93,18 +87,17 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
     @Test
     public void testUpdateGroup() {
         {
-            for(String name: Arrays.asList("g1","g2","g3","g4")) {
+            for (String name : Arrays.asList("g1", "g2", "g3", "g4")) {
                 RESTInputGroup group1 = new RESTInputGroup();
                 group1.setName(name);
-                 Response res = restUserGroupService.insert(group1);
-                 long gid1 = (Long)res.getEntity();
-                LOGGER.info("Created group id:"+gid1 + " name:"+name);
+                Response res = restUserGroupService.insert(group1);
+                long gid1 = (Long) res.getEntity();
+                LOGGER.info("Created group id:" + gid1 + " name:" + name);
             }
         }
 
         Long uid;
         final String USERNAME = "user0";
-
 
         { // insert user
             RESTInputUser user = new RESTInputUser();
@@ -114,7 +107,7 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
             user.getGroups().add(new IdName("g1"));
 
             Response userResp = restUserService.insert(user);
-            uid = (Long)userResp.getEntity();
+            uid = (Long) userResp.getEntity();
         }
 
         { // check user
@@ -173,8 +166,5 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
             assertTrue(set.contains("g3"));
             assertTrue(set.contains("g4"));
         }
-
-
     }
-
 }

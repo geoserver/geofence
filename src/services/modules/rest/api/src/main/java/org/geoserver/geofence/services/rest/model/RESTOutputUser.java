@@ -5,25 +5,18 @@
 
 package org.geoserver.geofence.services.rest.model;
 
-import org.geoserver.geofence.services.rest.model.util.IdName;
-
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import org.geoserver.geofence.services.rest.model.util.IdName;
 
-
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 @XmlRootElement(name = "User")
-@XmlType(propOrder={"id","extId","name","fullName","emailAddress","groups"})
-public class RESTOutputUser
-{
+@XmlType(propOrder = {"id", "extId", "name", "fullName", "emailAddress", "groups"})
+public class RESTOutputUser {
     private Long id;
     private String extId;
 
@@ -37,8 +30,7 @@ public class RESTOutputUser
 
     private List<IdName> groups;
 
-    public RESTOutputUser() {
-    }
+    public RESTOutputUser() {}
 
     public RESTOutputUser(Long id, String name) {
         this.id = id;
@@ -53,14 +45,12 @@ public class RESTOutputUser
         this.id = id;
     }
 
-//    @XmlAttribute(name = "extid")
-    public String getExtId()
-    {
+    //    @XmlAttribute(name = "extid")
+    public String getExtId() {
         return extId;
     }
 
-    public void setExtId(String extId)
-    {
+    public void setExtId(String extId) {
         this.extId = extId;
     }
 
@@ -98,8 +88,8 @@ public class RESTOutputUser
         this.fullName = fullName;
     }
 
-    @XmlElementWrapper(name="groups")
-    @XmlElement(name="group")
+    @XmlElementWrapper(name = "groups")
+    @XmlElement(name = "group")
     public List<IdName> getGroups() {
         return groups;
     }
@@ -116,16 +106,16 @@ public class RESTOutputUser
         this.name = name;
     }
 
-//    @Override
-//    public String toString()
-//    {
-//        return this.getClass().getSimpleName() +
-//            '[' +
-//            "sguId=" + extId +
-//            " userName=" + userName +
-//            " profile=" + profile +
-//            (enabled ? " enabled" : " disabled") +
-//            ']';
-//    }
+    //    @Override
+    //    public String toString()
+    //    {
+    //        return this.getClass().getSimpleName() +
+    //            '[' +
+    //            "sguId=" + extId +
+    //            " userName=" + userName +
+    //            " profile=" + profile +
+    //            (enabled ? " enabled" : " disabled") +
+    //            ']';
+    //    }
 
 }

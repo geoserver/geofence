@@ -6,11 +6,8 @@ package org.geoserver.geofence.ldap;
 
 import org.springframework.ldap.core.AttributesMapper;
 
-/**
- * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"
- */
-public interface LdapAttributesMapper extends AttributesMapper
-{
+/** @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it" */
+public interface LdapAttributesMapper extends AttributesMapper {
     /**
      * Maps a DAO attribute to the LDAP one.
      *

@@ -12,6 +12,4 @@ import org.geoserver.geofence.core.model.UserGroup;
  *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-
-public interface UserGroupDAO extends RestrictedGenericDAO<UserGroup>, RegistrableDAO {
-}
+public interface UserGroupDAO extends RestrictedGenericDAO<UserGroup>, RegistrableDAO {}

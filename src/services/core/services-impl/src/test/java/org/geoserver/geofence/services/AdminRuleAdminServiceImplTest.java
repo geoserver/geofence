@@ -5,21 +5,17 @@
 
 package org.geoserver.geofence.services;
 
-import org.geoserver.geofence.core.model.UserGroup;
+import java.util.List;
 import org.geoserver.geofence.core.model.AdminRule;
+import org.geoserver.geofence.core.model.UserGroup;
+import org.geoserver.geofence.core.model.enums.AdminGrantType;
+import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
 import org.geoserver.geofence.services.dto.ShortAdminRule;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
-import java.util.List;
-import org.geoserver.geofence.core.model.enums.AdminGrantType;
-import org.geoserver.geofence.services.dto.RuleFilter;
-
 import org.junit.Test;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class AdminRuleAdminServiceImplTest extends ServiceTestBase {
 
     @Test
@@ -39,7 +35,7 @@ public class AdminRuleAdminServiceImplTest extends ServiceTestBase {
         UserGroup p1 = createRole("p1");
         UserGroup p2 = createRole("p2");
 
-        AdminRule rule = new AdminRule(10, null, "p1",null, null, "w1", AdminGrantType.ADMIN);
+        AdminRule rule = new AdminRule(10, null, "p1", null, null, "w1", AdminGrantType.ADMIN);
         adminruleAdminService.insert(rule);
 
         {
@@ -69,9 +65,9 @@ public class AdminRuleAdminServiceImplTest extends ServiceTestBase {
 
         UserGroup p1 = createRole("p1");
 
-        AdminRule r1 = new AdminRule(10, null, "p1", null,null, "w1", AdminGrantType.USER);
-        AdminRule r2 = new AdminRule(20, null, "p1", null,null, "w2", AdminGrantType.USER);
-        AdminRule r3 = new AdminRule(30, null, "p1", null,null, "w3", AdminGrantType.ADMIN);
+        AdminRule r1 = new AdminRule(10, null, "p1", null, null, "w1", AdminGrantType.USER);
+        AdminRule r2 = new AdminRule(20, null, "p1", null, null, "w2", AdminGrantType.USER);
+        AdminRule r3 = new AdminRule(30, null, "p1", null, null, "w3", AdminGrantType.ADMIN);
 
         adminruleAdminService.insert(r1);
         adminruleAdminService.insert(r2);
@@ -87,24 +83,34 @@ public class AdminRuleAdminServiceImplTest extends ServiceTestBase {
         UserGroup p1 = createRole("p1");
         UserGroup p2 = createRole("p2");
 
-        AdminRule r1 = new AdminRule(10, null, "p1", null,null, "w1", AdminGrantType.USER);
-        AdminRule r2 = new AdminRule(20, null, "p2", null,null, "w2", AdminGrantType.USER);
-        AdminRule r3 = new AdminRule(30, null, "p1", null,null, "w3", AdminGrantType.USER);
-        AdminRule r4 = new AdminRule(40, null, "p1", null,null, null, AdminGrantType.USER);
+        AdminRule r1 = new AdminRule(10, null, "p1", null, null, "w1", AdminGrantType.USER);
+        AdminRule r2 = new AdminRule(20, null, "p2", null, null, "w2", AdminGrantType.USER);
+        AdminRule r3 = new AdminRule(30, null, "p1", null, null, "w3", AdminGrantType.USER);
+        AdminRule r4 = new AdminRule(40, null, "p1", null, null, null, AdminGrantType.USER);
 
         adminruleAdminService.insert(r1);
         adminruleAdminService.insert(r2);
         adminruleAdminService.insert(r3);
         adminruleAdminService.insert(r4);
 
-       assertNotNull(p1.getId());
-       assertNotNull(p2.getId());
+        assertNotNull(p1.getId());
+        assertNotNull(p2.getId());
 
         assertEquals(4, adminruleAdminService.count(new RuleFilter(SpecialFilterType.ANY)));
-        assertEquals(3, adminruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setRole("p1")));
-        assertEquals(1, adminruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setRole("p2")));
-        assertEquals(4, adminruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setService("s1")));
-        assertEquals(4, adminruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setService("ZZ")));
+        assertEquals(
+                3,
+                adminruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setRole("p1")));
+        assertEquals(
+                1,
+                adminruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setRole("p2")));
+        assertEquals(
+                4,
+                adminruleAdminService.count(
+                        new RuleFilter(SpecialFilterType.ANY).setService("s1")));
+        assertEquals(
+                4,
+                adminruleAdminService.count(
+                        new RuleFilter(SpecialFilterType.ANY).setService("ZZ")));
 
         RuleFilter f1 = new RuleFilter(SpecialFilterType.ANY).setWorkspace("w1");
         f1.getWorkspace().setIncludeDefault(true);
@@ -117,10 +123,10 @@ public class AdminRuleAdminServiceImplTest extends ServiceTestBase {
     public void testShift() {
         assertEquals(0, adminruleAdminService.getCountAll());
 
-        AdminRule r1 = new AdminRule(10, null, null, null,null, "w1", AdminGrantType.ADMIN);
-        AdminRule r2 = new AdminRule(20, null, null, null,null, "w2", AdminGrantType.ADMIN);
-        AdminRule r3 = new AdminRule(30, null, null, null,null, "w3", AdminGrantType.ADMIN);
-        AdminRule r4 = new AdminRule(40, null, null, null,null, "w4", AdminGrantType.ADMIN);
+        AdminRule r1 = new AdminRule(10, null, null, null, null, "w1", AdminGrantType.ADMIN);
+        AdminRule r2 = new AdminRule(20, null, null, null, null, "w2", AdminGrantType.ADMIN);
+        AdminRule r3 = new AdminRule(30, null, null, null, null, "w3", AdminGrantType.ADMIN);
+        AdminRule r4 = new AdminRule(40, null, null, null, null, "w4", AdminGrantType.ADMIN);
 
         adminruleAdminService.insert(r1);
         adminruleAdminService.insert(r2);
@@ -141,9 +147,9 @@ public class AdminRuleAdminServiceImplTest extends ServiceTestBase {
     public void testSwap() {
         assertEquals(0, adminruleAdminService.getCountAll());
 
-        AdminRule r1 = new AdminRule(10, null, null, null,null, "w1", AdminGrantType.ADMIN);
-        AdminRule r2 = new AdminRule(20, null, null, null,null, "w2", AdminGrantType.ADMIN);
-        AdminRule r3 = new AdminRule(30, null, null, null,null, "w3", AdminGrantType.ADMIN);
+        AdminRule r1 = new AdminRule(10, null, null, null, null, "w1", AdminGrantType.ADMIN);
+        AdminRule r2 = new AdminRule(20, null, null, null, null, "w2", AdminGrantType.ADMIN);
+        AdminRule r3 = new AdminRule(30, null, null, null, null, "w3", AdminGrantType.ADMIN);
 
         adminruleAdminService.insert(r1);
         adminruleAdminService.insert(r2);
@@ -167,11 +173,11 @@ public class AdminRuleAdminServiceImplTest extends ServiceTestBase {
     public void testGetByPriority() {
         assertEquals(0, adminruleAdminService.getAll().size());
 
-        AdminRule r1 = new AdminRule(10, null, null, null,null, "w1", AdminGrantType.ADMIN);
-        AdminRule r2 = new AdminRule(20, null, null, null,null, "w2", AdminGrantType.ADMIN);
-        AdminRule r3 = new AdminRule(30, null, null, null,null, "w3", AdminGrantType.ADMIN);
-        AdminRule r4 = new AdminRule(40, null, null, null,null, "w4", AdminGrantType.ADMIN);
-        AdminRule r5 = new AdminRule(50, null, null, null,null, "w5", AdminGrantType.ADMIN);
+        AdminRule r1 = new AdminRule(10, null, null, null, null, "w1", AdminGrantType.ADMIN);
+        AdminRule r2 = new AdminRule(20, null, null, null, null, "w2", AdminGrantType.ADMIN);
+        AdminRule r3 = new AdminRule(30, null, null, null, null, "w3", AdminGrantType.ADMIN);
+        AdminRule r4 = new AdminRule(40, null, null, null, null, "w4", AdminGrantType.ADMIN);
+        AdminRule r5 = new AdminRule(50, null, null, null, null, "w5", AdminGrantType.ADMIN);
 
         adminruleAdminService.insert(r1);
         adminruleAdminService.insert(r2);
@@ -202,7 +208,5 @@ public class AdminRuleAdminServiceImplTest extends ServiceTestBase {
         assertEquals(1, adminruleAdminService.getRulesByPriority(50, 0, 2).size());
         // empty page
         assertEquals(0, adminruleAdminService.getRulesByPriority(50, 100, 2).size());
-
     }
-
 }

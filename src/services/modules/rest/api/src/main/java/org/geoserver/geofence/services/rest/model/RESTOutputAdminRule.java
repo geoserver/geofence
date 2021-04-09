@@ -5,14 +5,12 @@
 
 package org.geoserver.geofence.services.rest.model;
 
-import org.geoserver.geofence.core.model.enums.AdminGrantType;
-import org.geoserver.geofence.services.rest.model.util.IdName;
-
 import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import org.geoserver.geofence.core.model.enums.AdminGrantType;
+import org.geoserver.geofence.services.rest.model.util.IdName;
 
 /**
  * A compact representation of AdminRule
@@ -20,7 +18,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "Rule")
-@XmlType(propOrder={"id", "priority","grant","username","rolename","instance","workspace"})
+@XmlType(propOrder = {"id", "priority", "grant", "username", "rolename", "instance", "workspace"})
 public class RESTOutputAdminRule implements Serializable {
 
     private Long id;
@@ -35,9 +33,7 @@ public class RESTOutputAdminRule implements Serializable {
 
     private AdminGrantType grant;
 
-
-    public RESTOutputAdminRule() {
-    }
+    public RESTOutputAdminRule() {}
 
     public Long getId() {
         return id;
@@ -62,7 +58,6 @@ public class RESTOutputAdminRule implements Serializable {
     public void setRolename(String rolename) {
         this.rolename = rolename;
     }
-
 
     public void setInstance(IdName instance) {
         this.instance = instance;
@@ -99,9 +94,12 @@ public class RESTOutputAdminRule implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(getClass().getSimpleName())
-                .append("[id:").append(id)
-                .append(" pri:").append(priority);
+        StringBuilder sb =
+                new StringBuilder(getClass().getSimpleName())
+                        .append("[id:")
+                        .append(id)
+                        .append(" pri:")
+                        .append(priority);
 
         if (username != null) {
             sb.append(" user:").append(username);
@@ -123,6 +121,6 @@ public class RESTOutputAdminRule implements Serializable {
         return sb.toString();
     }
 
-    //=========================================================================
-    
+    // =========================================================================
+
 }

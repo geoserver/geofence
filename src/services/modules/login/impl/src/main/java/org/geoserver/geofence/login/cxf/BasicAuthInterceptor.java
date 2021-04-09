@@ -5,17 +5,11 @@
 
 package org.geoserver.geofence.login.cxf;
 
-import org.geoserver.geofence.api.AuthProvider;
-import org.geoserver.geofence.api.dto.Authority;
-import org.geoserver.geofence.api.dto.GrantedAuths;
-import org.geoserver.geofence.login.util.GrantAll;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.Map;
-
 import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.interceptor.AbstractInDatabindingInterceptor;
@@ -25,14 +19,15 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.Phase;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-
+import org.geoserver.geofence.api.AuthProvider;
+import org.geoserver.geofence.api.dto.Authority;
+import org.geoserver.geofence.api.dto.GrantedAuths;
+import org.geoserver.geofence.login.util.GrantAll;
 
 /**
- * 
  * Adds basic authentication to CXF services by using login operation.
- * 
+ *
  * @author ETj (etj at geo-solutions.it)
- * 
  * @see http://chrisdail.com/2008/03/31/apache-cxf-with-http-basic-authentication/
  */
 public class BasicAuthInterceptor extends AbstractInDatabindingInterceptor {
@@ -104,7 +99,7 @@ public class BasicAuthInterceptor extends AbstractInDatabindingInterceptor {
 
         message.getInterceptorChain().abort();
         try {
-//            getConduit(message).prepare(outMessage);
+            //            getConduit(message).prepare(outMessage);
             message.getExchange().getConduit(message).prepare(outMessage); // TEST ME
 
             OutputStream os = outMessage.getContent(OutputStream.class);
@@ -130,13 +125,13 @@ public class BasicAuthInterceptor extends AbstractInDatabindingInterceptor {
         return outMessage;
     }
 
-//    private Conduit getConduit(Message inMessage) throws IOException {
-//        Exchange exchange = inMessage.getExchange();
-//        EndpointReferenceType target = exchange.get(EndpointReferenceType.class);
-//        Conduit conduit = exchange.getDestination().getBackChannel(inMessage, null, target);
-//        exchange.setConduit(conduit);
-//        return conduit;
-//    }
+    //    private Conduit getConduit(Message inMessage) throws IOException {
+    //        Exchange exchange = inMessage.getExchange();
+    //        EndpointReferenceType target = exchange.get(EndpointReferenceType.class);
+    //        Conduit conduit = exchange.getDestination().getBackChannel(inMessage, null, target);
+    //        exchange.setConduit(conduit);
+    //        return conduit;
+    //    }
 
     private void close(Message outMessage) throws IOException {
         OutputStream os = outMessage.getContent(OutputStream.class);
@@ -153,5 +148,4 @@ public class BasicAuthInterceptor extends AbstractInDatabindingInterceptor {
     public void setAuthProvider(AuthProvider authProvider) {
         this.authProvider = authProvider;
     }
-
 }

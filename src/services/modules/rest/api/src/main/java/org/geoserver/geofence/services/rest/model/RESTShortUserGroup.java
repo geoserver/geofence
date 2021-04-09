@@ -7,10 +7,7 @@ package org.geoserver.geofence.services.rest.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 @XmlRootElement(name = "ShortUserGroup")
 public class RESTShortUserGroup {
 

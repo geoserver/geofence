@@ -9,11 +9,8 @@ import org.geoserver.geofence.core.model.LayerDetails;
 
 /**
  * Public interface to define operations on LayerDetails
- * 
+ *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-
-public interface LayerDetailsDAO 
-        extends RestrictedGenericDAO<LayerDetails>,
-                AllowedStylesProvider{
-}
+public interface LayerDetailsDAO
+        extends RestrictedGenericDAO<LayerDetails>, AllowedStylesProvider {}

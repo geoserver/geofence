@@ -5,19 +5,14 @@
 
 package org.geoserver.geofence.services.rest.model.config;
 
-import org.geoserver.geofence.services.dto.ShortGroup;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.geoserver.geofence.services.dto.ShortGroup;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 @XmlRootElement(name = "UserGroupList")
 public class RESTFullUserGroupList implements Iterable<ShortGroup> {
 

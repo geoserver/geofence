@@ -4,18 +4,14 @@
  */
 package org.geoserver.geofence.login.util;
 
-import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+import org.junit.Test;
+
+/** @author ETj (etj at geo-solutions.it) */
 public class MD5UtilTest {
 
-    /**
-     * Test of getHash method, of class MD5Util.
-     */
+    /** Test of getHash method, of class MD5Util. */
     @Test
     public void testGetHash() {
         System.out.println("getHash");
@@ -24,5 +20,4 @@ public class MD5UtilTest {
         String result = MD5Util.getHash(password);
         assertEquals(expResult, result);
     }
-
 }

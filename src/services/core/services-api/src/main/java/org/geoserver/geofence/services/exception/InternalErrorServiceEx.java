@@ -5,26 +5,18 @@
 
 package org.geoserver.geofence.services.exception;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
-public class InternalErrorServiceEx extends WebApplicationException
-{
+/** @author ETj (etj at geo-solutions.it) */
+public class InternalErrorServiceEx extends WebApplicationException {
 
     private String message;
 
-    public InternalErrorServiceEx(String message)
-    {
+    public InternalErrorServiceEx(String message) {
         super(Response.Status.BAD_REQUEST);
         this.message = message;
     }
 
     @Override
-    public String getMessage()
-    {
+    public String getMessage() {
         return message;
     }
-
-
 }

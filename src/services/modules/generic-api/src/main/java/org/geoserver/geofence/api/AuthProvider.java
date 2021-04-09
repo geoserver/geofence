@@ -9,9 +9,9 @@ import org.geoserver.geofence.api.dto.GrantedAuths;
 import org.geoserver.geofence.api.exception.AuthException;
 
 /**
- * This interface should be provided by classes that bridges toward and external auth source. <BR>
+ * This interface should be provided by classes that bridges toward and external auth source. <br>
  * Let's say we have and external LDAP service, we may want to forward login requests to it.
- * 
+ *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 public interface AuthProvider {

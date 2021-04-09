@@ -5,23 +5,20 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import javax.ws.rs.core.Response;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.services.rest.exception.ConflictRestEx;
 import org.geoserver.geofence.services.rest.model.RESTInputGroup;
 import org.geoserver.geofence.services.rest.model.RESTInputUser;
 import org.geoserver.geofence.services.rest.model.RESTOutputUser;
 import org.geoserver.geofence.services.rest.model.util.IdName;
-import java.util.ArrayList;
-import javax.ws.rs.core.Response;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class RESTUserGroupServiceImplTest extends RESTBaseTest {
     private static final Logger LOGGER = LogManager.getLogger(RESTUserGroupServiceImplTest.class);
 
@@ -30,7 +27,7 @@ public class RESTUserGroupServiceImplTest extends RESTBaseTest {
         RESTInputGroup group = new RESTInputGroup();
         group.setName("g1");
         Response res = restUserGroupService.insert(group);
-        long gid1 = (Long)res.getEntity();
+        long gid1 = (Long) res.getEntity();
 
         RESTInputUser user = new RESTInputUser();
         user.setName("user0");
@@ -39,14 +36,13 @@ public class RESTUserGroupServiceImplTest extends RESTBaseTest {
         user.getGroups().add(new IdName("g1"));
 
         Response userResp = restUserService.insert(user);
-        Long id = (Long)userResp.getEntity();
+        Long id = (Long) userResp.getEntity();
 
         {
             RESTOutputUser out = restUserService.get("user0");
             assertNotNull(out);
-            assertEquals("user0", out.getName());            
+            assertEquals("user0", out.getName());
         }
-
     }
 
     @Test
@@ -64,7 +60,7 @@ public class RESTUserGroupServiceImplTest extends RESTBaseTest {
             group2.setName("g1");
             restUserGroupService.insert(group2);
             fail("409 not trapped");
-        } catch(ConflictRestEx e) {
+        } catch (ConflictRestEx e) {
             LOGGER.info("Exception properly trapped");
         }
     }

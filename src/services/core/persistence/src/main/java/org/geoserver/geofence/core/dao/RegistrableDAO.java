@@ -4,9 +4,5 @@
  */
 package org.geoserver.geofence.core.dao;
 
-/**
- * @author Emanuele Tajariol (etj at geo-solutions.it)
- */
-public interface RegistrableDAO
-{
-}
+/** @author Emanuele Tajariol (etj at geo-solutions.it) */
+public interface RegistrableDAO {}

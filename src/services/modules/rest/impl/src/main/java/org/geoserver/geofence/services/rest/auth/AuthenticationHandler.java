@@ -11,7 +11,6 @@ import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.interceptor.AbstractInDatabindingInterceptor;
@@ -20,35 +19,26 @@ import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.Phase;
 import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;;
-
-
+import org.apache.log4j.Logger;
 
 /**
  * Adds basic authentication to CXF services by using login operation.
  *
  * @author Tobia di Pisa (tobia.dipisa at geo-solutions.it)
- *
  * @see http://chrisdail.com/2008/08/13/http-basic-authentication-with-apache-cxf-revisited/
- *
  */
-public class AuthenticationHandler extends AbstractInDatabindingInterceptor
-{
+public class AuthenticationHandler extends AbstractInDatabindingInterceptor {
 
     private static final Logger LOGGER = LogManager.getLogger(AuthenticationHandler.class);
 
     private String realm;
 
-    public AuthenticationHandler()
-    {
+    public AuthenticationHandler() {
         super(Phase.UNMARSHAL);
     }
 
-    /**
-     * @param realm the realm to set
-     */
-    public void setRealm(String realm)
-    {
+    /** @param realm the realm to set */
+    public void setRealm(String realm) {
         this.realm = realm;
     }
 
@@ -57,8 +47,7 @@ public class AuthenticationHandler extends AbstractInDatabindingInterceptor
      * @param password
      * @return boolean
      */
-    private boolean isAuthenticated(String username, String password)
-    {
+    private boolean isAuthenticated(String username, String password) {
         LOGGER.warn("FORCING AUTH");
 
         return true;
@@ -68,15 +57,13 @@ public class AuthenticationHandler extends AbstractInDatabindingInterceptor
      * @see org.apache.cxf.interceptor.Interceptor#handleMessage(org.apache.cxf.message.Message)
      */
     @Override
-    public void handleMessage(Message message) throws Fault
-    {
+    public void handleMessage(Message message) throws Fault {
         AuthorizationPolicy policy = (AuthorizationPolicy) message.get(AuthorizationPolicy.class);
 
         //
         // TODO: To manage the public access (guest).
         //
-        if (policy == null)
-        {
+        if (policy == null) {
             sendErrorResponse(message, HttpURLConnection.HTTP_UNAUTHORIZED);
 
             return;
@@ -85,15 +72,12 @@ public class AuthenticationHandler extends AbstractInDatabindingInterceptor
         String username = policy.getUserName();
         String password = policy.getPassword();
 
-        if (isAuthenticated(username, password))
-        {
+        if (isAuthenticated(username, password)) {
             // ////////////////////////////////////////
             // let request to continue
             // ////////////////////////////////////////
             return;
-        }
-        else
-        {
+        } else {
             // /////////////////////////////////////////////////////////////////////
             // authentication failed, request the authetication,
             // add the realm name if needed to the value of WWW-Authenticate
@@ -109,8 +93,7 @@ public class AuthenticationHandler extends AbstractInDatabindingInterceptor
      * @param responseCode
      */
     @SuppressWarnings("unchecked")
-    private void sendErrorResponse(Message message, int responseCode)
-    {
+    private void sendErrorResponse(Message message, int responseCode) {
 
         Message outMessage = getOutMessage(message);
         outMessage.put(Message.RESPONSE_CODE, responseCode);
@@ -118,19 +101,18 @@ public class AuthenticationHandler extends AbstractInDatabindingInterceptor
         // ////////////////////////////////////////
         // Set the response headers
         // ////////////////////////////////////////
-        Map<String, List<String>> responseHeaders = (Map<String, List<String>>) message.get(Message.PROTOCOL_HEADERS);
+        Map<String, List<String>> responseHeaders =
+                (Map<String, List<String>>) message.get(Message.PROTOCOL_HEADERS);
 
-        if (responseHeaders != null)
-        {
+        if (responseHeaders != null) {
             responseHeaders.put("WWW-Authenticate", Arrays.asList("Basic realm=\"" + realm + "\""));
             responseHeaders.put("Content-Length", Arrays.asList("0"));
         }
 
         message.getInterceptorChain().abort();
-        try
-        {
+        try {
             message.getExchange().getConduit(message).prepare(outMessage); // TEST ME
-//            getConduit(message).prepare(outMessage);
+            //            getConduit(message).prepare(outMessage);
 
             OutputStream os = outMessage.getContent(OutputStream.class);
             String errmsg = "Error " + responseCode + ": ";
@@ -138,9 +120,7 @@ public class AuthenticationHandler extends AbstractInDatabindingInterceptor
             LOGGER.info("Sending error " + responseCode);
 
             close(outMessage);
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             LOGGER.warn(e.getMessage(), e);
         }
     }
@@ -149,12 +129,10 @@ public class AuthenticationHandler extends AbstractInDatabindingInterceptor
      * @param inMessage
      * @return Message
      */
-    private Message getOutMessage(Message inMessage)
-    {
+    private Message getOutMessage(Message inMessage) {
         Exchange exchange = inMessage.getExchange();
         Message outMessage = exchange.getOutMessage();
-        if (outMessage == null)
-        {
+        if (outMessage == null) {
             Endpoint endpoint = exchange.get(Endpoint.class);
             outMessage = endpoint.getBinding().createMessage();
             exchange.setOutMessage(outMessage);
@@ -169,25 +147,23 @@ public class AuthenticationHandler extends AbstractInDatabindingInterceptor
      * @return Conduit
      * @throws IOException
      */
-//    private Conduit getConduit(Message inMessage) throws IOException
-//    {
-//        Exchange exchange = inMessage.getExchange();
-//        EndpointReferenceType target = exchange.get(EndpointReferenceType.class);
-//        Conduit conduit = exchange.getDestination().getBackChannel(inMessage, null, target);
-//        exchange.setConduit(conduit);
-//
-//        return conduit;
-//    }
+    //    private Conduit getConduit(Message inMessage) throws IOException
+    //    {
+    //        Exchange exchange = inMessage.getExchange();
+    //        EndpointReferenceType target = exchange.get(EndpointReferenceType.class);
+    //        Conduit conduit = exchange.getDestination().getBackChannel(inMessage, null, target);
+    //        exchange.setConduit(conduit);
+    //
+    //        return conduit;
+    //    }
 
     /**
      * @param outMessage
      * @throws IOException
      */
-    private void close(Message outMessage) throws IOException
-    {
+    private void close(Message outMessage) throws IOException {
         OutputStream os = outMessage.getContent(OutputStream.class);
         os.flush();
         os.close();
     }
-
 }

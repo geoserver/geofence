@@ -9,10 +9,9 @@ import org.geoserver.geofence.core.model.GSUser;
 
 /**
  * Public interface to define operations on GSUsers
- * 
+ *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-
 public interface GSUserDAO extends RestrictedGenericDAO<GSUser>, RegistrableDAO {
 
     /** Fetch a GSUser with all of its related groups */

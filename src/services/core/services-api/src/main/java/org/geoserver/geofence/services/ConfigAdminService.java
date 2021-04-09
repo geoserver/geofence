@@ -5,20 +5,17 @@
 
 package org.geoserver.geofence.services;
 
+import java.util.List;
 import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.services.dto.ShortUser;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
-
-
-import java.util.List;
 
 /**
  * Operations on {@link GSUser GSUser}s.
  *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-public interface ConfigAdminService
-{
+public interface ConfigAdminService {
 
     // ==========================================================================
     // Basic operations

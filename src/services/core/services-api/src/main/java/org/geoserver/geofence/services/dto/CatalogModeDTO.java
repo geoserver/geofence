@@ -11,6 +11,7 @@ package org.geoserver.geofence.services.dto;
  * @author ETj (etj at geo-solutions.it)
  */
 public enum CatalogModeDTO {
-    HIDE, CHALLENGE, MIXED;
-
+    HIDE,
+    CHALLENGE,
+    MIXED;
 }
