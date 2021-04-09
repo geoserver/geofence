@@ -7,133 +7,133 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.geoserver.geofence</groupId>
-        <artifactId>geofence-core</artifactId>
-        <version>3.5-SNAPSHOT</version>
-    </parent>
-
+  <parent>
     <groupId>org.geoserver.geofence</groupId>
-    <artifactId>geofence-services-impl</artifactId>
-    <packaging>jar</packaging>
-    <name>GeoFence - Core - Services implementation</name>
+    <artifactId>geofence-core</artifactId>
+    <version>3.5-SNAPSHOT</version>
+  </parent>
 
-    <dependencies>
+  <groupId>org.geoserver.geofence</groupId>
+  <artifactId>geofence-services-impl</artifactId>
+  <packaging>jar</packaging>
+  <name>GeoFence - Core - Services implementation</name>
 
-        <!-- =========================================================== -->
-        <!--     GeoFence Core Modules                                    -->
-        <!-- =========================================================== -->
+  <dependencies>
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-model-internal</artifactId>
-        </dependency>
+    <!-- =========================================================== -->
+    <!--     GeoFence Core Modules                                    -->
+    <!-- =========================================================== -->
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-persistence</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-model-internal</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-services-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-persistence</artifactId>
+    </dependency>
 
-        <!-- =========================================================== -->
-        <!-- APACHE COMMONS -->
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-services-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-        </dependency>
+    <!-- =========================================================== -->
+    <!-- APACHE COMMONS -->
 
-        <!-- This dep is needed in core::dao, but seems not to be transitively imported-->
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+    </dependency>
 
-        <!-- =========================================================== -->
-        <!-- SPRING -->
+    <!-- This dep is needed in core::dao, but seems not to be transitively imported-->
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-expression</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+    <!-- =========================================================== -->
+    <!-- SPRING -->
 
-        <!-- =========================================================== -->
-        <!-- MISC -->
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>spring-expression</artifactId>
+          <groupId>org.springframework</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
-        <dependency>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-        </dependency>
+    <!-- =========================================================== -->
+    <!-- MISC -->
 
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-        </dependency>
-<!--
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+    <!--
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
         </dependency>
 -->
 
-        <!-- =========================================================== -->
-        <!-- PERSISTENCE -->
+    <!-- =========================================================== -->
+    <!-- PERSISTENCE -->
 
-        <!--        <dependency>
+    <!--        <dependency>
             <groupId>javax.persistence</groupId>
             <artifactId>persistence-api</artifactId>
             <scope>provided</scope>
         </dependency> -->
 
-        <dependency>
-            <groupId>org.hibernatespatial</groupId>
-            <artifactId>hibernate-spatial-h2-geodb</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.opengeo</groupId>
-            <artifactId>geodb</artifactId>
-            <version>0.9</version>
-            <scope>test</scope>
-        </dependency>
-        
-        <!-- HIBERNATE-GENERIC-DAO -->
-        <dependency>
-            <groupId>com.googlecode.genericdao</groupId>
-            <artifactId>dao</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.googlecode.genericdao</groupId>
-            <artifactId>search-jpa-hibernate</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.hibernatespatial</groupId>
+      <artifactId>hibernate-spatial-h2-geodb</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opengeo</groupId>
+      <artifactId>geodb</artifactId>
+      <version>0.9</version>
+      <scope>test</scope>
+    </dependency>
 
-<!--        <dependency>
+    <!-- HIBERNATE-GENERIC-DAO -->
+    <dependency>
+      <groupId>com.googlecode.genericdao</groupId>
+      <artifactId>dao</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>slf4j-api</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.googlecode.genericdao</groupId>
+      <artifactId>search-jpa-hibernate</artifactId>
+    </dependency>
+
+    <!--        <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
         </dependency>
@@ -142,78 +142,77 @@
             <artifactId>aspectjweaver</artifactId>
         </dependency>-->
 
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-        <!-- =========================================================== -->
-        <!-- TEST -->
+    <!-- =========================================================== -->
+    <!-- TEST -->
 
-<!--        <dependency>
+    <!--        <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <scope>test</scope>
         </dependency>-->
 
-        <!-- Avoids java.lang.ClassNotFoundException: com.sun.ws.rs.ext.RuntimeDelegateImpl -->
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <!-- Avoids java.lang.ClassNotFoundException: com.sun.ws.rs.ext.RuntimeDelegateImpl -->
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-        <!-- JUnit -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <!-- JUnit -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-    </dependencies>
+  </dependencies>
 
-    <build>
-        <!--        <finalName>${main-prefix}-${project.artifactId}-${project.version}</finalName>-->
+  <build>
+    <!--        <finalName>${main-prefix}-${project.artifactId}-${project.version}</finalName>-->
 
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-        </resources>
-    </build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
 
-    <profiles>
-        <profile>
-            <id>cob</id>
-            <build>
-                <plugins>
+  <profiles>
+    <profile>
+      <id>cob</id>
+      <build>
+        <plugins>
 
-                    <!-- Instrument classes -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>cobertura-maven-plugin</artifactId>
-                        <version>2.4</version>
-                        <configuration>
-                            <instrumentation>
-                            </instrumentation>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>instrument_ws_impl</id>
-                                <phase>process-classes</phase>
-                                <goals>
-                                    <goal>instrument</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+          <!-- Instrument classes -->
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>cobertura-maven-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>instrument_ws_impl</id>
+                <phase>process-classes</phase>
+                <goals>
+                  <goal>instrument</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <instrumentation></instrumentation>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

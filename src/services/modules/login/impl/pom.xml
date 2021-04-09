@@ -6,100 +6,99 @@
  */
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    
-    <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.geoserver.geofence</groupId>
-        <artifactId>geofence-login-parent</artifactId>
-        <version>3.5-SNAPSHOT</version>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
 
+  <parent>
     <groupId>org.geoserver.geofence</groupId>
-    <artifactId>geofence-login-impl</artifactId>
-    <packaging>jar</packaging>
-    <name>GeoFence - Modules - Login - Impl</name>
+    <artifactId>geofence-login-parent</artifactId>
+    <version>3.5-SNAPSHOT</version>
+  </parent>
 
-    <dependencies>
+  <groupId>org.geoserver.geofence</groupId>
+  <artifactId>geofence-login-impl</artifactId>
+  <packaging>jar</packaging>
+  <name>GeoFence - Modules - Login - Impl</name>
 
-        <!-- ================================================================-->
-        <!-- GeoFence modules -->
-        <!-- ================================================================-->
+  <dependencies>
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-generic-api</artifactId>
-        </dependency>
+    <!-- ================================================================-->
+    <!-- GeoFence modules -->
+    <!-- ================================================================-->
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-login-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-generic-api</artifactId>
+    </dependency>
 
-        <!-- ================================================================-->
-        <!-- Core lib -->
-        <!-- ================================================================-->
-        
-        <!-- ================================================================-->
-        <!--  Misc support libs -->
-        <!-- ================================================================-->
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-login-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
+    <!-- ================================================================-->
+    <!-- Core lib -->
+    <!-- ================================================================-->
 
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-        </dependency>
-        
-		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-		</dependency>
-        
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-core</artifactId>
-        </dependency>
+    <!-- ================================================================-->
+    <!--  Misc support libs -->
+    <!-- ================================================================-->
 
+    <dependency>
+      <groupId>javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
 
-        <!-- =============================================================== -->
-        <!-- JUnit -->
-        <!-- =============================================================== -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-    </dependencies>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
 
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-        </resources>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+    </dependency>
 
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-  
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-core</artifactId>
+    </dependency>
+
+    <!-- =============================================================== -->
+    <!-- JUnit -->
+    <!-- =============================================================== -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+    </resources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

@@ -8,25 +8,25 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    
-    <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.geoserver.geofence</groupId>
-        <artifactId>geofence-root</artifactId>
-        <version>3.5-SNAPSHOT</version>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
 
+  <parent>
     <groupId>org.geoserver.geofence</groupId>
-    <artifactId>geofence-modules</artifactId>
-    <packaging>pom</packaging>
-    <name>GeoFence - Modules - 0 Root</name>
+    <artifactId>geofence-root</artifactId>
+    <version>3.5-SNAPSHOT</version>
+  </parent>
 
-    <modules>
-        <module>login</module>
-        <module>generic-api</module>
-        <module>rest</module>
-        <module>ldap</module>
-    </modules>
+  <groupId>org.geoserver.geofence</groupId>
+  <artifactId>geofence-modules</artifactId>
+  <packaging>pom</packaging>
+  <name>GeoFence - Modules - 0 Root</name>
+
+  <modules>
+    <module>login</module>
+    <module>generic-api</module>
+    <module>rest</module>
+    <module>ldap</module>
+  </modules>
 
 </project>

@@ -6,101 +6,100 @@
  */
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    
-    <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.geoserver.geofence</groupId>
-        <artifactId>geofence-rest-root</artifactId>
-        <version>3.5-SNAPSHOT</version>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
 
+  <parent>
     <groupId>org.geoserver.geofence</groupId>
-    <artifactId>geofence-rest-client</artifactId>
-    <packaging>jar</packaging>
-    <name>GeoFence - Modules - REST client</name>
-	
-    <dependencies>
-        <!-- ================================================================-->
-        <!-- GeoFence modules -->
-        <!-- ================================================================-->
+    <artifactId>geofence-rest-root</artifactId>
+    <version>3.5-SNAPSHOT</version>
+  </parent>
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-model</artifactId>
-        </dependency>
+  <groupId>org.geoserver.geofence</groupId>
+  <artifactId>geofence-rest-client</artifactId>
+  <packaging>jar</packaging>
+  <name>GeoFence - Modules - REST client</name>
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-services-api</artifactId>
-        </dependency>
+  <dependencies>
+    <!-- ================================================================-->
+    <!-- GeoFence modules -->
+    <!-- ================================================================-->
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-rest-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-model</artifactId>
+    </dependency>
 
-        <!-- ================================================================-->
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-services-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-client</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-rest-api</artifactId>
+    </dependency>
 
-        <!-- ================================================================-->
-        <!--  Misc support libs -->
-        <!-- ================================================================-->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <!-- ================================================================-->
 
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-        </dependency>
-<!--
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-rs-client</artifactId>
+    </dependency>
+
+    <!-- ================================================================-->
+    <!--  Misc support libs -->
+    <!-- ================================================================-->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+    <!--
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
         </dependency>
 -->
-    </dependencies>
+  </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
 
-            <!-- Attach sources ============================================ -->
+      <!-- Attach sources ============================================ -->
 
-            <plugin>
-                <inherited>true</inherited>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.3</version>
-                <configuration>
-                    <attach>true</attach>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.3</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <inherited>true</inherited>
+        <configuration>
+          <attach>true</attach>
+        </configuration>
+      </plugin>
 
-        </plugins>
-    </build>
-
+    </plugins>
+  </build>
 
 </project>

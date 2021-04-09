@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 /* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
@@ -7,219 +7,219 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.geoserver.geofence</groupId>
-        <artifactId>geofence-rest-root</artifactId>
-        <version>3.5-SNAPSHOT</version>
-    </parent>
-
+  <parent>
     <groupId>org.geoserver.geofence</groupId>
-    <artifactId>geofence-rest-test</artifactId>
-	<packaging>war</packaging>
+    <artifactId>geofence-rest-root</artifactId>
+    <version>3.5-SNAPSHOT</version>
+  </parent>
 
-    <name>GeoFence - Modules - REST services test</name>
+  <groupId>org.geoserver.geofence</groupId>
+  <artifactId>geofence-rest-test</artifactId>
+  <packaging>war</packaging>
 
-	<developers>
-		<developer>
-			<name>Emanuele Tajariol</name>
-			<id>ETj</id>
-			<organization>GeoSolutions</organization>
-		</developer>
-	</developers>
+  <name>GeoFence - Modules - REST services test</name>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+  <developers>
+    <developer>
+      <id>ETj</id>
+      <name>Emanuele Tajariol</name>
+      <organization>GeoSolutions</organization>
+    </developer>
+  </developers>
 
-	<dependencies>
-        <!-- ================================================================-->
-        <!-- GeoStore modules -->
-        <!-- ================================================================-->
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-model-internal</artifactId>
-        </dependency>
+  <dependencies>
+    <!-- ================================================================-->
+    <!-- GeoStore modules -->
+    <!-- ================================================================-->
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-persistence</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-model-internal</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-services-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-persistence</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-services-impl</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-services-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-rest-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-services-impl</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-rest-impl</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-rest-api</artifactId>
+    </dependency>
 
-        <!-- =============================================================== -->
-        <!-- =============================================================== -->
-        <dependency>
-            <groupId>org.hibernatespatial</groupId>
-            <artifactId>hibernate-spatial-h2-geodb</artifactId>
-        </dependency>
-        <!-- =============================================================== -->
-        <!-- APACHE COMMONS -->
-        <!-- =============================================================== -->
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-rest-impl</artifactId>
+    </dependency>
 
-        <!-- =============================================================== -->
-       	<!-- 4J UTILS -->
-        <!-- =============================================================== -->
+    <!-- =============================================================== -->
+    <!-- =============================================================== -->
+    <dependency>
+      <groupId>org.hibernatespatial</groupId>
+      <artifactId>hibernate-spatial-h2-geodb</artifactId>
+    </dependency>
+    <!-- =============================================================== -->
+    <!-- APACHE COMMONS -->
+    <!-- =============================================================== -->
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-        </dependency>
+    <!-- =============================================================== -->
+    <!-- 4J UTILS -->
+    <!-- =============================================================== -->
 
-        <!-- =============================================================== -->
-        <!-- HTTP UTILS -->
-        <!-- =============================================================== -->
-        <dependency>
-            <groupId>org.codehaus.jettison</groupId>
-            <artifactId>jettison</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+    </dependency>
 
-<!--        <dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+
+    <!-- =============================================================== -->
+    <!-- HTTP UTILS -->
+    <!-- =============================================================== -->
+    <dependency>
+      <groupId>org.codehaus.jettison</groupId>
+      <artifactId>jettison</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!--        <dependency>
           <groupId>javax.ws.rs</groupId>
           <artifactId>javax.ws.rs</artifactId>
           <version>1.0</version>
         </dependency>-->
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-        <!-- =============================================================== -->
-		<!-- CXF -->
-        <!-- =============================================================== -->
-        <dependency>
-            <groupId>javax.xml.ws</groupId>
-            <artifactId>jaxws-api</artifactId>
-        </dependency>
-<!--        <dependency>
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>jsr311-api</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+    <!-- =============================================================== -->
+    <!-- CXF -->
+    <!-- =============================================================== -->
+    <dependency>
+      <groupId>javax.xml.ws</groupId>
+      <artifactId>jaxws-api</artifactId>
+    </dependency>
+    <!--        <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-bindings-http</artifactId>
             <version>${cxf.version}</version>
         </dependency>-->
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http-jetty</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxws</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-bindings-soap</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-databinding-aegis</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-ws-security</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-http</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-http-jetty</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxws</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-bindings-soap</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-databinding-aegis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-ws-security</artifactId>
+    </dependency>
 
-        <!-- =============================================================== -->
-        <!-- =============================================================== -->
-        <!-- CLIENT -->
-        <!-- =============================================================== -->
-        <!-- =============================================================== -->
+    <!-- =============================================================== -->
+    <!-- =============================================================== -->
+    <!-- CLIENT -->
+    <!-- =============================================================== -->
+    <!-- =============================================================== -->
 
-		<!-- SPRING -->
-<!--        <dependency>
+    <!-- SPRING -->
+    <!--        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring</artifactId>
             <version>2.5.6</version>
         </dependency>
 -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-        </dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aop</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-		</dependency>
-<!--		<dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+    </dependency>
+    <!--		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-asm</artifactId>
 		</dependency>-->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-		</dependency>
-<!--		<dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+    </dependency>
+    <!--		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-expression</artifactId>
 		</dependency>-->
 
-		<!-- SCOPE TEST -->
-<!--		<dependency>
+    <!-- SCOPE TEST -->
+    <!--		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<scope>test</scope>
@@ -235,64 +235,63 @@
 			</exclusions>
 		</dependency>-->
 
-        <!-- =============================================================== -->
-        <!-- JUnit -->
-        <!-- =============================================================== -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <!-- =============================================================== -->
+    <!-- JUnit -->
+    <!-- =============================================================== -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-	</dependencies>
+  </dependencies>
 
-	<build>
+  <build>
 
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<encoding>utf8</encoding>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <encoding>utf8</encoding>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-                <version>2.4</version>
-				<configuration>
-				</configuration>
-			</plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.4</version>
+        <configuration></configuration>
+      </plugin>
 
-			<!-- Run the application using "mvn jetty:run" -->
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<version>6.1.26</version>
-				<configuration>
-<!--					<webAppSourceDirectory>${basedir}/war</webAppSourceDirectory>-->
-					<webAppConfig>
-						<contextPath>/geofence</contextPath>
-					</webAppConfig>
-					<connectors>
-						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-							<port>9191</port>
-							<maxIdleTime>60000</maxIdleTime>
-						</connector>
-					</connectors>
-					<reload>manual</reload>
+      <!-- Run the application using "mvn jetty:run" -->
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty-plugin</artifactId>
+        <version>6.1.26</version>
+        <configuration>
+          <!--					<webAppSourceDirectory>${basedir}/war</webAppSourceDirectory>-->
+          <webAppConfig>
+            <contextPath>/geofence</contextPath>
+          </webAppConfig>
+          <connectors>
+            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+              <port>9191</port>
+              <maxIdleTime>60000</maxIdleTime>
+            </connector>
+          </connectors>
+          <reload>manual</reload>
 
-                    <stopPort>9966</stopPort>
-                    <stopKey>jetty-stop</stopKey>
-                    <scanIntervalSeconds>10</scanIntervalSeconds>
+          <stopPort>9966</stopPort>
+          <stopKey>jetty-stop</stopKey>
+          <scanIntervalSeconds>10</scanIntervalSeconds>
 
-				</configuration>
-			</plugin>
-		</plugins>
+        </configuration>
+      </plugin>
+    </plugins>
 
-	</build>
+  </build>
 
 </project>
