@@ -9,18 +9,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 @XmlRootElement(name = "identifier")
-@XmlType(propOrder={"id", "name"})
+@XmlType(propOrder = {"id", "name"})
 public class IdName {
-    private  String name;
-    private  Long id;
+    private String name;
+    private Long id;
 
-    protected IdName() {
-    }
+    protected IdName() {}
 
     public IdName(Long id, String name) {
         this.name = name;
@@ -52,18 +48,16 @@ public class IdName {
 
     public void setName(String name) {
         this.name = name;
-        this.id=null;
+        this.id = null;
     }
 
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
-//        sb.append(getClass().getSimpleName()).append('[');
+        //        sb.append(getClass().getSimpleName()).append('[');
         sb.append('[');
-        if(id != null)
-            sb.append("id:").append(id);
-        if(name != null)
-            sb.append("name:").append(name);
+        if (id != null) sb.append("id:").append(id);
+        if (name != null) sb.append("name:").append(name);
         sb.append(']');
         return sb.toString();
     }

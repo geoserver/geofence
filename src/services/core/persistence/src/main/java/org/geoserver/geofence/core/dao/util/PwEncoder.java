@@ -7,27 +7,22 @@ package org.geoserver.geofence.core.dao.util;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
-
 import org.apache.commons.codec.binary.Base64;
 
-/**
- * 
- * @author ETj <etj at geo-solutions.it>
- */
+/** @author ETj <etj at geo-solutions.it> */
 public class PwEncoder {
 
     private static byte[] getKey() {
-      String strKey = System.getProperty("GEOFENCE_PWENCODER_KEY");
-      if (strKey == null || strKey.length() < 16) {
-        strKey = "installation dependant key needed";
-      }
-      return strKey.substring(0, 16).getBytes();
+        String strKey = System.getProperty("GEOFENCE_PWENCODER_KEY");
+        if (strKey == null || strKey.length() < 16) {
+            strKey = "installation dependant key needed";
+        }
+        return strKey.substring(0, 16).getBytes();
     }
 
     public static String encode(String msg) {

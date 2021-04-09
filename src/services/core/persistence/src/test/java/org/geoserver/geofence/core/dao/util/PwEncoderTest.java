@@ -10,38 +10,29 @@ import static org.junit.Assert.fail;
 
 import java.security.GeneralSecurityException;
 import java.util.Properties;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-
 import org.apache.commons.codec.binary.Base64;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * 
- * @author ETj <etj at geo-solutions.it>
- */
+/** @author ETj <etj at geo-solutions.it> */
 public class PwEncoderTest {
 
-    public PwEncoderTest() {
-    }
+    public PwEncoderTest() {}
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
+    public static void setUpClass() throws Exception {}
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
+    public static void tearDownClass() throws Exception {}
 
     @Test
     public void testEncode() {
         testString("test");
         testString("topolino");
         testString("");
-
     }
 
     @Test
@@ -61,8 +52,8 @@ public class PwEncoderTest {
         cipher.init(Cipher.DECRYPT_MODE, keySpec);
 
         try {
-          cipher.doFinal(Base64.decodeBase64(encoded));
-          fail();
+            cipher.doFinal(Base64.decodeBase64(encoded));
+            fail();
         } catch (GeneralSecurityException e) {
         }
 
@@ -77,5 +68,4 @@ public class PwEncoderTest {
         System.out.println("DEC --> " + dec);
         assertEquals(test, dec);
     }
-
 }

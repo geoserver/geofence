@@ -5,15 +5,12 @@
 
 package org.geoserver.geofence.core.dao;
 
-import org.geoserver.geofence.core.model.GFUser;
-
 import static org.junit.Assert.*;
+
+import org.geoserver.geofence.core.model.GFUser;
 import org.junit.Test;
 
-/**
- * 
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class GFUserDAOTest extends BaseDAOTest {
 
     @Test
@@ -38,5 +35,4 @@ public class GFUserDAOTest extends BaseDAOTest {
         gfUserDAO.removeById(id);
         assertNull("User not deleted", gfUserDAO.find(id));
     }
-
 }

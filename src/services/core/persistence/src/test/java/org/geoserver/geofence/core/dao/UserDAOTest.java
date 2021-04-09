@@ -5,17 +5,14 @@
 
 package org.geoserver.geofence.core.dao;
 
+import static org.junit.Assert.*;
+
+import java.util.Set;
 import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.UserGroup;
-import java.util.Set;
-
-import static org.junit.Assert.*;
 import org.junit.Test;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class UserDAOTest extends BaseDAOTest {
 
     @Test
@@ -44,15 +41,15 @@ public class UserDAOTest extends BaseDAOTest {
         Long gid1, gid2;
         Long uid1;
         {
-            UserGroup g1 = createUserGroup(name.getMethodName()+"1");
+            UserGroup g1 = createUserGroup(name.getMethodName() + "1");
             gid1 = g1.getId();
 
-            UserGroup g2 = createUserGroup(name.getMethodName()+"2");
+            UserGroup g2 = createUserGroup(name.getMethodName() + "2");
             gid2 = g2.getId();
 
             GSUser u1 = createUser("u0", g1);
             userDAO.persist(u1);
-            uid1= u1.getId();
+            uid1 = u1.getId();
             assertNotNull(uid1);
         }
 
@@ -78,5 +75,4 @@ public class UserDAOTest extends BaseDAOTest {
             assertEquals("Bad number of usergroups", 2, grps.size());
         }
     }
-
 }

@@ -7,9 +7,9 @@ package org.geoserver.geofence.services;
 
 import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.LayerDetails;
-import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.core.model.RuleLimits;
+import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.core.model.enums.CatalogMode;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.services.dto.CatalogModeDTO;
@@ -19,22 +19,16 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class RuleReaderCatalogModeTest extends ServiceTestBase {
 
-    public RuleReaderCatalogModeTest() {
-    }
+    public RuleReaderCatalogModeTest() {}
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
+    public static void setUpClass() throws Exception {}
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
+    public static void tearDownClass() throws Exception {}
 
     @Test
     public void testCatalogModeBothNull() throws NotFoundServiceEx {
@@ -47,9 +41,12 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
 
         GSUser u1 = createUser("u1", g1, g2, g3, g4);
 
-
-        insertRule(new Rule(20, "u1", null, null,null,      null, null, null, "l1", GrantType.LIMIT), null);
-        insertRule(new Rule(21, null, "g1", null,null,      null, null, null, "l1", GrantType.ALLOW), null);
+        insertRule(
+                new Rule(20, "u1", null, null, null, null, null, null, "l1", GrantType.LIMIT),
+                null);
+        insertRule(
+                new Rule(21, null, "g1", null, null, null, null, null, "l1", GrantType.ALLOW),
+                null);
 
         LOGGER.info("SETUP ENDED, STARTING TESTS========================================");
 
@@ -75,9 +72,12 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
 
         GSUser u1 = createUser("u1", g1, g2, g3, g4);
 
-
-        insertRule(new Rule(20, "u1", null, null,null,      null, null, null, "l1", GrantType.LIMIT), null);
-        insertRule(new Rule(21, null, "g1", null,null,      null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
+        insertRule(
+                new Rule(20, "u1", null, null, null, null, null, null, "l1", GrantType.LIMIT),
+                null);
+        insertRule(
+                new Rule(21, null, "g1", null, null, null, null, null, "l1", GrantType.ALLOW),
+                CatalogMode.MIXED);
 
         LOGGER.info("SETUP ENDED, STARTING TESTS========================================");
 
@@ -88,9 +88,9 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
         filterU1.setUser("u1");
 
         assertEquals(2, ruleReaderService.getMatchingRules(filterU1).size());
-        assertEquals(CatalogModeDTO.MIXED, ruleReaderService.getAccessInfo(filterU1).getCatalogMode());
+        assertEquals(
+                CatalogModeDTO.MIXED, ruleReaderService.getAccessInfo(filterU1).getCatalogMode());
     }
-
 
     @Test
     public void testCatalogModeNoNull() throws NotFoundServiceEx {
@@ -103,9 +103,12 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
 
         GSUser u1 = createUser("u1", g1, g2, g3, g4);
 
-
-        insertRule(new Rule(20, "u1", null, null, null,     null, null, null, "l1", GrantType.LIMIT), CatalogMode.HIDE);
-        insertRule(new Rule(21, null, "g1", null, null,     null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
+        insertRule(
+                new Rule(20, "u1", null, null, null, null, null, null, "l1", GrantType.LIMIT),
+                CatalogMode.HIDE);
+        insertRule(
+                new Rule(21, null, "g1", null, null, null, null, null, "l1", GrantType.ALLOW),
+                CatalogMode.MIXED);
 
         LOGGER.info("SETUP ENDED, STARTING TESTS========================================");
 
@@ -116,7 +119,8 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
         filterU1.setUser("u1");
 
         assertEquals(2, ruleReaderService.getMatchingRules(filterU1).size());
-        assertEquals(CatalogModeDTO.HIDE, ruleReaderService.getAccessInfo(filterU1).getCatalogMode());
+        assertEquals(
+                CatalogModeDTO.HIDE, ruleReaderService.getAccessInfo(filterU1).getCatalogMode());
     }
 
     @Test
@@ -130,9 +134,12 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
 
         GSUser u1 = createUser("u1", g1, g2, g3, g4);
 
-
-        insertRule(new Rule(20, null, "g2", null, null,  null, null, null, "l1", GrantType.ALLOW), CatalogMode.HIDE);
-        insertRule(new Rule(21, null, "g1", null, null,  null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
+        insertRule(
+                new Rule(20, null, "g2", null, null, null, null, null, "l1", GrantType.ALLOW),
+                CatalogMode.HIDE);
+        insertRule(
+                new Rule(21, null, "g1", null, null, null, null, null, "l1", GrantType.ALLOW),
+                CatalogMode.MIXED);
 
         LOGGER.info("SETUP ENDED, STARTING TESTS========================================");
 
@@ -143,10 +150,9 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
         filterU1.setUser("u1");
 
         assertEquals(2, ruleReaderService.getMatchingRules(filterU1).size());
-        assertEquals(CatalogModeDTO.MIXED, ruleReaderService.getAccessInfo(filterU1).getCatalogMode());
+        assertEquals(
+                CatalogModeDTO.MIXED, ruleReaderService.getAccessInfo(filterU1).getCatalogMode());
     }
-
-
 
     private void insertRule(Rule rule, CatalogMode mode) {
 
@@ -162,5 +168,4 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
             ruleAdminService.setDetails(rule.getId(), d1);
         }
     }
-
 }

@@ -8,18 +8,15 @@ package org.geoserver.geofence.services.rest.exception;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class BadRequestRestEx extends GeoFenceRestEx {
 
-    /**
-     * The Constant serialVersionUID.
-     */
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -2585698525010604674L;
 
     public BadRequestRestEx(String message) {
-        super(message, Response.status(Status.BAD_REQUEST).type("text/plain").entity(message).build());
+        super(
+                message,
+                Response.status(Status.BAD_REQUEST).type("text/plain").entity(message).build());
     }
 }

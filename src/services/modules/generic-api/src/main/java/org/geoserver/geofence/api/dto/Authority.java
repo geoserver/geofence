@@ -5,19 +5,12 @@
 
 package org.geoserver.geofence.api.dto;
 
-/**
- * @author etj
- */
+/** @author etj */
 public enum Authority {
-    /**
-     * Authorization to log into the application
-     */
+    /** Authorization to log into the application */
     LOGIN
 
-    /**
-     * Authorization to perform remote calls
-     */
-    , REMOTE
-
-    ;
+    /** Authorization to perform remote calls */
+    ,
+    REMOTE;
 }

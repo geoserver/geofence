@@ -9,9 +9,7 @@ import org.geoserver.geofence.core.model.RuleLimits;
 
 /**
  * Public interface to define operations on RuleLimits
- * 
+ *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-
-public interface RuleLimitsDAO extends RestrictedGenericDAO<RuleLimits> {
-}
+public interface RuleLimitsDAO extends RestrictedGenericDAO<RuleLimits> {}

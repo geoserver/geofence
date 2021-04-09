@@ -5,13 +5,11 @@
 
 package org.geoserver.geofence.services.dto;
 
-import org.geoserver.geofence.core.model.UserGroup;
-
 import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import org.geoserver.geofence.core.model.UserGroup;
 
 /**
  * A compact representation of UserGroup useful in lists.
@@ -28,8 +26,7 @@ public class ShortGroup implements Serializable {
     private String extId;
     private Boolean enabled;
 
-    public ShortGroup() {
-    }
+    public ShortGroup() {}
 
     public ShortGroup(UserGroup group) {
         this.id = group.getId();
@@ -74,9 +71,12 @@ public class ShortGroup implements Serializable {
     @Override
     public String toString() {
         return getClass().getSimpleName()
-                + "[id=" + id
-                + " name=" + name
-                + " enabled=" + enabled
+                + "[id="
+                + id
+                + " name="
+                + name
+                + " enabled="
+                + enabled
                 + ']';
     }
 }

@@ -5,12 +5,11 @@
 
 package org.geoserver.geofence.services.rest.model;
 
-import org.geoserver.geofence.core.model.enums.AdminGrantType;
-import org.geoserver.geofence.services.rest.model.util.IdName;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import org.geoserver.geofence.core.model.enums.AdminGrantType;
+import org.geoserver.geofence.services.rest.model.util.IdName;
 
 /**
  * A compact representation of AdminRule
@@ -18,9 +17,11 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "adminrule")
-@XmlType(name="Rule", propOrder={"position","grant","username","rolename","instance","workspace"})
-public class RESTInputAdminRule extends AbstractRESTPayload
-{
+@XmlType(
+    name = "Rule",
+    propOrder = {"position", "grant", "username", "rolename", "instance", "workspace"}
+)
+public class RESTInputAdminRule extends AbstractRESTPayload {
     private RESTRulePosition position;
 
     private String username;
@@ -30,9 +31,7 @@ public class RESTInputAdminRule extends AbstractRESTPayload
 
     private AdminGrantType grant;
 
-
-    public RESTInputAdminRule() {
-    }
+    public RESTInputAdminRule() {}
 
     public String getUsername() {
         return username;
@@ -49,7 +48,7 @@ public class RESTInputAdminRule extends AbstractRESTPayload
     public void setRolename(String rolename) {
         this.rolename = rolename;
     }
-    
+
     public void setInstanceId(Long id) {
         instance = new IdName(id);
     }
@@ -96,12 +95,12 @@ public class RESTInputAdminRule extends AbstractRESTPayload
         StringBuilder sb = new StringBuilder(getClass().getSimpleName());
 
         sb.append('[').append(grant);
-        if(position != null && position.getPosition() != null) {
-            if(position.getPosition() == RESTRulePosition.RulePosition.fixedPriority)
+        if (position != null && position.getPosition() != null) {
+            if (position.getPosition() == RESTRulePosition.RulePosition.fixedPriority)
                 sb.append('=');
-            else if(position.getPosition() == RESTRulePosition.RulePosition.offsetFromTop)
+            else if (position.getPosition() == RESTRulePosition.RulePosition.offsetFromTop)
                 sb.append('+');
-            else if(position.getPosition() == RESTRulePosition.RulePosition.offsetFromBottom)
+            else if (position.getPosition() == RESTRulePosition.RulePosition.offsetFromBottom)
                 sb.append('-');
             sb.append(position.getValue());
         }
@@ -122,5 +121,4 @@ public class RESTInputAdminRule extends AbstractRESTPayload
 
         return sb.toString();
     }
-
 }

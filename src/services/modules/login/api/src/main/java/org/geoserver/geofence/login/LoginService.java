@@ -5,23 +5,25 @@
 
 package org.geoserver.geofence.login;
 
-import org.geoserver.geofence.api.dto.GrantedAuths;
-import org.geoserver.geofence.api.exception.AuthException;
-
 import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
+import org.geoserver.geofence.api.dto.GrantedAuths;
+import org.geoserver.geofence.api.exception.AuthException;
 
-/**
- * 
- * @author Emanuele Tajariol (etj at geo-solutions.it)
- */
-@WebService(name = "LoginService", targetNamespace = "http://www.geo-solutions.it/org.geoserver.geofence.login")
+/** @author Emanuele Tajariol (etj at geo-solutions.it) */
+@WebService(
+    name = "LoginService",
+    targetNamespace = "http://www.geo-solutions.it/org.geoserver.geofence.login"
+)
 public interface LoginService {
 
     @WebResult(name = "token")
-    String login(@WebParam(name = "username") String username,
-            @WebParam(name = "password") String password, String pwFromDb) throws AuthException;
+    String login(
+            @WebParam(name = "username") String username,
+            @WebParam(name = "password") String password,
+            String pwFromDb)
+            throws AuthException;
 
     GrantedAuths getGrantedAuthorities(@WebParam(name = "token") String token);
 

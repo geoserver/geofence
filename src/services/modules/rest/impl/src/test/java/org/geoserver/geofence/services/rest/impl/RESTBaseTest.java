@@ -5,6 +5,10 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
+import static org.junit.Assert.*;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.services.dto.ShortGroup;
 import org.geoserver.geofence.services.rest.RESTRuleService;
 import org.geoserver.geofence.services.rest.RESTUserGroupService;
@@ -14,20 +18,13 @@ import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
 import org.geoserver.geofence.services.rest.model.RESTShortUser;
 import org.geoserver.geofence.services.rest.model.RESTShortUserList;
 import org.geoserver.geofence.services.rest.model.config.RESTFullUserGroupList;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import static org.junit.Assert.*;
 import org.junit.rules.TestName;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public abstract class RESTBaseTest {
     private static final Logger LOGGER = LogManager.getLogger(RESTBaseTest.class);
 
@@ -41,25 +38,22 @@ public abstract class RESTBaseTest {
 
     public RESTBaseTest() {
 
-        synchronized(RESTBaseTest.class) {
-            if(ctx == null) {
-                String[] paths = {
-                        "classpath*:applicationContext.xml"
-//                         ,"applicationContext-test.xml"
+        synchronized (RESTBaseTest.class) {
+            if (ctx == null) {
+                String[] paths = {"classpath*:applicationContext.xml"
+                    //                         ,"applicationContext-test.xml"
                 };
                 ctx = new ClassPathXmlApplicationContext(paths);
 
-
-                for(String name : ctx.getBeanDefinitionNames()) {
-                    if(name.startsWith("rest") )
-                        LOGGER.warn("  BEAN ===> " + name);                    
+                for (String name : ctx.getBeanDefinitionNames()) {
+                    if (name.startsWith("rest")) LOGGER.warn("  BEAN ===> " + name);
                 }
 
-                restUserService       = (RESTUserService)ctx.getBean("restUserService");
-                restUserGroupService  = (RESTUserGroupService)ctx.getBean("restUserGroupService");
-                restRuleService       = (RESTRuleService)ctx.getBean("restRuleService");
+                restUserService = (RESTUserService) ctx.getBean("restUserService");
+                restUserGroupService = (RESTUserGroupService) ctx.getBean("restUserGroupService");
+                restRuleService = (RESTRuleService) ctx.getBean("restRuleService");
             }
-            
+
             assertNotNull(restUserService);
             assertNotNull(restUserGroupService);
             assertNotNull(restRuleService);
@@ -67,12 +61,10 @@ public abstract class RESTBaseTest {
     }
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
+    public static void setUpClass() throws Exception {}
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
+    public static void tearDownClass() throws Exception {}
 
     @Before
     public void before() throws Exception {
@@ -80,12 +72,14 @@ public abstract class RESTBaseTest {
         LOGGER.info("============================== TEST " + name.getMethodName());
         LOGGER.info("");
 
-        RESTOutputRuleList rules = restRuleService.get(null, null, false, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        RESTOutputRuleList rules =
+                restRuleService.get(
+                        null, null, false, null, null, null, null, null, null, null, null, null,
+                        null, null, null, null, null, null);
         for (RESTOutputRule rule : rules) {
             LOGGER.warn("Removing " + rule);
             restRuleService.delete(rule.getId());
         }
-
 
         RESTShortUserList users = restUserService.getList(null, null, null);
         for (RESTShortUser user : users) {
@@ -99,8 +93,5 @@ public abstract class RESTBaseTest {
         }
 
         LOGGER.info("----------------- ending cleaning tasks ------------- ");
-
     }
-
-
 }

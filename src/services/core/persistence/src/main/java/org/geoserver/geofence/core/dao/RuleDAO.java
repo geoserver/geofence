@@ -10,10 +10,9 @@ import org.geoserver.geofence.core.model.enums.InsertPosition;
 
 /**
  * Public interface to define operations on Rule
- * 
+ *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-
 public interface RuleDAO extends PrioritizableDAO<Rule> {
 
     long persist(Rule entity, InsertPosition position);

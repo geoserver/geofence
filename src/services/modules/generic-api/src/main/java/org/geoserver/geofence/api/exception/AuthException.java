@@ -7,10 +7,7 @@ package org.geoserver.geofence.api.exception;
 
 import javax.xml.ws.WebFault;
 
-/**
- * 
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 @WebFault(name = "AuthFault", faultBean = "org.geoserver.geofence.login.exception.AuthException")
 public class AuthException extends RuntimeException {
 
@@ -26,7 +23,5 @@ public class AuthException extends RuntimeException {
         super(message);
     }
 
-    public AuthException() {
-    }
-
+    public AuthException() {}
 }

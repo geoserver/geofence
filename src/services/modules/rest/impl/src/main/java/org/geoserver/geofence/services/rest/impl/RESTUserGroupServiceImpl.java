@@ -6,7 +6,10 @@
 package org.geoserver.geofence.services.rest.impl;
 
 import java.util.List;
-
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
@@ -21,23 +24,12 @@ import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
 import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
 import org.geoserver.geofence.services.rest.model.RESTInputGroup;
 import org.geoserver.geofence.services.rest.model.config.RESTFullUserGroupList;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
-
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
-public class RESTUserGroupServiceImpl
-        extends BaseRESTServiceImpl
-        implements RESTUserGroupService {
+/** @author ETj (etj at geo-solutions.it) */
+public class RESTUserGroupServiceImpl extends BaseRESTServiceImpl implements RESTUserGroupService {
 
     private static final Logger LOGGER = LogManager.getLogger(RESTUserGroupServiceImpl.class);
-//    private UserGroupAdminService userGroupAdminService;
+    //    private UserGroupAdminService userGroupAdminService;
 
     @Override
     public RESTFullUserGroupList getList(String nameLike, Integer page, Integer entries) {
@@ -65,7 +57,8 @@ public class RESTUserGroupServiceImpl
     }
 
     @Override
-    public Response insert(RESTInputGroup userGroup) throws NotFoundRestEx, InternalErrorRestEx, ConflictRestEx {
+    public Response insert(RESTInputGroup userGroup)
+            throws NotFoundRestEx, InternalErrorRestEx, ConflictRestEx {
 
         // check that no group with same name exists
         boolean exists;
@@ -81,8 +74,7 @@ public class RESTUserGroupServiceImpl
             throw new InternalErrorRestEx(ex.getMessage());
         }
 
-        if(exists)
-            throw new ConflictRestEx("Role '"+userGroup.getName()+"' already exists");
+        if (exists) throw new ConflictRestEx("Role '" + userGroup.getName() + "' already exists");
 
         // ok: insert it
         try {
@@ -100,9 +92,9 @@ public class RESTUserGroupServiceImpl
         }
     }
 
-
     @Override
-    public void update(String name, RESTInputGroup group) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public void update(String name, RESTInputGroup group)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
 
         try {
             UserGroup old = userGroupAdminService.get(name);
@@ -110,15 +102,15 @@ public class RESTUserGroupServiceImpl
             ShortGroup newGroup = new ShortGroup();
             newGroup.setId(old.getId());
 
-            if ( (group.getExtId() != null) ) {
+            if ((group.getExtId() != null)) {
                 throw new BadRequestRestEx("ExtId can't be updated");
             }
 
-            if ( (group.getName() != null) ) {
+            if ((group.getName() != null)) {
                 throw new BadRequestRestEx("Name can't be updated");
             }
 
-            if ( group.isEnabled() != null ) {
+            if (group.isEnabled() != null) {
                 newGroup.setEnabled(group.isEnabled());
             }
 
@@ -140,23 +132,24 @@ public class RESTUserGroupServiceImpl
     }
 
     @Override
-    public Response delete(String name, boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public Response delete(String name, boolean cascade)
+            throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
-            if ( cascade ) {
+            if (cascade) {
                 ruleAdminService.deleteRulesByRole(name);
             } else {
                 RuleFilter filter = new RuleFilter(SpecialFilterType.ANY);
                 filter.setRole(name);
                 filter.getUser().setIncludeDefault(false);
                 long cnt = ruleAdminService.count(filter);
-                if ( cnt > 0 ) {
+                if (cnt > 0) {
                     throw new ConflictRestEx("Existing rules reference the role " + name);
                 }
             }
 
             UserGroup role = userGroupAdminService.get(name);
 
-            if ( ! userGroupAdminService.delete(role.getId())) {
+            if (!userGroupAdminService.delete(role.getId())) {
                 LOGGER.warn("Role not found: " + name);
                 throw new NotFoundRestEx("Role not found: " + name);
             }
@@ -173,5 +166,4 @@ public class RESTUserGroupServiceImpl
             throw new InternalErrorRestEx(ex.getMessage());
         }
     }
-
 }

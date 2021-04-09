@@ -5,17 +5,14 @@
 
 package org.geoserver.geofence.login.util;
 
-import org.geoserver.geofence.api.exception.AuthException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.geoserver.geofence.api.exception.AuthException;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class MD5Util {
     private static final Logger LOGGER = LogManager.getLogger(MD5Util.class);
 
@@ -39,7 +36,7 @@ public class MD5Util {
         StringBuilder hexString = new StringBuilder();
         for (int i = 0; i < thedigest.length; i++) {
             String hexByte = Integer.toHexString(0xFF & thedigest[i]);
-            if(hexByte.length()==1) {
+            if (hexByte.length() == 1) {
                 hexString.append('0');
             }
             hexString.append(hexByte);

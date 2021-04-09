@@ -5,6 +5,11 @@
 
 package org.geoserver.geofence.services.rest.model.config;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.geoserver.geofence.core.model.GFUser;
 import org.geoserver.geofence.core.model.GSInstance;
 import org.geoserver.geofence.core.model.GSUser;
@@ -12,17 +17,7 @@ import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.services.rest.model.config.adapter.RemapperAdapter;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 @XmlRootElement(name = "Remapping")
 public class RESTConfigurationRemapping {
 

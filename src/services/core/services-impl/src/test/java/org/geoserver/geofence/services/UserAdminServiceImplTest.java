@@ -5,45 +5,38 @@
 
 package org.geoserver.geofence.services;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.services.dto.ShortUser;
-import java.util.List;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import org.geoserver.geofence.services.exception.NotFoundServiceEx;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class UserAdminServiceImplTest extends ServiceTestBase {
 
-    public UserAdminServiceImplTest() {
-    }
+    public UserAdminServiceImplTest() {}
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
+    public static void setUpClass() throws Exception {}
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
+    public static void tearDownClass() throws Exception {}
 
     @Test
     public void testInsertDeleteUpdateUser() throws NotFoundServiceEx {
 
-        UserGroup g1 = createRole(getName()+"_1");
-        UserGroup g2 = createRole(getName()+"_2");
-        UserGroup g3 = createRole(getName()+"_3");
+        UserGroup g1 = createRole(getName() + "_1");
+        UserGroup g2 = createRole(getName() + "_2");
+        UserGroup g3 = createRole(getName() + "_3");
 
         GSUser user = new GSUser();
-        user.setName( getName() );
+        user.setName(getName());
         user.getGroups().add(g1);
         user.getGroups().add(g2);
         userAdminService.insert(user);
@@ -163,7 +156,7 @@ public class UserAdminServiceImplTest extends ServiceTestBase {
             assertNotNull(loaded);
 
             assertEquals(2, loaded.getGroups().size());
-            assertTrue(hasGroups(loaded, "g1","g2"));
+            assertTrue(hasGroups(loaded, "g1", "g2"));
 
             loaded.getGroups().remove(ug1);
             loaded.getGroups().add(ug3);
@@ -174,11 +167,11 @@ public class UserAdminServiceImplTest extends ServiceTestBase {
             assertNotNull(loaded);
 
             assertEquals(2, loaded.getGroups().size());
-            assertTrue(hasGroups(loaded, "g2","g3"));
+            assertTrue(hasGroups(loaded, "g2", "g3"));
         }
     }
 
-    protected boolean hasGroups(GSUser user, String ... groupName) {
+    protected boolean hasGroups(GSUser user, String... groupName) {
         Set<String> names = new HashSet<>();
         for (UserGroup userGroup : user.getGroups()) {
             names.add(userGroup.getName());
@@ -189,13 +182,13 @@ public class UserAdminServiceImplTest extends ServiceTestBase {
 
     @Test
     public void testGetAllUsers() {
-        assertEquals(0, userAdminService.getList(null,null,null).size());
+        assertEquals(0, userAdminService.getList(null, null, null).size());
 
         createUserAndGroup("u1");
         createUserAndGroup("u2");
         createUserAndGroup("u3");
 
-        assertEquals(3, userAdminService.getList(null,null,null).size());
+        assertEquals(3, userAdminService.getList(null, null, null).size());
     }
 
     @Test
@@ -211,10 +204,9 @@ public class UserAdminServiceImplTest extends ServiceTestBase {
         assertEquals(4, userAdminService.getCount("u%"));
         assertEquals(3, userAdminService.getCount("%0"));
 
-        List<ShortUser> users = userAdminService.getList("%9",null,null);
+        List<ShortUser> users = userAdminService.getList("%9", null, null);
         assertEquals(1, users.size());
         assertEquals("u99", users.get(0).getName());
-        assertEquals(u99.getId(), (Long)users.get(0).getId());
+        assertEquals(u99.getId(), (Long) users.get(0).getId());
     }
-
 }

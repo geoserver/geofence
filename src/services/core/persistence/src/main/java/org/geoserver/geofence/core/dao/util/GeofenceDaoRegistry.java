@@ -24,19 +24,17 @@ import org.springframework.context.ApplicationContextAware;
  *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-public class GeofenceDaoRegistry implements ApplicationContextAware
-{
+public class GeofenceDaoRegistry implements ApplicationContextAware {
     private static final Logger LOGGER = LogManager.getLogger(GeofenceDaoRegistry.class);
 
-    private static final Set<Class> REGISTERABLE_CLASSES = new HashSet<>(Arrays.asList(GSUserDAO.class, UserGroupDAO.class));
+    private static final Set<Class> REGISTERABLE_CLASSES =
+            new HashSet<>(Arrays.asList(GSUserDAO.class, UserGroupDAO.class));
 
-    public static class DaoRegistrar
-    {
+    public static class DaoRegistrar {
         private String name;
         private RegistrableDAO dao;
 
-        public DaoRegistrar(String name, RegistrableDAO dao)
-        {
+        public DaoRegistrar(String name, RegistrableDAO dao) {
             this.name = name;
             this.dao = dao;
         }
@@ -45,43 +43,39 @@ public class GeofenceDaoRegistry implements ApplicationContextAware
     private Map<Class, Map<String, RegistrableDAO>> registry = new HashMap<>();
     private String selectedType;
 
-
-    private GeofenceDaoRegistry()
-    {
+    private GeofenceDaoRegistry() {
         for (Class registerableClass : REGISTERABLE_CLASSES) {
             registry.put(registerableClass, new HashMap<>());
         }
     }
 
-    public GeofenceDaoRegistry(String defaultType)
-    {
+    public GeofenceDaoRegistry(String defaultType) {
         this();
         this.selectedType = defaultType;
     }
 
-    public void setSelectedType(String selectedType)
-    {
+    public void setSelectedType(String selectedType) {
         this.selectedType = selectedType;
     }
 
     public <T extends RegistrableDAO> T getDao(Class<T> t) {
 
         Map<String, RegistrableDAO> registryMap = registry.get(t);
-        if(registryMap == null)
-            throw new IllegalArgumentException("Unregistered class " + t);
+        if (registryMap == null) throw new IllegalArgumentException("Unregistered class " + t);
 
-        T dao = (T)registryMap.get(selectedType);
-        if(dao == null)
-            throw new IllegalArgumentException("DAO not found for class " +t.getSimpleName()+ " and type " + selectedType);
+        T dao = (T) registryMap.get(selectedType);
+        if (dao == null)
+            throw new IllegalArgumentException(
+                    "DAO not found for class " + t.getSimpleName() + " and type " + selectedType);
 
         LOGGER.info("Returning DAO type " + selectedType + " for class " + t.getSimpleName());
         return dao;
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException
-    {
-        Map<String, DaoRegistrar> registrars = applicationContext.getBeansOfType(DaoRegistrar.class);
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        Map<String, DaoRegistrar> registrars =
+                applicationContext.getBeansOfType(DaoRegistrar.class);
         for (GeofenceDaoRegistry.DaoRegistrar registrar : registrars.values()) {
             addRegistrar(registrar);
         }
@@ -89,21 +83,34 @@ public class GeofenceDaoRegistry implements ApplicationContextAware
 
     protected void addRegistrar(DaoRegistrar registrar) {
         RegistrableDAO dao = registrar.dao;
-        
+
         for (Class registerableClass : REGISTERABLE_CLASSES) {
-            if(registerableClass.isAssignableFrom(dao.getClass())) {
-                LOGGER.info("Registering DAO type " + registrar.name + " for class " + dao.getClass().getSimpleName());
+            if (registerableClass.isAssignableFrom(dao.getClass())) {
+                LOGGER.info(
+                        "Registering DAO type "
+                                + registrar.name
+                                + " for class "
+                                + dao.getClass().getSimpleName());
 
                 Map<String, RegistrableDAO> registryMap = registry.get(registerableClass);
                 registryMap.put(registrar.name, dao);
                 return;
             } else if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Skipping DAO type " + registrar.name + ": " + dao.getClass() + " is not a " + registerableClass);
+                LOGGER.debug(
+                        "Skipping DAO type "
+                                + registrar.name
+                                + ": "
+                                + dao.getClass()
+                                + " is not a "
+                                + registerableClass);
             }
         }
-        LOGGER.error("Cannot register DAO class " + registrar.dao.getClass() + " with type " + registrar.name);
-        throw new IllegalArgumentException("Cannot register DAO class " + dao.getClass() + " with type " + registrar.name);
+        LOGGER.error(
+                "Cannot register DAO class "
+                        + registrar.dao.getClass()
+                        + " with type "
+                        + registrar.name);
+        throw new IllegalArgumentException(
+                "Cannot register DAO class " + dao.getClass() + " with type " + registrar.name);
     }
-
-
 }

@@ -5,50 +5,43 @@
 
 package org.geoserver.geofence.services;
 
-import org.locationtech.jts.geom.MultiPolygon;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
-import org.geoserver.geofence.core.model.GSUser;
-import org.geoserver.geofence.core.model.IPAddressRange;
-import org.geoserver.geofence.core.model.LayerAttribute;
-import org.geoserver.geofence.core.model.LayerDetails;
-import org.geoserver.geofence.core.model.UserGroup;
-import org.geoserver.geofence.core.model.Rule;
-import org.geoserver.geofence.core.model.enums.AccessType;
-import org.geoserver.geofence.core.model.enums.GrantType;
-import org.geoserver.geofence.services.dto.AccessInfo;
-import org.geoserver.geofence.services.dto.RuleFilter;
-import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
-import org.geoserver.geofence.services.dto.ShortRule;
-import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import org.geoserver.geofence.core.model.AdminRule;
+import org.geoserver.geofence.core.model.GSUser;
+import org.geoserver.geofence.core.model.IPAddressRange;
+import org.geoserver.geofence.core.model.LayerAttribute;
+import org.geoserver.geofence.core.model.LayerDetails;
+import org.geoserver.geofence.core.model.Rule;
+import org.geoserver.geofence.core.model.UserGroup;
+import org.geoserver.geofence.core.model.enums.AccessType;
 import org.geoserver.geofence.core.model.enums.AdminGrantType;
+import org.geoserver.geofence.core.model.enums.GrantType;
+import org.geoserver.geofence.services.dto.AccessInfo;
+import org.geoserver.geofence.services.dto.RuleFilter;
+import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
+import org.geoserver.geofence.services.dto.ShortRule;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class RuleReaderServiceImplTest extends ServiceTestBase {
 
-    public RuleReaderServiceImplTest() {
-    }
+    public RuleReaderServiceImplTest() {}
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
+    public static void setUpClass() throws Exception {}
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
+    public static void tearDownClass() throws Exception {}
 
     @Test
     public void testGetRulesForUsersAndGroup() {
@@ -60,7 +53,6 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
         UserGroup p1 = createRole("p1");
         UserGroup p2 = createRole("p2");
-
 
         String u1 = "TestUser1";
         String u2 = "TestUser2";
@@ -85,38 +77,72 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         userAdminService.insert(user2);
         userAdminService.insert(user3);
 
-        ruleAdminService.insert(new Rule(10, u1,  "p1", null, null,     "s1", "r1", "w1", "l1", GrantType.ALLOW));
-        ruleAdminService.insert(new Rule(20, u2,  "p2", null, null,     "s1", "r2", "w2", "l2", GrantType.ALLOW));
-        ruleAdminService.insert(new Rule(30, u1,  "p1", null, null,     "s3", "r3", "w3", "l3", GrantType.ALLOW));
-        ruleAdminService.insert(new Rule(40, u1,  "p1", null, null,     null, null, null, null, GrantType.ALLOW));
-        ruleAdminService.insert(new Rule(50, null,"g3a", null,null,     null, null, null, null, GrantType.ALLOW));
-        ruleAdminService.insert(new Rule(60, null,"g3b", null,null,     null, null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(
+                new Rule(10, u1, "p1", null, null, "s1", "r1", "w1", "l1", GrantType.ALLOW));
+        ruleAdminService.insert(
+                new Rule(20, u2, "p2", null, null, "s1", "r2", "w2", "l2", GrantType.ALLOW));
+        ruleAdminService.insert(
+                new Rule(30, u1, "p1", null, null, "s3", "r3", "w3", "l3", GrantType.ALLOW));
+        ruleAdminService.insert(
+                new Rule(40, u1, "p1", null, null, null, null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(
+                new Rule(50, null, "g3a", null, null, null, null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(
+                new Rule(60, null, "g3b", null, null, null, null, null, null, GrantType.ALLOW));
 
-        assertEquals(3, ruleReaderService.getMatchingRules(u1,  "*",  "Z","*",  "*", "*","*","*").size());
-        assertEquals(3, ruleReaderService.getMatchingRules("*", "p1", "Z","*",  "*", "*","*","*").size());
-        assertEquals(1, ruleReaderService.getMatchingRules(u1,  "*",  "Z","*", null, null,null,null).size());
-        assertEquals(0, ruleReaderService.getMatchingRules("*", "Z",  "Z","*", null, null,null,null).size());
-        assertEquals(1, ruleReaderService.getMatchingRules(u1,  "*",  "Z","*", null, null,null,null).size());
-        assertEquals(1, ruleReaderService.getMatchingRules(u1,  "*",  "Z","*", null, null,null,null).size());
-        assertEquals(1, ruleReaderService.getMatchingRules(u2,  "*",  "Z","*",  "*", "*","*","*").size());
-        assertEquals(1, ruleReaderService.getMatchingRules("*", "p2", "Z","*",  "*", "*","*","*").size());
-        assertEquals(2, ruleReaderService.getMatchingRules(u1,  "*",  "Z","*",  "s1", "*","*","*").size());
-        assertEquals(2, ruleReaderService.getMatchingRules("*", "p1", "Z","*",  "s1", "*","*","*").size());
-        assertEquals(2, ruleReaderService.getMatchingRules(u3,  "*",  "Z","*",  "s1", "*","*","*").size());
+        assertEquals(
+                3,
+                ruleReaderService.getMatchingRules(u1, "*", "Z", "*", "*", "*", "*", "*").size());
+        assertEquals(
+                3,
+                ruleReaderService.getMatchingRules("*", "p1", "Z", "*", "*", "*", "*", "*").size());
+        assertEquals(
+                1,
+                ruleReaderService
+                        .getMatchingRules(u1, "*", "Z", "*", null, null, null, null)
+                        .size());
+        assertEquals(
+                0,
+                ruleReaderService
+                        .getMatchingRules("*", "Z", "Z", "*", null, null, null, null)
+                        .size());
+        assertEquals(
+                1,
+                ruleReaderService
+                        .getMatchingRules(u1, "*", "Z", "*", null, null, null, null)
+                        .size());
+        assertEquals(
+                1,
+                ruleReaderService
+                        .getMatchingRules(u1, "*", "Z", "*", null, null, null, null)
+                        .size());
+        assertEquals(
+                1,
+                ruleReaderService.getMatchingRules(u2, "*", "Z", "*", "*", "*", "*", "*").size());
+        assertEquals(
+                1,
+                ruleReaderService.getMatchingRules("*", "p2", "Z", "*", "*", "*", "*", "*").size());
+        assertEquals(
+                2,
+                ruleReaderService.getMatchingRules(u1, "*", "Z", "*", "s1", "*", "*", "*").size());
+        assertEquals(
+                2,
+                ruleReaderService
+                        .getMatchingRules("*", "p1", "Z", "*", "s1", "*", "*", "*")
+                        .size());
+        assertEquals(
+                2,
+                ruleReaderService.getMatchingRules(u3, "*", "Z", "*", "s1", "*", "*", "*").size());
     }
 
     private static RuleFilter createFilter(String userName, String groupName, String service) {
         RuleFilter filter;
         filter = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
-        if(userName != null)
-            filter.setUser(userName);
-        if(groupName != null)
-            filter.setRole(groupName);
-        if(service != null)
-            filter.setService(service);
+        if (userName != null) filter.setUser(userName);
+        if (groupName != null) filter.setRole(groupName);
+        if (service != null) filter.setService(service);
         return filter;
     }
-
 
     @Test
     public void testGetRulesForGroupOnly() {
@@ -128,32 +154,58 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         UserGroup g1 = createRole("p1");
         UserGroup g2 = createRole("p2");
 
-        Rule r1 = new Rule(10, null, "p1", null,null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
-        Rule r2 = new Rule(20, null, "p2", null,null,      "s1", "r2", "w2", "l2", GrantType.ALLOW);
-        Rule r3 = new Rule(30, null, "p1", null,null,      "s3", "r3", "w3", "l3", GrantType.ALLOW);
-        Rule r4 = new Rule(40, null, "p1", null,null,      null, null, null, null, GrantType.ALLOW);
+        Rule r1 = new Rule(10, null, "p1", null, null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
+        Rule r2 = new Rule(20, null, "p2", null, null, "s1", "r2", "w2", "l2", GrantType.ALLOW);
+        Rule r3 = new Rule(30, null, "p1", null, null, "s3", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r4 = new Rule(40, null, "p1", null, null, null, null, null, null, GrantType.ALLOW);
 
         ruleAdminService.insert(r1);
         ruleAdminService.insert(r2);
         ruleAdminService.insert(r3);
         ruleAdminService.insert(r4);
 
-        assertEquals(4, ruleReaderService.getMatchingRules("*","*","*", "*",  "*",  "*","*","*").size());
-        assertEquals(3, ruleReaderService.getMatchingRules("*","*","*", "*",  "s1", "*","*","*").size());
-        assertEquals(1, ruleReaderService.getMatchingRules("*","*","*", "*",  "ZZ", "*","*","*").size());
+        assertEquals(
+                4,
+                ruleReaderService.getMatchingRules("*", "*", "*", "*", "*", "*", "*", "*").size());
+        assertEquals(
+                3,
+                ruleReaderService.getMatchingRules("*", "*", "*", "*", "s1", "*", "*", "*").size());
+        assertEquals(
+                1,
+                ruleReaderService.getMatchingRules("*", "*", "*", "*", "ZZ", "*", "*", "*").size());
 
-        assertEquals(3, ruleReaderService.getMatchingRules("*","p1","*", "*",  "*",  "*","*","*").size());
-        assertEquals(2, ruleReaderService.getMatchingRules("*","p1","*", "*",  "s1", "*","*","*").size());
-        assertEquals(1, ruleReaderService.getMatchingRules("*","p1","*", "*",  "ZZ", "*","*","*").size());
+        assertEquals(
+                3,
+                ruleReaderService.getMatchingRules("*", "p1", "*", "*", "*", "*", "*", "*").size());
+        assertEquals(
+                2,
+                ruleReaderService
+                        .getMatchingRules("*", "p1", "*", "*", "s1", "*", "*", "*")
+                        .size());
+        assertEquals(
+                1,
+                ruleReaderService
+                        .getMatchingRules("*", "p1", "*", "*", "ZZ", "*", "*", "*")
+                        .size());
 
-        assertEquals(1, ruleReaderService.getMatchingRules("*","p2","*", "*",  "*",  "*","*","*").size());
-        assertEquals(1, ruleReaderService.getMatchingRules("*","p2","*", "*",  "s1", "*","*","*").size());
-        assertEquals(0, ruleReaderService.getMatchingRules("*","p2","*", "*",  "ZZ", "*","*","*").size());
+        assertEquals(
+                1,
+                ruleReaderService.getMatchingRules("*", "p2", "*", "*", "*", "*", "*", "*").size());
+        assertEquals(
+                1,
+                ruleReaderService
+                        .getMatchingRules("*", "p2", "*", "*", "s1", "*", "*", "*")
+                        .size());
+        assertEquals(
+                0,
+                ruleReaderService
+                        .getMatchingRules("*", "p2", "*", "*", "ZZ", "*", "*", "*")
+                        .size());
 
         filter = createFilter(null, g1.getName(), null);
         assertEquals(3, ruleReaderService.getMatchingRules(filter).size());
 
-        filter = createFilter((String)null, null, "s3");
+        filter = createFilter((String) null, null, "s3");
         assertEquals(2, ruleReaderService.getMatchingRules(filter).size());
     }
 
@@ -163,10 +215,54 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
         List<Rule> rules = new ArrayList<>();
 
-        rules.add(new Rule(100+rules.size(), null, null, null,null,   "WCS", null, null, null, GrantType.ALLOW));
-        rules.add(new Rule(100+rules.size(), null, null, null,null,   "s1", "r2", "w2", "l2", GrantType.ALLOW));
-        rules.add(new Rule(100+rules.size(), null, null, null,null,   "s3", "r3", "w3", "l3", GrantType.ALLOW));
-        rules.add(new Rule(100+rules.size(), null, null, null,null,    null, null, null, null, GrantType.DENY));
+        rules.add(
+                new Rule(
+                        100 + rules.size(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        "WCS",
+                        null,
+                        null,
+                        null,
+                        GrantType.ALLOW));
+        rules.add(
+                new Rule(
+                        100 + rules.size(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        "s1",
+                        "r2",
+                        "w2",
+                        "l2",
+                        GrantType.ALLOW));
+        rules.add(
+                new Rule(
+                        100 + rules.size(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        "s3",
+                        "r3",
+                        "w3",
+                        "l3",
+                        GrantType.ALLOW));
+        rules.add(
+                new Rule(
+                        100 + rules.size(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        GrantType.DENY));
 
         for (Rule rule : rules) {
             ruleAdminService.insert(rule);
@@ -182,7 +278,6 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         baseFilter.setRequest(RuleFilter.SpecialFilterType.ANY);
         baseFilter.setWorkspace("W0");
         baseFilter.setLayer("l0");
-
 
         AccessInfo accessInfo;
 
@@ -224,12 +319,33 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
         List<Rule> rules = new ArrayList<>();
 
-        rules.add(new Rule(100+rules.size(), null, null, null,null,   "WCS", null, null, null, GrantType.ALLOW));
-        rules.add(new Rule(100+rules.size(), null, null, null,null,   "s1", "r2", "w2", "l2", GrantType.ALLOW));
+        rules.add(
+                new Rule(
+                        100 + rules.size(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        "WCS",
+                        null,
+                        null,
+                        null,
+                        GrantType.ALLOW));
+        rules.add(
+                new Rule(
+                        100 + rules.size(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        "s1",
+                        "r2",
+                        "w2",
+                        "l2",
+                        GrantType.ALLOW));
 
         for (Rule rule : rules) {
-            if(rule != null)
-                ruleAdminService.insert(rule);
+            if (rule != null) ruleAdminService.insert(rule);
         }
 
         LayerDetails details = new LayerDetails();
@@ -245,7 +361,11 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
             ruleFilter.setService("s1");
             ruleFilter.setLayer("l2");
 
-            assertEquals(2, ruleReaderService.getMatchingRules(new RuleFilter(RuleFilter.SpecialFilterType.ANY)).size());
+            assertEquals(
+                    2,
+                    ruleReaderService
+                            .getMatchingRules(new RuleFilter(RuleFilter.SpecialFilterType.ANY))
+                            .size());
             List<ShortRule> matchingRules = ruleReaderService.getMatchingRules(ruleFilter);
             LOGGER.info("Matching rules: " + matchingRules);
             assertEquals(1, matchingRules.size());
@@ -259,19 +379,52 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
     public void testNoDefault() {
         assertEquals(0, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY)));
 
-        ruleAdminService.insert(new Rule(0, null, null, null,null,   "WCS", null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(
+                new Rule(0, null, null, null, null, "WCS", null, null, null, GrantType.ALLOW));
 
-        assertEquals(1, ruleReaderService.getMatchingRules("u0","*","i0",null, "WCS", null,"W0","l0").size());
-        assertEquals(GrantType.ALLOW, ruleReaderService.getAccessInfo("u0","*","i0",null, "WCS", null,"W0","l0").getGrant());
+        assertEquals(
+                1,
+                ruleReaderService
+                        .getMatchingRules("u0", "*", "i0", null, "WCS", null, "W0", "l0")
+                        .size());
+        assertEquals(
+                GrantType.ALLOW,
+                ruleReaderService
+                        .getAccessInfo("u0", "*", "i0", null, "WCS", null, "W0", "l0")
+                        .getGrant());
 
-        assertEquals(1, ruleReaderService.getMatchingRules("*","p0","i0",null, "WCS", null,"W0","l0").size());
-        assertEquals(GrantType.ALLOW, ruleReaderService.getAccessInfo("*","p0","i0",null, "WCS", null,"W0","l0").getGrant());
+        assertEquals(
+                1,
+                ruleReaderService
+                        .getMatchingRules("*", "p0", "i0", null, "WCS", null, "W0", "l0")
+                        .size());
+        assertEquals(
+                GrantType.ALLOW,
+                ruleReaderService
+                        .getAccessInfo("*", "p0", "i0", null, "WCS", null, "W0", "l0")
+                        .getGrant());
 
-        assertEquals(0, ruleReaderService.getMatchingRules("u0","*","i0",null, "UNMATCH", null,"W0","l0").size());
-        assertEquals(GrantType.DENY, ruleReaderService.getAccessInfo("u0","*","i0",null, "UNMATCH", null,"W0","l0").getGrant());
+        assertEquals(
+                0,
+                ruleReaderService
+                        .getMatchingRules("u0", "*", "i0", null, "UNMATCH", null, "W0", "l0")
+                        .size());
+        assertEquals(
+                GrantType.DENY,
+                ruleReaderService
+                        .getAccessInfo("u0", "*", "i0", null, "UNMATCH", null, "W0", "l0")
+                        .getGrant());
 
-        assertEquals(0, ruleReaderService.getMatchingRules("*","p0","i0",null, "UNMATCH", null,"W0","l0").size());
-        assertEquals(GrantType.DENY, ruleReaderService.getAccessInfo("*","p0","i0",null, "UNMATCH", null,"W0","l0").getGrant());
+        assertEquals(
+                0,
+                ruleReaderService
+                        .getMatchingRules("*", "p0", "i0", null, "UNMATCH", null, "W0", "l0")
+                        .size());
+        assertEquals(
+                GrantType.DENY,
+                ruleReaderService
+                        .getAccessInfo("*", "p0", "i0", null, "UNMATCH", null, "W0", "l0")
+                        .getGrant());
     }
 
     @Test
@@ -285,15 +438,37 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         GSUser u2 = createUser("u2", g2);
 
         List<Rule> rules = new ArrayList<>();
-        rules.add(new Rule(rules.size()+10, null, "p1", null, null,     "s1", "r1", "w1", "l1", GrantType.ALLOW));
-        rules.add(new Rule(rules.size()+10, null, "p1", null, null,     null, null, null, null, GrantType.DENY));
+        rules.add(
+                new Rule(
+                        rules.size() + 10,
+                        null,
+                        "p1",
+                        null,
+                        null,
+                        "s1",
+                        "r1",
+                        "w1",
+                        "l1",
+                        GrantType.ALLOW));
+        rules.add(
+                new Rule(
+                        rules.size() + 10,
+                        null,
+                        "p1",
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        GrantType.DENY));
 
         for (Rule rule : rules) {
             ruleAdminService.insert(rule);
         }
 
         LOGGER.info("SETUP ENDED, STARTING TESTS");
-        //===
+        // ===
 
         assertEquals(rules.size(), ruleAdminService.getCountAll());
 
@@ -317,7 +492,6 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
             filter.setUser(u2.getName());
             assertEquals(0, ruleReaderService.getMatchingRules(filter).size());
             assertEquals(GrantType.DENY, ruleReaderService.getAccessInfo(filter).getGrant());
-
         }
     }
 
@@ -332,15 +506,37 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         GSUser u2 = createUser("u2", g2);
 
         List<Rule> rules = new ArrayList<Rule>();
-        rules.add(new Rule(rules.size()+10, null, "p1", null,null,      null, null, null, null, GrantType.ALLOW));
-        rules.add(new Rule(rules.size()+10, null, "p2", null,null,      null, null, null, null, GrantType.DENY));
+        rules.add(
+                new Rule(
+                        rules.size() + 10,
+                        null,
+                        "p1",
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        GrantType.ALLOW));
+        rules.add(
+                new Rule(
+                        rules.size() + 10,
+                        null,
+                        "p2",
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        GrantType.DENY));
 
         for (Rule rule : rules) {
             ruleAdminService.insert(rule);
         }
 
         LOGGER.info("SETUP ENDED, STARTING TESTS");
-        //===
+        // ===
 
         assertEquals(rules.size(), ruleAdminService.getCountAll());
 
@@ -368,15 +564,37 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         GSUser u2 = createUser("u2", g2);
 
         List<Rule> rules = new ArrayList<Rule>();
-        rules.add(new Rule(rules.size()+10, null, "p2", null,null,      null, null, null, null, GrantType.DENY));
-        rules.add(new Rule(rules.size()+10, null, "p1", null,null,      null, null, null, null, GrantType.ALLOW));
+        rules.add(
+                new Rule(
+                        rules.size() + 10,
+                        null,
+                        "p2",
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        GrantType.DENY));
+        rules.add(
+                new Rule(
+                        rules.size() + 10,
+                        null,
+                        "p1",
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        GrantType.ALLOW));
 
         for (Rule rule : rules) {
             ruleAdminService.insert(rule);
         }
 
         LOGGER.info("SETUP ENDED, STARTING TESTS");
-        //===
+        // ===
 
         assertEquals(rules.size(), ruleAdminService.getCountAll());
 
@@ -387,7 +605,6 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         RuleFilter filterU2;
         filterU2 = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
         filterU2.setUser(u2.getName());
-
 
         assertEquals(1, ruleReaderService.getMatchingRules(filterU1).size());
         assertEquals(1, ruleReaderService.getMatchingRules(filterU2).size());
@@ -425,7 +642,18 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
             int pri = 0;
             {
-                Rule r1 = new Rule(pri++, null, "g1", null,null,      null, null, null, "l1", GrantType.ALLOW);
+                Rule r1 =
+                        new Rule(
+                                pri++,
+                                null,
+                                "g1",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                "l1",
+                                GrantType.ALLOW);
                 ruleAdminService.insert(r1);
 
                 LayerDetails d1 = new LayerDetails();
@@ -438,7 +666,18 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
                 ruleAdminService.setDetails(r1.getId(), d1);
             }
             {
-                Rule r1 = new Rule(pri++, null, "g2", null,null,      null, null, null, "l1", GrantType.ALLOW);
+                Rule r1 =
+                        new Rule(
+                                pri++,
+                                null,
+                                "g2",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                "l1",
+                                GrantType.ALLOW);
                 ruleAdminService.insert(r1);
 
                 LayerDetails d1 = new LayerDetails();
@@ -451,7 +690,18 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
                 ruleAdminService.setDetails(r1.getId(), d1);
             }
             {
-                Rule r1 = new Rule(pri++, null, "g3", null,null,      null, null, null, "l1", GrantType.ALLOW);
+                Rule r1 =
+                        new Rule(
+                                pri++,
+                                null,
+                                "g3",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                "l1",
+                                GrantType.ALLOW);
                 ruleAdminService.insert(r1);
 
                 LayerDetails d1 = new LayerDetails();
@@ -459,7 +709,18 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
                 ruleAdminService.setDetails(r1.getId(), d1);
             }
             {
-                Rule r1 = new Rule(pri++, null, "g4", null,null,      null, null, null, "l1", GrantType.DENY);
+                Rule r1 =
+                        new Rule(
+                                pri++,
+                                null,
+                                "g4",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                "l1",
+                                GrantType.DENY);
                 ruleAdminService.insert(r1);
             }
         }
@@ -468,7 +729,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
         assertEquals(4, ruleAdminService.getCountAll());
 
-        //===
+        // ===
 
         // TEST u1
         {
@@ -498,10 +759,11 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
             assertNotNull(accessInfo.getAttributes());
             assertEquals(3, accessInfo.getAttributes().size());
             assertEquals(
-                    new HashSet(Arrays.asList(
-                        new LayerAttribute("att1", "String", AccessType.READONLY),
-                        new LayerAttribute("att2", "String", AccessType.READWRITE),
-                        new LayerAttribute("att3", "String", AccessType.NONE))),
+                    new HashSet(
+                            Arrays.asList(
+                                    new LayerAttribute("att1", "String", AccessType.READONLY),
+                                    new LayerAttribute("att2", "String", AccessType.READWRITE),
+                                    new LayerAttribute("att3", "String", AccessType.NONE))),
                     accessInfo.getAttributes());
 
             assertEquals(2, accessInfo.getAllowedStyles().size());
@@ -523,10 +785,11 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
             assertNotNull(accessInfo.getAttributes());
             assertEquals(3, accessInfo.getAttributes().size());
             assertEquals(
-                    new HashSet(Arrays.asList(
-                        new LayerAttribute("att1", "String", AccessType.READONLY),
-                        new LayerAttribute("att2", "String", AccessType.READWRITE),
-                        new LayerAttribute("att3", "String", AccessType.READWRITE))),
+                    new HashSet(
+                            Arrays.asList(
+                                    new LayerAttribute("att1", "String", AccessType.READONLY),
+                                    new LayerAttribute("att2", "String", AccessType.READWRITE),
+                                    new LayerAttribute("att3", "String", AccessType.READWRITE))),
                     accessInfo.getAttributes());
 
             assertEquals(3, accessInfo.getAllowedStyles().size());
@@ -548,21 +811,19 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
             assertEquals(GrantType.ALLOW, accessInfo.getGrant());
             LOGGER.info("attributes: " + accessInfo.getAttributes());
             assertTrue(accessInfo.getAttributes().isEmpty());
-//            assertEquals(3, accessInfo.getAttributes().size());
-//            assertEquals(
-//                    new HashSet(Arrays.asList(
-//                        new LayerAttribute("att1", "String", AccessType.READONLY),
-//                        new LayerAttribute("att2", "String", AccessType.READWRITE),
-//                        new LayerAttribute("att3", "String", AccessType.READWRITE))),
-//                    accessInfo.getAttributes());
+            //            assertEquals(3, accessInfo.getAttributes().size());
+            //            assertEquals(
+            //                    new HashSet(Arrays.asList(
+            //                        new LayerAttribute("att1", "String", AccessType.READONLY),
+            //                        new LayerAttribute("att2", "String", AccessType.READWRITE),
+            //                        new LayerAttribute("att3", "String", AccessType.READWRITE))),
+            //                    accessInfo.getAttributes());
 
             assertTrue(accessInfo.getAllowedStyles().isEmpty());
         }
     }
 
-    /**
-     * Added for issue #23
-     */
+    /** Added for issue #23 */
     @Test
     public void testNullAllowableStyles() throws NotFoundServiceEx {
         assertEquals(0, ruleAdminService.getCountAll());
@@ -575,12 +836,34 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
             // no details for first rule
             {
-                Rule r1 = new Rule(30, null, "g2", null,null,      null, null, null, "l1", GrantType.ALLOW);
+                Rule r1 =
+                        new Rule(
+                                30,
+                                null,
+                                "g2",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                "l1",
+                                GrantType.ALLOW);
                 ruleAdminService.insert(r1);
             }
             // some allowed styles for second rule
             {
-                Rule r1 = new Rule(40, null, "g1", null,null,      null, null, null, "l1", GrantType.ALLOW);
+                Rule r1 =
+                        new Rule(
+                                40,
+                                null,
+                                "g1",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                "l1",
+                                GrantType.ALLOW);
                 ruleAdminService.insert(r1);
 
                 LayerDetails d1 = new LayerDetails();
@@ -595,7 +878,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
         assertEquals(2, ruleAdminService.getCountAll());
 
-        //===
+        // ===
 
         // TEST u1
         {
@@ -612,7 +895,6 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
             assertTrue(accessInfo.getAllowedStyles().isEmpty());
         }
-
     }
 
     @Test
@@ -627,10 +909,10 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         IPAddressRange ip10 = new IPAddressRange("10.10.100.0/24");
         IPAddressRange ip192 = new IPAddressRange("192.168.0.0/16");
 
-        Rule r1 = new Rule(10, null, "g1", null,ip10,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
-        Rule r2 = new Rule(20, null, "g2", null,ip10,      "s1", "r2", "w2", "l2", GrantType.ALLOW);
-        Rule r3 = new Rule(30, null, "g1", null,ip192,      "s3", "r3", "w3", "l3", GrantType.ALLOW);
-        Rule r4 = new Rule(40, null, "g1", null,null,      null, null, null, null, GrantType.ALLOW);
+        Rule r1 = new Rule(10, null, "g1", null, ip10, "s1", "r1", "w1", "l1", GrantType.ALLOW);
+        Rule r2 = new Rule(20, null, "g2", null, ip10, "s1", "r2", "w2", "l2", GrantType.ALLOW);
+        Rule r3 = new Rule(30, null, "g1", null, ip192, "s3", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r4 = new Rule(40, null, "g1", null, null, null, null, null, null, GrantType.ALLOW);
 
         ruleAdminService.insert(r1);
         ruleAdminService.insert(r2);
@@ -639,22 +921,56 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
         // test without address filtering
 
-        assertEquals(4, ruleReaderService.getMatchingRules("*","*", "*",  "*",  "*", "*","*","*").size());
-        assertEquals(3, ruleReaderService.getMatchingRules("*","g1","*",  "*",  "*", "*","*","*").size());
-        assertEquals(1, ruleReaderService.getMatchingRules("*","g2","*",  "*",  "*", "*","*","*").size());
-        assertEquals(2, ruleReaderService.getMatchingRules("*","g1","*",  "*",  "s1", "*","*","*").size());
-        assertEquals(1, ruleReaderService.getMatchingRules("*","*", "*",  "*",  "ZZ", "*","*","*").size());
+        assertEquals(
+                4,
+                ruleReaderService.getMatchingRules("*", "*", "*", "*", "*", "*", "*", "*").size());
+        assertEquals(
+                3,
+                ruleReaderService.getMatchingRules("*", "g1", "*", "*", "*", "*", "*", "*").size());
+        assertEquals(
+                1,
+                ruleReaderService.getMatchingRules("*", "g2", "*", "*", "*", "*", "*", "*").size());
+        assertEquals(
+                2,
+                ruleReaderService
+                        .getMatchingRules("*", "g1", "*", "*", "s1", "*", "*", "*")
+                        .size());
+        assertEquals(
+                1,
+                ruleReaderService.getMatchingRules("*", "*", "*", "*", "ZZ", "*", "*", "*").size());
 
         // test with  address filtering
-        assertEquals(3, ruleReaderService.getMatchingRules("*","*", "*", "10.10.100.4", "*", "*","*","*").size());
-        assertEquals(2, ruleReaderService.getMatchingRules("*","g1","*", "10.10.100.4", "*", "*","*","*").size());
-        assertEquals(1, ruleReaderService.getMatchingRules("*","*", "*", "10.10.1.4",   "*", "*","*","*").size());
-        assertEquals(2, ruleReaderService.getMatchingRules("*","*", "*", "192.168.1.1", "*", "*","*","*").size());
-        assertEquals(1, ruleReaderService.getMatchingRules("*","*", "*",  null,         "*", "*","*","*").size());
+        assertEquals(
+                3,
+                ruleReaderService
+                        .getMatchingRules("*", "*", "*", "10.10.100.4", "*", "*", "*", "*")
+                        .size());
+        assertEquals(
+                2,
+                ruleReaderService
+                        .getMatchingRules("*", "g1", "*", "10.10.100.4", "*", "*", "*", "*")
+                        .size());
+        assertEquals(
+                1,
+                ruleReaderService
+                        .getMatchingRules("*", "*", "*", "10.10.1.4", "*", "*", "*", "*")
+                        .size());
+        assertEquals(
+                2,
+                ruleReaderService
+                        .getMatchingRules("*", "*", "*", "192.168.1.1", "*", "*", "*", "*")
+                        .size());
+        assertEquals(
+                1,
+                ruleReaderService.getMatchingRules("*", "*", "*", null, "*", "*", "*", "*").size());
 
-        assertEquals(0, ruleReaderService.getMatchingRules("*","*","*","BAD",  "*", "*","*","*").size());
+        assertEquals(
+                0,
+                ruleReaderService
+                        .getMatchingRules("*", "*", "*", "BAD", "*", "*", "*", "*")
+                        .size());
     }
-    
+
     @Test
     public void testGetRulesForUserOnly() {
         RuleFilter filter;
@@ -688,12 +1004,18 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         userAdminService.insert(user2);
         userAdminService.insert(user3);
 
-        ruleAdminService.insert(new Rule(10, u1, "g1", null, null,     "s1", "r1", "w1", "l1", GrantType.ALLOW));
-        ruleAdminService.insert(new Rule(20, u2, "g2", null, null,     "s1", "r2", "w2", "l2", GrantType.ALLOW));
-        ruleAdminService.insert(new Rule(30, u1, "g1", null, null,     "s3", "r3", "w3", "l3", GrantType.ALLOW));
-        ruleAdminService.insert(new Rule(40, u1, "g1", null, null,     null, null, null, null, GrantType.ALLOW));
-        ruleAdminService.insert(new Rule(50, null,  "g3a", null,null,      null, null, null, null, GrantType.ALLOW));
-        ruleAdminService.insert(new Rule(60, null,  "g3b", null,null,      null, null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(
+                new Rule(10, u1, "g1", null, null, "s1", "r1", "w1", "l1", GrantType.ALLOW));
+        ruleAdminService.insert(
+                new Rule(20, u2, "g2", null, null, "s1", "r2", "w2", "l2", GrantType.ALLOW));
+        ruleAdminService.insert(
+                new Rule(30, u1, "g1", null, null, "s3", "r3", "w3", "l3", GrantType.ALLOW));
+        ruleAdminService.insert(
+                new Rule(40, u1, "g1", null, null, null, null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(
+                new Rule(50, null, "g3a", null, null, null, null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(
+                new Rule(60, null, "g3b", null, null, null, null, null, null, GrantType.ALLOW));
 
         filter = createFilter(u1, null, null);
         assertEquals(3, ruleReaderService.getMatchingRules(filter).size());
@@ -703,7 +1025,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
         filter = createFilter(u1, null, "s3");
         assertEquals(2, ruleReaderService.getMatchingRules(filter).size());
-        
+
         filter = createFilter("anonymous", null, null);
         assertEquals(0, ruleReaderService.getMatchingRules(filter).size());
     }
@@ -711,10 +1033,20 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
     @Test
     public void testAdminRules() {
 
-
         GSUser user = createUser("auth00");
 
-        ruleAdminService.insert(new Rule(10, user.getName(), null, null, null,     "s1", "r1", "w1", "l1", GrantType.ALLOW));
+        ruleAdminService.insert(
+                new Rule(
+                        10,
+                        user.getName(),
+                        null,
+                        null,
+                        null,
+                        "s1",
+                        "r1",
+                        "w1",
+                        "l1",
+                        GrantType.ALLOW));
 
         RuleFilter filter = new RuleFilter(SpecialFilterType.ANY, true);
         filter.setWorkspace("w1");
@@ -725,7 +1057,8 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
         // let's add a USER adminrule
 
-        adminruleAdminService.insert(new AdminRule(20, user.getName(), null, null, null, null, AdminGrantType.USER));
+        adminruleAdminService.insert(
+                new AdminRule(20, user.getName(), null, null, null, null, AdminGrantType.USER));
 
         accessInfo = ruleReaderService.getAccessInfo(filter);
         assertEquals(GrantType.ALLOW, accessInfo.getGrant());
@@ -733,11 +1066,11 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
         // let's add an ADMIN adminrule on workspace w1
 
-        adminruleAdminService.insert(new AdminRule(10, user.getName(), null, null, null, "w1", AdminGrantType.ADMIN));
+        adminruleAdminService.insert(
+                new AdminRule(10, user.getName(), null, null, null, "w1", AdminGrantType.ADMIN));
 
         accessInfo = ruleReaderService.getAccessInfo(filter);
         assertEquals(GrantType.ALLOW, accessInfo.getGrant());
         assertTrue(accessInfo.getAdminRights());
     }
-
 }

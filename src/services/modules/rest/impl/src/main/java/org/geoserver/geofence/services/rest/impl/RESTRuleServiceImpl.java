@@ -5,74 +5,62 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang.StringUtils;
-
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.MultiPolygon;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
-
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.core.model.IPAddressRange;
 import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.LayerDetails;
 import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
-
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.IdNameFilter;
-import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
-
+import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
-
+import org.geoserver.geofence.services.rest.RESTRuleService;
 import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
 import org.geoserver.geofence.services.rest.exception.GeoFenceRestEx;
 import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
 import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
-
-import org.geoserver.geofence.services.rest.RESTRuleService;
 import org.geoserver.geofence.services.rest.model.RESTInputRule;
 import org.geoserver.geofence.services.rest.model.RESTLayerConstraints;
 import org.geoserver.geofence.services.rest.model.RESTOutputRule;
 import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
 import org.geoserver.geofence.services.rest.model.RESTRulePosition.RulePosition;
 import org.geoserver.geofence.services.rest.model.util.IdName;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Comparator;
-
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
-public class RESTRuleServiceImpl
-        extends BaseRESTServiceImpl
-        implements RESTRuleService {
+/** @author ETj (etj at geo-solutions.it) */
+public class RESTRuleServiceImpl extends BaseRESTServiceImpl implements RESTRuleService {
 
     private static final Logger LOGGER = LogManager.getLogger(RESTRuleServiceImpl.class);
 
-    private static final Comparator<Rule> RULE_COMPARATOR = new Comparator<Rule>(){
-        @Override
-        public int compare(final Rule lhs, Rule rhs) {
-          return Long.compare(lhs.getPriority(), rhs.getPriority());
-          }
-    };
+    private static final Comparator<Rule> RULE_COMPARATOR =
+            new Comparator<Rule>() {
+                @Override
+                public int compare(final Rule lhs, Rule rhs) {
+                    return Long.compare(lhs.getPriority(), rhs.getPriority());
+                }
+            };
 
     @Override
-    public RESTOutputRule get(Long id) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public RESTOutputRule get(Long id)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
             Rule ret = ruleAdminService.get(id);
             return toOutput(ret);
@@ -87,7 +75,8 @@ public class RESTRuleServiceImpl
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, value = "geofenceTransactionManager")
-    public Response insert(RESTInputRule inputRule) throws NotFoundRestEx, BadRequestRestEx, InternalErrorRestEx {
+    public Response insert(RESTInputRule inputRule)
+            throws NotFoundRestEx, BadRequestRestEx, InternalErrorRestEx {
 
         if (inputRule.getPosition() == null || inputRule.getPosition().getPosition() == null) {
             throw new BadRequestRestEx("Bad position: " + inputRule.getPosition());
@@ -100,9 +89,14 @@ public class RESTRuleServiceImpl
         Rule rule = fromInput(inputRule);
 
         InsertPosition position =
-                inputRule.getPosition().getPosition() == RulePosition.fixedPriority ? InsertPosition.FIXED
-                : inputRule.getPosition().getPosition() == RulePosition.offsetFromBottom ? InsertPosition.FROM_END
-                : inputRule.getPosition().getPosition() == RulePosition.offsetFromTop ? InsertPosition.FROM_START : null;
+                inputRule.getPosition().getPosition() == RulePosition.fixedPriority
+                        ? InsertPosition.FIXED
+                        : inputRule.getPosition().getPosition() == RulePosition.offsetFromBottom
+                                ? InsertPosition.FROM_END
+                                : inputRule.getPosition().getPosition()
+                                                == RulePosition.offsetFromTop
+                                        ? InsertPosition.FROM_START
+                                        : null;
 
         // ok: insert it
         try {
@@ -124,7 +118,8 @@ public class RESTRuleServiceImpl
     }
 
     @Override
-    public void update(Long id, RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public void update(Long id, RESTInputRule rule)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
 
         try {
             if ((rule.getGrant() != null)) {
@@ -139,17 +134,20 @@ public class RESTRuleServiceImpl
             boolean isRuleUpdated = false;
             boolean isDetailUpdated = false;
 
-            if (rule.getUsername()!= null) {
-                old.setUsername(rule.getUsername().isEmpty()? null : rule.getUsername());
+            if (rule.getUsername() != null) {
+                old.setUsername(rule.getUsername().isEmpty() ? null : rule.getUsername());
                 isRuleUpdated = true;
             }
             if (rule.getRolename() != null) {
-                old.setRolename(rule.getRolename().isEmpty()? null : rule.getRolename());
+                old.setRolename(rule.getRolename().isEmpty() ? null : rule.getRolename());
                 isRuleUpdated = true;
             }
             if (rule.getInstance() != null) {
                 IdName idname = rule.getInstance();
-                old.setInstance(idname.getId() == null && idname.getName() == null ? null : getInstance(idname));
+                old.setInstance(
+                        idname.getId() == null && idname.getName() == null
+                                ? null
+                                : getInstance(idname));
                 isRuleUpdated = true;
             }
 
@@ -179,7 +177,7 @@ public class RESTRuleServiceImpl
                 RESTLayerConstraints constraintsNew = rule.getConstraints();
                 detailsOld = old.getLayerDetails(); // check me : may be null?
 
-                if(detailsOld == null) { // no previous details
+                if (detailsOld == null) { // no previous details
                     detailsOld = new LayerDetails();
                 }
 
@@ -191,7 +189,8 @@ public class RESTRuleServiceImpl
                 }
 
                 if (constraintsNew.getAttributes() != null) {
-                    isDetailUpdated = true; // this update is complex: pessimistic case: it has to be updated
+                    isDetailUpdated =
+                            true; // this update is complex: pessimistic case: it has to be updated
 
                     Set<LayerAttribute> attrToRemove = new HashSet<LayerAttribute>();
                     Set<LayerAttribute> attrToAdd = new HashSet<LayerAttribute>();
@@ -210,7 +209,10 @@ public class RESTRuleServiceImpl
                         }
                         if (!found) {
                             if (LOGGER.isDebugEnabled()) {
-                                LOGGER.debug("Attrib " + oldAttrib + " not found in update, will be removed");
+                                LOGGER.debug(
+                                        "Attrib "
+                                                + oldAttrib
+                                                + " not found in update, will be removed");
                             }
                             attrToRemove.add(oldAttrib);
                         }
@@ -229,7 +231,10 @@ public class RESTRuleServiceImpl
                         }
                         if (!found) {
                             if (LOGGER.isDebugEnabled()) {
-                                LOGGER.debug("New attrib " + newAttrib + " found in update, will be added");
+                                LOGGER.debug(
+                                        "New attrib "
+                                                + newAttrib
+                                                + " found in update, will be added");
                             }
 
                             attrToAdd.add(newAttrib);
@@ -240,17 +245,26 @@ public class RESTRuleServiceImpl
                 }
 
                 if (constraintsNew.getCqlFilterRead() != null) {
-                    detailsOld.setCqlFilterRead(constraintsNew.getCqlFilterRead().isEmpty() ? null : constraintsNew.getCqlFilterRead());
+                    detailsOld.setCqlFilterRead(
+                            constraintsNew.getCqlFilterRead().isEmpty()
+                                    ? null
+                                    : constraintsNew.getCqlFilterRead());
                     isDetailUpdated = true;
                 }
 
                 if (constraintsNew.getCqlFilterWrite() != null) {
-                    detailsOld.setCqlFilterWrite(constraintsNew.getCqlFilterWrite().isEmpty() ? null : constraintsNew.getCqlFilterWrite());
+                    detailsOld.setCqlFilterWrite(
+                            constraintsNew.getCqlFilterWrite().isEmpty()
+                                    ? null
+                                    : constraintsNew.getCqlFilterWrite());
                     isDetailUpdated = true;
                 }
 
                 if (constraintsNew.getDefaultStyle() != null) {
-                    detailsOld.setDefaultStyle(constraintsNew.getDefaultStyle().isEmpty() ? null : constraintsNew.getDefaultStyle());
+                    detailsOld.setDefaultStyle(
+                            constraintsNew.getDefaultStyle().isEmpty()
+                                    ? null
+                                    : constraintsNew.getDefaultStyle());
                     isDetailUpdated = true;
                 }
 
@@ -269,7 +283,7 @@ public class RESTRuleServiceImpl
                     }
                 }
 
-                if(constraintsNew.getType() != null) {
+                if (constraintsNew.getType() != null) {
                     detailsOld.setType(constraintsNew.getType());
                     isDetailUpdated = true;
                 }
@@ -277,28 +291,23 @@ public class RESTRuleServiceImpl
 
             // now persist the new data
 
-            if(isRuleUpdated) {
-                if(LOGGER.isDebugEnabled())
-                    LOGGER.debug("Updating rule " + rule);
+            if (isRuleUpdated) {
+                if (LOGGER.isDebugEnabled()) LOGGER.debug("Updating rule " + rule);
                 ruleAdminService.update(old);
             } else {
-                if(LOGGER.isDebugEnabled())
-                    LOGGER.debug("Rule not changed " + rule);
+                if (LOGGER.isDebugEnabled()) LOGGER.debug("Rule not changed " + rule);
             }
 
-            if(isDetailUpdated) {
-                if(LOGGER.isDebugEnabled())
-                    LOGGER.debug("Updating details " + detailsOld);
-                    ruleAdminService.setDetails(id, detailsOld);
+            if (isDetailUpdated) {
+                if (LOGGER.isDebugEnabled()) LOGGER.debug("Updating details " + detailsOld);
+                ruleAdminService.setDetails(id, detailsOld);
             } else {
-                if(LOGGER.isDebugEnabled())
-                    LOGGER.debug("Details not changed for rule " + rule);
+                if (LOGGER.isDebugEnabled()) LOGGER.debug("Details not changed for rule " + rule);
             }
 
-
-//            LOGGER.warn("The details may not be updated");
+            //            LOGGER.warn("The details may not be updated");
             // TODO: chek if we need to update details in another step
-//            ruleAdminService.setDetails(id, old.getLayerDetails());
+            //            ruleAdminService.setDetails(id, old.getLayerDetails());
 
         } catch (GeoFenceRestEx ex) {
             // already handled
@@ -338,29 +347,48 @@ public class RESTRuleServiceImpl
 
     // ==========================================================================
     // ==========================================================================
-//    public void setUserGroupAdminService(UserGroupAdminService service) {
-//        this.userGroupAdminService = service;
-//    }
+    //    public void setUserGroupAdminService(UserGroupAdminService service) {
+    //        this.userGroupAdminService = service;
+    //    }
     @Override
-    public RESTOutputRuleList get(Integer page, Integer entries,
+    public RESTOutputRuleList get(
+            Integer page,
+            Integer entries,
             boolean full,
-            String userName, Boolean userDefault,
-            String roleName, Boolean roleDefault,
-            Long instanceId, String instanceName, Boolean instanceDefault,
-            String serviceName, Boolean serviceDefault,
-            String requestName, Boolean requestDefault,
-            String workspace, Boolean workspaceDefault,
-            String layer, Boolean layerDefault)
+            String userName,
+            Boolean userDefault,
+            String roleName,
+            Boolean roleDefault,
+            Long instanceId,
+            String instanceName,
+            Boolean instanceDefault,
+            String serviceName,
+            Boolean serviceDefault,
+            String requestName,
+            Boolean requestDefault,
+            String workspace,
+            Boolean workspaceDefault,
+            String layer,
+            Boolean layerDefault)
             throws BadRequestRestEx, InternalErrorRestEx {
 
-        RuleFilter filter = buildFilter(
-                userName, userDefault,
-                roleName, roleDefault,
-                instanceId, instanceName, instanceDefault,
-                serviceName, serviceDefault,
-                requestName, requestDefault,
-                workspace, workspaceDefault,
-                layer, layerDefault);
+        RuleFilter filter =
+                buildFilter(
+                        userName,
+                        userDefault,
+                        roleName,
+                        roleDefault,
+                        instanceId,
+                        instanceName,
+                        instanceDefault,
+                        serviceName,
+                        serviceDefault,
+                        requestName,
+                        requestDefault,
+                        workspace,
+                        workspaceDefault,
+                        layer,
+                        layerDefault);
 
         try {
             List<Rule> listFull = ruleAdminService.getListFull(filter, page, entries);
@@ -372,13 +400,22 @@ public class RESTRuleServiceImpl
     }
 
     protected RuleFilter buildFilter(
-            String userName, Boolean userDefault,
-            String roleName, Boolean groupDefault,
-            Long instanceId, String instanceName, Boolean instanceDefault,
-            String serviceName, Boolean serviceDefault,
-            String requestName, Boolean requestDefault,
-            String workspace, Boolean workspaceDefault,
-            String layer, Boolean layerDefault) throws BadRequestRestEx {
+            String userName,
+            Boolean userDefault,
+            String roleName,
+            Boolean groupDefault,
+            Long instanceId,
+            String instanceName,
+            Boolean instanceDefault,
+            String serviceName,
+            Boolean serviceDefault,
+            String requestName,
+            Boolean requestDefault,
+            String workspace,
+            Boolean workspaceDefault,
+            String layer,
+            Boolean layerDefault)
+            throws BadRequestRestEx {
 
         RuleFilter filter = new RuleFilter(SpecialFilterType.ANY, true);
 
@@ -392,10 +429,12 @@ public class RESTRuleServiceImpl
         return filter;
     }
 
-    private void setFilter(IdNameFilter filter, Long id, String name, Boolean includeDefault) throws BadRequestRestEx {
+    private void setFilter(IdNameFilter filter, Long id, String name, Boolean includeDefault)
+            throws BadRequestRestEx {
 
         if (id != null && name != null) {
-            throw new BadRequestRestEx("Id and name can't be both defined (id:" + id + " name:" + name + ")");
+            throw new BadRequestRestEx(
+                    "Id and name can't be both defined (id:" + id + " name:" + name + ")");
         }
 
         if (id != null) {
@@ -435,23 +474,40 @@ public class RESTRuleServiceImpl
 
     @Override
     public long count(
-            String userName, Boolean userDefault,
-            String roleName, Boolean groupDefault,
-            Long instanceId, String instanceName, Boolean instanceDefault,
-            String serviceName, Boolean serviceDefault,
-            String requestName, Boolean requestDefault,
-            String workspace, Boolean workspaceDefault,
-            String layer, Boolean layerDefault)
+            String userName,
+            Boolean userDefault,
+            String roleName,
+            Boolean groupDefault,
+            Long instanceId,
+            String instanceName,
+            Boolean instanceDefault,
+            String serviceName,
+            Boolean serviceDefault,
+            String requestName,
+            Boolean requestDefault,
+            String workspace,
+            Boolean workspaceDefault,
+            String layer,
+            Boolean layerDefault)
             throws BadRequestRestEx, InternalErrorRestEx {
 
-        RuleFilter filter = buildFilter(
-                userName, userDefault,
-                roleName, groupDefault,
-                instanceId, instanceName, instanceDefault,
-                serviceName, serviceDefault,
-                requestName, requestDefault,
-                workspace, workspaceDefault,
-                layer, layerDefault);
+        RuleFilter filter =
+                buildFilter(
+                        userName,
+                        userDefault,
+                        roleName,
+                        groupDefault,
+                        instanceId,
+                        instanceName,
+                        instanceDefault,
+                        serviceName,
+                        serviceDefault,
+                        requestName,
+                        requestDefault,
+                        workspace,
+                        workspaceDefault,
+                        layer,
+                        layerDefault);
 
         try {
             return ruleAdminService.count(filter);
@@ -459,13 +515,12 @@ public class RESTRuleServiceImpl
             LOGGER.error(ex);
             throw new InternalErrorRestEx(ex.getMessage());
         }
-
     }
-    
+
     @Override
     public Response move(String rulesIds, Integer targetPriority)
             throws BadRequestRestEx, InternalErrorRestEx {
-            
+
         try {
             List<Rule> rules = findRules(rulesIds);
             if (!rules.isEmpty()) {
@@ -479,7 +534,7 @@ public class RESTRuleServiceImpl
                     ruleAdminService.update(rule);
                     priority++;
                 }
-            }            
+            }
             return Response.status(Status.OK).entity("OK\n").build();
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
@@ -487,15 +542,13 @@ public class RESTRuleServiceImpl
         }
     }
 
-    /**
-    * Helper method that will parse and retrieve the provided rules sorted by their priority.
-    */
+    /** Helper method that will parse and retrieve the provided rules sorted by their priority. */
     private List<Rule> findRules(String rulesIds) {
-        //Before Java8
+        // Before Java8
         List<Rule> ruleList = new ArrayList<Rule>();
         for (String id : Arrays.asList(rulesIds.split(","))) {
-            Rule ru = ruleAdminService.get(Long.parseLong(id)) ;
-            if(ru != null) {
+            Rule ru = ruleAdminService.get(Long.parseLong(id));
+            if (ru != null) {
                 ruleList.add(ru);
             }
         }
@@ -511,7 +564,7 @@ public class RESTRuleServiceImpl
         }
         return list;
     }
-    
+
     // ==========================================================================
     protected RESTOutputRule toOutput(Rule rule) {
         RESTOutputRule out = new RESTOutputRule();
@@ -525,7 +578,7 @@ public class RESTRuleServiceImpl
             out.setInstance(new IdName(rule.getInstance().getId(), rule.getInstance().getName()));
         }
 
-        if(rule.getAddressRange() != null) {
+        if (rule.getAddressRange() != null) {
             out.setIpaddress(rule.getAddressRange().getCidrSignature());
         }
 
@@ -533,7 +586,6 @@ public class RESTRuleServiceImpl
         out.setRequest(rule.getRequest());
         out.setWorkspace(rule.getWorkspace());
         out.setLayer(rule.getLayer());
-
 
         if (rule.getLayerDetails() != null) {
             LayerDetails details = rule.getLayerDetails();
@@ -568,12 +620,12 @@ public class RESTRuleServiceImpl
 
         rule.setUsername(in.getUsername());
         rule.setRolename(in.getRolename());
-        
+
         if (in.getInstance() != null) {
             rule.setInstance(getInstance(in.getInstance()));
         }
 
-        if(StringUtils.isNotBlank(in.getIpaddress())) {
+        if (StringUtils.isNotBlank(in.getIpaddress())) {
             rule.setAddressRange(new IPAddressRange(in.getIpaddress()));
         }
 

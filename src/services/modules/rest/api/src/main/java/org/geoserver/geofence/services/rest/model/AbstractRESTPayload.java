@@ -6,7 +6,6 @@
 package org.geoserver.geofence.services.rest.model;
 
 import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -15,9 +14,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlType
-abstract public class AbstractRESTPayload implements Serializable {
+public abstract class AbstractRESTPayload implements Serializable {
 
-    protected AbstractRESTPayload() {
-    }
-
+    protected AbstractRESTPayload() {}
 }

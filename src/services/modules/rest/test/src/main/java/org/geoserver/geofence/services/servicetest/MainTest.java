@@ -5,37 +5,29 @@
 
 package org.geoserver.geofence.services.servicetest;
 
-import org.geoserver.geofence.core.model.GFUser;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.geoserver.geofence.core.model.GFUser;
 import org.geoserver.geofence.core.model.GSInstance;
 import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.LayerDetails;
-import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.core.model.Rule;
+import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.core.model.enums.AccessType;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.services.GFUserAdminService;
 import org.geoserver.geofence.services.InstanceAdminService;
-import org.geoserver.geofence.services.UserGroupAdminService;
 import org.geoserver.geofence.services.RuleAdminService;
 import org.geoserver.geofence.services.UserAdminService;
+import org.geoserver.geofence.services.UserGroupAdminService;
 import org.geoserver.geofence.services.dto.ShortGroup;
 import org.geoserver.geofence.services.rest.utils.InstanceCleaner;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 import org.springframework.beans.factory.InitializingBean;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class MainTest implements InitializingBean {
 
     private static final Logger LOGGER = LogManager.getLogger(MainTest.class);
@@ -88,7 +80,6 @@ public class MainTest implements InitializingBean {
         u1.setExtId("sample_geoserver_user");
         userAdminService.insert(u1);
 
-
         GSInstance gs1 = new GSInstance();
         gs1.setName("geoserver01");
         gs1.setUsername("admin");
@@ -97,9 +88,19 @@ public class MainTest implements InitializingBean {
         gs1.setDescription("A sample instance");
         instanceAdminService.insert(gs1);
 
-        Rule r0 = new Rule(5, u1.getName(), p2.getName(), gs1, null, "s0", "r0", null, null, GrantType.ALLOW);
+        Rule r0 =
+                new Rule(
+                        5,
+                        u1.getName(),
+                        p2.getName(),
+                        gs1,
+                        null,
+                        "s0",
+                        "r0",
+                        null,
+                        null,
+                        GrantType.ALLOW);
         ruleAdminService.insert(r0);
-
 
         final Long r1id;
 
@@ -164,7 +165,6 @@ public class MainTest implements InitializingBean {
             assert 2 == details.getAllowedStyles().size();
             assert details.getAllowedStyles().contains("style1");
         }
-
     }
 
     // ==========================================================================

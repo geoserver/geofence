@@ -5,24 +5,25 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
-import org.locationtech.jts.geom.MultiPolygon;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.core.model.GFUser;
 import org.geoserver.geofence.core.model.GSInstance;
 import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.LayerDetails;
-import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.core.model.RuleLimits;
+import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.services.GFUserAdminService;
 import org.geoserver.geofence.services.GetProviderService;
 import org.geoserver.geofence.services.InstanceAdminService;
-import org.geoserver.geofence.services.UserGroupAdminService;
 import org.geoserver.geofence.services.RuleAdminService;
 import org.geoserver.geofence.services.UserAdminService;
+import org.geoserver.geofence.services.UserGroupAdminService;
 import org.geoserver.geofence.services.dto.ShortGroup;
 import org.geoserver.geofence.services.dto.ShortInstance;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
@@ -48,22 +49,15 @@ import org.geoserver.geofence.services.rest.model.config.RESTConfigurationRemapp
 import org.geoserver.geofence.services.rest.model.config.RESTFullConfiguration;
 import org.geoserver.geofence.services.rest.model.config.RESTFullGRUserList;
 import org.geoserver.geofence.services.rest.model.config.RESTFullGSInstanceList;
-import org.geoserver.geofence.services.rest.model.config.RESTFullUserGroupList;
 import org.geoserver.geofence.services.rest.model.config.RESTFullRuleList;
+import org.geoserver.geofence.services.rest.model.config.RESTFullUserGroupList;
 import org.geoserver.geofence.services.rest.model.config.RESTFullUserList;
 import org.geoserver.geofence.services.rest.model.util.IdName;
 import org.geoserver.geofence.services.rest.model.util.RESTBatchOperationFactory;
 import org.geoserver.geofence.services.rest.utils.InstanceCleaner;
-import java.util.ArrayList;
+import org.locationtech.jts.geom.MultiPolygon;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
-
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class RESTConfigServiceImpl implements RESTConfigService {
 
     private static final Logger LOGGER = LogManager.getLogger(RESTConfigServiceImpl.class);
@@ -94,7 +88,7 @@ public class RESTConfigServiceImpl implements RESTConfigService {
             input.setName(user.getName());
             input.setPassword(user.getPassword());
 
-            if(user.getGroups() != null) {
+            if (user.getGroups() != null) {
                 input.setGroups(new ArrayList<IdName>(user.getGroups().size()));
                 for (UserGroup userGroup : user.getGroups()) {
                     input.getGroups().add(new IdName(userGroup.getName()));
@@ -107,8 +101,9 @@ public class RESTConfigServiceImpl implements RESTConfigService {
 
     protected RESTBatch collectGroups(RESTBatch backup) {
         for (ShortGroup shortGroup : userGroupAdminService.getList(null, null, null)) {
-            RESTBatchOperation op = RESTBatchOperationFactory.createGroupInputOp(shortGroup.getName());
-            RESTInputGroup input = (RESTInputGroup)op.getPayload();
+            RESTBatchOperation op =
+                    RESTBatchOperationFactory.createGroupInputOp(shortGroup.getName());
+            RESTInputGroup input = (RESTInputGroup) op.getPayload();
             input.setExtId(shortGroup.getExtId());
             input.setEnabled(shortGroup.isEnabled());
             backup.add(op);
@@ -141,10 +136,11 @@ public class RESTConfigServiceImpl implements RESTConfigService {
             op.setPayload(input);
 
             input.setGrant(rule.getAccess());
-            input.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.fixedPriority, rule.getPriority()));
+            input.setPosition(
+                    new RESTRulePosition(
+                            RESTRulePosition.RulePosition.fixedPriority, rule.getPriority()));
 
-            if(rule.getInstance() != null)
-                input.setInstanceName(rule.getInstance().getName());
+            if (rule.getInstance() != null) input.setInstanceName(rule.getInstance().getName());
 
             input.setRolename(rule.getRolename());
             input.setUsername(rule.getUsername());
@@ -156,7 +152,7 @@ public class RESTConfigServiceImpl implements RESTConfigService {
 
             RESTLayerConstraints constraints = new RESTLayerConstraints();
 
-            if(rule.getRuleLimits() != null ) {
+            if (rule.getRuleLimits() != null) {
                 RuleLimits limits = rule.getRuleLimits();
                 MultiPolygon mp = limits.getAllowedArea();
 
@@ -164,7 +160,7 @@ public class RESTConfigServiceImpl implements RESTConfigService {
                 input.setConstraints(constraints);
             }
 
-            if(rule.getLayerDetails() != null) {
+            if (rule.getLayerDetails() != null) {
                 LayerDetails details = rule.getLayerDetails();
 
                 constraints.setAllowedStyles(details.getAllowedStyles());
@@ -202,7 +198,6 @@ public class RESTConfigServiceImpl implements RESTConfigService {
         return collectRules(new RESTBatch());
     }
 
-
     @Override
     public RESTBatch backup(Boolean includeGRUsers) {
         RESTBatch backup = new RESTBatch();
@@ -212,19 +207,21 @@ public class RESTConfigServiceImpl implements RESTConfigService {
         collectInstances(backup);
         collectRules(backup);
 
-        if ( includeGRUsers.booleanValue() ) {
-            LOGGER.warn("TODO::: GF users not handled");            
-//            RESTFullGRUserList grUsers = new RESTFullGRUserList();
-//            grUsers.setList(grUserAdminService.getFullList(null, null, null));
-//            backup.setGrUserList(grUsers);
+        if (includeGRUsers.booleanValue()) {
+            LOGGER.warn("TODO::: GF users not handled");
+            //            RESTFullGRUserList grUsers = new RESTFullGRUserList();
+            //            grUsers.setList(grUserAdminService.getFullList(null, null, null));
+            //            backup.setGrUserList(grUsers);
         }
 
         return backup;
     }
 
     @Override
-    public void restore(RESTBatch batch) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
-        LOGGER.warn("Restoring GeoFence using batch with " + batch.getList().size() + " operations");
+    public void restore(RESTBatch batch)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        LOGGER.warn(
+                "Restoring GeoFence using batch with " + batch.getList().size() + " operations");
 
         instanceCleaner.removeAll();
         restBatchService.runBatch(batch);
@@ -237,10 +234,7 @@ public class RESTConfigServiceImpl implements RESTConfigService {
         instanceCleaner.removeAll();
     }
 
-
-    /**
-     * @deprecated misbehaves since usergroups introduction. Please use backup()
-     */
+    /** @deprecated misbehaves since usergroups introduction. Please use backup() */
     @Override
     public RESTFullConfiguration getConfiguration(Boolean includeGRUsers) {
         RESTFullConfiguration cfg = new RESTFullConfiguration();
@@ -265,7 +259,7 @@ public class RESTConfigServiceImpl implements RESTConfigService {
         rules.setList(ruleAdminService.getListFull(null, null, null));
         cfg.setRuleList(rules);
 
-        if ( includeGRUsers ) {
+        if (includeGRUsers) {
             RESTFullGRUserList grUsers = new RESTFullGRUserList();
             grUsers.setList(grUserAdminService.getFullList(null, null, null));
             cfg.setGrUserList(grUsers);
@@ -279,13 +273,16 @@ public class RESTConfigServiceImpl implements RESTConfigService {
     }
 
     @Override
-    public synchronized RESTConfigurationRemapping setConfiguration(RESTFullConfiguration config,
-            Boolean includeGRUsers) {
+    public synchronized RESTConfigurationRemapping setConfiguration(
+            RESTFullConfiguration config, Boolean includeGRUsers) {
         LOGGER.warn("SETTING CONFIGURATION");
 
-        if ( includeGRUsers ) {
-            if ( (config.getGrUserList() == null) || (config.getGrUserList().getList() == null) || config.getGrUserList().getList().isEmpty() ) {
-                throw new BadRequestRestEx("Can't restore internal users: no internal user defined");
+        if (includeGRUsers) {
+            if ((config.getGrUserList() == null)
+                    || (config.getGrUserList().getList() == null)
+                    || config.getGrUserList().getList().isEmpty()) {
+                throw new BadRequestRestEx(
+                        "Can't restore internal users: no internal user defined");
             }
         }
 
@@ -293,11 +290,14 @@ public class RESTConfigServiceImpl implements RESTConfigService {
 
         RESTConfigurationRemapping remap = new RESTConfigurationRemapping();
 
-        RemapperCache<UserGroup, UserGroupAdminService> groupCache = new RemapperCache<UserGroup, UserGroupAdminService>(userGroupAdminService, remap.getUserGroups());
-        RemapperCache<GSUser, UserAdminService> userCache = new RemapperCache<GSUser, UserAdminService>(userAdminService, remap.getUsers());
+        RemapperCache<UserGroup, UserGroupAdminService> groupCache =
+                new RemapperCache<UserGroup, UserGroupAdminService>(
+                        userGroupAdminService, remap.getUserGroups());
+        RemapperCache<GSUser, UserAdminService> userCache =
+                new RemapperCache<GSUser, UserAdminService>(userAdminService, remap.getUsers());
         RemapperCache<GSInstance, InstanceAdminService> instanceCache =
-                new RemapperCache<GSInstance, InstanceAdminService>(instanceAdminService, remap.getInstances());
-
+                new RemapperCache<GSInstance, InstanceAdminService>(
+                        instanceAdminService, remap.getInstances());
 
         try {
             // === UserGroups
@@ -324,7 +324,6 @@ public class RESTConfigServiceImpl implements RESTConfigService {
                 remap.getUsers().put(oldId, newId);
             }
 
-
             // === GSInstances
             for (GSInstance instance : config.getGsInstanceList().getList()) {
                 Long oldId = instance.getId();
@@ -340,11 +339,12 @@ public class RESTConfigServiceImpl implements RESTConfigService {
                 Long oldId = rule.getId();
                 rule.setId(null);
 
-                if ( rule.getInstance() != null ) {
+                if (rule.getInstance() != null) {
                     rule.setInstance(instanceCache.get(rule.getInstance().getId()));
                 }
 
-                // the prob here is that layerdetails is a reverse reference, so only hibernate should be setting it.
+                // the prob here is that layerdetails is a reverse reference, so only hibernate
+                // should be setting it.
                 // using JAXB, it's injected, but we have to make hibernate eat it.
                 LayerDetails ld = rule.getLayerDetails();
                 rule.setLayerDetails(null);
@@ -353,7 +353,7 @@ public class RESTConfigServiceImpl implements RESTConfigService {
                 LOGGER.info("Remapping rule " + oldId + " -> " + newId);
                 remap.getRules().put(oldId, newId);
 
-                if ( ld != null ) {
+                if (ld != null) {
                     ruleAdminService.setDetails(newId, ld);
                 }
             }
@@ -369,7 +369,7 @@ public class RESTConfigServiceImpl implements RESTConfigService {
         }
 
         // === Internal users
-        if ( includeGRUsers ) {
+        if (includeGRUsers) {
             instanceCleaner.removeAllGFUsers();
 
             for (GFUser grUser : config.getGrUserList().getList()) {
@@ -380,14 +380,14 @@ public class RESTConfigServiceImpl implements RESTConfigService {
                 LOGGER.info("Remapping internal user " + oldId + " -> " + newId);
                 remap.remap(oldId, grUser);
             }
-
         }
 
         return remap;
     }
 
     @Override
-    public RESTFullUserList getUsers() throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public RESTFullUserList getUsers()
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         List<GSUser> users = userAdminService.getFullList(null, null, null);
 
         RESTFullUserList ret = new RESTFullUserList();
@@ -397,7 +397,8 @@ public class RESTConfigServiceImpl implements RESTConfigService {
     }
 
     // not @Override: not available as a standalone service
-    public RESTFullGRUserList getGRUsers() throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public RESTFullGRUserList getGRUsers()
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         List<GFUser> users = grUserAdminService.getFullList(null, null, null);
 
         RESTFullGRUserList ret = new RESTFullGRUserList();
@@ -407,7 +408,8 @@ public class RESTConfigServiceImpl implements RESTConfigService {
     }
 
     @Override
-    public RESTFullUserGroupList getUserGroups() throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public RESTFullUserGroupList getUserGroups()
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         List<ShortGroup> groups = userGroupAdminService.getList(null, null, null);
         return new RESTFullUserGroupList(groups);
     }
@@ -416,31 +418,35 @@ public class RESTConfigServiceImpl implements RESTConfigService {
     // ==========================================================================
 
     /**
-     * Simplified operation used for quick re-insertion of data extracted with a GET op in the related service
+     * Simplified operation used for quick re-insertion of data extracted with a GET op in the
+     * related service
      */
     @Override
-    public void setUserGroups(RESTFullUserGroupList groups) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public void setUserGroups(RESTFullUserGroupList groups)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         int okCnt = 0;
         for (ShortGroup group : groups) {
-            LOGGER.info("Adding group " +group );
+            LOGGER.info("Adding group " + group);
             try {
                 userGroupAdminService.insert(group);
                 okCnt++;
             } catch (Exception e) {
-                LOGGER.info("Could not add group " +group +": " + e.getMessage());
+                LOGGER.info("Could not add group " + group + ": " + e.getMessage());
             }
         }
-        LOGGER.info(okCnt+"/"+groups.getList().size() + " items inserted");
+        LOGGER.info(okCnt + "/" + groups.getList().size() + " items inserted");
     }
 
     /**
-     * Simplified operation used for quick re-insertion of data extracted with a GET op in the related service
+     * Simplified operation used for quick re-insertion of data extracted with a GET op in the
+     * related service
      */
     @Override
-    public void setUsers(RESTShortUserList users) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public void setUsers(RESTShortUserList users)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         int okCnt = 0;
         for (RESTShortUser su : users) {
-            LOGGER.info("Adding user " +su );
+            LOGGER.info("Adding user " + su);
             try {
                 GSUser u = new GSUser();
                 u.setExtId(su.getExtId());
@@ -451,20 +457,22 @@ public class RESTConfigServiceImpl implements RESTConfigService {
                 userAdminService.insert(u);
                 okCnt++;
             } catch (Exception e) {
-                LOGGER.info("Could not add user " +su +": " + e.getMessage());
+                LOGGER.info("Could not add user " + su + ": " + e.getMessage());
             }
         }
-        LOGGER.info(okCnt+"/"+users.getUserList().size() + " items inserted");
+        LOGGER.info(okCnt + "/" + users.getUserList().size() + " items inserted");
     }
 
     /**
-     * Simplified operation used for quick re-insertion of data extracted with a GET op in the related service
+     * Simplified operation used for quick re-insertion of data extracted with a GET op in the
+     * related service
      */
     @Override
-    public void setInstances(RESTShortInstanceList instances) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public void setInstances(RESTShortInstanceList instances)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         int okCnt = 0;
         for (ShortInstance si : instances) {
-            LOGGER.info("Adding instance " +si );
+            LOGGER.info("Adding instance " + si);
             try {
                 GSInstance i = new GSInstance();
                 i.setName(si.getName());
@@ -475,20 +483,22 @@ public class RESTConfigServiceImpl implements RESTConfigService {
                 instanceAdminService.insert(i);
                 okCnt++;
             } catch (Exception e) {
-                LOGGER.info("Could not add instance " +si +": " + e.getMessage());
+                LOGGER.info("Could not add instance " + si + ": " + e.getMessage());
             }
         }
-        LOGGER.info(okCnt+"/"+instances.getList().size() + " items inserted");
+        LOGGER.info(okCnt + "/" + instances.getList().size() + " items inserted");
     }
 
     /**
-     * Simplified operation used for quick re-insertion of data extracted with a GET op in the related service
+     * Simplified operation used for quick re-insertion of data extracted with a GET op in the
+     * related service
      */
     @Override
-    public void setRules(RESTOutputRuleList rules) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public void setRules(RESTOutputRuleList rules)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         int okCnt = 0;
-        Map<String, UserGroup>  groups = new HashMap<String, UserGroup>();
-        Map<String, GSUser>     users = new HashMap<String, GSUser>();
+        Map<String, UserGroup> groups = new HashMap<String, UserGroup>();
+        Map<String, GSUser> users = new HashMap<String, GSUser>();
         Map<String, GSInstance> instances = new HashMap<String, GSInstance>();
 
         for (RESTOutputRule in : rules) {
@@ -502,10 +512,10 @@ public class RESTConfigServiceImpl implements RESTConfigService {
 
                 out.setRolename(in.getRolename());
 
-                if (in.getInstance()!= null) {
+                if (in.getInstance() != null) {
                     String name = in.getInstance().getName();
                     GSInstance instance = instances.get(name);
-                    if(instance == null) {
+                    if (instance == null) {
                         instance = instanceAdminService.get(name);
                         instances.put(name, instance);
                     }
@@ -520,16 +530,15 @@ public class RESTConfigServiceImpl implements RESTConfigService {
                 okCnt++;
 
                 if (in.getConstraints() != null) {
-                    LOGGER.warn("TODO::: Constraints exist but will not be inserted for rule " + out);
+                    LOGGER.warn(
+                            "TODO::: Constraints exist but will not be inserted for rule " + out);
                 }
             } catch (Exception e) {
-                LOGGER.info("Could not add rule " +in +": " + e.getMessage());
+                LOGGER.info("Could not add rule " + in + ": " + e.getMessage());
             }
         }
-        LOGGER.info(okCnt+"/"+rules.getList().size() + " items inserted");
+        LOGGER.info(okCnt + "/" + rules.getList().size() + " items inserted");
     }
-
-
 
     // ==========================================================================
     // ==========================================================================
@@ -560,7 +569,7 @@ public class RESTConfigServiceImpl implements RESTConfigService {
 
     public void setRestBatchService(RESTBatchService restBatchService) {
         this.restBatchService = restBatchService;
-    }     
+    }
 
     // ==========================================================================
     class RemapperCache<TYPE, SERVICE extends GetProviderService<TYPE>> {
@@ -576,14 +585,14 @@ public class RESTConfigServiceImpl implements RESTConfigService {
 
         TYPE get(Long oldId) throws RemapperException, NotFoundRestEx {
             Long newId = idRemapper.get(oldId);
-            if ( newId == null ) {
+            if (newId == null) {
                 LOGGER.error("Can't remap " + oldId);
                 throw new RemapperException("Can't remap " + oldId);
             }
 
             TYPE cached = cache.get(newId);
             try {
-                if ( cached == null ) {
+                if (cached == null) {
                     cached = service.get(newId.longValue()); // may throw NotFoundServiceEx
                     cache.put(newId, cached);
                 }
@@ -610,7 +619,6 @@ public class RESTConfigServiceImpl implements RESTConfigService {
             super(message);
         }
 
-        public RemapperException() {
-        }
+        public RemapperException() {}
     }
 }

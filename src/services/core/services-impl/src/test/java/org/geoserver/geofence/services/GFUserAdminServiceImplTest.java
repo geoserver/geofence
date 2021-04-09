@@ -5,31 +5,24 @@
 
 package org.geoserver.geofence.services;
 
-import org.geoserver.geofence.services.dto.ShortUser;
 import java.util.List;
+import org.geoserver.geofence.core.model.GFUser;
+import org.geoserver.geofence.services.dto.ShortUser;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import org.geoserver.geofence.core.model.GFUser;
-import org.geoserver.geofence.services.exception.NotFoundServiceEx;
-
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class GFUserAdminServiceImplTest extends ServiceTestBase {
 
-    public GFUserAdminServiceImplTest() {
-    }
+    public GFUserAdminServiceImplTest() {}
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
+    public static void setUpClass() throws Exception {}
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
+    public static void tearDownClass() throws Exception {}
 
     @Test
     public void testInsertDeleteUser() throws NotFoundServiceEx {
@@ -65,13 +58,13 @@ public class GFUserAdminServiceImplTest extends ServiceTestBase {
 
     @Test
     public void testGetAllUsers() {
-        assertEquals(0, gfUserAdminService.getList(null,null,null).size());
+        assertEquals(0, gfUserAdminService.getList(null, null, null).size());
 
         createGFUser("u1");
         createGFUser("u2");
         createGFUser("u3");
 
-        assertEquals(3, gfUserAdminService.getList(null,null,null).size());
+        assertEquals(3, gfUserAdminService.getList(null, null, null).size());
     }
 
     @Test
@@ -87,10 +80,9 @@ public class GFUserAdminServiceImplTest extends ServiceTestBase {
         assertEquals(4, gfUserAdminService.getCount("u%"));
         assertEquals(3, gfUserAdminService.getCount("%0"));
 
-        List<ShortUser> users = gfUserAdminService.getList("%9",null,null);
+        List<ShortUser> users = gfUserAdminService.getList("%9", null, null);
         assertEquals(1, users.size());
         assertEquals("u99", users.get(0).getName());
-        assertEquals((Long)u99.getId(), (Long)users.get(0).getId());
+        assertEquals((Long) u99.getId(), (Long) users.get(0).getId());
     }
-
 }

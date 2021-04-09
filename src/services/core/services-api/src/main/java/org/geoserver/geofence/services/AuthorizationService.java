@@ -7,12 +7,8 @@ package org.geoserver.geofence.services;
 
 import org.geoserver.geofence.services.dto.AuthUser;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public interface AuthorizationService {
 
     public AuthUser authorize(String username, String password);
-
 }

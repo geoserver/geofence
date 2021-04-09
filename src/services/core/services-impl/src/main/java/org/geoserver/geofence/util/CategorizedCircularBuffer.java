@@ -12,11 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 
- * @author ETj (etj at geo-solutions.it)
- */
-
+/** @author ETj (etj at geo-solutions.it) */
 public class CategorizedCircularBuffer<T, K> {
     // protected final static Logger LOGGER = LogManager.getLogger(CategorizedCircularBuffer.class);
     private final int maxSize;
@@ -26,8 +22,7 @@ public class CategorizedCircularBuffer<T, K> {
     private Map<K, LinkedList<T>> typedLists = new HashMap<K, LinkedList<T>>();
 
     public CategorizedCircularBuffer(int maxCount) {
-        if (maxCount < 1)
-            throw new IllegalArgumentException("Bad size");
+        if (maxCount < 1) throw new IllegalArgumentException("Bad size");
         this.maxSize = maxCount;
         mainList = new LinkedList<Pair<T, K>>();
     }
@@ -56,11 +51,10 @@ public class CategorizedCircularBuffer<T, K> {
 
         T remove = typedList.removeLast();
         if (!lastEntry.value.equals(remove))
-            throw new IllegalStateException("Internal error - mismatching values "
-                    + lastEntry.value + " , " + remove);
+            throw new IllegalStateException(
+                    "Internal error - mismatching values " + lastEntry.value + " , " + remove);
 
-        if (typedList.size() == 0)
-            typedLists.remove(lastEntry.key);
+        if (typedList.size() == 0) typedLists.remove(lastEntry.key);
     }
 
     public List<T> subList(int fromIndex, int toIndex) {
@@ -77,16 +71,14 @@ public class CategorizedCircularBuffer<T, K> {
 
     public List<T> subListByKey(K key, int fromIndex, int toIndex) {
         LinkedList<T> typedList = typedLists.get(key);
-        if (typedList == null)
-            return Collections.EMPTY_LIST;
+        if (typedList == null) return Collections.EMPTY_LIST;
 
         return typedList.subList(fromIndex, toIndex);
     }
 
     public int sizeByKey(K key) {
         LinkedList<T> typedList = typedLists.get(key);
-        if (typedList == null)
-            return 0;
+        if (typedList == null) return 0;
 
         return typedList.size();
     }
@@ -106,5 +98,4 @@ public class CategorizedCircularBuffer<T, K> {
             return "Pair{" + "key=" + key + " value=" + value + '}';
         }
     }
-
 }

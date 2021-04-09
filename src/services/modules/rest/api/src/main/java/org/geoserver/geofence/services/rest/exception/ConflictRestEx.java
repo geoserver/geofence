@@ -8,10 +8,7 @@ package org.geoserver.geofence.services.rest.exception;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class ConflictRestEx extends GeoFenceRestEx {
 
     public ConflictRestEx(String message) {

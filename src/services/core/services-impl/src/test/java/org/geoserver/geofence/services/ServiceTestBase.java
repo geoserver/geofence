@@ -5,30 +5,26 @@
 
 package org.geoserver.geofence.services;
 
-import org.locationtech.jts.geom.MultiPolygon;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
-import org.geoserver.geofence.core.model.GFUser;
-import org.geoserver.geofence.core.model.GSInstance;
-import org.geoserver.geofence.core.model.GSUser;
-import org.geoserver.geofence.core.model.UserGroup;
-import org.geoserver.geofence.services.dto.ShortGroup;
-import org.geoserver.geofence.services.dto.ShortRule;
-import org.geoserver.geofence.services.dto.ShortUser;
-import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import java.util.Arrays;
 import java.util.List;
 import junit.framework.TestCase;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.geoserver.geofence.core.model.GFUser;
+import org.geoserver.geofence.core.model.GSInstance;
+import org.geoserver.geofence.core.model.GSUser;
+import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.services.dto.ShortAdminRule;
-
+import org.geoserver.geofence.services.dto.ShortGroup;
+import org.geoserver.geofence.services.dto.ShortRule;
+import org.geoserver.geofence.services.dto.ShortUser;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class ServiceTestBase extends TestCase {
 
     protected final Logger LOGGER = LogManager.getLogger(getClass());
@@ -44,30 +40,35 @@ public class ServiceTestBase extends TestCase {
     protected static ClassPathXmlApplicationContext ctx = null;
 
     public ServiceTestBase() {
-//        LOGGER = LogManager.getLogger(getClass());
+        //        LOGGER = LogManager.getLogger(getClass());
 
-        synchronized(ServiceTestBase.class) {
-            if(ctx == null) {
-                String[] paths = {
-                        "classpath*:applicationContext.xml"
-//                         ,"applicationContext-test.xml"
+        synchronized (ServiceTestBase.class) {
+            if (ctx == null) {
+                String[] paths = {"classpath*:applicationContext.xml"
+                    //                         ,"applicationContext-test.xml"
                 };
                 ctx = new ClassPathXmlApplicationContext(paths);
 
-                userAdminService      = (UserAdminService)ctx.getBean("userAdminService");
-                gfUserAdminService    = (GFUserAdminService)ctx.getBean("gfUserAdminService");
-                userGroupAdminService = (UserGroupAdminService)ctx.getBean("userGroupAdminService");
-                instanceAdminService  = (InstanceAdminService)ctx.getBean("instanceAdminService");
-                ruleAdminService      = (RuleAdminService)ctx.getBean("ruleAdminService");
-                adminruleAdminService = (AdminRuleAdminService)ctx.getBean("adminRuleAdminService");
-                ruleReaderService     = (RuleReaderService)ctx.getBean("ruleReaderService");
+                userAdminService = (UserAdminService) ctx.getBean("userAdminService");
+                gfUserAdminService = (GFUserAdminService) ctx.getBean("gfUserAdminService");
+                userGroupAdminService =
+                        (UserGroupAdminService) ctx.getBean("userGroupAdminService");
+                instanceAdminService = (InstanceAdminService) ctx.getBean("instanceAdminService");
+                ruleAdminService = (RuleAdminService) ctx.getBean("ruleAdminService");
+                adminruleAdminService =
+                        (AdminRuleAdminService) ctx.getBean("adminRuleAdminService");
+                ruleReaderService = (RuleReaderService) ctx.getBean("ruleReaderService");
             }
         }
     }
 
     @Override
     protected void setUp() throws Exception {
-        LOGGER.info("############################################ Running " + getClass().getSimpleName() + "::" + getName() );
+        LOGGER.info(
+                "############################################ Running "
+                        + getClass().getSimpleName()
+                        + "::"
+                        + getName());
         super.setUp();
         removeAll();
     }
@@ -110,11 +111,14 @@ public class ServiceTestBase extends TestCase {
             assertTrue("AdminRule not removed", ret);
         }
 
-        assertEquals("AdminRules have not been properly deleted", 0, adminruleAdminService.getCountAll());
+        assertEquals(
+                "AdminRules have not been properly deleted",
+                0,
+                adminruleAdminService.getCountAll());
     }
 
     protected void removeAllUsers() throws NotFoundServiceEx {
-        List<ShortUser> list = userAdminService.getList(null,null,null);
+        List<ShortUser> list = userAdminService.getList(null, null, null);
         for (ShortUser item : list) {
             LOGGER.info("Removing " + item);
             boolean ret = userAdminService.delete(item.getId());
@@ -125,25 +129,29 @@ public class ServiceTestBase extends TestCase {
     }
 
     protected void removeAllGRUsers() throws NotFoundServiceEx {
-        List<ShortUser> list = gfUserAdminService.getList(null,null,null);
+        List<ShortUser> list = gfUserAdminService.getList(null, null, null);
         for (ShortUser item : list) {
             LOGGER.info("Removing " + item);
             boolean ret = gfUserAdminService.delete(item.getId());
             assertTrue("User not removed", ret);
         }
 
-        assertEquals("GRUsers have not been properly deleted", 0, gfUserAdminService.getCount(null));
+        assertEquals(
+                "GRUsers have not been properly deleted", 0, gfUserAdminService.getCount(null));
     }
 
     protected void removeAllUserGroups() throws NotFoundServiceEx {
-        List<ShortGroup> list = userGroupAdminService.getList(null,null,null);
+        List<ShortGroup> list = userGroupAdminService.getList(null, null, null);
         for (ShortGroup item : list) {
             LOGGER.info("Removing " + item);
             boolean ret = userGroupAdminService.delete(item.getId());
             assertTrue("UserGroup not removed", ret);
         }
 
-        assertEquals("UserGroups have not been properly deleted", 0, userGroupAdminService.getCount(null));
+        assertEquals(
+                "UserGroups have not been properly deleted",
+                0,
+                userGroupAdminService.getCount(null));
     }
 
     protected void removeAllInstances() throws NotFoundServiceEx {
@@ -154,13 +162,14 @@ public class ServiceTestBase extends TestCase {
             assertTrue("GSInstance not removed", ret);
         }
 
-        assertEquals("Instances have not been properly deleted", 0, instanceAdminService.getCount(null));
+        assertEquals(
+                "Instances have not been properly deleted", 0, instanceAdminService.getCount(null));
     }
 
-    protected GSUser createUser(String base, UserGroup ... groups) {
+    protected GSUser createUser(String base, UserGroup... groups) {
 
         GSUser user = new GSUser();
-        user.setName( base );
+        user.setName(base);
         user.getGroups().addAll(Arrays.asList(groups));
         userAdminService.insert(user);
         return user;
@@ -169,7 +178,7 @@ public class ServiceTestBase extends TestCase {
     protected GFUser createGFUser(String base) {
 
         GFUser user = new GFUser();
-        user.setName( base );
+        user.setName(base);
         gfUserAdminService.insert(user);
         return user;
     }
@@ -182,7 +191,7 @@ public class ServiceTestBase extends TestCase {
         try {
             return userGroupAdminService.get(id);
         } catch (NotFoundServiceEx ex) {
-            throw new RuntimeException("Should never happen ("+id+")", ex);
+            throw new RuntimeException("Should never happen (" + id + ")", ex);
         }
     }
 
@@ -202,5 +211,4 @@ public class ServiceTestBase extends TestCase {
             throw new IllegalArgumentException("Unparsabe WKT", e);
         }
     }
-
 }

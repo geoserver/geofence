@@ -6,7 +6,6 @@
 package org.geoserver.geofence.services.rest.model;
 
 import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -16,7 +15,9 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "GSInstance")
-@XmlType(propOrder={"id", "name","description","baseURL","username","password","creationDate"})
+@XmlType(
+    propOrder = {"id", "name", "description", "baseURL", "username", "password", "creationDate"}
+)
 public class RESTOutputInstance implements Serializable {
 
     private Long id;
@@ -30,9 +31,7 @@ public class RESTOutputInstance implements Serializable {
     private String username;
     private String password;
 
-
-    public RESTOutputInstance() {
-    }
+    public RESTOutputInstance() {}
 
     public Long getId() {
         return id;
@@ -82,7 +81,6 @@ public class RESTOutputInstance implements Serializable {
         this.username = username;
     }
 
-
     public String getName() {
         return name;
     }
@@ -93,10 +91,6 @@ public class RESTOutputInstance implements Serializable {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName()
-                + "[id:" + id
-                + " name:" + name
-                + " url:" + baseURL
-                + ']';
+        return getClass().getSimpleName() + "[id:" + id + " name:" + name + " url:" + baseURL + ']';
     }
 }

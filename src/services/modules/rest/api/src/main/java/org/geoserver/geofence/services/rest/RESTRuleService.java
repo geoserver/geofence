@@ -5,13 +5,6 @@
 
 package org.geoserver.geofence.services.rest;
 
-import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
-import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
-import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
-import org.geoserver.geofence.services.rest.model.RESTInputRule;
-import org.geoserver.geofence.services.rest.model.RESTOutputRule;
-import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
-
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -23,18 +16,17 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
+import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
+import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
+import org.geoserver.geofence.services.rest.model.RESTInputRule;
+import org.geoserver.geofence.services.rest.model.RESTOutputRule;
+import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
 
-
-/**
- *
- * @author Emanuele Tajariol (etj at geo-solutions.it)
- */
-
+/** @author Emanuele Tajariol (etj at geo-solutions.it) */
 @Path("/")
-public interface RESTRuleService
-{
+public interface RESTRuleService {
     @POST
     @Path("/")
     @Produces(MediaType.TEXT_PLAIN)
@@ -48,8 +40,8 @@ public interface RESTRuleService
     @PUT
     @Path("/id/{id}")
     @Produces(MediaType.APPLICATION_XML)
-    void update(@PathParam("id") Long id,
-        @Multipart("rule") RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx;
+    void update(@PathParam("id") Long id, @Multipart("rule") RESTInputRule rule)
+            throws BadRequestRestEx, NotFoundRestEx;
 
     @DELETE
     @Path("/id/{id}")
@@ -60,67 +52,54 @@ public interface RESTRuleService
     @Path("/")
     @Produces(MediaType.APPLICATION_XML)
     RESTOutputRuleList get(
-        @QueryParam("page") Integer page,
-        @QueryParam("entries") Integer entries,
-        @QueryParam("full")@DefaultValue("false")  boolean full,
-
-        @QueryParam("userName") String userName,
-        @QueryParam("userAny")  Boolean userAny,
-
-        @QueryParam("groupName") String groupName,
-        @QueryParam("groupAny")  Boolean groupAny,
-
-        @QueryParam("instanceId")   Long instanceId,
-        @QueryParam("instanceName") String  instanceName,
-        @QueryParam("instanceAny")  Boolean instanceAny,
-
-        @QueryParam("service")     String  serviceName,
-        @QueryParam("serviceAny")  Boolean serviceAny,
-
-        @QueryParam("request")     String  requestName,
-        @QueryParam("requestAny")  Boolean requestAny,
-
-        @QueryParam("workspace") String  workspace,
-        @QueryParam("workspaceAny")  Boolean workspaceAny,
-
-        @QueryParam("layer") String  layer,
-        @QueryParam("layerAny")  Boolean layerAny
-    ) throws BadRequestRestEx, InternalErrorRestEx;
+            @QueryParam("page") Integer page,
+            @QueryParam("entries") Integer entries,
+            @QueryParam("full") @DefaultValue("false") boolean full,
+            @QueryParam("userName") String userName,
+            @QueryParam("userAny") Boolean userAny,
+            @QueryParam("groupName") String groupName,
+            @QueryParam("groupAny") Boolean groupAny,
+            @QueryParam("instanceId") Long instanceId,
+            @QueryParam("instanceName") String instanceName,
+            @QueryParam("instanceAny") Boolean instanceAny,
+            @QueryParam("service") String serviceName,
+            @QueryParam("serviceAny") Boolean serviceAny,
+            @QueryParam("request") String requestName,
+            @QueryParam("requestAny") Boolean requestAny,
+            @QueryParam("workspace") String workspace,
+            @QueryParam("workspaceAny") Boolean workspaceAny,
+            @QueryParam("layer") String layer,
+            @QueryParam("layerAny") Boolean layerAny)
+            throws BadRequestRestEx, InternalErrorRestEx;
 
     @GET
     @Path("/count")
     long count(
-        @QueryParam("userName") String userName,
-        @QueryParam("userAny")  Boolean userAny,
-
-        @QueryParam("groupName") String groupName,
-        @QueryParam("groupAny")  Boolean groupAny,
-
-        @QueryParam("instanceId")   Long instanceId,
-        @QueryParam("instanceName") String  instanceName,
-        @QueryParam("instanceAny")  Boolean instanceAny,
-
-        @QueryParam("service")     String  serviceName,
-        @QueryParam("serviceAny")  Boolean serviceAny,
-
-        @QueryParam("request")     String  requestName,
-        @QueryParam("requestAny")  Boolean requestAny,
-
-        @QueryParam("workspace") String  workspace,
-        @QueryParam("workspaceAny")  Boolean workspaceAny,
-
-        @QueryParam("layer") String  layer,
-        @QueryParam("layerAny")  Boolean layerAny
-    );
+            @QueryParam("userName") String userName,
+            @QueryParam("userAny") Boolean userAny,
+            @QueryParam("groupName") String groupName,
+            @QueryParam("groupAny") Boolean groupAny,
+            @QueryParam("instanceId") Long instanceId,
+            @QueryParam("instanceName") String instanceName,
+            @QueryParam("instanceAny") Boolean instanceAny,
+            @QueryParam("service") String serviceName,
+            @QueryParam("serviceAny") Boolean serviceAny,
+            @QueryParam("request") String requestName,
+            @QueryParam("requestAny") Boolean requestAny,
+            @QueryParam("workspace") String workspace,
+            @QueryParam("workspaceAny") Boolean workspaceAny,
+            @QueryParam("layer") String layer,
+            @QueryParam("layerAny") Boolean layerAny);
     /**
-     * Move the provided rules to the target priority. Rules will be sorted by their priority, first rule will be updated with a priority equal to the
-     * target priority and the next ones will get an incremented priority value.
+     * Move the provided rules to the target priority. Rules will be sorted by their priority, first
+     * rule will be updated with a priority equal to the target priority and the next ones will get
+     * an incremented priority value.
      */
     @GET
     @Path("/move")
     @Produces(MediaType.TEXT_XML)
     Response move(
-        @QueryParam("rulesIds") String rulesIds,
-        @QueryParam("targetPriority") Integer targetPriority
-    ) throws BadRequestRestEx, InternalErrorRestEx;
+            @QueryParam("rulesIds") String rulesIds,
+            @QueryParam("targetPriority") Integer targetPriority)
+            throws BadRequestRestEx, InternalErrorRestEx;
 }

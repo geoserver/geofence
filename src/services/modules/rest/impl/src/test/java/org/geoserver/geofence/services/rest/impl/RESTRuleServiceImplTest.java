@@ -5,42 +5,37 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
-import org.geoserver.geofence.services.rest.model.RESTInputUser;
-import org.geoserver.geofence.services.rest.model.RESTInputRule;
-import org.geoserver.geofence.services.rest.model.RESTOutputRule;
-import org.geoserver.geofence.services.rest.model.RESTInputGroup;
-import org.geoserver.geofence.services.rest.model.RESTLayerConstraints;
-import org.geoserver.geofence.core.model.LayerAttribute;
-import org.geoserver.geofence.core.model.enums.AccessType;
-import org.geoserver.geofence.core.model.enums.GrantType;
-import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
-import org.geoserver.geofence.services.rest.model.util.IdName;
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import javax.ws.rs.core.Response;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.geoserver.geofence.core.model.LayerAttribute;
+import org.geoserver.geofence.core.model.enums.AccessType;
+import org.geoserver.geofence.core.model.enums.GrantType;
+import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
+import org.geoserver.geofence.services.rest.model.RESTInputGroup;
+import org.geoserver.geofence.services.rest.model.RESTInputRule;
+import org.geoserver.geofence.services.rest.model.RESTInputUser;
+import org.geoserver.geofence.services.rest.model.RESTLayerConstraints;
+import org.geoserver.geofence.services.rest.model.RESTOutputRule;
 import org.geoserver.geofence.services.rest.model.RESTRulePosition;
-
+import org.geoserver.geofence.services.rest.model.util.IdName;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class RESTRuleServiceImplTest extends RESTBaseTest {
     private static final Logger LOGGER = LogManager.getLogger(RESTRuleServiceImplTest.class);
-
 
     @Test
     public void testInsert() {
         RESTInputGroup group = new RESTInputGroup();
         group.setName("g1");
         Response res = restUserGroupService.insert(group);
-        long gid1 = (Long)res.getEntity();
-
+        long gid1 = (Long) res.getEntity();
 
         RESTInputUser user = new RESTInputUser();
         user.setName("user0");
@@ -48,12 +43,12 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
         user.setGroups(new ArrayList<IdName>());
         user.getGroups().add(new IdName("g1"));
         Response userResp = restUserService.insert(user);
-        Long id = (Long)userResp.getEntity();
+        Long id = (Long) userResp.getEntity();
 
         RESTInputRule rule = new RESTInputRule();
         rule.setUsername("user0");
 
-        try{
+        try {
             restRuleService.insert(rule).getEntity();
             fail("Missing position not trapped");
         } catch (BadRequestRestEx e) {
@@ -63,7 +58,7 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
         rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromTop, 0));
         rule.setGrant(GrantType.ALLOW);
 
-        Long rid = (Long)restRuleService.insert(rule).getEntity();
+        Long rid = (Long) restRuleService.insert(rule).getEntity();
         assertNotNull(rid);
 
         {
@@ -91,7 +86,7 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
             LOGGER.info("Exception properly trapped");
         }
         rule.setLayer("l0");
-        Long rid = (Long)restRuleService.insert(rule).getEntity();
+        Long rid = (Long) restRuleService.insert(rule).getEntity();
         assertNotNull(rid);
     }
 
@@ -103,7 +98,7 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
         rule.setService("s0");
         rule.setWorkspace("w0");
         rule.setLayer("l0");
-        Long rid = (Long)restRuleService.insert(rule).getEntity();
+        Long rid = (Long) restRuleService.insert(rule).getEntity();
         assertNotNull(rid);
 
         {
@@ -122,9 +117,9 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
         {
             RESTOutputRule out = restRuleService.get(rid);
             assertNotNull(out);
-            assertEquals("S0", out.getService());  // not changed
-            assertNull(out.getWorkspace());       // nulled
-            assertEquals("l1", out.getLayer());  // changed
+            assertEquals("S0", out.getService()); // not changed
+            assertNull(out.getWorkspace()); // nulled
+            assertEquals("l1", out.getLayer()); // changed
         }
     }
 
@@ -134,30 +129,32 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
         rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromTop, 0));
         rule.setGrant(GrantType.ALLOW);
         rule.setLayer("l0");
-        Long rid = (Long)restRuleService.insert(rule).getEntity();
+        Long rid = (Long) restRuleService.insert(rule).getEntity();
         assertNotNull(rid);
 
         {
             RESTOutputRule out = restRuleService.get(rid);
             assertNotNull(out);
-            LOGGER.debug("Constraints: "+out.getConstraints());
+            LOGGER.debug("Constraints: " + out.getConstraints());
             assertNull(out.getConstraints());
 
             // Try to update not existing constr
 
             RESTInputRule up = new RESTInputRule();
             RESTLayerConstraints constraints = new RESTLayerConstraints();
-            constraints.setAllowedStyles(new HashSet<String>(Arrays.asList("r1","r2","r3")));
+            constraints.setAllowedStyles(new HashSet<String>(Arrays.asList("r1", "r2", "r3")));
             up.setConstraints(constraints);
             restRuleService.update(rid, up);
         }
         {
             RESTOutputRule out = restRuleService.get(rid);
             assertNotNull(out);
-            LOGGER.debug("Constraints: "+out.getConstraints());
+            LOGGER.debug("Constraints: " + out.getConstraints());
             assertNotNull(out.getConstraints());
             assertNotNull(out.getConstraints().getAllowedStyles());
-            assertEquals(new HashSet<String>(Arrays.asList("r1","r2","r3")), out.getConstraints().getAllowedStyles());
+            assertEquals(
+                    new HashSet<String>(Arrays.asList("r1", "r2", "r3")),
+                    out.getConstraints().getAllowedStyles());
         }
     }
 
@@ -174,10 +171,10 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
             rule.setLayer("l0");
 
             RESTLayerConstraints constraints = new RESTLayerConstraints();
-            constraints.setAllowedStyles(new HashSet<String>(Arrays.asList("s1","s2")));
+            constraints.setAllowedStyles(new HashSet<String>(Arrays.asList("s1", "s2")));
             rule.setConstraints(constraints);
 
-            rid = (Long)restRuleService.insert(rule).getEntity();
+            rid = (Long) restRuleService.insert(rule).getEntity();
             assertNotNull(rid);
         }
 
@@ -192,7 +189,7 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
             // update allowedStyles only
             RESTInputRule up = new RESTInputRule();
             RESTLayerConstraints constraints = new RESTLayerConstraints();
-            constraints.setAllowedStyles(new HashSet<String>(Arrays.asList("r1","r2","r3")));
+            constraints.setAllowedStyles(new HashSet<String>(Arrays.asList("r1", "r2", "r3")));
             up.setConstraints(constraints);
             restRuleService.update(rid, up);
         }
@@ -204,11 +201,13 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
             LOGGER.debug("Constraints " + out.getConstraints());
             assertNotNull(out.getConstraints());
             assertNotNull(out.getConstraints().getAllowedStyles());
-            assertEquals(new HashSet<String>(Arrays.asList("r1","r2","r3")), out.getConstraints().getAllowedStyles());
+            assertEquals(
+                    new HashSet<String>(Arrays.asList("r1", "r2", "r3")),
+                    out.getConstraints().getAllowedStyles());
 
             RESTInputRule up = new RESTInputRule();
             RESTLayerConstraints constraints = new RESTLayerConstraints();
-            constraints.setAllowedStyles(new HashSet<String>(Arrays.asList("r1","r2")));
+            constraints.setAllowedStyles(new HashSet<String>(Arrays.asList("r1", "r2")));
             up.setConstraints(constraints);
             restRuleService.update(rid, up);
         }
@@ -228,30 +227,33 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
             rule.setLayer("l0");
 
             RESTLayerConstraints constraints = new RESTLayerConstraints();
-            constraints.setAttributes(new HashSet<LayerAttribute>(Arrays.asList(
-                    new LayerAttribute("attr1", AccessType.NONE),
-                    new LayerAttribute("attr2", AccessType.READWRITE)
-                    )));
+            constraints.setAttributes(
+                    new HashSet<LayerAttribute>(
+                            Arrays.asList(
+                                    new LayerAttribute("attr1", AccessType.NONE),
+                                    new LayerAttribute("attr2", AccessType.READWRITE))));
             rule.setConstraints(constraints);
 
-            rid = (Long)restRuleService.insert(rule).getEntity();
+            rid = (Long) restRuleService.insert(rule).getEntity();
             assertNotNull(rid);
         }
 
         {
-            LOGGER.debug("=== CHECK "+ ccnt++);
+            LOGGER.debug("=== CHECK " + ccnt++);
             RESTOutputRule out = restRuleService.get(rid);
             assertNotNull(out);
             LOGGER.debug("Constraints " + out.getConstraints());
             assertNotNull(out.getConstraints());
-            assertEquals(new HashSet<LayerAttribute>(Arrays.asList(
-                                new LayerAttribute("attr1", AccessType.NONE),
-                                new LayerAttribute("attr2", AccessType.READWRITE)
-                                )),
+            assertEquals(
+                    new HashSet<LayerAttribute>(
+                            Arrays.asList(
+                                    new LayerAttribute("attr1", AccessType.NONE),
+                                    new LayerAttribute("attr2", AccessType.READWRITE))),
                     out.getConstraints().getAttributes());
         }
 
-        String allowedArea = "MULTIPOLYGON (((4146.5 1301.4, 4147.5 1301.1, 4147.8 1301.4, 4146.5 1301.4)))";
+        String allowedArea =
+                "MULTIPOLYGON (((4146.5 1301.4, 4147.5 1301.1, 4147.8 1301.4, 4146.5 1301.4)))";
 
         // update allowedStyles only
         {
@@ -264,21 +266,19 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
         }
 
         {
-            LOGGER.debug("=== CHECK "+ ccnt++);
+            LOGGER.debug("=== CHECK " + ccnt++);
             RESTOutputRule out = restRuleService.get(rid);
             assertNotNull(out);
             LOGGER.debug("Constraints " + out.getConstraints());
             assertNotNull(out.getConstraints());
             assertEquals(allowedArea, out.getConstraints().getRestrictedAreaWkt());
             // check that attribs have not been changed
-            assertEquals(new HashSet<LayerAttribute>(Arrays.asList(
-                                new LayerAttribute("attr1", AccessType.NONE),
-                                new LayerAttribute("attr2", AccessType.READWRITE)
-                                )),
+            assertEquals(
+                    new HashSet<LayerAttribute>(
+                            Arrays.asList(
+                                    new LayerAttribute("attr1", AccessType.NONE),
+                                    new LayerAttribute("attr2", AccessType.READWRITE))),
                     out.getConstraints().getAttributes());
         }
-
-
     }
-
 }

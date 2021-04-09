@@ -5,16 +5,12 @@
 
 package org.geoserver.geofence.core.dao;
 
-/**
-*
-* @author ETj (etj at geo-solutions.it) */
+/** @author ETj (etj at geo-solutions.it) */
 public class DuplicateKeyException extends RuntimeException {
 
-    public DuplicateKeyException() {
-    }
+    public DuplicateKeyException() {}
 
     public DuplicateKeyException(String message) {
         super(message);
     }
-
 }

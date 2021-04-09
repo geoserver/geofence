@@ -6,48 +6,39 @@
 package org.geoserver.geofence.services.rest.impl;
 
 import java.util.List;
-
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.core.model.AdminRule;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
-
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.IdNameFilter;
-import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
+import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
+import org.geoserver.geofence.services.rest.RESTAdminRuleService;
 import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
 import org.geoserver.geofence.services.rest.exception.GeoFenceRestEx;
 import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
 import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
-import org.geoserver.geofence.services.rest.model.util.IdName;
 import org.geoserver.geofence.services.rest.model.RESTInputAdminRule;
 import org.geoserver.geofence.services.rest.model.RESTOutputAdminRule;
 import org.geoserver.geofence.services.rest.model.RESTOutputAdminRuleList;
 import org.geoserver.geofence.services.rest.model.RESTRulePosition.RulePosition;
-import org.geoserver.geofence.services.rest.RESTAdminRuleService;
-
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
+import org.geoserver.geofence.services.rest.model.util.IdName;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
-public class RESTAdminRuleServiceImpl
-        extends BaseRESTServiceImpl
-        implements RESTAdminRuleService {
+/** @author ETj (etj at geo-solutions.it) */
+public class RESTAdminRuleServiceImpl extends BaseRESTServiceImpl implements RESTAdminRuleService {
 
     private static final Logger LOGGER = LogManager.getLogger(RESTAdminRuleServiceImpl.class);
 
     @Override
-    public RESTOutputAdminRule get(Long id) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public RESTOutputAdminRule get(Long id)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
             AdminRule ret = adminRuleAdminService.get(id);
             return toOutput(ret);
@@ -62,9 +53,11 @@ public class RESTAdminRuleServiceImpl
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, value = "geofenceTransactionManager")
-    public Response insert(RESTInputAdminRule inputAdminRule) throws NotFoundRestEx, BadRequestRestEx, InternalErrorRestEx {
+    public Response insert(RESTInputAdminRule inputAdminRule)
+            throws NotFoundRestEx, BadRequestRestEx, InternalErrorRestEx {
 
-        if (inputAdminRule.getPosition() == null || inputAdminRule.getPosition().getPosition() == null) {
+        if (inputAdminRule.getPosition() == null
+                || inputAdminRule.getPosition().getPosition() == null) {
             throw new BadRequestRestEx("Bad position: " + inputAdminRule.getPosition());
         }
 
@@ -75,9 +68,15 @@ public class RESTAdminRuleServiceImpl
         AdminRule rule = fromInput(inputAdminRule);
 
         InsertPosition position =
-                inputAdminRule.getPosition().getPosition() == RulePosition.fixedPriority ? InsertPosition.FIXED
-                : inputAdminRule.getPosition().getPosition() == RulePosition.offsetFromBottom ? InsertPosition.FROM_END
-                : inputAdminRule.getPosition().getPosition() == RulePosition.offsetFromTop ? InsertPosition.FROM_START : null;
+                inputAdminRule.getPosition().getPosition() == RulePosition.fixedPriority
+                        ? InsertPosition.FIXED
+                        : inputAdminRule.getPosition().getPosition()
+                                        == RulePosition.offsetFromBottom
+                                ? InsertPosition.FROM_END
+                                : inputAdminRule.getPosition().getPosition()
+                                                == RulePosition.offsetFromTop
+                                        ? InsertPosition.FROM_START
+                                        : null;
 
         // ok: insert it
         try {
@@ -94,7 +93,8 @@ public class RESTAdminRuleServiceImpl
     }
 
     @Override
-    public void update(Long id, RESTInputAdminRule rule) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public void update(Long id, RESTInputAdminRule rule)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
 
         try {
             if ((rule.getPosition() != null)) {
@@ -104,17 +104,20 @@ public class RESTAdminRuleServiceImpl
             AdminRule old = adminRuleAdminService.get(id);
             boolean isRuleUpdated = false;
 
-            if (rule.getUsername()!= null) {
-                old.setUsername(rule.getUsername().isEmpty()? null : rule.getUsername());
+            if (rule.getUsername() != null) {
+                old.setUsername(rule.getUsername().isEmpty() ? null : rule.getUsername());
                 isRuleUpdated = true;
             }
             if (rule.getRolename() != null) {
-                old.setRolename(rule.getRolename().isEmpty()? null : rule.getRolename());
+                old.setRolename(rule.getRolename().isEmpty() ? null : rule.getRolename());
                 isRuleUpdated = true;
             }
             if (rule.getInstance() != null) {
                 IdName idname = rule.getInstance();
-                old.setInstance(idname.getId() == null && idname.getName() == null ? null : getInstance(idname));
+                old.setInstance(
+                        idname.getId() == null && idname.getName() == null
+                                ? null
+                                : getInstance(idname));
                 isRuleUpdated = true;
             }
 
@@ -130,13 +133,11 @@ public class RESTAdminRuleServiceImpl
 
             // now persist the new data
 
-            if(isRuleUpdated) {
-                if(LOGGER.isDebugEnabled())
-                    LOGGER.debug("Updating rule " + rule);
+            if (isRuleUpdated) {
+                if (LOGGER.isDebugEnabled()) LOGGER.debug("Updating rule " + rule);
                 adminRuleAdminService.update(old);
             } else {
-                if(LOGGER.isDebugEnabled())
-                    LOGGER.debug("Rule not changed " + rule);
+                if (LOGGER.isDebugEnabled()) LOGGER.debug("Rule not changed " + rule);
             }
 
         } catch (GeoFenceRestEx ex) {
@@ -179,20 +180,32 @@ public class RESTAdminRuleServiceImpl
     // ==========================================================================
 
     @Override
-    public RESTOutputAdminRuleList get(Integer page, Integer entries,
+    public RESTOutputAdminRuleList get(
+            Integer page,
+            Integer entries,
             boolean full,
-            String userName, Boolean userDefault,
-            String roleName, Boolean roleDefault,
-            Long instanceId, String instanceName, Boolean instanceDefault,
-            String workspace, Boolean workspaceDefault)
-            throws BadRequestRestEx, InternalErrorRestEx
-    {
+            String userName,
+            Boolean userDefault,
+            String roleName,
+            Boolean roleDefault,
+            Long instanceId,
+            String instanceName,
+            Boolean instanceDefault,
+            String workspace,
+            Boolean workspaceDefault)
+            throws BadRequestRestEx, InternalErrorRestEx {
 
-        RuleFilter filter = buildFilter(
-                userName, userDefault,
-                roleName, roleDefault,
-                instanceId, instanceName, instanceDefault,
-                workspace, workspaceDefault);
+        RuleFilter filter =
+                buildFilter(
+                        userName,
+                        userDefault,
+                        roleName,
+                        roleDefault,
+                        instanceId,
+                        instanceName,
+                        instanceDefault,
+                        workspace,
+                        workspaceDefault);
 
         try {
             List<AdminRule> listFull = adminRuleAdminService.getListFull(filter, page, entries);
@@ -204,12 +217,16 @@ public class RESTAdminRuleServiceImpl
     }
 
     protected RuleFilter buildFilter(
-            String userName, Boolean userDefault,
-            String roleName, Boolean groupDefault,
-            Long instanceId, String instanceName, Boolean instanceDefault,
-            String workspace, Boolean workspaceDefault)
-            throws BadRequestRestEx
-    {
+            String userName,
+            Boolean userDefault,
+            String roleName,
+            Boolean groupDefault,
+            Long instanceId,
+            String instanceName,
+            Boolean instanceDefault,
+            String workspace,
+            Boolean workspaceDefault)
+            throws BadRequestRestEx {
         RuleFilter filter = new RuleFilter(SpecialFilterType.ANY, true);
 
         setFilter(filter.getUser(), userName, userDefault);
@@ -219,10 +236,12 @@ public class RESTAdminRuleServiceImpl
         return filter;
     }
 
-    private void setFilter(IdNameFilter filter, Long id, String name, Boolean includeDefault) throws BadRequestRestEx {
+    private void setFilter(IdNameFilter filter, Long id, String name, Boolean includeDefault)
+            throws BadRequestRestEx {
 
         if (id != null && name != null) {
-            throw new BadRequestRestEx("Id and name can't be both defined (id:" + id + " name:" + name + ")");
+            throw new BadRequestRestEx(
+                    "Id and name can't be both defined (id:" + id + " name:" + name + ")");
         }
 
         if (id != null) {
@@ -262,17 +281,27 @@ public class RESTAdminRuleServiceImpl
 
     @Override
     public long count(
-            String userName, Boolean userDefault,
-            String roleName, Boolean groupDefault,
-            Long instanceId, String instanceName, Boolean instanceDefault,
-            String workspace, Boolean workspaceDefault)
-            throws BadRequestRestEx, InternalErrorRestEx
-    {
-        RuleFilter filter = buildFilter(
-                userName, userDefault,
-                roleName, groupDefault,
-                instanceId, instanceName, instanceDefault,
-                workspace, workspaceDefault);
+            String userName,
+            Boolean userDefault,
+            String roleName,
+            Boolean groupDefault,
+            Long instanceId,
+            String instanceName,
+            Boolean instanceDefault,
+            String workspace,
+            Boolean workspaceDefault)
+            throws BadRequestRestEx, InternalErrorRestEx {
+        RuleFilter filter =
+                buildFilter(
+                        userName,
+                        userDefault,
+                        roleName,
+                        groupDefault,
+                        instanceId,
+                        instanceName,
+                        instanceDefault,
+                        workspace,
+                        workspaceDefault);
 
         try {
             return adminRuleAdminService.count(filter);
@@ -280,13 +309,11 @@ public class RESTAdminRuleServiceImpl
             LOGGER.error(ex);
             throw new InternalErrorRestEx(ex.getMessage());
         }
-
     }
 
     // ==========================================================================
 
-    protected RESTOutputAdminRuleList toOutput(List<AdminRule> rules)
-    {
+    protected RESTOutputAdminRuleList toOutput(List<AdminRule> rules) {
         RESTOutputAdminRuleList list = new RESTOutputAdminRuleList(rules.size());
         for (AdminRule rule : rules) {
             list.add(toOutput(rule));
@@ -295,8 +322,7 @@ public class RESTAdminRuleServiceImpl
     }
 
     // ==========================================================================
-    protected RESTOutputAdminRule toOutput(AdminRule rule)
-    {
+    protected RESTOutputAdminRule toOutput(AdminRule rule) {
         RESTOutputAdminRule out = new RESTOutputAdminRule();
         out.setId(rule.getId());
         out.setPriority(rule.getPriority());
@@ -330,5 +356,4 @@ public class RESTAdminRuleServiceImpl
 
         return rule;
     }
-
 }

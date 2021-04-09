@@ -5,38 +5,28 @@
 
 package org.geoserver.geofence.services.exception;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
-public class NotFoundServiceEx extends WebApplicationException
-{
+/** @author ETj (etj at geo-solutions.it) */
+public class NotFoundServiceEx extends WebApplicationException {
 
     private String message;
 
-    public NotFoundServiceEx(String message)
-    {
+    public NotFoundServiceEx(String message) {
         super(Response.Status.NOT_FOUND);
         this.message = message;
     }
 
-    public NotFoundServiceEx(String message, Long id)
-    {
+    public NotFoundServiceEx(String message, Long id) {
         super(Response.Status.NOT_FOUND);
         this.message = message + " (id:" + id + ")";
     }
 
-    public NotFoundServiceEx(String message, String name)
-    {
+    public NotFoundServiceEx(String message, String name) {
         super(Response.Status.NOT_FOUND);
         this.message = message + " (name:" + name + ")";
     }
 
     @Override
-    public String getMessage()
-    {
+    public String getMessage() {
         return message;
     }
-
-
 }

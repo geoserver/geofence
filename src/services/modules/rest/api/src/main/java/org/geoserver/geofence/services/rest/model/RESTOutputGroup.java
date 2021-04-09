@@ -6,7 +6,6 @@
 package org.geoserver.geofence.services.rest.model;
 
 import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -22,8 +21,7 @@ public class RESTOutputGroup implements Serializable {
     private String extId;
     private Boolean enabled;
 
-    public RESTOutputGroup() {
-    }
+    public RESTOutputGroup() {}
 
     public Long getId() {
         return id;
@@ -60,10 +58,12 @@ public class RESTOutputGroup implements Serializable {
     @Override
     public String toString() {
         return getClass().getSimpleName()
-                + "[id:" + id
-                + (extId!=null? " extid=" + extId : "")
-                + " name=" + name
-                + (enabled? "" : "disabled")
+                + "[id:"
+                + id
+                + (extId != null ? " extid=" + extId : "")
+                + " name="
+                + name
+                + (enabled ? "" : "disabled")
                 + ']';
     }
 }

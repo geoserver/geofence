@@ -5,10 +5,7 @@
 
 package org.geoserver.geofence.api.dto;
 
-/**
- * 
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class RegisteredUser {
 
     protected String id;

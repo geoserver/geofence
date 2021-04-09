@@ -5,12 +5,10 @@
 
 package org.geoserver.geofence.services.dto;
 
-import org.geoserver.geofence.core.model.GSInstance;
-
 import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import org.geoserver.geofence.core.model.GSInstance;
 
 /**
  * A compact representation of GSInstance useful in lists.
@@ -26,8 +24,7 @@ public class ShortInstance implements Serializable {
     private String url;
     private String description;
 
-    public ShortInstance() {
-    }
+    public ShortInstance() {}
 
     public ShortInstance(GSInstance i) {
         this.id = i.getId();
@@ -68,13 +65,8 @@ public class ShortInstance implements Serializable {
         this.description = description;
     }
 
-
     @Override
     public String toString() {
-        return getClass().getSimpleName()
-                + "[id:" + id
-                + " name:" + name
-                + " url:" + url
-                + ']';
+        return getClass().getSimpleName() + "[id:" + id + " name:" + name + " url:" + url + ']';
     }
 }
