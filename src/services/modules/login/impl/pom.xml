@@ -15,7 +15,6 @@
         <version>3.5-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.geoserver.geofence</groupId>
     <artifactId>geofence-login-impl</artifactId>
     <packaging>jar</packaging>
     <name>GeoFence - Modules - Login - Impl</name>

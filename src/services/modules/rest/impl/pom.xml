@@ -15,7 +15,6 @@
         <version>3.5-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.geoserver.geofence</groupId>
     <artifactId>geofence-rest-impl</artifactId>
     <packaging>jar</packaging>
     <name>GeoFence - Modules - REST services implementation</name>
