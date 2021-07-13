@@ -29,10 +29,12 @@
     -->
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <!--<property name="ignoreResourceNotFound" value="true" />-->
+        <property name="order" value="99"/>
         <property name="properties">
             <props>
                 <prop key="geofence-ovr">dummy_ovr</prop>
                 <prop key="geofence.dir">dummy_dir</prop>
+                <prop key="geofence-datasource-file">dummy_geofence-datasource-file</prop>
             </props>
         </property>
         <!--        <property name="locations">
