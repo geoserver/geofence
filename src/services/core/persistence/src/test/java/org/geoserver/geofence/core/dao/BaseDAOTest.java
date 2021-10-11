@@ -5,37 +5,29 @@
 
 package org.geoserver.geofence.core.dao;
 
-import java.util.List;
+import static org.junit.Assert.*;
 
+import java.util.List;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.geoserver.geofence.core.model.GFUser;
+import org.geoserver.geofence.core.model.GSUser;
+import org.geoserver.geofence.core.model.Rule;
+import org.geoserver.geofence.core.model.UserGroup;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.rules.TestName;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
-
-import org.geoserver.geofence.core.model.GFUser;
-import org.geoserver.geofence.core.model.UserGroup;
-import org.geoserver.geofence.core.model.GSUser;
-import org.geoserver.geofence.core.model.Rule;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import org.junit.Before;
-import static org.junit.Assert.*;
-import org.junit.rules.TestName;
-import org.junit.Test;
-
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
-public abstract class BaseDAOTest  {
+/** @author ETj (etj at geo-solutions.it) */
+public abstract class BaseDAOTest {
     protected final Logger LOGGER;
 
-    @org.junit.Rule
-    public TestName name = new TestName();
+    @org.junit.Rule public TestName name = new TestName();
 
     protected static GSUserDAO userDAO;
     protected static GFUserDAO gfUserDAO;
@@ -49,30 +41,34 @@ public abstract class BaseDAOTest  {
     public BaseDAOTest() {
         LOGGER = LogManager.getLogger(getClass());
 
-        synchronized(BaseDAOTest.class) {
-            if(ctx == null) {
-                String[] paths = {
-                        "applicationContext.xml"
-//                         ,"applicationContext-test.xml"
+        synchronized (BaseDAOTest.class) {
+            if (ctx == null) {
+                String[] paths = {"applicationContext.xml"
+                    //                         ,"applicationContext-test.xml"
                 };
                 ctx = new ClassPathXmlApplicationContext(paths);
 
-                userDAO = (GSUserDAO)ctx.getBean("gsUserDAO");
-                gfUserDAO = (GFUserDAO)ctx.getBean("gfUserDAO");
-                userGroupDAO = (UserGroupDAO)ctx.getBean("userGroupDAO");
-                ruleDAO = (RuleDAO)ctx.getBean("ruleDAO");
-                detailsDAO = (LayerDetailsDAO)ctx.getBean("layerDetailsDAO");
-                limitsDAO = (RuleLimitsDAO)ctx.getBean("ruleLimitsDAO");
+                userDAO = (GSUserDAO) ctx.getBean("gsUserDAO");
+                gfUserDAO = (GFUserDAO) ctx.getBean("gfUserDAO");
+                userGroupDAO = (UserGroupDAO) ctx.getBean("userGroupDAO");
+                ruleDAO = (RuleDAO) ctx.getBean("ruleDAO");
+                detailsDAO = (LayerDetailsDAO) ctx.getBean("layerDetailsDAO");
+                limitsDAO = (RuleLimitsDAO) ctx.getBean("ruleLimitsDAO");
             }
         }
     }
 
     @Before
     public void setUp() throws Exception {
-        LOGGER.info("################ Running " + getClass().getSimpleName() + "::" + name.getMethodName() );
+        LOGGER.info(
+                "################ Running "
+                        + getClass().getSimpleName()
+                        + "::"
+                        + name.getMethodName());
 
         removeAll();
-        LOGGER.info("##### Ending setup for " + name.getMethodName() + " ###----------------------");
+        LOGGER.info(
+                "##### Ending setup for " + name.getMethodName() + " ###----------------------");
     }
 
     @Test
@@ -87,7 +83,7 @@ public abstract class BaseDAOTest  {
 
     protected void removeAll() {
         removeAllRules();
-        removeAllUsers(); 
+        removeAllUsers();
         removeAllUserGroups();
     }
 
@@ -138,7 +134,7 @@ public abstract class BaseDAOTest  {
     protected GSUser createUser(String base, UserGroup userGroup) {
 
         GSUser user = new GSUser();
-        user.setName( base );
+        user.setName(base);
         user.getGroups().add(userGroup);
         return user;
     }
@@ -157,9 +153,10 @@ public abstract class BaseDAOTest  {
         return createUser(base, group);
     }
 
-
-    protected final static String MULTIPOLYGONWKT = "MULTIPOLYGON(((48.6894038 62.33877482, 48.7014874 62.33877482, 48.7014874 62.33968662, 48.6894038 62.33968662, 48.6894038 62.33877482)))";
-    protected final static String POLYGONWKT = "POLYGON((48.6894038 62.33877482, 48.7014874 62.33877482, 48.7014874 62.33968662, 48.6894038 62.33968662, 48.6894038 62.33877482))";
+    protected static final String MULTIPOLYGONWKT =
+            "MULTIPOLYGON(((48.6894038 62.33877482, 48.7014874 62.33877482, 48.7014874 62.33968662, 48.6894038 62.33968662, 48.6894038 62.33877482)))";
+    protected static final String POLYGONWKT =
+            "POLYGON((48.6894038 62.33877482, 48.7014874 62.33877482, 48.7014874 62.33968662, 48.6894038 62.33968662, 48.6894038 62.33877482))";
 
     protected MultiPolygon buildMultiPolygon() {
         try {
@@ -183,6 +180,6 @@ public abstract class BaseDAOTest  {
         }
     }
 
-    //==========================================================================
+    // ==========================================================================
 
 }

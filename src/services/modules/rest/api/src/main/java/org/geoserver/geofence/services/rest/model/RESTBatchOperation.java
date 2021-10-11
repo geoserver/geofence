@@ -11,12 +11,9 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 @XmlRootElement(name = "Operation")
-@XmlType(propOrder={"payload"})
+@XmlType(propOrder = {"payload"})
 public class RESTBatchOperation {
 
     public enum ServiceName {
@@ -47,8 +44,7 @@ public class RESTBatchOperation {
 
     private AbstractRESTPayload payload;
 
-    public RESTBatchOperation() {
-    }
+    public RESTBatchOperation() {}
 
     @XmlAttribute
     public Long getId() {
@@ -96,10 +92,10 @@ public class RESTBatchOperation {
     }
 
     @XmlElements({
-        @XmlElement(name="user",        type=RESTInputUser.class),
-        @XmlElement(name="userGroup",   type=RESTInputGroup.class),
-        @XmlElement(name="instance",    type=RESTInputInstance.class),
-        @XmlElement(name="rule",        type=RESTInputRule.class)
+        @XmlElement(name = "user", type = RESTInputUser.class),
+        @XmlElement(name = "userGroup", type = RESTInputGroup.class),
+        @XmlElement(name = "instance", type = RESTInputInstance.class),
+        @XmlElement(name = "rule", type = RESTInputRule.class)
     })
     public AbstractRESTPayload getPayload() {
         return payload;
@@ -127,18 +123,19 @@ public class RESTBatchOperation {
         this.userName = userName;
     }
 
-
-
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[" 
-                + service + "." + type
-                + (id!=null? " id:"+id : "")
-                + (name != null? " name:"+name:"")
-                + (cascade != null? " cascade:"+cascade:"")
-                + (payload!=null? " payload is a " + payload.getClass().getSimpleName() : "")
-                + (userName!=null?  " uName:"+userName : "")
-                + (groupName!=null? " gName:"+groupName : "")
+        return getClass().getSimpleName()
+                + "["
+                + service
+                + "."
+                + type
+                + (id != null ? " id:" + id : "")
+                + (name != null ? " name:" + name : "")
+                + (cascade != null ? " cascade:" + cascade : "")
+                + (payload != null ? " payload is a " + payload.getClass().getSimpleName() : "")
+                + (userName != null ? " uName:" + userName : "")
+                + (groupName != null ? " gName:" + groupName : "")
                 + "]";
     }
 }

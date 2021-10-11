@@ -5,23 +5,27 @@
 
 package org.geoserver.geofence.services.rest.model;
 
-import org.geoserver.geofence.core.model.LayerAttribute;
-import org.geoserver.geofence.core.model.enums.LayerType;
-
 import java.util.Set;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import org.geoserver.geofence.core.model.LayerAttribute;
+import org.geoserver.geofence.core.model.enums.LayerType;
 
-/**
- *
- * @author Etj (etj at geo-solutions.it)
- */
+/** @author Etj (etj at geo-solutions.it) */
 @XmlRootElement(name = "LayerConstraints")
-@XmlType(propOrder = {"type", "defaultStyle", "cqlFilterRead", "cqlFilterWrite", "restrictedAreaWkt",
-    "allowedStyles", "attributes"})
+@XmlType(
+    propOrder = {
+        "type",
+        "defaultStyle",
+        "cqlFilterRead",
+        "cqlFilterWrite",
+        "restrictedAreaWkt",
+        "allowedStyles",
+        "attributes"
+    }
+)
 public class RESTLayerConstraints {
 
     private LayerType type;
@@ -95,20 +99,14 @@ public class RESTLayerConstraints {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append('[');
-        if(type != null)
-            sb.append("type:").append(type);
-        if(defaultStyle != null)
-            sb.append(" defStyle:").append(defaultStyle);
-        if(cqlFilterRead != null)
-            sb.append(" cqlR:").append(cqlFilterRead);
-        if(cqlFilterWrite != null)
-            sb.append(" cqlW:").append(cqlFilterWrite);
-        if(restrictedAreaWkt != null)
-            sb.append(" wkt:").append(restrictedAreaWkt);
-        if(allowedStyles != null)
+        if (type != null) sb.append("type:").append(type);
+        if (defaultStyle != null) sb.append(" defStyle:").append(defaultStyle);
+        if (cqlFilterRead != null) sb.append(" cqlR:").append(cqlFilterRead);
+        if (cqlFilterWrite != null) sb.append(" cqlW:").append(cqlFilterWrite);
+        if (restrictedAreaWkt != null) sb.append(" wkt:").append(restrictedAreaWkt);
+        if (allowedStyles != null)
             sb.append(" styles(").append(allowedStyles.size()).append("):").append(allowedStyles);
-        if(attributes != null)
-            sb.append(" attrs:").append(attributes);
+        if (attributes != null) sb.append(" attrs:").append(attributes);
         sb.append(']');
         return sb.toString();
     }

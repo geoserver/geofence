@@ -7,90 +7,88 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.geoserver.geofence</groupId>
-        <artifactId>geofence-rest-root</artifactId>
-        <version>3.5-SNAPSHOT</version>
-    </parent>
-
+  <parent>
     <groupId>org.geoserver.geofence</groupId>
-    <artifactId>geofence-rest-impl</artifactId>
-    <packaging>jar</packaging>
-    <name>GeoFence - Modules - REST services implementation</name>
+    <artifactId>geofence-rest-root</artifactId>
+    <version>3.5-SNAPSHOT</version>
+  </parent>
 
-    <dependencies>
-        <!-- ================================================================-->
-        <!-- GeoFence modules -->
-        <!-- ================================================================-->
+  <groupId>org.geoserver.geofence</groupId>
+  <artifactId>geofence-rest-impl</artifactId>
+  <packaging>jar</packaging>
+  <name>GeoFence - Modules - REST services implementation</name>
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-model-internal</artifactId>
-        </dependency>
+  <dependencies>
+    <!-- ================================================================-->
+    <!-- GeoFence modules -->
+    <!-- ================================================================-->
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-services-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-model-internal</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-rest-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-services-api</artifactId>
+    </dependency>
 
-        <!-- ================================================================-->
-        <!-- Core lib -->
-        <!-- ================================================================-->
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-rest-api</artifactId>
+    </dependency>
 
-        <!-- ================================================================-->
-        <!--  Misc support libs -->
-        <!-- ================================================================-->
+    <!-- ================================================================-->
+    <!-- Core lib -->
+    <!-- ================================================================-->
 
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-            <version>3.1.5</version>
-<!--            <scope>test</scope>-->
-        </dependency>
+    <!-- ================================================================-->
+    <!--  Misc support libs -->
+    <!-- ================================================================-->
 
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-extension-providers</artifactId>
-            <version>3.1.5</version>
-        </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+      <version>3.1.5</version>
+      <!--            <scope>test</scope>-->
+    </dependency>
 
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-jaxrs</artifactId>
-            <version>1.9.13</version>
-        </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-rs-extension-providers</artifactId>
+      <version>3.1.5</version>
+    </dependency>
 
-        <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>jsr250-api</artifactId>
-            <version>1.0</version>
-        </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-jaxrs</artifactId>
+      <version>1.9.13</version>
+    </dependency>
 
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>jsr250-api</artifactId>
+      <version>1.0</version>
+    </dependency>
 
+    <dependency>
+      <groupId>javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <scope>runtime</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <scope>runtime</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-        </dependency>
-
-<!--
+    <!--
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-api</artifactId>
@@ -98,80 +96,80 @@
         </dependency>
         -->
 
-        <dependency>
-            <groupId>net.sf.json-lib</groupId>
-            <artifactId>json-lib</artifactId>
-            <version>2.4</version>
-            <type>jar</type>
-            <classifier>jdk15</classifier>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>xom</groupId>
-            <artifactId>xom</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.googlecode.jaitools</groupId>
-            <artifactId>jt-utils</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>net.sf.json-lib</groupId>
+      <artifactId>json-lib</artifactId>
+      <version>2.4</version>
+      <type>jar</type>
+      <classifier>jdk15</classifier>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>xom</groupId>
+      <artifactId>xom</artifactId>
+      <version>1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.googlecode.jaitools</groupId>
+      <artifactId>jt-utils</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-services-impl</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-services-impl</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.hibernatespatial</groupId>
-            <artifactId>hibernate-spatial-h2-geodb</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.opengeo</groupId>
-            <artifactId>geodb</artifactId>
-            <version>0.9</version>
-            <scope>test</scope>
-        </dependency>        
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.hibernatespatial</groupId>
+      <artifactId>hibernate-spatial-h2-geodb</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opengeo</groupId>
+      <artifactId>geodb</artifactId>
+      <version>0.9</version>
+      <scope>test</scope>
+    </dependency>
 
-    </dependencies>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
+  </dependencies>
 
-            <!-- Attach sources ============================================ -->
-<!--
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+
+      <!-- Attach sources ============================================ -->
+      <!--
             <plugin>
                 <inherited>true</inherited>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -189,26 +187,26 @@
                 </executions>
             </plugin>
 -->
-        </plugins>
-    </build>
+    </plugins>
+  </build>
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.8.1</version>
-                <configuration>
-                     <detectJavaApiLink/>
-                     <detectJavaLinks/>
-                    <links>
-                        <link>http://commons.apache.org/dbcp/apidocs/</link>
-                        <link>http://commons.apache.org/fileupload/apidocs/</link>
-                    </links>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.8.1</version>
+        <configuration>
+          <detectJavaApiLink></detectJavaApiLink>
+          <detectJavaLinks></detectJavaLinks>
+          <links>
+            <link>http://commons.apache.org/dbcp/apidocs/</link>
+            <link>http://commons.apache.org/fileupload/apidocs/</link>
+          </links>
 
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 
 </project>

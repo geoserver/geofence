@@ -5,35 +5,30 @@
 
 package org.geoserver.geofence.services;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.googlecode.genericdao.search.Filter;
-import com.googlecode.genericdao.search.Search;
-import org.geoserver.geofence.core.dao.AdminRuleDAO;
-import org.geoserver.geofence.core.model.AdminRule;
-import org.geoserver.geofence.core.model.enums.InsertPosition;
-import org.geoserver.geofence.services.dto.RuleFilter;
-import org.geoserver.geofence.services.dto.ShortAdminRule;
-
-import org.geoserver.geofence.services.exception.BadRequestServiceEx;
-import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import static org.geoserver.geofence.services.util.FilterUtils.addCriteria;
 import static org.geoserver.geofence.services.util.FilterUtils.addFixedCriteria;
 import static org.geoserver.geofence.services.util.FilterUtils.addFixedStringCriteria;
 import static org.geoserver.geofence.services.util.FilterUtils.addPagingConstraints;
 import static org.geoserver.geofence.services.util.FilterUtils.addStringCriteria;
 
+import com.googlecode.genericdao.search.Filter;
+import com.googlecode.genericdao.search.Search;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.geoserver.geofence.core.dao.AdminRuleDAO;
+import org.geoserver.geofence.core.model.AdminRule;
+import org.geoserver.geofence.core.model.enums.InsertPosition;
+import org.geoserver.geofence.services.dto.RuleFilter;
+import org.geoserver.geofence.services.dto.ShortAdminRule;
+import org.geoserver.geofence.services.exception.BadRequestServiceEx;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
 
-    private final static Logger LOGGER = LogManager.getLogger(AdminRuleAdminServiceImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(AdminRuleAdminServiceImpl.class);
 
     private AdminRuleDAO ruleDAO;
 
@@ -65,15 +60,14 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     }
 
     /**
-     * Shifts the priority of the rules having <TT>priority &gt;= priorityStart</TT>
-     * down by <TT>offset</TT>.
-     * <P/>
-     * The shift will not be performed if there are no Rules with priority: <BR/>
+     * Shifts the priority of the rules having <TT>priority &gt;= priorityStart</TT> down by
+     * <TT>offset</TT>.
+     *
+     * <p>The shift will not be performed if there are no Rules with priority: <br>
      * <tt> startPriority &lt;= priority &lt; startPriority + offset </TT>
      *
      * @return the number of rules updated, or -1 if no need to shift.
      */
-
     @Override
     public int shift(long priorityStart, long offset) {
         return ruleDAO.shift(priorityStart, offset);
@@ -83,7 +77,6 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     public void swap(long id1, long id2) {
         ruleDAO.swap(id1, id2);
     }
-
 
     @Override
     public AdminRule get(long id) throws NotFoundServiceEx {
@@ -113,11 +106,11 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
         searchCriteria.addFilter(Filter.equal("username", username));
 
         List<AdminRule> list = ruleDAO.search(searchCriteria);
-        if(LOGGER.isInfoEnabled())
-            LOGGER.info("Removing "+list.size()+" AdminRule for user " + username);
+        if (LOGGER.isInfoEnabled())
+            LOGGER.info("Removing " + list.size() + " AdminRule for user " + username);
         for (AdminRule rule : list) {
-            if(LOGGER.isInfoEnabled())
-                LOGGER.info("Removing rule for user " + username+": " + rule);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info("Removing rule for user " + username + ": " + rule);
             ruleDAO.remove(rule);
         }
     }
@@ -129,8 +122,8 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
 
         List<AdminRule> list = ruleDAO.search(searchCriteria);
         for (AdminRule rule : list) {
-            if(LOGGER.isInfoEnabled())
-                LOGGER.info("Removing rule for role " + rolename+": " + rule);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info("Removing rule for role " + rolename + ": " + rule);
             ruleDAO.remove(rule);
         }
     }
@@ -142,12 +135,11 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
 
         List<AdminRule> list = ruleDAO.search(searchCriteria);
         for (AdminRule rule : list) {
-            if(LOGGER.isInfoEnabled())
-                LOGGER.info("Removing AdminRule for instance " + instanceId+": " + rule);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info("Removing AdminRule for instance " + instanceId + ": " + rule);
             ruleDAO.remove(rule);
         }
     }
-
 
     @Override
     public List<ShortAdminRule> getAll() {
@@ -167,10 +159,9 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     public ShortAdminRule getRule(RuleFilter filter) throws BadRequestServiceEx {
         Search searchCriteria = buildFixedRuleSearch(filter);
         List<AdminRule> found = ruleDAO.search(searchCriteria);
-        if(found.isEmpty())
-            return null;
+        if (found.isEmpty()) return null;
 
-        if(found.size() > 1) {
+        if (found.size() > 1) {
             LOGGER.error("Unexpected rule count for filter " + filter + " : " + found);
         }
 
@@ -192,10 +183,9 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
         Search searchCriteria = new Search(AdminRule.class);
         searchCriteria.addFilter(Filter.equal("priority", priority));
         List<AdminRule> found = ruleDAO.search(searchCriteria);
-        if(found.isEmpty())
-            return null;
+        if (found.isEmpty()) return null;
 
-        if(found.size() > 1) {
+        if (found.size() > 1) {
             LOGGER.error("Unexpected rule count for priority " + priority + " : " + found);
         }
 
@@ -209,7 +199,8 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
         return found;
     }
 
-    protected Search buildSearch(Integer page, Integer entries, RuleFilter filter) throws BadRequestServiceEx {
+    protected Search buildSearch(Integer page, Integer entries, RuleFilter filter)
+            throws BadRequestServiceEx {
         Search searchCriteria = buildRuleSearch(filter);
         addPagingConstraints(searchCriteria, page, entries);
         searchCriteria.addSortAsc("priority");
@@ -223,12 +214,12 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
 
     @Override
     public long count(RuleFilter filter) {
-//        if(LOGGER.isDebugEnabled())
-//            LOGGER.debug("Counting rules: " + filter);
+        //        if(LOGGER.isDebugEnabled())
+        //            LOGGER.debug("Counting rules: " + filter);
 
         Search searchCriteria = buildRuleSearch(filter);
-//        if(LOGGER.isDebugEnabled())
-//            LOGGER.debug("Counting rules: " + searchCriteria);
+        //        if(LOGGER.isDebugEnabled())
+        //            LOGGER.debug("Counting rules: " + searchCriteria);
         return ruleDAO.count(searchCriteria);
     }
 
@@ -238,7 +229,7 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     private Search buildRuleSearch(RuleFilter filter) {
         Search searchCriteria = new Search(AdminRule.class);
 
-        if(filter != null) {
+        if (filter != null) {
             addStringCriteria(searchCriteria, "username", filter.getUser());
             addStringCriteria(searchCriteria, "rolename", filter.getRole());
             addCriteria(searchCriteria, "instance", filter.getInstance());
@@ -249,14 +240,12 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
         return searchCriteria;
     }
 
-
-
-    //=========================================================================
+    // =========================================================================
 
     private Search buildFixedRuleSearch(RuleFilter filter) {
         Search searchCriteria = new Search(AdminRule.class);
 
-        if(filter != null) {
+        if (filter != null) {
             addFixedStringCriteria(searchCriteria, "username", filter.getUser());
             addFixedStringCriteria(searchCriteria, "rolename", filter.getRole());
             addFixedCriteria(searchCriteria, "instance", filter.getInstance());
@@ -283,5 +272,4 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     public void setAdminRuleDAO(AdminRuleDAO ruleDAO) {
         this.ruleDAO = ruleDAO;
     }
-
 }

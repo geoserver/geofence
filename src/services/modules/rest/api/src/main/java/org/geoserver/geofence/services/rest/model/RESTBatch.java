@@ -7,14 +7,10 @@ package org.geoserver.geofence.services.rest.model;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 @XmlRootElement(name = "batch")
 public class RESTBatch {
 

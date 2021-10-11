@@ -5,19 +5,14 @@
 
 package org.geoserver.geofence.services.rest.model.config;
 
-import org.geoserver.geofence.core.model.Rule;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.geoserver.geofence.core.model.Rule;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 @XmlRootElement(name = "RuleList")
 public class RESTFullRuleList implements Iterable<Rule> {
 
@@ -47,7 +42,7 @@ public class RESTFullRuleList implements Iterable<Rule> {
     public void add(Rule rule) {
         list.add(rule);
     }
-    
+
     @Override
     public Iterator<Rule> iterator() {
         return list.iterator();

@@ -5,37 +5,26 @@
 
 package org.geoserver.geofence.services.dto;
 
+import java.io.Serializable;
+import java.util.Set;
 import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.enums.GrantType;
 
-import java.io.Serializable;
-import java.util.Set;
-
-
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class AccessInfo implements Serializable {
-    
+
     private static final long serialVersionUID = -9108763358187355342L;
 
-    /**
-     * Default "allow everything" AccessInfo
-     */
+    /** Default "allow everything" AccessInfo */
     public static final AccessInfo ALLOW_ALL = new AccessInfo(GrantType.ALLOW);
-    
-    /**
-     * Default "deny everything" AccessInfo
-     */
+
+    /** Default "deny everything" AccessInfo */
     public static final AccessInfo DENY_ALL = new AccessInfo(GrantType.DENY);
 
-    /**
-     * The resulting grant: allow or deny.
-     */
+    /** The resulting grant: allow or deny. */
     private GrantType grant = GrantType.DENY;
 
-//    private Geometry area;
+    //    private Geometry area;
     private String areaWkt;
 
     private CatalogModeDTO catalogMode;
@@ -50,8 +39,7 @@ public class AccessInfo implements Serializable {
 
     private boolean adminRights = false;
 
-    public AccessInfo() {
-    }
+    public AccessInfo() {}
 
     public AccessInfo(GrantType grant) {
         this.grant = grant;
@@ -118,7 +106,7 @@ public class AccessInfo implements Serializable {
     }
 
     public void setGrant(GrantType grant) {
-        if(grant != GrantType.ALLOW && grant != GrantType.DENY)
+        if (grant != GrantType.ALLOW && grant != GrantType.DENY)
             throw new IllegalArgumentException("Bad grant type " + grant);
         this.grant = grant;
     }
@@ -133,8 +121,8 @@ public class AccessInfo implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(getClass().getSimpleName())
-                .append("[grant:").append(grant);
+        StringBuilder sb =
+                new StringBuilder(getClass().getSimpleName()).append("[grant:").append(grant);
 
         sb.append(" admin:").append(adminRights);
 
@@ -153,10 +141,10 @@ public class AccessInfo implements Serializable {
         if (catalogMode != null) {
             sb.append(" cmode:").append(catalogMode);
         }
-        if (allowedStyles != null && ! allowedStyles.isEmpty()) {
+        if (allowedStyles != null && !allowedStyles.isEmpty()) {
             sb.append(" allSty:").append(allowedStyles); // needs decoding?
         }
-        if (attributes != null && ! attributes.isEmpty()) {
+        if (attributes != null && !attributes.isEmpty()) {
             sb.append(" attr:").append(attributes); // needs decoding?
         }
 

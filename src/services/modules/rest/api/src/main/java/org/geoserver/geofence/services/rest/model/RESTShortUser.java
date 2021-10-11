@@ -10,10 +10,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 @XmlRootElement(name = "ShortUser")
 @XmlType(propOrder = {"id", "extId", "userName"})
 public class RESTShortUser {
@@ -31,7 +28,7 @@ public class RESTShortUser {
         this.id = id;
     }
 
-//    @XmlAttribute(name = "extid")
+    //    @XmlAttribute(name = "extid")
     public String getExtId() {
         return extId;
     }
@@ -62,9 +59,11 @@ public class RESTShortUser {
     public String toString() {
         return this.getClass().getSimpleName()
                 + '['
-                + "id:" + id
-                + " name:" + userName
-                + (extId!=null? " ext:" + extId : "")
+                + "id:"
+                + id
+                + " name:"
+                + userName
+                + (extId != null ? " ext:" + extId : "")
                 + (enabled ? " enabled" : " disabled")
                 + ']';
     }

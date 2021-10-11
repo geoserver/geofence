@@ -9,9 +9,7 @@ import org.geoserver.geofence.core.model.GSInstance;
 
 /**
  * Public interface to define operations on GSInstances
- * 
+ *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-
-public interface GSInstanceDAO extends RestrictedGenericDAO<GSInstance> {
-}
+public interface GSInstanceDAO extends RestrictedGenericDAO<GSInstance> {}

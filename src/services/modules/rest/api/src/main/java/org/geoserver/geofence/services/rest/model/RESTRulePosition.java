@@ -10,17 +10,15 @@ import javax.xml.bind.annotation.XmlAttribute;
 public class RESTRulePosition {
 
     public enum RulePosition {
-
         fixedPriority,
         offsetFromTop,
         offsetFromBottom
     }
-    
+
     private RulePosition position;
     private long value;
 
-    public RESTRulePosition() {
-    }
+    public RESTRulePosition() {}
 
     public RESTRulePosition(RulePosition position, long value) {
         this.position = position;

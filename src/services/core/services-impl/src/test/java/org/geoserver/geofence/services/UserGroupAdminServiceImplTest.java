@@ -5,34 +5,27 @@
 
 package org.geoserver.geofence.services;
 
-import org.geoserver.geofence.core.model.Rule;
 import java.util.List;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.services.dto.ShortGroup;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
+import org.junit.Test;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class UserGroupAdminServiceImplTest extends ServiceTestBase {
 
-    public UserGroupAdminServiceImplTest() {
-    }
+    public UserGroupAdminServiceImplTest() {}
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
+    public static void setUpClass() throws Exception {}
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
+    public static void tearDownClass() throws Exception {}
 
     @Test
     public void testInsertDelete() throws NotFoundServiceEx {
@@ -42,7 +35,7 @@ public class UserGroupAdminServiceImplTest extends ServiceTestBase {
         assertTrue("Could not delete group", userGroupAdminService.delete(p.getId()));
     }
 
-//    @Test
+    //    @Test
     @Ignore
     // ignored as rule have no longer fk to roles and users
     public void NOtestDeleteCascadeGroup() throws NotFoundServiceEx {
@@ -62,13 +55,12 @@ public class UserGroupAdminServiceImplTest extends ServiceTestBase {
             userGroupAdminService.delete(group.getId());
             fail("Group reference not trapped");
         } catch (Exception e) {
-            LOGGER.info("Exception properly trapped ("+e.getClass().getSimpleName()+")");
+            LOGGER.info("Exception properly trapped (" + e.getClass().getSimpleName() + ")");
         }
 
         ruleAdminService.delete(rule.getId());
         userGroupAdminService.delete(group.getId());
     }
-
 
     @Test
     public void testUpdate() throws Exception {
@@ -94,19 +86,19 @@ public class UserGroupAdminServiceImplTest extends ServiceTestBase {
             UserGroup loaded = userGroupAdminService.get(group.getId());
             assertNotNull(loaded);
 
-            assertEquals((boolean)!oldEnabled, (boolean)loaded.getEnabled());
+            assertEquals((boolean) !oldEnabled, (boolean) loaded.getEnabled());
         }
     }
 
     @Test
     public void testGetAll() {
-        assertEquals(0, userGroupAdminService.getList(null,null,null).size());
+        assertEquals(0, userGroupAdminService.getList(null, null, null).size());
 
         createRole("u1");
         createRole("u2");
         createRole("u3");
 
-        assertEquals(3, userGroupAdminService.getList(null,null,null).size());
+        assertEquals(3, userGroupAdminService.getList(null, null, null).size());
     }
 
     @Test
@@ -122,26 +114,26 @@ public class UserGroupAdminServiceImplTest extends ServiceTestBase {
         assertEquals(4, userGroupAdminService.getCount("u%"));
         assertEquals(3, userGroupAdminService.getCount("%0"));
 
-        List<ShortGroup> glist = userGroupAdminService.getList("%9",null,null);
+        List<ShortGroup> glist = userGroupAdminService.getList("%9", null, null);
         assertEquals(1, glist.size());
         assertEquals("u99", glist.get(0).getName());
-        assertEquals((Long)u99.getId(), (Long)glist.get(0).getId());
+        assertEquals((Long) u99.getId(), (Long) glist.get(0).getId());
     }
 
-//    @Test
-//    public void testGetProps() {
-//
-//        assertEquals(0, userGroupAdminService.getCount(null));
-//
-//        UserGroup p = createUserGroup(getName());
-//        Map<String,String> props = new HashMap<String, String>();
-//        props.put("k1", "v1");
-//        props.put("k2", "v2");
-//        userGroupAdminService.setCustomProps(p.getId(), props);
-//
-//        assertEquals(1, userGroupAdminService.getCount(null));
-//        assertEquals(1, userGroupAdminService.getList(null, null, null).size());
-//        assertEquals(1, userGroupAdminService.getFullList(null, null, null).size());
-//    }
+    //    @Test
+    //    public void testGetProps() {
+    //
+    //        assertEquals(0, userGroupAdminService.getCount(null));
+    //
+    //        UserGroup p = createUserGroup(getName());
+    //        Map<String,String> props = new HashMap<String, String>();
+    //        props.put("k1", "v1");
+    //        props.put("k2", "v2");
+    //        userGroupAdminService.setCustomProps(p.getId(), props);
+    //
+    //        assertEquals(1, userGroupAdminService.getCount(null));
+    //        assertEquals(1, userGroupAdminService.getList(null, null, null).size());
+    //        assertEquals(1, userGroupAdminService.getFullList(null, null, null).size());
+    //    }
 
 }

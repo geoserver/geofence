@@ -7,10 +7,7 @@ package org.geoserver.geofence.spi;
 
 import java.util.Set;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public interface UserResolver {
 
     @Deprecated
@@ -20,5 +17,4 @@ public interface UserResolver {
     boolean existsRole(String rolename);
 
     Set<String> getRoles(String username);
-
 }

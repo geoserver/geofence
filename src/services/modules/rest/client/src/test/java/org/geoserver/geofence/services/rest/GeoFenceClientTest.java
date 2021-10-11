@@ -5,6 +5,14 @@
 
 package org.geoserver.geofence.services.rest;
 
+import static org.junit.Assert.*;
+import static org.junit.Assume.*;
+
+import java.net.ConnectException;
+import java.util.Arrays;
+import javax.ws.rs.core.Response;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.ShortGroup;
@@ -18,39 +26,22 @@ import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
 import org.geoserver.geofence.services.rest.model.RESTRulePosition;
 import org.geoserver.geofence.services.rest.model.RESTShortUser;
 import org.geoserver.geofence.services.rest.model.util.IdName;
-
-import java.net.ConnectException;
-import java.util.Arrays;
-import javax.ws.rs.core.Response;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assume.*;
-import static org.junit.Assert.*;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class GeoFenceClientTest {
-    private final static Logger LOGGER = LogManager.getLogger(GeoFenceClientTest.class);
+    private static final Logger LOGGER = LogManager.getLogger(GeoFenceClientTest.class);
 
-    public GeoFenceClientTest() {
-    }
-
-
+    public GeoFenceClientTest() {}
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
+    public static void setUpClass() throws Exception {}
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
+    public static void tearDownClass() throws Exception {}
 
     @Before
     public void before() throws Exception {
@@ -79,7 +70,7 @@ public class GeoFenceClientTest {
         LOGGER.info("Finished removing GeoFence resources...");
     }
 
-    protected void removeUsers(GeoFenceClient client) { 
+    protected void removeUsers(GeoFenceClient client) {
         for (RESTShortUser su : client.getUserService().getList(null, null, null).getUserList()) {
             LOGGER.debug("Removing user " + su);
             client.getUserService().delete(su.getUserName(), true);
@@ -94,7 +85,8 @@ public class GeoFenceClientTest {
     }
 
     protected void removeInstances(GeoFenceClient client) {
-        for (ShortInstance entry : client.getGSInstanceService().getList(null, null, null).getList()) {
+        for (ShortInstance entry :
+                client.getGSInstanceService().getList(null, null, null).getList()) {
             LOGGER.debug("Removing instance " + entry);
             client.getGSInstanceService().delete(entry.getId(), true);
         }
@@ -112,7 +104,7 @@ public class GeoFenceClientTest {
     public void testUserGroups() {
         GeoFenceClient client = createClient();
 
-        for(String name: Arrays.asList("group01", "group02")) {
+        for (String name : Arrays.asList("group01", "group02")) {
 
             RESTInputGroup i = new RESTInputGroup();
             i.setEnabled(Boolean.TRUE);
@@ -130,7 +122,7 @@ public class GeoFenceClientTest {
     public void testGroupsRule() {
         GeoFenceClient client = createClient();
 
-        for(String name: Arrays.asList("group01", "group02")) {
+        for (String name : Arrays.asList("group01", "group02")) {
 
             RESTInputGroup i = new RESTInputGroup();
             i.setEnabled(Boolean.TRUE);
@@ -143,7 +135,8 @@ public class GeoFenceClientTest {
             rule.setRolename("group01");
             rule.setLayer("test01");
             rule.setGrant(GrantType.ALLOW);
-            rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromBottom, 0));
+            rule.setPosition(
+                    new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromBottom, 0));
             client.getRuleService().insert(rule);
         }
         {
@@ -151,7 +144,8 @@ public class GeoFenceClientTest {
             rule.setRolename("group01");
             rule.setLayer("test02");
             rule.setGrant(GrantType.ALLOW);
-            rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromBottom, 0));
+            rule.setPosition(
+                    new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromBottom, 0));
             client.getRuleService().insert(rule);
         }
         {
@@ -159,13 +153,15 @@ public class GeoFenceClientTest {
             rule.setRolename("group02");
             rule.setLayer("test03");
             rule.setGrant(GrantType.ALLOW);
-            rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromBottom, 0));
+            rule.setPosition(
+                    new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromBottom, 0));
             client.getRuleService().insert(rule);
         }
         {
             RESTInputRule rule = new RESTInputRule();
             rule.setGrant(GrantType.DENY);
-            rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromBottom, 0));
+            rule.setPosition(
+                    new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromBottom, 0));
             client.getRuleService().insert(rule);
         }
 
@@ -178,15 +174,43 @@ public class GeoFenceClientTest {
             LOGGER.debug("found rule " + rule);
         }
 
-        assertEquals(2, rsh.get(null, null, true, null, new RuleFilter.TextFilter("group01", false, false), null, null, null, null, null).getList().size());
-        assertEquals(3, rsh.get(null, null, true, null, new RuleFilter.TextFilter("group01", false, true), null, null, null, null, null).getList().size());
+        assertEquals(
+                2,
+                rsh.get(
+                                null,
+                                null,
+                                true,
+                                null,
+                                new RuleFilter.TextFilter("group01", false, false),
+                                null,
+                                null,
+                                null,
+                                null,
+                                null)
+                        .getList()
+                        .size());
+        assertEquals(
+                3,
+                rsh.get(
+                                null,
+                                null,
+                                true,
+                                null,
+                                new RuleFilter.TextFilter("group01", false, true),
+                                null,
+                                null,
+                                null,
+                                null,
+                                null)
+                        .getList()
+                        .size());
     }
 
     @Test
     public void testReassign() {
         GeoFenceClient client = createClient();
-        
-        for(String name: Arrays.asList("group01", "group02", "group3")) {
+
+        for (String name : Arrays.asList("group01", "group02", "group3")) {
 
             RESTInputGroup i = new RESTInputGroup();
             i.setEnabled(Boolean.TRUE);
@@ -276,10 +300,10 @@ public class GeoFenceClientTest {
             return true;
         } catch (Exception ex) {
             LOGGER.debug("Error connecting to GeoFence", ex);
-            //... and now for an awful example of heuristic.....
+            // ... and now for an awful example of heuristic.....
             Throwable t = ex;
-            while(t!=null) {
-                if(t instanceof ConnectException) {
+            while (t != null) {
+                if (t instanceof ConnectException) {
                     LOGGER.warn("Testing GeoFence is offline");
                     return false;
                 }
@@ -288,5 +312,4 @@ public class GeoFenceClientTest {
             throw new RuntimeException("Unexpected exception: " + ex.getMessage(), ex);
         }
     }
-
 }

@@ -5,21 +5,17 @@
 
 package org.geoserver.geofence.core.dao.impl;
 
-import java.util.List;
+import static org.geoserver.geofence.core.dao.util.SearchUtil.*;
 
 import com.googlecode.genericdao.search.ISearch;
 import com.googlecode.genericdao.search.Search;
-
-import static org.geoserver.geofence.core.dao.util.SearchUtil.*;
-
-import org.geoserver.geofence.core.model.enums.InsertPosition;
+import java.util.List;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.core.dao.AdminRuleDAO;
 import org.geoserver.geofence.core.dao.DuplicateKeyException;
 import org.geoserver.geofence.core.model.AdminRule;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
+import org.geoserver.geofence.core.model.enums.InsertPosition;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -42,7 +38,7 @@ public class AdminRuleDAOImpl extends PrioritizableDAOImpl<AdminRule> implements
             Search search = getDupSearch(rule);
             List<AdminRule> dups = search(search);
             for (AdminRule dup : dups) {
-                if(dup.getId().equals(rule.getId())) {
+                if (dup.getId().equals(rule.getId())) {
                     // avoid check against self
                     continue;
                 }
@@ -51,14 +47,13 @@ public class AdminRuleDAOImpl extends PrioritizableDAOImpl<AdminRule> implements
                 LOGGER.warn(" DUP : " + rule);
                 throw new DuplicateKeyException("Duplicate AdminRule " + rule);
             }
-//                if (count(search) > 0)
-//                {
-//                    throw new DuplicateKeyException("Duplicate Rule " + rule);
-//                }
+            //                if (count(search) > 0)
+            //                {
+            //                    throw new DuplicateKeyException("Duplicate Rule " + rule);
+            //                }
         }
         super.persist(entities);
     }
-
 
     @Override
     public int shift(long priorityStart, long offset) {
@@ -110,8 +105,9 @@ public class AdminRuleDAOImpl extends PrioritizableDAOImpl<AdminRule> implements
 
             case 1:
                 // We may be updating some other fields in this Rule
-                if ( !existent.get(0).getId().equals(entity.getId()) ) {
-                    throw new DuplicateKeyException("Duplicating AdminRule " + existent.get(0) + " with " + entity);
+                if (!existent.get(0).getId().equals(entity.getId())) {
+                    throw new DuplicateKeyException(
+                            "Duplicating AdminRule " + existent.get(0) + " with " + entity);
                 }
                 break;
 

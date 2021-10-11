@@ -5,58 +5,50 @@
 
 package org.geoserver.geofence.services.rest;
 
-import org.geoserver.geofence.services.rest.RESTBatchService;
-import org.geoserver.geofence.services.rest.RESTUserGroupService;
-import org.geoserver.geofence.services.rest.RESTUserService;
-import org.geoserver.geofence.services.rest.RESTGSInstanceService;
-import org.geoserver.geofence.services.rest.RESTRuleService;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.cxf.common.util.Base64Utility;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
 import org.apache.cxf.jaxrs.client.WebClient;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class GeoFenceClient {
 
     private String username = null;
     private String password = null;
     private String restUrl = null;
 
-    private Map<Class, Object> services  = new HashMap<Class, Object>();
+    private Map<Class, Object> services = new HashMap<Class, Object>();
 
-    public GeoFenceClient() {
-    }
+    public GeoFenceClient() {}
 
-    //==========================================================================
+    // ==========================================================================
 
     // endpoint is how the service is mapped in the CXF servlet.
-    // since it's specified in the applicationcontext, it can not be automatically retrieved by the proxy client
-    
-    protected <T>T getService(Class<T> clazz, String endpoint) {
-        if(services.containsKey(clazz))
-            return (T)services.get(clazz);
+    // since it's specified in the applicationcontext, it can not be automatically retrieved by the
+    // proxy client
 
-        if(restUrl == null)
-            new IllegalStateException("GeoFence URL not set");
+    protected <T> T getService(Class<T> clazz, String endpoint) {
+        if (services.containsKey(clazz)) return (T) services.get(clazz);
 
-        synchronized(services) {
-//            T proxy = JAXRSClientFactory.create(restUrl, clazz, username, password, null);
-            
-            T proxy = JAXRSClientFactory.create(restUrl+"/"+endpoint, clazz);
-            String authorizationHeader = "Basic "  + Base64Utility.encode((username+":"+password).getBytes());
+        if (restUrl == null) new IllegalStateException("GeoFence URL not set");
+
+        synchronized (services) {
+            //            T proxy = JAXRSClientFactory.create(restUrl, clazz, username, password,
+            // null);
+
+            T proxy = JAXRSClientFactory.create(restUrl + "/" + endpoint, clazz);
+            String authorizationHeader =
+                    "Basic " + Base64Utility.encode((username + ":" + password).getBytes());
             WebClient.client(proxy).header("Authorization", authorizationHeader);
 
-//        WebClient.client(proxy).accept("text/xml");
+            //        WebClient.client(proxy).accept("text/xml");
             services.put(clazz, proxy);
             return proxy;
         }
     }
 
-    //==========================================================================
+    // ==========================================================================
 
     public RESTUserGroupService getUserGroupService() {
         return getService(RESTUserGroupService.class, "groups");
@@ -78,7 +70,7 @@ public class GeoFenceClient {
         return getService(RESTBatchService.class, "batch");
     }
 
-    //==========================================================================
+    // ==========================================================================
 
     public String getPassword() {
         return password;
@@ -103,5 +95,4 @@ public class GeoFenceClient {
     public void setGeostoreRestUrl(String restUrl) {
         this.restUrl = restUrl;
     }
-
 }

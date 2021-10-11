@@ -7,81 +7,79 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.geoserver.geofence</groupId>
-        <artifactId>geofence-rest-root</artifactId>
-        <version>3.5-SNAPSHOT</version>
-    </parent>
-
+  <parent>
     <groupId>org.geoserver.geofence</groupId>
-    <artifactId>geofence-rest-api</artifactId>
-    <packaging>jar</packaging>
-    <name>GeoFence - Modules - REST API</name>
+    <artifactId>geofence-rest-root</artifactId>
+    <version>3.5-SNAPSHOT</version>
+  </parent>
 
-    <dependencies>
-        <!-- ================================================================-->
-        <!-- GeoFence modules -->
-        <!-- ================================================================-->
+  <groupId>org.geoserver.geofence</groupId>
+  <artifactId>geofence-rest-api</artifactId>
+  <packaging>jar</packaging>
+  <name>GeoFence - Modules - REST API</name>
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-model</artifactId>
-            <scope>provided</scope>
-        </dependency>
+  <dependencies>
+    <!-- ================================================================-->
+    <!-- GeoFence modules -->
+    <!-- ================================================================-->
 
-        <dependency>
-            <groupId>org.geoserver.geofence</groupId>
-            <artifactId>geofence-services-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-model</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-        <!-- ================================================================-->
-        <!-- Core lib -->
-        <!-- ================================================================-->
+    <dependency>
+      <groupId>org.geoserver.geofence</groupId>
+      <artifactId>geofence-services-api</artifactId>
+    </dependency>
 
-        <!-- ================================================================-->
-        <!--  Misc support libs -->
-        <!-- ================================================================-->
+    <!-- ================================================================-->
+    <!-- Core lib -->
+    <!-- ================================================================-->
 
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-        </dependency>
+    <!-- ================================================================-->
+    <!--  Misc support libs -->
+    <!-- ================================================================-->
 
-        <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>jsr250-api</artifactId>
-            <version>1.0</version>
-        </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+    </dependency>
 
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>jsr250-api</artifactId>
+      <version>1.0</version>
+    </dependency>
 
+    <dependency>
+      <groupId>javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-        <dependency>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-
-            <!-- Attach sources ============================================ -->
-<!--
+      <!-- Attach sources ============================================ -->
+      <!--
             <plugin>
                 <inherited>true</inherited>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -99,26 +97,26 @@
                 </executions>
             </plugin>
 -->
-        </plugins>
-    </build>
+    </plugins>
+  </build>
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.8.1</version>
-                <configuration>
-                     <detectJavaApiLink/>
-                     <detectJavaLinks/>
-                    <links>
-                        <link>http://commons.apache.org/dbcp/apidocs/</link>
-                        <link>http://commons.apache.org/fileupload/apidocs/</link>
-                    </links>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.8.1</version>
+        <configuration>
+          <detectJavaApiLink></detectJavaApiLink>
+          <detectJavaLinks></detectJavaLinks>
+          <links>
+            <link>http://commons.apache.org/dbcp/apidocs/</link>
+            <link>http://commons.apache.org/fileupload/apidocs/</link>
+          </links>
 
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 
 </project>

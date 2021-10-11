@@ -13,11 +13,10 @@ import org.geoserver.geofence.core.model.UserGroup;
  * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-public class UserGroupDAOLdapImpl extends LDAPBaseDAO<UserGroupDAO, UserGroup> implements UserGroupDAO
-{
+public class UserGroupDAOLdapImpl extends LDAPBaseDAO<UserGroupDAO, UserGroup>
+        implements UserGroupDAO {
 
-    public UserGroupDAOLdapImpl()
-    {
+    public UserGroupDAOLdapImpl() {
         super();
         // set default search base and filter for groups
         setSearchBase("ou=Groups");

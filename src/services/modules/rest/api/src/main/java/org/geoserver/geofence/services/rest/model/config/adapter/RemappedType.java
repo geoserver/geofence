@@ -8,10 +8,7 @@ package org.geoserver.geofence.services.rest.model.config.adapter;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 @XmlRootElement(name = "item")
 public class RemappedType {
 
@@ -23,8 +20,7 @@ public class RemappedType {
         this.newId = value;
     }
 
-    public RemappedType() {
-    }
+    public RemappedType() {}
 
     @XmlAttribute
     public Long getOld() {

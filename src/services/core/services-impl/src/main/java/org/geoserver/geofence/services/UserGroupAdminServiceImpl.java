@@ -6,26 +6,20 @@
 package org.geoserver.geofence.services;
 
 import com.googlecode.genericdao.search.Search;
-import org.geoserver.geofence.core.dao.UserGroupDAO;
-import org.geoserver.geofence.core.model.UserGroup;
-
+import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-
+import org.geoserver.geofence.core.dao.UserGroupDAO;
+import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.services.dto.ShortGroup;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
-import java.util.ArrayList;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class UserGroupAdminServiceImpl implements UserGroupAdminService {
 
-    private final static Logger LOGGER = LogManager.getLogger(UserGroupAdminServiceImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(UserGroupAdminServiceImpl.class);
     private UserGroupDAO userGroupDAO;
 
     // ==========================================================================
@@ -34,8 +28,7 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
         UserGroup p = new UserGroup();
         p.setName(group.getName());
 
-        if(group.isEnabled() !=null)
-            p.setEnabled(group.isEnabled());
+        if (group.isEnabled() != null) p.setEnabled(group.isEnabled());
 
         userGroupDAO.persist(p);
         return p.getId();
@@ -44,17 +37,17 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
     @Override
     public long update(ShortGroup group) throws NotFoundServiceEx {
         UserGroup orig = userGroupDAO.find(group.getId());
-        if ( orig == null ) {
+        if (orig == null) {
             throw new NotFoundServiceEx("UserGroup not found", group.getId());
         }
 
-//        orig.setName(group.getName());
+        //        orig.setName(group.getName());
 
-        if ( group.isEnabled() != null ) {
+        if (group.isEnabled() != null) {
             orig.setEnabled(group.isEnabled());
         }
 
-        if ( group.getExtId() != null ) {
+        if (group.getExtId() != null) {
             orig.setExtId(group.getExtId());
         }
 
@@ -66,7 +59,7 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
     public UserGroup get(long id) throws NotFoundServiceEx {
         UserGroup group = userGroupDAO.find(id);
 
-        if ( group == null ) {
+        if (group == null) {
             throw new NotFoundServiceEx("UserGroup not found", id);
         }
 
@@ -79,10 +72,11 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
         search.addFilterEqual("name", name);
         List<UserGroup> groups = userGroupDAO.search(search);
 
-        if ( groups.isEmpty() ) {
+        if (groups.isEmpty()) {
             throw new NotFoundServiceEx("UserGroup not found  '" + name + "'");
-        } else if ( groups.size() > 1 ) {
-            throw new IllegalStateException("Found more than one UserGroup with name '" + name + "'");
+        } else if (groups.size() > 1) {
+            throw new IllegalStateException(
+                    "Found more than one UserGroup with name '" + name + "'");
         } else {
             return groups.get(0);
         }
@@ -92,7 +86,7 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
     public boolean delete(long id) throws NotFoundServiceEx {
         UserGroup group = userGroupDAO.find(id);
 
-        if ( group == null ) {
+        if (group == null) {
             throw new NotFoundServiceEx("Group not found", id);
         }
 
@@ -113,17 +107,18 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
         return userGroupDAO.count(searchCriteria);
     }
 
-    protected Search buildCriteria(Integer page, Integer entries, String nameLike) throws BadRequestServiceEx {
-        if ( (page != null && entries == null) || (page == null && entries != null) ) {
+    protected Search buildCriteria(Integer page, Integer entries, String nameLike)
+            throws BadRequestServiceEx {
+        if ((page != null && entries == null) || (page == null && entries != null)) {
             throw new BadRequestServiceEx("Page and entries params should be declared together.");
         }
         Search searchCriteria = new Search(UserGroup.class);
-        if ( page != null ) {
+        if (page != null) {
             searchCriteria.setMaxResults(entries);
             searchCriteria.setPage(page);
         }
         searchCriteria.addSortAsc("name");
-        if ( nameLike != null ) {
+        if (nameLike != null) {
             searchCriteria.addFilterILike("name", nameLike);
         }
         return searchCriteria;

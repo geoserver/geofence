@@ -8,79 +8,78 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    
-    <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.geoserver.geofence</groupId>
-        <artifactId>geofence-modules</artifactId>
-        <version>3.5-SNAPSHOT</version>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
 
+  <parent>
     <groupId>org.geoserver.geofence</groupId>
-    <artifactId>geofence-generic-api</artifactId>
-    <packaging>jar</packaging>
-    <name>GeoFence - Module - Generic API</name>
+    <artifactId>geofence-modules</artifactId>
+    <version>3.5-SNAPSHOT</version>
+  </parent>
 
-    <dependencies>
+  <groupId>org.geoserver.geofence</groupId>
+  <artifactId>geofence-generic-api</artifactId>
+  <packaging>jar</packaging>
+  <name>GeoFence - Module - Generic API</name>
 
-        <!-- ================================================================-->
-        <!-- Core lib -->
-        <!-- ================================================================-->
-        
-        <!-- ================================================================-->
-        <!--  Misc support libs -->
-        <!-- ================================================================-->
+  <dependencies>
 
-        <dependency>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jra</groupId>
-            <artifactId>jra</artifactId>
-            <version>1.0-alpha-4</version>
-            <type>jar</type>
-        </dependency>
-    </dependencies>
+    <!-- ================================================================-->
+    <!-- Core lib -->
+    <!-- ================================================================-->
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
+    <!-- ================================================================-->
+    <!--  Misc support libs -->
+    <!-- ================================================================-->
 
-            <!-- Attach sources ============================================ -->
-            <plugin>
-                <inherited>true</inherited>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.3</version>
-                <configuration>
-                    <attach>true</attach>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+    <dependency>
+      <groupId>javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jra</groupId>
+      <artifactId>jra</artifactId>
+      <version>1.0-alpha-4</version>
+      <type>jar</type>
+    </dependency>
+  </dependencies>
 
-        </plugins>
-    </build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
 
+      <!-- Attach sources ============================================ -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.3</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <inherited>true</inherited>
+        <configuration>
+          <attach>true</attach>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
 
 </project>

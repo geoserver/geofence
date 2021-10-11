@@ -5,10 +5,6 @@
 
 package org.geoserver.geofence.services.rest;
 
-import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
-import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
-import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
-
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -20,25 +16,22 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
+import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
+import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
 import org.geoserver.geofence.services.rest.model.RESTInputAdminRule;
 import org.geoserver.geofence.services.rest.model.RESTOutputAdminRule;
 import org.geoserver.geofence.services.rest.model.RESTOutputAdminRuleList;
 
-
-/**
- *
- * @author Emanuele Tajariol (etj at geo-solutions.it)
- */
-
+/** @author Emanuele Tajariol (etj at geo-solutions.it) */
 @Path("/")
-public interface RESTAdminRuleService
-{
+public interface RESTAdminRuleService {
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_XML)
-    Response insert(@Multipart("rule") RESTInputAdminRule rule) throws BadRequestRestEx, NotFoundRestEx;
+    Response insert(@Multipart("rule") RESTInputAdminRule rule)
+            throws BadRequestRestEx, NotFoundRestEx;
 
     @GET
     @Path("/id/{id}")
@@ -48,8 +41,8 @@ public interface RESTAdminRuleService
     @PUT
     @Path("/id/{id}")
     @Produces(MediaType.APPLICATION_XML)
-    void update(@PathParam("id") Long id,
-        @Multipart("rule") RESTInputAdminRule rule) throws BadRequestRestEx, NotFoundRestEx;
+    void update(@PathParam("id") Long id, @Multipart("rule") RESTInputAdminRule rule)
+            throws BadRequestRestEx, NotFoundRestEx;
 
     @DELETE
     @Path("/id/{id}")
@@ -60,40 +53,30 @@ public interface RESTAdminRuleService
     @Path("/")
     @Produces(MediaType.APPLICATION_XML)
     RESTOutputAdminRuleList get(
-        @QueryParam("page") Integer page,
-        @QueryParam("entries") Integer entries,
-        @QueryParam("full")@DefaultValue("false")  boolean full,
-
-        @QueryParam("userName") String userName,
-        @QueryParam("userAny")  Boolean userAny,
-
-        @QueryParam("groupName") String groupName,
-        @QueryParam("groupAny")  Boolean groupAny,
-
-        @QueryParam("instanceId")   Long instanceId,
-        @QueryParam("instanceName") String  instanceName,
-        @QueryParam("instanceAny")  Boolean instanceAny,
-
-        @QueryParam("workspace") String  workspace,
-        @QueryParam("workspaceAny")  Boolean workspaceAny
-
-    ) throws BadRequestRestEx, InternalErrorRestEx;
+            @QueryParam("page") Integer page,
+            @QueryParam("entries") Integer entries,
+            @QueryParam("full") @DefaultValue("false") boolean full,
+            @QueryParam("userName") String userName,
+            @QueryParam("userAny") Boolean userAny,
+            @QueryParam("groupName") String groupName,
+            @QueryParam("groupAny") Boolean groupAny,
+            @QueryParam("instanceId") Long instanceId,
+            @QueryParam("instanceName") String instanceName,
+            @QueryParam("instanceAny") Boolean instanceAny,
+            @QueryParam("workspace") String workspace,
+            @QueryParam("workspaceAny") Boolean workspaceAny)
+            throws BadRequestRestEx, InternalErrorRestEx;
 
     @GET
     @Path("/count")
     long count(
-        @QueryParam("userName") String userName,
-        @QueryParam("userAny")  Boolean userAny,
-
-        @QueryParam("groupName") String groupName,
-        @QueryParam("groupAny")  Boolean groupAny,
-
-        @QueryParam("instanceId")   Long instanceId,
-        @QueryParam("instanceName") String  instanceName,
-        @QueryParam("instanceAny")  Boolean instanceAny,
-
-        @QueryParam("workspace") String  workspace,
-        @QueryParam("workspaceAny")  Boolean workspaceAny
-    );
-
+            @QueryParam("userName") String userName,
+            @QueryParam("userAny") Boolean userAny,
+            @QueryParam("groupName") String groupName,
+            @QueryParam("groupAny") Boolean groupAny,
+            @QueryParam("instanceId") Long instanceId,
+            @QueryParam("instanceName") String instanceName,
+            @QueryParam("instanceAny") Boolean instanceAny,
+            @QueryParam("workspace") String workspace,
+            @QueryParam("workspaceAny") Boolean workspaceAny);
 }
