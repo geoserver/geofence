@@ -17,7 +17,6 @@
         <version>3.5-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.geoserver.geofence</groupId>
     <artifactId>geofence-services-api</artifactId>
     <packaging>jar</packaging>
     <name>GeoFence - Core - Services API</name>

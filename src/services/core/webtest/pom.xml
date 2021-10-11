@@ -14,7 +14,6 @@
         <version>3.5-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.geoserver.geofence</groupId>
 	<artifactId>geofence-webtest</artifactId>
 	<packaging>war</packaging>
 
