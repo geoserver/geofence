@@ -129,7 +129,7 @@
           <url>scp://demo.geo-solutions.it/var/www/share/github/gsman</url>
         </site>
    </distributionManagement -->
-   
+
    <profiles>
       <profile>
          <id>jdk11+</id>
