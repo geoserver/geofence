@@ -27,7 +27,7 @@
         <gt-version>25-SNAPSHOT</gt-version>
         <geogwt-version>0.4-SNAPSHOT</geogwt-version>
 
-        <spring.version>4.2.5.RELEASE</spring.version>
+        <spring.version>5.3.19</spring.version>
         <spring.security.version>4.0.4.RELEASE</spring.security.version>
 
         <commonsFileuploadVersion>1.2.1</commonsFileuploadVersion>
