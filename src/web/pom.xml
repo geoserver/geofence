@@ -26,7 +26,7 @@
         <gt-version>25-SNAPSHOT</gt-version>
 
         <spring.version>4.2.5.RELEASE</spring.version>
-        <spring.security.version>4.0.4.RELEASE</spring.security.version>
+        <spring.security.version>5.5.7</spring.security.version>
 
         <commonsFileuploadVersion>1.2.1</commonsFileuploadVersion>
         <commonsIoVersion>1.4</commonsIoVersion>
