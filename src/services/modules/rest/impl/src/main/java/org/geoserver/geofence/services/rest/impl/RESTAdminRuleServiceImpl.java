@@ -5,8 +5,11 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import java.util.Map;
 import org.geoserver.geofence.core.model.AdminRule;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
 
@@ -61,7 +64,6 @@ public class RESTAdminRuleServiceImpl
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, value = "geofenceTransactionManager")
     public Response insert(RESTInputAdminRule inputAdminRule) throws NotFoundRestEx, BadRequestRestEx, InternalErrorRestEx {
 
         if (inputAdminRule.getPosition() == null || inputAdminRule.getPosition().getPosition() == null) {
@@ -84,6 +86,40 @@ public class RESTAdminRuleServiceImpl
             Long id = adminRuleAdminService.insert(rule, position);
 
             return Response.status(Status.CREATED).tag(id.toString()).entity(id).build();
+        } catch (BadRequestServiceEx ex) {
+            LOGGER.error(ex.getMessage());
+            throw new BadRequestRestEx(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new InternalErrorRestEx(ex.getMessage());
+        }
+    }
+
+    @Override
+    public Response insertAll(List<RESTInputAdminRule> inputAdminRules) throws NotFoundRestEx, BadRequestRestEx, InternalErrorRestEx {
+
+        for (RESTInputAdminRule inputAdminRule : inputAdminRules) {
+            if (inputAdminRule.getPosition() == null || inputAdminRule.getPosition().getPosition() == null) {
+                throw new BadRequestRestEx("Bad position: " + inputAdminRule.getPosition());
+            }
+
+            if (inputAdminRule.getGrant() == null) {
+                throw new BadRequestRestEx("Missing grant type");
+            }
+        }
+
+        List<AdminRule> rules = new ArrayList<AdminRule>();
+        Map<AdminRule, RESTInputAdminRule> rulesMap = new HashMap<AdminRule, RESTInputAdminRule>();
+        for (RESTInputAdminRule inputAdminRule : inputAdminRules) {
+            AdminRule rule = fromInput(inputAdminRule);
+            rules.add(rule);
+            rulesMap.put(rule, inputAdminRule);
+        }
+
+        try {
+            adminRuleAdminService.insert(rules);
+
+            return Response.status(Status.CREATED).build();
         } catch (BadRequestServiceEx ex) {
             LOGGER.error(ex.getMessage());
             throw new BadRequestRestEx(ex.getMessage());

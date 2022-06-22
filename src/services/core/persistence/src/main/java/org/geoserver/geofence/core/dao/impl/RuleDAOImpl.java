@@ -21,6 +21,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.geoserver.geofence.core.dao.DuplicateKeyException;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -34,6 +35,7 @@ public class RuleDAOImpl extends PrioritizableDAOImpl<Rule> implements RuleDAO {
     private static final Logger LOGGER = LogManager.getLogger(RuleDAOImpl.class);
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, value = "geofenceTransactionManager")
     public void persist(Rule... entities) throws DuplicateKeyException {
 
         // TODO: check if there are any dups in the input list
@@ -70,6 +72,7 @@ public class RuleDAOImpl extends PrioritizableDAOImpl<Rule> implements RuleDAO {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, value = "geofenceTransactionManager")
     public long persist(Rule entity, InsertPosition position) {
 
         return super.persist(Rule.class, entity, position);

@@ -47,6 +47,16 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
         return rule.getId();
     }
 
+    /**
+     * Inserts a list of admin rules
+     *
+     * @param list of admin rules to be inserted
+     */
+    @Override
+    public void insert(List<AdminRule> rules) {
+        ruleDAO.persist(rules.toArray(new AdminRule[rules.size()]));
+    }
+
     @Override
     public long insert(AdminRule rule, InsertPosition position) {
         ruleDAO.persist(rule, position);

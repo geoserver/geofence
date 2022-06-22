@@ -28,6 +28,17 @@ public interface AdminRuleAdminService
 
     long insert(AdminRule rule);
 
+    /**
+     * Inserts a list of admin rules
+     *
+     * @param list of admin rules to be inserted
+     */
+    default void insert(List<AdminRule> rules) {
+        for (AdminRule rule: rules) {
+            insert(rule);
+        }
+    }
+
     long insert(AdminRule rule, InsertPosition position);
 
     long update(AdminRule rule) throws NotFoundServiceEx;
@@ -128,7 +139,7 @@ public interface AdminRuleAdminService
      * @throws BadRequestServiceEx if a wildcard type is used in filter
      */
     ShortAdminRule getRule(RuleFilter filter) throws BadRequestServiceEx;
-    
+
     /**
      * Return the Rules according to the filter.
      * Rules will be enriched with all their joined data, so this method may be heavy to execute.

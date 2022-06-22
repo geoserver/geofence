@@ -5,6 +5,8 @@
 
 package org.geoserver.geofence.services;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.geoserver.geofence.core.model.LayerDetails;
 import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.core.model.RuleLimits;
@@ -32,6 +34,19 @@ public interface RuleAdminService
     long insert(Rule rule);
 
     long insert(Rule rule, InsertPosition position);
+
+    /**
+     * @param rules to be inserted
+     * @return map of inserted rules along with their ids.
+     */
+    default Map<Long, Rule> insert(Set<Rule> rules) {
+        Map<Long, Rule> output = new HashMap<>();
+        for (Rule rule: rules) {
+            long id = insert(rule);
+            output.put(id, rule);
+        }
+        return output;
+    }
 
     long update(Rule rule) throws NotFoundServiceEx;
 
@@ -134,7 +149,7 @@ public interface RuleAdminService
      * @throws BadRequestServiceEx if a wildcard type is used in filter
      */
     ShortRule getRule(RuleFilter filter) throws BadRequestServiceEx;
-    
+
     /**
      * Return the Rules according to the filter.
      * Rules will be enriched with all their joined data, so this method may be heavy to execute.

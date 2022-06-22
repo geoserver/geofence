@@ -20,6 +20,7 @@ import org.geoserver.geofence.core.model.AdminRule;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -33,6 +34,7 @@ public class AdminRuleDAOImpl extends PrioritizableDAOImpl<AdminRule> implements
     private static final Logger LOGGER = LogManager.getLogger(AdminRuleDAOImpl.class);
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, value = "geofenceTransactionManager")
     public void persist(AdminRule... entities) {
 
         // TODO: check if there are any dups in the input list
@@ -66,6 +68,7 @@ public class AdminRuleDAOImpl extends PrioritizableDAOImpl<AdminRule> implements
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, value = "geofenceTransactionManager")
     public long persist(AdminRule entity, InsertPosition position) {
 
         return super.persist(AdminRule.class, entity, position);

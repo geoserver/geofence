@@ -5,6 +5,7 @@
 
 package org.geoserver.geofence.services.rest;
 
+import java.util.List;
 import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
 import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
 import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
@@ -39,6 +40,11 @@ public interface RESTRuleService
     @Path("/")
     @Produces(MediaType.TEXT_PLAIN)
     Response insert(@Multipart("rule") RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx;
+
+    @POST
+    @Path("/all")
+    @Produces(MediaType.TEXT_PLAIN)
+    Response insertAll(@Multipart("rule") List<RESTInputRule> rules) throws BadRequestRestEx, NotFoundRestEx;
 
     @GET
     @Path("/id/{id}")

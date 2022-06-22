@@ -5,6 +5,8 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
+import java.util.List;
+import java.util.Map;
 import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.services.RuleAdminService;
 import org.geoserver.geofence.services.rest.model.RESTInputUser;
@@ -73,6 +75,43 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
             assertNotNull(out);
             assertEquals("user0", out.getUsername());
             assertNull(out.getConstraints());
+        }
+    }
+
+    @Test
+    public void testInsertAll() {
+        RESTInputGroup group = new RESTInputGroup();
+        group.setName("g1");
+        restUserGroupService.insert(group);
+
+        RESTInputUser user = new RESTInputUser();
+        user.setName("user0");
+        user.setEnabled(Boolean.TRUE);
+        user.setGroups(new ArrayList<IdName>());
+        user.getGroups().add(new IdName("g1"));
+        restUserService.insert(user);
+
+        RESTInputRule rule0 = new RESTInputRule();
+        rule0.setUsername("user0");
+        rule0.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromTop, 0));
+        rule0.setGrant(GrantType.ALLOW);
+        RESTInputRule rule1 = new RESTInputRule();
+        rule1.setUsername("user1");
+        rule1.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromTop, 0));
+        rule1.setGrant(GrantType.ALLOW);
+        List<RESTInputRule> rules = new ArrayList<RESTInputRule>();
+        rules.add(rule0);
+        rules.add(rule1);
+
+        Map<Long, Rule> ids = (Map<Long, Rule>) restRuleService.insertAll(rules).getEntity();
+        assertNotNull(ids);
+
+        {
+            for(Long id: ids.keySet()){
+                RESTOutputRule out = restRuleService.get(id);
+                assertNotNull(out);
+                assertNull(out.getConstraints());
+            }
         }
     }
 

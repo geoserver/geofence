@@ -5,8 +5,10 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -88,7 +90,6 @@ public class RESTRuleServiceImpl
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, value = "geofenceTransactionManager")
     public Response insert(RESTInputRule inputRule) throws NotFoundRestEx, BadRequestRestEx, InternalErrorRestEx {
 
         if (inputRule.getPosition() == null || inputRule.getPosition().getPosition() == null) {
@@ -116,6 +117,48 @@ public class RESTRuleServiceImpl
             }
 
             return Response.status(Status.CREATED).tag(id.toString()).entity(id).build();
+        } catch (BadRequestServiceEx ex) {
+            LOGGER.error(ex.getMessage());
+            throw new BadRequestRestEx(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new InternalErrorRestEx(ex.getMessage());
+        }
+    }
+
+
+    @Override
+    public Response insertAll(List<RESTInputRule> inputRules) throws NotFoundRestEx, BadRequestRestEx, InternalErrorRestEx {
+
+        for (RESTInputRule inputRule : inputRules) {
+            if (inputRule.getPosition() == null || inputRule.getPosition().getPosition() == null) {
+                throw new BadRequestRestEx("Bad position: " + inputRule.getPosition());
+            }
+
+            if (inputRule.getGrant() == null) {
+                throw new BadRequestRestEx("Missing grant type");
+            }
+        }
+
+        Set<Rule> rules = new HashSet<Rule>();
+        Map<Rule, RESTInputRule> rulesMap = new HashMap<Rule, RESTInputRule>();
+        for (RESTInputRule inputRule : inputRules) {
+            Rule rule = fromInput(inputRule);
+            rules.add(rule);
+            rulesMap.put(rule, inputRule);
+        }
+
+        try {
+            Map<Long, Rule> ids = ruleAdminService.insert(rules);
+
+            for (Long id : ids.keySet()) {
+                LayerDetails details = detailsFromInput(rulesMap.get(ids.get(id)));
+                if (details != null) {
+                    ruleAdminService.setDetails(id, details);
+                }
+            }
+
+            return Response.status(Status.CREATED).tag(ids.keySet().toString()).entity(ids).build();
         } catch (BadRequestServiceEx ex) {
             LOGGER.error(ex.getMessage());
             throw new BadRequestRestEx(ex.getMessage());

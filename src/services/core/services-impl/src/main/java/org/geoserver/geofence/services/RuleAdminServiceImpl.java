@@ -7,6 +7,8 @@ package org.geoserver.geofence.services;
 
 import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
+import java.util.HashMap;
+import java.util.Map;
 import org.geoserver.geofence.core.dao.LayerDetailsDAO;
 import org.geoserver.geofence.core.dao.RuleDAO;
 import org.geoserver.geofence.core.dao.RuleLimitsDAO;
@@ -62,6 +64,22 @@ public class RuleAdminServiceImpl implements RuleAdminService {
         sanitizeFields(rule);
         ruleDAO.persist(rule);
         return rule.getId();
+    }
+
+    /**
+     * @param rules to be inserted
+     * @return map of inserted rules along with their ids.
+     */
+    @Override
+    public Map<Long, Rule> insert(Set<Rule> rules) {
+        rules.forEach(this::sanitizeFields);
+        LOGGER.info("Inserting a set of rules.");
+        ruleDAO.persist(rules.toArray(new Rule[0]));
+        Map<Long, Rule> rulesMap = new HashMap<>();
+        for (Rule rule: rules) {
+            rulesMap.put(rule.getId(), rule);
+        }
+        return rulesMap;
     }
 
     @Override
