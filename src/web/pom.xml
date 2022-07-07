@@ -25,7 +25,7 @@
         <geofence-version>${project.version}</geofence-version>
         <gt-version>25-SNAPSHOT</gt-version>
 
-        <spring.version>4.2.5.RELEASE</spring.version>
+        <spring.version>5.2.21.RELEASE</spring.version>
         <spring.security.version>4.0.4.RELEASE</spring.security.version>
 
         <commonsFileuploadVersion>1.2.1</commonsFileuploadVersion>
