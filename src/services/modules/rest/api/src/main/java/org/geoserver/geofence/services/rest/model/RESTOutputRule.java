@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "Rule")
-@XmlType(propOrder={"id", "priority","grant","username","rolename","instance","ipaddress","service","request","workspace","layer","constraints"})
+@XmlType(propOrder={"id", "priority","grant","username","rolename","instance","ipaddress","service","request","workspace","layer","limits","constraints"})
 public class RESTOutputRule implements Serializable {
 
     private Long id;
@@ -42,6 +42,8 @@ public class RESTOutputRule implements Serializable {
     private GrantType grant;
 
     private RESTLayerConstraints constraints;
+
+    private RESTRuleLimits limits;
 
     public RESTOutputRule() {
     }
@@ -126,8 +128,16 @@ public class RESTOutputRule implements Serializable {
         return constraints;
     }
 
+    public RESTRuleLimits getLimits() {
+        return limits;
+    }
+
     public void setConstraints(RESTLayerConstraints constraints) {
         this.constraints = constraints;
+    }
+
+    public void setLimits(RESTRuleLimits limits) {
+        this.limits = limits;
     }
 
     public Long getPriority() {
