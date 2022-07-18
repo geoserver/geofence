@@ -23,7 +23,8 @@ public class RESTBatchOperation {
         users,
         groups,
         instances,
-        rules
+        rules,
+        adminrules
     }
 
     public enum TypeName {
@@ -99,7 +100,8 @@ public class RESTBatchOperation {
         @XmlElement(name="user",        type=RESTInputUser.class),
         @XmlElement(name="userGroup",   type=RESTInputGroup.class),
         @XmlElement(name="instance",    type=RESTInputInstance.class),
-        @XmlElement(name="rule",        type=RESTInputRule.class)
+        @XmlElement(name="rule",        type=RESTInputRule.class),
+        @XmlElement(name="adminrule",   type=RESTInputAdminRule.class),
     })
     public AbstractRESTPayload getPayload() {
         return payload;

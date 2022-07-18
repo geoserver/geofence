@@ -7,6 +7,8 @@ package org.geoserver.geofence.services.rest.impl;
 
 import org.geoserver.geofence.services.RuleAdminService;
 import org.geoserver.geofence.services.dto.ShortGroup;
+import org.geoserver.geofence.services.rest.RESTAdminRuleService;
+import org.geoserver.geofence.services.rest.RESTBatchService;
 import org.geoserver.geofence.services.rest.RESTRuleService;
 import org.geoserver.geofence.services.rest.RESTUserGroupService;
 import org.geoserver.geofence.services.rest.RESTUserService;
@@ -39,6 +41,8 @@ public abstract class RESTBaseTest {
     protected static RESTUserService restUserService;
     protected static RESTUserGroupService restUserGroupService;
     protected static RESTRuleService restRuleService;
+    protected static RESTAdminRuleService restAdminRuleService;
+    protected static RESTBatchService restBatchService;
 
     public RESTBaseTest() {
 
@@ -59,11 +63,15 @@ public abstract class RESTBaseTest {
                 restUserService       = (RESTUserService)ctx.getBean("restUserService");
                 restUserGroupService  = (RESTUserGroupService)ctx.getBean("restUserGroupService");
                 restRuleService       = (RESTRuleService)ctx.getBean("restRuleService");
+                restAdminRuleService       = (RESTAdminRuleService)ctx.getBean("restAdminRuleService");
+                restBatchService = (RESTBatchService) ctx.getBean("restBatchService");
             }
             
             assertNotNull(restUserService);
             assertNotNull(restUserGroupService);
             assertNotNull(restRuleService);
+            assertNotNull(restAdminRuleService);
+            assertNotNull(restBatchService);
         }
     }
 

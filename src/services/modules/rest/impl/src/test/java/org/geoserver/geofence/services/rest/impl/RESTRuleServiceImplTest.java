@@ -336,7 +336,7 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
 
 
     }
-    
+
     @Test
     public void testLimits() {
 
