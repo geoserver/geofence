@@ -8,6 +8,10 @@ package org.geoserver.geofence.services.dto;
 import org.geoserver.geofence.core.model.Rule;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -25,7 +29,7 @@ import java.io.Serializable;
  */
 public class RuleFilter implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = 5629211135629700042L;
+    private static final long serialVersionUID = 5629211135629700043L;
 
     public enum FilterType {
 
@@ -159,6 +163,7 @@ public class RuleFilter implements Serializable, Cloneable {
     public RuleFilter setRole(String name) {
         if(name == null)
             throw new NullPointerException();
+        name = sortNames(name); // force ordering to preserve hashing
         role.setText(name);
         return this;
     }
@@ -276,6 +281,17 @@ public class RuleFilter implements Serializable, Cloneable {
 //        return this;
 //    }
 
+    
+    private String sortNames(String s) {
+        if(s.contains(",")) {
+            s = Arrays.asList(s.split(",")).stream()
+                    .map(n -> n.trim())
+                    .sorted()
+                    .collect(Collectors.joining(","));
+        }
+        return s;
+    }
+    
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

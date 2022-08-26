@@ -21,7 +21,6 @@ import org.geoserver.geofence.core.model.*;
 import org.geoserver.geofence.services.dto.AccessInfo;
 import org.geoserver.geofence.services.dto.AuthUser;
 import org.geoserver.geofence.services.dto.RuleFilter;
-import org.geoserver.geofence.services.dto.RuleFilter.FilterType;
 import org.geoserver.geofence.services.dto.RuleFilter.IdNameFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
 import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
@@ -33,9 +32,6 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -364,14 +360,19 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         }
     }
 
-    private String validateRolename(TextFilter filter) {
+    private List<String> validateRolenames(TextFilter filter) {
 
         switch(filter.getType()) {
             case NAMEVALUE:
-                String name = filter.getText();
-                if(StringUtils.isBlank(name) )
-                    throw new BadRequestServiceEx("Blank role name");
-                return name.trim();
+                String names = filter.getText();
+                List<String> roles = new ArrayList<>();
+                for(String name : names.split(",")) {
+                    if(StringUtils.isBlank(name) )
+                        throw new BadRequestServiceEx("Blank role name");
+                    roles.add(name.trim());
+                }
+                return roles;
+
             case DEFAULT:
             case ANY:
                 return null;
@@ -533,7 +534,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
      *   username assigned and rolename:ANY      -> should consider all the roles the user belongs to
      *   username:ANY      and rolename assigned -> should consider all the users belonging to the given role
      *
-     *
+     * @param filter a RuleFilter for rule selection. <B>side effect</B> May be changed by the method
      * @return a Map having role names as keys, and the list of matching Rules as values. The NULL key holds the rules for the DEFAULT group.
      */
     protected Map<String, List<Rule>> getRules(RuleFilter filter) throws BadRequestServiceEx {
@@ -547,7 +548,8 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         Map<String, List<Rule>> ret = new HashMap<>();
 
         if(finalRoleFilter.isEmpty()) {
-            List<Rule> found = getRuleAux(filter, filter.getRole());
+            TextFilter roleFilter = new TextFilter(filter.getRole().getType(), filter.getRole().isIncludeDefault());
+            List<Rule> found = getRuleAux(filter, roleFilter);
             ret.put(null, found);
         } else {
             for (String role : finalRoleFilter) {
@@ -593,65 +595,45 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         String username = validateUsername(filter.getUser());
 
         // rolename can be null if the group filter asks for ANY or DEFAULT
-        String rolename = validateRolename(filter.getRole());
+        List<String> requestedRoles = validateRolenames(filter.getRole());  // CSV rolenames
 
-        // filtering by both user and role is pointless
-        if(username != null && rolename != null) {
-            throw new BadRequestServiceEx("You can filter either by user or role");
-        }
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Collection<? extends GrantedAuthority> authorities;
-        if (authentication == null) {
-            authorities = new HashSet<>();
-        } else {
-            authorities = authentication.getAuthorities();
-        }
         Set<String> finalRoleFilter = new HashSet<>();
         // If both user and group are defined in filter
-        //   if user doensn't belong to group, no rule is returned
+        //   if user doesn't belong to group, no rule is returned
         //   otherwise assigned or default rules are searched for
-        if(username != null) {
-            Set<String> assignedRoles = userResolver.getRoles(username);
-            if (authorities != null) {
-                for (GrantedAuthority authority : authorities) {
-                    assignedRoles.add(authority.getAuthority());
-                }
-            }
-            if(rolename != null) {
-                if( assignedRoles.contains(rolename)) {
-                    finalRoleFilter = Collections.singleton(rolename);
-                } else {
-                    LOGGER.warn("User does not belong to role [User:"+filter.getUser()+"] [Role:"+filter.getRole()+"] [Roles:"+assignedRoles+"]");
-                    return null;
-                }
-            } else {
-                // User set and found, role (ANY, DEFAULT or notfound):
 
-                if(filter.getRole().getType() == FilterType.ANY) {
-                    if( ! assignedRoles.isEmpty()) {
-                        finalRoleFilter = assignedRoles;
+        switch(filter.getRole().getType()) {
+            case NAMEVALUE:
+                if(username != null) {
+                    Set<String> resolvedRoles = userResolver.getRoles(username);
+                    for(String role: requestedRoles) {
+                        if(resolvedRoles.contains(role)) {
+                            finalRoleFilter.add(role);
+                        } else {
+                            LOGGER.warn("User does not belong to role [User:"+filter.getUser()+"] [Role:"+role+"] [ResolvedRoles:"+resolvedRoles+"]");
+                        }
+                    }
+                } else {
+                    finalRoleFilter.addAll(requestedRoles);
+                }
+                break;
+
+            case ANY:
+                if(username != null) {
+                    Set<String> resolvedRoles = userResolver.getRoles(username);
+                    if( ! resolvedRoles.isEmpty()) {
+                        finalRoleFilter = resolvedRoles;
                     } else {
                         filter.setRole(SpecialFilterType.DEFAULT);
                     }
                 } else {
-                    // role is DEFAULT or not found:
-                    // if role filter request DEFAULT -> ok, apply the filter
-                    // if role does not exists, just apply the filter, even if probably no rule will match
+                    // no changes, use requested filtering
                 }
-            }
-        } else {
-            // user is null: then either:
-            //  1) no filter on user was requested (ANY or DEFAULT)
-            //  2) user has not been found
-            if(rolename != null) {
-                finalRoleFilter.add(rolename);
-            } else if(filter.getUser().getType() != FilterType.ANY) {
-                filter.setRole(SpecialFilterType.DEFAULT);
-            } else {
-                // group is ANY, DEFAULT or not found:
-                // no grouping, use requested filtering
-            }
+                break;
+
+            case DEFAULT:
+                // no changes
+                break;
         }
 
         return finalRoleFilter;
