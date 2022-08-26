@@ -59,16 +59,16 @@
         <repository>
             <id>geosolutions</id>
             <name>GeoSolutions Repository</name>
-            <url>http://maven.geo-solutions.it</url>
+            <url>https://maven.geo-solutions.it</url>
         </repository>
         <repository>
             <id>gwt-maven</id>
-            <url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo</url>
+            <url>https://gwt-maven.googlecode.com/svn/trunk/mavenrepo</url>
         </repository>        
         <repository>
             <id>maven-restlet</id>
             <name>Restlet Maven Repository</name>
-            <url>http://maven.restlet.org</url>
+            <url>https://maven.restlet.org</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
