@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.geoserver.geofence</groupId>
         <artifactId>geofence-gui-root</artifactId>
-        <version>3.5-SNAPSHOT</version>
+        <version>3.5.1</version>
     </parent>
 
     <groupId>org.geoserver.geofence</groupId>
