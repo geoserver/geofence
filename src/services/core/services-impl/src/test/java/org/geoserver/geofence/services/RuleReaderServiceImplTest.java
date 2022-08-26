@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -719,4 +721,113 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         assertTrue(accessInfo.getAdminRights());
     }
 
+    @Test
+    public void testMultiRoles() {
+
+        RuleFilter filter;
+
+        filter = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
+        assertEquals(0, ruleAdminService.count(filter));
+
+        UserGroup p1 = createRole("p1");
+        UserGroup p2 = createRole("p2");
+        UserGroup p3 = createRole("p3");
+
+        String u1  = "TestUser1";
+        String u2  = "TestUser2";
+        String u3 = "TestUser3";
+
+        GSUser user1 = new GSUser();
+        user1.setName(u1);
+        user1.getGroups().add(p1);
+
+        GSUser user2 = new GSUser();
+        user2.setName(u2);
+        user2.getGroups().add(p2);
+
+        GSUser user12 = new GSUser();
+        user12.setName(u3);
+        user12.getGroups().add(p1);
+        user12.getGroups().add(p2);
+
+        userAdminService.insert(user1);
+        userAdminService.insert(user2);
+        userAdminService.insert(user12);
+
+        ruleAdminService.insert(new Rule(10, u1,  "p1",  null, null,     "s1", "r1", "w1", "l1", GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(20, u2,  "p2",  null, null,     "s1", "r2", "w2", "l2", GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(30, u1,  null,  null, null,     null, null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(40, u2,  null,  null, null,     null, null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(50, u3, null,  null, null,     null, null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(51, u3, "p1",  null, null,     null, null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(52, u3, "p2",  null, null,     null, null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(60, null,"p1",  null, null,     null, null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(70, null,"p2",  null, null,     null, null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(80, null,"p3",  null, null,     null, null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(901, u1,  "p2",  null, null,    null, null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(902, u2,  "p1",  null, null,    null, null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(999, null, null, null, null,    null, null, null, null, GrantType.ALLOW));
+
+        
+        assertRules(createFilter("*",  "*"), new Integer[]{10,20,30,40,50,51,52,60,70,80,901,902,999});
+        assertRules(createFilter("*", null), new Integer[]{30,40,50,999});
+        assertRules(createFilter("*", "NO"), new Integer[]{30,40,50,999});
+        assertRules(createFilter("*", "p1"),    new Integer[]{10,30,40,50,51,60,902,999});
+        assertRules(createFilter("*", "p1,NO"), new Integer[]{10,30,40,50,51,60,902,999});
+        assertRules(createFilter("*", "p1,p2"),    new Integer[]{10,20,30,40,50,51,52,60,70,901,902,999});
+        assertRules(createFilter("*", "p1,p2,NO"), new Integer[]{10,20,30,40,50,51,52,60,70,901,902,999});
+        
+        assertRules(createFilter(null,  "*"), new Integer[]{60,70,80,999});
+        assertRules(createFilter(null, null), new Integer[]{999});
+        assertRules(createFilter(null, "NO"), new Integer[]{999});
+        assertRules(createFilter(null, "p1"),    new Integer[]{60,999});
+        assertRules(createFilter(null, "p1,NO"), new Integer[]{60,999});        
+        assertRules(createFilter(null, "p1,p2"),    new Integer[]{60,70,999});        
+        assertRules(createFilter(null, "p1,p2,NO"), new Integer[]{60,70,999});        
+        
+        assertRules(createFilter("NO",  "*"), new Integer[]{999});
+        assertRules(createFilter("NO", null), new Integer[]{999});
+        assertRules(createFilter("NO", "NO"), new Integer[]{999});
+        assertRules(createFilter("NO","p1"),    new Integer[]{999});        
+        assertRules(createFilter("NO","p1,NO"), new Integer[]{999});                
+        assertRules(createFilter("NO","p1,p2"),    new Integer[]{999});                
+        assertRules(createFilter("NO","p1,p2,NO"), new Integer[]{999});                
+        
+        assertRules(createFilter(u1,  "*"), new Integer[]{10,30,60,999});
+        assertRules(createFilter(u1, null), new Integer[]{30,999});
+        assertRules(createFilter(u1, "NO"), new Integer[]{30,999});        
+        assertRules(createFilter(u1, "p1"),       new Integer[]{10,30,60,999});
+        assertRules(createFilter(u1, "p1,NO"),    new Integer[]{10,30,60,999});
+        assertRules(createFilter(u1, "p1,p2"),    new Integer[]{10,30,60,999});
+        assertRules(createFilter(u1, "p1,p2,NO"), new Integer[]{10,30,60,999});
+        
+        assertRules(createFilter(u3,  "*"), new Integer[]{50,51,52,60,70,999});
+        assertRules(createFilter(u3, null), new Integer[]{50,999});
+        assertRules(createFilter(u3, "NO"), new Integer[]{50,999});        
+        assertRules(createFilter(u3, "p1"),       new Integer[]{50,51,60,999});
+        assertRules(createFilter(u3, "p2"),       new Integer[]{50,52,70,999});
+        assertRules(createFilter(u3, "p1,NO"),    new Integer[]{50,51,60,999});
+        assertRules(createFilter(u3, "p1,p2"),    new Integer[]{50,51,52,60,70,999});
+        assertRules(createFilter(u3, "p1,p2,p3"), new Integer[]{50,51,52,60,70,999});
+        assertRules(createFilter(u3, "p1,p2,NO"), new Integer[]{50,51,52,60,70,999});
+    }
+
+    
+    private RuleFilter createFilter(String userName, String groupName) {
+        return new RuleFilter(userName, groupName, "*", "*", "*", "*", "*", "*");
+    }
+    
+    private void assertRules(RuleFilter filter, Integer[] expectedPriorities) {
+        RuleFilter origFilter = filter.clone();
+        List<ShortRule> rules = ruleReaderService.getMatchingRules(filter);
+        
+        Set<Long> pri = rules.stream()
+                .map(r -> r.getPriority())
+                .collect(Collectors.toSet());
+        Set<Long> exp = Arrays.asList(expectedPriorities).stream()
+                .map(i -> i.longValue())
+                .collect(Collectors.toSet());
+        assertEquals("Bad rule set selected for filter " + origFilter, exp, pri);        
+    }
+    
 }
