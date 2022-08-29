@@ -5,8 +5,10 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -14,6 +16,8 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang.StringUtils;
 
+import org.geoserver.geofence.core.model.RuleLimits;
+import org.geoserver.geofence.services.rest.model.RESTRuleLimits;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.io.ParseException;
@@ -55,6 +59,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -115,6 +120,11 @@ public class RESTRuleServiceImpl
                 ruleAdminService.setDetails(id, details);
             }
 
+            RuleLimits limits=limitsFromInput(inputRule.getLimits());
+            if (limits!=null) {
+                ruleAdminService.setLimits(id,limits);
+            }
+
             return Response.status(Status.CREATED).tag(id.toString()).entity(id).build();
         } catch (BadRequestServiceEx ex) {
             LOGGER.error(ex.getMessage());
@@ -123,6 +133,13 @@ public class RESTRuleServiceImpl
             LOGGER.error(ex.getMessage(), ex);
             throw new InternalErrorRestEx(ex.getMessage());
         }
+    }
+
+    private InsertPosition insertPosition(RESTInputRule inputRule){
+        return
+                inputRule.getPosition().getPosition() == RulePosition.fixedPriority ? InsertPosition.FIXED
+                        : inputRule.getPosition().getPosition() == RulePosition.offsetFromBottom ? InsertPosition.FROM_END
+                        : inputRule.getPosition().getPosition() == RulePosition.offsetFromTop ? InsertPosition.FROM_START : null;
     }
 
     @Override
@@ -579,6 +596,25 @@ public class RESTRuleServiceImpl
             out.setConstraints(constraints);
         }
 
+        if (rule.getRuleLimits()!=null){
+            RESTRuleLimits ruleLimits=new RESTRuleLimits();
+            RuleLimits limits=rule.getRuleLimits();
+            if (limits.getSpatialFilterType()!=null)
+                ruleLimits.setSpatialFilterType(limits.getSpatialFilterType());
+            if (limits.getCatalogMode()!=null)
+                ruleLimits.setCatalogMode(limits.getCatalogMode());
+            if (limits.getAllowedArea()!=null) {
+                MultiPolygon area = limits.getAllowedArea();
+                if (area != null) {
+                    String areaWKT = "SRID=" + area.getSRID() + ";" + area.toText();
+                    ruleLimits.setRestrictedAreaWkt(areaWKT);
+                }
+                if (limits.getSpatialFilterType()!=null)
+                    ruleLimits.setSpatialFilterType(limits.getSpatialFilterType());
+            }
+            out.setLimits(ruleLimits);
+        }
+
         return out;
     }
 
@@ -607,6 +643,28 @@ public class RESTRuleServiceImpl
 
         return rule;
     }
+
+    protected RuleLimits limitsFromInput(RESTRuleLimits in){
+        RuleLimits limits=null;
+        if (in!=null && (in.getCatalogMode()!=null || in.getRestrictedAreaWkt()!=null)){
+            limits=new RuleLimits();
+            limits.setCatalogMode(in.getCatalogMode());
+            limits.setSpatialFilterType(in.getSpatialFilterType());
+            if (StringUtils.isNotBlank(in.getRestrictedAreaWkt())) {
+                if (in.getRestrictedAreaWkt() != null) {
+                    Geometry g;
+                    try {
+                        g = toGeometryAllowedArea(in.getRestrictedAreaWkt());
+                    } catch (ParseException ex) {
+                        throw new BadRequestRestEx("Error parsing WKT:" + ex.getMessage());
+                    }
+                    limits.setAllowedArea((MultiPolygon) g);
+                }
+            }
+        }
+        return limits;
+    }
+
 
     protected LayerDetails detailsFromInput(RESTInputRule in) {
         RESTLayerConstraints constraints = in.getConstraints();

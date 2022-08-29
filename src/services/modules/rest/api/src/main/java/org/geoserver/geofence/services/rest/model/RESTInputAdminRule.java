@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "adminrule")
-@XmlType(name="Rule", propOrder={"position","grant","username","rolename","instance","workspace"})
+@XmlType(name="AminRule", propOrder={"position","grant","username","rolename","instance","workspace"})
 public class RESTInputAdminRule extends AbstractRESTPayload
 {
     private RESTRulePosition position;

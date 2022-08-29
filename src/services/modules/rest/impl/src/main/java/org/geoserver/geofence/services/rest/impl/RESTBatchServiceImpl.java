@@ -5,6 +5,7 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
+import org.geoserver.geofence.services.rest.RESTAdminRuleService;
 import org.geoserver.geofence.services.rest.RESTBatchService;
 import org.geoserver.geofence.services.rest.RESTGSInstanceService;
 import org.geoserver.geofence.services.rest.RESTRuleService;
@@ -17,6 +18,7 @@ import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
 import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
 import org.geoserver.geofence.services.rest.model.RESTBatch;
 import org.geoserver.geofence.services.rest.model.RESTBatchOperation;
+import org.geoserver.geofence.services.rest.model.RESTInputAdminRule;
 import org.geoserver.geofence.services.rest.model.RESTInputGroup;
 import org.geoserver.geofence.services.rest.model.RESTInputInstance;
 import org.geoserver.geofence.services.rest.model.RESTInputRule;
@@ -53,6 +55,7 @@ public class RESTBatchServiceImpl
     private RESTUserGroupService restUserGroupService;
     private RESTGSInstanceService restInstanceService;
     private RESTRuleService restRuleService;
+    private RESTAdminRuleService restAdminRuleService;
 
     @Transactional(value="geofenceTransactionManager")
     @Override
@@ -88,6 +91,10 @@ public class RESTBatchServiceImpl
 
                     case rules:
                         dispatchRuleOp(op);
+                        break;
+
+                    case adminrules:
+                        dispatchAdminRuleOp(op);
                         break;
 
                     default:
@@ -237,6 +244,33 @@ public class RESTBatchServiceImpl
         }
     }
 
+    protected void dispatchAdminRuleOp(RESTBatchOperation op) throws NotFoundRestEx, BadRequestRestEx {
+        switch (op.getType()) {
+            case insert:
+                ensurePayload(op);
+                restAdminRuleService.insert((RESTInputAdminRule) op.getPayload());
+                break;
+
+            case update:
+                ensurePayload(op);
+                if (op.getId() != null)
+                    restAdminRuleService.update(op.getId(), (RESTInputAdminRule) op.getPayload());
+                else
+                    throw new BadRequestRestEx("Missing identifier for op " + op);
+                break;
+
+            case delete:
+                if (op.getId() != null)
+                    restAdminRuleService.delete(op.getId());
+                else
+                    throw new BadRequestRestEx("Missing identifier for op " + op);
+                break;
+
+            default:
+                throw new BadRequestRestEx("Operation not bound " + op);
+        }
+    }
+
     // ==========================================================================
 
     private void ensurePayload(RESTBatchOperation op) throws BadRequestRestEx {
@@ -273,4 +307,7 @@ public class RESTBatchServiceImpl
         this.restUserService = restUserService;
     }
 
+    public void setRestAdminRuleService(RESTAdminRuleService restAdminRuleService) {
+        this.restAdminRuleService = restAdminRuleService;
+    }
 }

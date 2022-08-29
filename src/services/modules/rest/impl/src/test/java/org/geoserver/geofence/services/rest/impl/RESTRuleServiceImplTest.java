@@ -5,7 +5,11 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
+import java.util.List;
+
 import org.geoserver.geofence.core.model.Rule;
+import org.geoserver.geofence.core.model.enums.CatalogMode;
+import org.geoserver.geofence.core.model.enums.SpatialFilterType;
 import org.geoserver.geofence.services.RuleAdminService;
 import org.geoserver.geofence.services.rest.model.RESTInputUser;
 import org.geoserver.geofence.services.rest.model.RESTInputRule;
@@ -16,6 +20,7 @@ import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.enums.AccessType;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
+import org.geoserver.geofence.services.rest.model.RESTRuleLimits;
 import org.geoserver.geofence.services.rest.model.util.IdName;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -331,6 +336,39 @@ public class RESTRuleServiceImplTest extends RESTBaseTest {
 
 
     }
+
+    @Test
+    public void testLimits() {
+
+        RESTInputRule rule = new RESTInputRule();
+        rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.fixedPriority, 42));
+        rule.setGrant(GrantType.ALLOW);
+        rule.setWorkspace("wLimits0");
+        rule.setLayer("lLimits0");
+        restRuleService.insert(rule);
+        rule = new RESTInputRule();
+        rule.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.offsetFromTop, 0));
+        rule.setGrant(GrantType.LIMIT);
+        rule.setWorkspace("wLimits0");
+        rule.setLayer("lLimits0");
+
+        RESTRuleLimits limits = new RESTRuleLimits();
+        String allowedArea = "MULTIPOLYGON (((4146.5 1301.4, 4147.5 1301.1, 4147.8 1301.4, 4146.5 1301.4)))";
+        limits.setRestrictedAreaWkt(allowedArea);
+        limits.setCatalogMode(CatalogMode.HIDE);
+        limits.setSpatialFilterType(SpatialFilterType.CLIP);
+        rule.setLimits(limits);
+
+        Long rid = (Long) restRuleService.insert(rule).getEntity();
+        assertNotNull(rid);
+        RESTOutputRule out = restRuleService.get(rid);
+        assertNotNull(out);
+        limits = out.getLimits();
+        assertEquals(CatalogMode.HIDE, limits.getCatalogMode());
+        assertEquals(SpatialFilterType.CLIP, limits.getSpatialFilterType());
+        assertEquals("SRID=4326;" + allowedArea, limits.getRestrictedAreaWkt());
+    }
+
 
 
 }
