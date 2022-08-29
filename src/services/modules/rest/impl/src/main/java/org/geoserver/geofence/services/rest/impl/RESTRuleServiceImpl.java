@@ -93,6 +93,7 @@ public class RESTRuleServiceImpl
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, value = "geofenceTransactionManager")
     public Response insert(RESTInputRule inputRule) throws NotFoundRestEx, BadRequestRestEx, InternalErrorRestEx {
 
         if (inputRule.getPosition() == null || inputRule.getPosition().getPosition() == null) {
