@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "Rule")
-@XmlType(propOrder={"id", "priority","grant","username","rolename","instance","ipaddress","service","request","workspace","layer","constraints"})
+@XmlType(propOrder={"id", "priority","grant","username","rolename","instance","ipaddress","service","request","subfield","workspace","layer","constraints"})
 public class RESTOutputRule implements Serializable {
 
     private Long id;
@@ -35,6 +35,8 @@ public class RESTOutputRule implements Serializable {
 
     private String service;
     private String request;
+    
+    private String subfield;
 
     private String workspace;
     private String layer;
@@ -104,6 +106,14 @@ public class RESTOutputRule implements Serializable {
         this.request = request;
     }
 
+    public String getSubfield() {
+       return subfield;
+    }
+
+    public void setSubfield(String subfield) {
+       this.subfield = subfield;
+    }
+
     public String getService() {
         return service;
     }
@@ -171,6 +181,9 @@ public class RESTOutputRule implements Serializable {
         }
         if (request != null) {
             sb.append(" request:").append(request);
+        }
+        if (subfield != null) {
+            sb.append(" sub:").append(subfield);
         }
         if (workspace != null) {
             sb.append(" workspace:").append(workspace);

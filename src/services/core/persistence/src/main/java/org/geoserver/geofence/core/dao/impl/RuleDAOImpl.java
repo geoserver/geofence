@@ -88,6 +88,7 @@ public class RuleDAOImpl extends PrioritizableDAOImpl<Rule> implements RuleDAO {
         addSearchField(search, "instance", rule.getInstance());
         addSearchField(search, "service", rule.getService());
         addSearchField(search, "request", rule.getRequest());
+        addSearchField(search, "subfield", rule.getSubfield());
         addSearchField(search, "workspace", rule.getWorkspace());
         addSearchField(search, "layer", rule.getLayer());
 

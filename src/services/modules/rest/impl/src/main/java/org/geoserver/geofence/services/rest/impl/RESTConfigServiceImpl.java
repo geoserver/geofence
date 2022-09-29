@@ -151,6 +151,7 @@ public class RESTConfigServiceImpl implements RESTConfigService {
 
             input.setService(rule.getService());
             input.setRequest(rule.getRequest());
+            input.setSubfield(rule.getSubfield());
             input.setWorkspace(rule.getWorkspace());
             input.setLayer(rule.getLayer());
 

@@ -18,7 +18,7 @@ import java.io.Serializable;
 public class ShortRule implements Serializable
 {
 
-    private static final long serialVersionUID = -9127101015688510863L;
+    private static final long serialVersionUID = -9127101015688510864L;
 
     private Long id;
     private Long priority;
@@ -34,6 +34,7 @@ public class ShortRule implements Serializable
 
     private String service;
     private String request;
+    private String subfield;
     private String workspace;
     private String layer;
 
@@ -62,6 +63,7 @@ public class ShortRule implements Serializable
             setAddressRange(rule.getAddressRange().toString());
         }
         setRequest(rule.getRequest());
+        setSubfield(rule.getSubfield());
         setWorkspace(rule.getWorkspace());
         setLayer(rule.getLayer());
         setAccess(rule.getAccess());
@@ -156,6 +158,14 @@ public class ShortRule implements Serializable
         this.request = request;
     }
 
+    public String getSubfield() {
+        return subfield;
+    }
+
+    public void setSubfield(String subfield) {
+        this.subfield = subfield;
+    }
+
     public String getService()
     {
         return service;
@@ -224,6 +234,10 @@ public class ShortRule implements Serializable
         if (request != null)
         {
             sb.append(" req:").append(request);
+        }
+        if (subfield != null)
+        {
+            sb.append(" sub:").append(subfield);
         }
 
         if (workspace != null)

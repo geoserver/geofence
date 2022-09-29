@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 public class RuleFilter implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = 5629211135629700043L;
+    private static final long serialVersionUID = 5629211135629700044L;
 
     public enum FilterType {
 
@@ -41,7 +41,18 @@ public class RuleFilter implements Serializable, Cloneable {
 
     public enum SpecialFilterType {
 
+        /**
+         * ANY will not add any costraints on the field.
+         * This means that all values on that field will be allowed.
+         * Pay attention when using this type, since it may allow rules you do not intended to retrieve.
+         * You may mean to use the ANY value.
+         */
         ANY(FilterType.ANY),
+        /**
+         * DEFAULT will create an IS NULL filter on the field.
+         * This means only the default rules for a given field will be returned.
+         * This is probably the value you want to use.
+         */
         DEFAULT(FilterType.DEFAULT);
         private FilterType relatedType;
 
@@ -59,6 +70,7 @@ public class RuleFilter implements Serializable, Cloneable {
     private final TextFilter sourceAddress;
     private final TextFilter service;
     private final TextFilter request;
+    private final TextFilter subfield;
     private final TextFilter workspace;
     private final TextFilter layer;
 
@@ -82,6 +94,7 @@ public class RuleFilter implements Serializable, Cloneable {
         sourceAddress = new TextFilter(ft);
         service = new TextFilter(ft, true);
         request = new TextFilter(ft, true);
+        subfield = new TextFilter(ft, true);
         workspace = new TextFilter(ft);
         layer = new TextFilter(ft);
     }
@@ -100,6 +113,8 @@ public class RuleFilter implements Serializable, Cloneable {
         service.setIncludeDefault(includeDefault);
         request = new TextFilter(ft, true);
         request.setIncludeDefault(includeDefault);
+        subfield = new TextFilter(ft, true);
+        subfield.setIncludeDefault(includeDefault);
         workspace = new TextFilter(ft);
         workspace.setIncludeDefault(includeDefault);
         layer = new TextFilter(ft);
@@ -115,7 +130,7 @@ public class RuleFilter implements Serializable, Cloneable {
      */
     public RuleFilter(String userName, String groupName, String instanceName,
             String sourceAddress,
-            String service, String request,
+            String service, String request, String subfield,
             String workspace, String layer) {
         this(SpecialFilterType.DEFAULT);
 
@@ -127,6 +142,7 @@ public class RuleFilter implements Serializable, Cloneable {
 
         this.service.setHeuristically(service);
         this.request.setHeuristically(request);
+        this.subfield.setHeuristically(subfield);
         this.workspace.setHeuristically(workspace);
         this.layer.setHeuristically(layer);
     }
@@ -140,6 +156,7 @@ public class RuleFilter implements Serializable, Cloneable {
             sourceAddress = source.sourceAddress.clone();
             service = source.service.clone();
             request = source.request.clone();
+            subfield = source.subfield.clone();
             workspace = source.workspace.clone();
             layer = source.layer.clone();
         } catch (CloneNotSupportedException ex) {
@@ -218,6 +235,16 @@ public class RuleFilter implements Serializable, Cloneable {
         return this;
     }
 
+    public RuleFilter setSubfield(String name) {
+        subfield.setText(name);
+        return this;
+    }
+
+    public RuleFilter setSubfield(SpecialFilterType type) {
+        subfield.setType(type);
+        return this;
+    }
+    
     public RuleFilter setWorkspace(String name) {
         workspace.setText(name);
         return this;
@@ -258,6 +285,10 @@ public class RuleFilter implements Serializable, Cloneable {
         return request;
     }
 
+    public TextFilter getSubfield() {
+        return subfield;
+    }
+    
     public TextFilter getService() {
         return service;
     }
@@ -316,6 +347,9 @@ public class RuleFilter implements Serializable, Cloneable {
         if (this.request != other.request && (this.request == null || !this.request.equals(other.request))) {
             return false;
         }
+        if (this.subfield != other.subfield && (this.subfield == null || !this.subfield.equals(other.subfield))) {
+            return false;
+        }
         if (this.workspace != other.workspace && (this.workspace == null || !this.workspace.equals(other.workspace))) {
             return false;
         }
@@ -335,6 +369,7 @@ public class RuleFilter implements Serializable, Cloneable {
         hash = 37 * hash + (this.sourceAddress != null ? this.sourceAddress.hashCode() : 0);
         hash = 37 * hash + (this.service != null ? this.service.hashCode() : 0);
         hash = 37 * hash + (this.request != null ? this.request.hashCode() : 0);
+        hash = 37 * hash + (this.subfield != null ? this.subfield.hashCode() : 0);
         hash = 37 * hash + (this.workspace != null ? this.workspace.hashCode() : 0);
         hash = 37 * hash + (this.layer != null ? this.layer.hashCode() : 0);
         //NOTE: ipaddress not in hashcode bc it is not used for caching
@@ -351,6 +386,7 @@ public class RuleFilter implements Serializable, Cloneable {
         sb.append(" ip:").append(sourceAddress);
         sb.append(" serv:").append(service);
         sb.append(" req:").append(request);
+        if(subfield != null) sb.append(" sub:").append(subfield);
         sb.append(" ws:").append(workspace);
         sb.append(" layer:").append(layer);
         sb.append(']');
