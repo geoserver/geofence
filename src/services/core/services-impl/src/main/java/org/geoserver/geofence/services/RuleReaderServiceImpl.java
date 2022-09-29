@@ -58,19 +58,19 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     private UserResolver userResolver;
     private AuthorizationService authorizationService;
 
-    /**
-     * @deprecated
-     */
-    @Override
-    @Deprecated
-    public List<ShortRule> getMatchingRules(
-                    String userName, String profileName, String instanceName,
-                    String sourceAddress,
-                    String service, String request,
-                    String workspace, String layer) {
-
-        return getMatchingRules(new RuleFilter(userName, profileName, instanceName, sourceAddress, service, request, workspace, layer));
-    }
+//    /**
+//     * @deprecated
+//     */
+//    @Override
+//    @Deprecated
+//    public List<ShortRule> getMatchingRules(
+//                    String userName, String profileName, String instanceName,
+//                    String sourceAddress,
+//                    String service, String request, String subfield,
+//                    String workspace, String layer) {
+//
+//        return getMatchingRules(new RuleFilter(userName, profileName, instanceName, sourceAddress, service, request, subfield, workspace, layer));
+//    }
 
     /**
      * <B>TODO: REFACTOR</B>
@@ -100,17 +100,17 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     }
 
 
-    /**
-     * @deprecated
-     */
-    @Override
-    @Deprecated
-    public AccessInfo getAccessInfo(String userName, String roleName, String instanceName,
-            String sourceAddress,
-            String service, String request,
-            String workspace, String layer) {
-        return getAccessInfo(new RuleFilter(userName, roleName, instanceName, sourceAddress, service, request, workspace, layer));
-    }
+//    /**
+//     * @deprecated
+//     */
+//    @Override
+//    @Deprecated
+//    public AccessInfo getAccessInfo(String userName, String roleName, String instanceName,
+//            String sourceAddress,
+//            String service, String request, String subfield,
+//            String workspace, String layer) {
+//        return getAccessInfo(new RuleFilter(userName, roleName, instanceName, sourceAddress, service, request, subfield, workspace, layer));
+//    }
 
     @Override
     public AccessInfo getAccessInfo(RuleFilter filter)
@@ -647,6 +647,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         addCriteria(searchCriteria, "instance", filter.getInstance());
         addStringCriteria(searchCriteria, "service", filter.getService()); // see class' javadoc
         addStringCriteria(searchCriteria, "request", filter.getRequest()); // see class' javadoc
+        addStringCriteria(searchCriteria, "subfield", filter.getSubfield());
         addStringCriteria(searchCriteria, "workspace", filter.getWorkspace());
         addStringCriteria(searchCriteria, "layer", filter.getLayer());
 

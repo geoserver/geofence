@@ -16,9 +16,9 @@ import java.util.Set;
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class AccessInfo implements Serializable {
+public class AccessInfo implements Serializable, Cloneable {
     
-    private static final long serialVersionUID = -9108763358187355342L;
+    private static final long serialVersionUID = -9108763358187355343L;
 
     /**
      * Default "allow everything" AccessInfo
@@ -174,4 +174,14 @@ public class AccessInfo implements Serializable {
 
         return sb.toString();
     }
+
+    @Override
+    public AccessInfo clone() {
+        try {
+            return (AccessInfo) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            throw new IllegalStateException("Unexpected exception", ex);
+        }
+    }
+
 }
