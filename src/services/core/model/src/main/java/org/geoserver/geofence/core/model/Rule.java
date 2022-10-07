@@ -107,6 +107,9 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
     private String request;
 
     @Column
+    private String subfield;
+    
+    @Column
     @Index(name = "idx_rule_workspace")
     private String workspace;
 
@@ -130,7 +133,7 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
     }
 
     public Rule(long priority, String username, String rolename, GSInstance instance, IPAddressRange addressRange,
-                               String service, String request, String workspace, String layer, GrantType access) {
+                               String service, String request, String subfield, String workspace, String layer, GrantType access) {
         this.priority = priority;
         this.username = username;
         this.rolename = rolename;
@@ -138,9 +141,19 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
         this.addressRange = addressRange;
         this.service = service;
         this.request = request;
+        this.subfield = subfield;
         this.workspace = workspace;
         this.layer = layer;
         this.access = access;
+    }
+
+    /**
+     * @deprecated need new subfield argument
+     */
+    @Deprecated
+    public Rule(long priority, String username, String rolename, GSInstance instance, IPAddressRange addressRange,
+                               String service, String request, String workspace, String layer, GrantType access) {
+        this(priority, username, rolename, instance, addressRange, service, request, null, workspace, layer, access);
     }
 
     public Long getId() {
@@ -217,6 +230,14 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
         this.request = request;
     }
 
+    public String getSubfield() {
+       return subfield;
+    }
+
+    public void setSubfield(String subfield) {
+       this.subfield = subfield;
+    }        
+
     public String getWorkspace() {
         return workspace;
     }
@@ -284,6 +305,9 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
         }
         if (request != null) {
             sb.append(" req:").append(request);
+        }
+        if (subfield != null) {
+            sb.append(" sub:").append(subfield);
         }
 
         if (workspace != null) {

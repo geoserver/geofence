@@ -165,6 +165,11 @@ public class RESTRuleServiceImpl
                 isRuleUpdated = true;
             }
 
+            if (rule.getSubfield() != null) {
+                old.setSubfield(rule.getSubfield().isEmpty() ? null : rule.getSubfield());
+                isRuleUpdated = true;
+            }
+            
             if (rule.getWorkspace() != null) {
                 old.setWorkspace(rule.getWorkspace().isEmpty() ? null : rule.getWorkspace());
                 isRuleUpdated = true;
@@ -195,8 +200,8 @@ public class RESTRuleServiceImpl
                 if (constraintsNew.getAttributes() != null) {
                     isDetailUpdated = true; // this update is complex: pessimistic case: it has to be updated
 
-                    Set<LayerAttribute> attrToRemove = new HashSet<LayerAttribute>();
-                    Set<LayerAttribute> attrToAdd = new HashSet<LayerAttribute>();
+                    Set<LayerAttribute> attrToRemove = new HashSet<>();
+                    Set<LayerAttribute> attrToAdd = new HashSet<>();
 
                     // find attribute by name, then copy in new datatype and accesstype
                     // if not found, attribute has to be removed
@@ -367,6 +372,7 @@ public class RESTRuleServiceImpl
             Long instanceId, String instanceName, Boolean instanceDefault,
             String serviceName, Boolean serviceDefault,
             String requestName, Boolean requestDefault,
+            String subfieldName, Boolean subfieldDefault,
             String workspace, Boolean workspaceDefault,
             String layer, Boolean layerDefault)
             throws BadRequestRestEx, InternalErrorRestEx {
@@ -377,6 +383,7 @@ public class RESTRuleServiceImpl
                 instanceId, instanceName, instanceDefault,
                 serviceName, serviceDefault,
                 requestName, requestDefault,
+                subfieldName, subfieldDefault,                
                 workspace, workspaceDefault,
                 layer, layerDefault);
 
@@ -395,6 +402,7 @@ public class RESTRuleServiceImpl
             Long instanceId, String instanceName, Boolean instanceDefault,
             String serviceName, Boolean serviceDefault,
             String requestName, Boolean requestDefault,
+            String subfieldName, Boolean subfieldDefault,            
             String workspace, Boolean workspaceDefault,
             String layer, Boolean layerDefault) throws BadRequestRestEx {
 
@@ -405,6 +413,7 @@ public class RESTRuleServiceImpl
         setFilter(filter.getInstance(), instanceId, instanceName, instanceDefault);
         setFilter(filter.getService(), serviceName, serviceDefault);
         setFilter(filter.getRequest(), requestName, requestDefault);
+        setFilter(filter.getSubfield(), subfieldName, subfieldDefault);
         setFilter(filter.getWorkspace(), workspace, workspaceDefault);
         setFilter(filter.getLayer(), layer, layerDefault);
         return filter;
@@ -458,6 +467,7 @@ public class RESTRuleServiceImpl
             Long instanceId, String instanceName, Boolean instanceDefault,
             String serviceName, Boolean serviceDefault,
             String requestName, Boolean requestDefault,
+            String subfieldName, Boolean subfieldDefault,
             String workspace, Boolean workspaceDefault,
             String layer, Boolean layerDefault)
             throws BadRequestRestEx, InternalErrorRestEx {
@@ -468,6 +478,7 @@ public class RESTRuleServiceImpl
                 instanceId, instanceName, instanceDefault,
                 serviceName, serviceDefault,
                 requestName, requestDefault,
+                subfieldName, subfieldDefault,
                 workspace, workspaceDefault,
                 layer, layerDefault);
 
@@ -549,6 +560,7 @@ public class RESTRuleServiceImpl
 
         out.setService(rule.getService());
         out.setRequest(rule.getRequest());
+        out.setSubfield(rule.getSubfield());
         out.setWorkspace(rule.getWorkspace());
         out.setLayer(rule.getLayer());
 
@@ -602,6 +614,7 @@ public class RESTRuleServiceImpl
 
         rule.setService(in.getService());
         rule.setRequest(in.getRequest());
+        rule.setSubfield(in.getSubfield());
         rule.setWorkspace(in.getWorkspace());
         rule.setLayer(in.getLayer());
 

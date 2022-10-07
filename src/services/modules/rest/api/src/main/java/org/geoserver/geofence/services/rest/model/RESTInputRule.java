@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "rule")
-@XmlType(name="Rule", propOrder={"position","grant","username","rolename","instance","ipaddress","service","request","workspace","layer","constraints"})
+@XmlType(name="Rule", propOrder={"position","grant","username","rolename","instance","ipaddress","service","request","subfield","workspace","layer","constraints"})
 public class RESTInputRule extends AbstractRESTPayload {
 
     private RESTRulePosition position;
@@ -32,6 +32,8 @@ public class RESTInputRule extends AbstractRESTPayload {
 
     private String service;
     private String request;
+
+    private String subfield;
 
     private String workspace;
     private String layer;
@@ -101,6 +103,14 @@ public class RESTInputRule extends AbstractRESTPayload {
         this.request = request;
     }
 
+    public String getSubfield() {
+       return subfield;
+    }
+
+    public void setSubfield(String subfield) {
+       this.subfield = subfield;
+    }
+    
     public String getService() {
         return service;
     }

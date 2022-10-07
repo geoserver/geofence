@@ -80,6 +80,9 @@ public interface RESTRuleService
         @QueryParam("request")     String  requestName,
         @QueryParam("requestAny")  Boolean requestAny,
 
+        @QueryParam("subfield")     String  subfieldName,
+        @QueryParam("subfieldAny")  Boolean subfieldAny,
+        
         @QueryParam("workspace") String  workspace,
         @QueryParam("workspaceAny")  Boolean workspaceAny,
 
@@ -105,6 +108,9 @@ public interface RESTRuleService
 
         @QueryParam("request")     String  requestName,
         @QueryParam("requestAny")  Boolean requestAny,
+        
+        @QueryParam("subfield")     String  subfieldName,
+        @QueryParam("subfieldAny")  Boolean subfieldAny,
 
         @QueryParam("workspace") String  workspace,
         @QueryParam("workspaceAny")  Boolean workspaceAny,

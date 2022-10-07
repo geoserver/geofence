@@ -16,4 +16,4 @@ src/gui/web/war/geofence/
 **/gwt-unitCache/
 **/geofence_db/
 **/nbproject/
-
+**/nb-configuration.xml

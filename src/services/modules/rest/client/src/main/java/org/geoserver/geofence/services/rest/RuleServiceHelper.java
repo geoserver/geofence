@@ -22,19 +22,19 @@ public class RuleServiceHelper {
     }
 
     public long countAll() {
-        return count(null, null, null, null, null, null, null);
+        return count(null, null, null, null, null, null, null, null);
     }
 
     public long count(RuleFilter ruleFilter) {
         return count(
                 ruleFilter.getUser(), ruleFilter.getRole(), ruleFilter.getInstance(),
-                ruleFilter.getService(), ruleFilter.getRequest(),
+                ruleFilter.getService(), ruleFilter.getRequest(), ruleFilter.getSubfield(),
                 ruleFilter.getWorkspace(), ruleFilter.getLayer());
     }
 
 
     public long count(RuleFilter.TextFilter userFilter, RuleFilter.TextFilter ruleFilter, RuleFilter.IdNameFilter instanceFilter,
-                RuleFilter.TextFilter serviceFilter, RuleFilter.TextFilter requestFilter,
+                RuleFilter.TextFilter serviceFilter, RuleFilter.TextFilter requestFilter, RuleFilter.TextFilter subfieldFilter,
                 RuleFilter.TextFilter workspaceFilter, RuleFilter.TextFilter layerFilter) {
 
         return ruleService.count(
@@ -43,6 +43,7 @@ public class RuleServiceHelper {
                 getFilterId(instanceFilter), getFilterName(instanceFilter), getFilterDefault(instanceFilter),
                 getFilterName(serviceFilter), getFilterDefault(serviceFilter),
                 getFilterName(requestFilter), getFilterDefault(requestFilter),
+                getFilterName(subfieldFilter), getFilterDefault(subfieldFilter),
                 getFilterName(workspaceFilter), getFilterDefault(workspaceFilter),
                 getFilterName(layerFilter), getFilterDefault(layerFilter));
     }
@@ -81,21 +82,21 @@ public class RuleServiceHelper {
     }
 
     public RESTOutputRuleList getAll() {
-        return get(null, null, false, null, null, null, null, null, null, null);
+        return get(null, null, false, null, null, null, null, null, null, null, null);
     }
 
     public RESTOutputRuleList get(Integer page, Integer entries, boolean full, RuleFilter ruleFilter) {
         return get(
                 page, entries, full,
                 ruleFilter.getUser(), ruleFilter.getRole(), ruleFilter.getInstance(),
-                ruleFilter.getService(), ruleFilter.getRequest(),
+                ruleFilter.getService(), ruleFilter.getRequest(), ruleFilter.getSubfield(),
                 ruleFilter.getWorkspace(), ruleFilter.getLayer());
     }
 
     public RESTOutputRuleList get(
                 Integer page, Integer entries, boolean full,
                 RuleFilter.TextFilter userFilter, RuleFilter.TextFilter ruleFilter, RuleFilter.IdNameFilter instanceFilter,
-                RuleFilter.TextFilter serviceFilter, RuleFilter.TextFilter requestFilter,
+                RuleFilter.TextFilter serviceFilter, RuleFilter.TextFilter requestFilter, RuleFilter.TextFilter subfieldFilter,
                 RuleFilter.TextFilter workspaceFilter, RuleFilter.TextFilter layerFilter) {
 
         return ruleService.get(page,entries,full,
@@ -104,6 +105,7 @@ public class RuleServiceHelper {
                 getFilterId(instanceFilter),  getFilterName(instanceFilter), getFilterDefault(instanceFilter),
                 getFilterName(serviceFilter), getFilterDefault(serviceFilter),
                 getFilterName(requestFilter), getFilterDefault(requestFilter),
+                getFilterName(subfieldFilter), getFilterDefault(subfieldFilter),
                 getFilterName(workspaceFilter), getFilterDefault(workspaceFilter),
                 getFilterName(layerFilter),   getFilterDefault(layerFilter));
     }
