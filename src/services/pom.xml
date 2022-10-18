@@ -66,7 +66,7 @@
         <spring-ws-version>1.0.1</spring-ws-version>
         <aspectj-version>1.5.4</aspectj-version>
         <jetty-version>9.2.13.v20150730</jetty-version>
-        <jettison-version>1.2</jettison-version>
+        <jettison-version>1.5.1</jettison-version>
 
         <asm-version>2.2.3</asm-version>
         <cglib-version>2.2</cglib-version>
