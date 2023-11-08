@@ -46,8 +46,8 @@ import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
 import org.geoserver.geofence.services.rest.model.RESTRulePosition.RulePosition;
 import org.geoserver.geofence.services.rest.model.util.IdName;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

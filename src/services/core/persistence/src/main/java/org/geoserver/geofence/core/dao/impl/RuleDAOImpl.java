@@ -17,8 +17,8 @@ import org.geoserver.geofence.core.model.Rule;
 
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.geoserver.geofence.core.dao.DuplicateKeyException;
 
 import org.springframework.transaction.annotation.Transactional;
