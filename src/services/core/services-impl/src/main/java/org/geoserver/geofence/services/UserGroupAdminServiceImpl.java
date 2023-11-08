@@ -11,8 +11,8 @@ import org.geoserver.geofence.core.model.UserGroup;
 
 import java.util.List;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.geoserver.geofence.services.dto.ShortGroup;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;

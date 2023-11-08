@@ -10,8 +10,8 @@ import org.springframework.ldap.core.AttributesMapper;
 
 import com.googlecode.genericdao.search.Filter;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"

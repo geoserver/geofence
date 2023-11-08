@@ -18,8 +18,8 @@ import org.geoserver.geofence.services.dto.ShortRule;
 import org.geoserver.geofence.services.dto.ShortUser;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** 
  *
