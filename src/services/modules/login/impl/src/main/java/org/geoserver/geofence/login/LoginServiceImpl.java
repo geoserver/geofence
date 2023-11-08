@@ -15,8 +15,8 @@ import org.geoserver.geofence.api.exception.AuthException;
 import org.geoserver.geofence.login.util.GrantAll;
 import org.geoserver.geofence.login.util.SessionManager;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;

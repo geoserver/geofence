@@ -19,8 +19,8 @@ import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.Phase;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;;
 
 
 

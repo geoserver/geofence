@@ -8,8 +8,8 @@ package org.geoserver.geofence.services;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.geoserver.geofence.core.dao.GSUserDAO;
 import org.geoserver.geofence.core.dao.UserGroupDAO;

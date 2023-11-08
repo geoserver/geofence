@@ -11,8 +11,8 @@ import java.util.Map;
 import org.geoserver.geofence.api.dto.GrantedAuths;
 import org.geoserver.geofence.api.exception.AuthException;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *

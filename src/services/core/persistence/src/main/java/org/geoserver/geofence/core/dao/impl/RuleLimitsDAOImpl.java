@@ -12,8 +12,8 @@ import com.googlecode.genericdao.search.ISearch;
 import org.geoserver.geofence.core.dao.RuleLimitsDAO;
 import org.geoserver.geofence.core.model.RuleLimits;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.springframework.transaction.annotation.Transactional;
 

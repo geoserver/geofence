@@ -1,0 +1,29 @@
+<Configuration status="DEBUG">
+  <Appenders>
+
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+
+    <RollingFile name="File" 
+                 fileName="${sys:java.io.tmpdir:-/tmp}/geofence.log" 
+                 filePattern="${sys:java.io.tmpdir:-/tmp}/geofence-%d{yyyy-MM-dd}-%i.log.gz">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="10MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="1"/>
+    </RollingFile>
+
+  </Appenders>
+
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="File"/>
+    </Root>
+
+    <Logger name="org.geoserver.geofence" level="debug" />
+  </Loggers>
+
+</Configuration>

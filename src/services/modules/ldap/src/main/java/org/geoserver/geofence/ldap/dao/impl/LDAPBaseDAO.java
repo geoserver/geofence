@@ -33,8 +33,8 @@ import org.springframework.ldap.core.support.AbstractContextMapper;
 import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.ISearch;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
