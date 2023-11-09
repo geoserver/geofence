@@ -11,19 +11,19 @@
     <parent>
         <groupId>org.geoserver.geofence</groupId>
         <artifactId>geofence</artifactId>
-        <version>3.7.1</version>
+        <version>3.7-SNAPSHOT</version>
     </parent>
     
     <groupId>org.geoserver.geofence</groupId>
     <artifactId>geofence-gui-root</artifactId>
-    <version>3.7.1</version>
+    <version>3.7-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>GeoFence - GUI</name>
 
     <properties>
         <module.name>geofence-gui</module.name>
-        <geofence-version>3.7.1</geofence-version>
+        <geofence-version>3.7-SNAPSHOT</geofence-version>
         <gt-version>29.2</gt-version>
         <geogwt-version>0.4-SNAPSHOT</geogwt-version>
 
