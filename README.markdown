@@ -55,7 +55,7 @@ Here's a compatibility table for the most recent versions of both applications (
 |----------------|-----------------|---------------------------------------|
 | 3.7.x          | 2.25            |  |
 | 3.7.1          | 2.24.x          | Fix log4j libs <br/> |
-| 3.7-RC         | 2.25 <br/>2.24.0| GeoTools 30: opengis packages renaming <br/> JDK11 compatibility <br/> GUI removed <br/> **No .war available yet** |
+| 3.7-RC         | 2.24.0          | GeoTools 30: opengis packages renaming <br/> JDK11 compatibility <br/> GUI removed <br/> **No .war available yet** |
 | 3.6.1          | 2.23.x          | Fix log4j libs |
 | [3.6.0][3.6.x] | 2.23.0 - 2.23.3 | DTO changes (#226 - subfield) |
 | 3.5.1          | 2.22.0 - 2.22.x  ([client][2.22_client]) ([embedded][2.22_embedded]) <br/> 2.21.2 - 2.21.x <br/> 2.20.6 - 2.20.x| #222: Improve filtering by role <br/> #87: Exclude JPA1 dep |
