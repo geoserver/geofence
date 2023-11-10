@@ -1,0 +1,16 @@
+<Configuration status="INFO" context="geofence_webtest">
+  <Appenders>
+
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%highlight{%-5p} %d{DEFAULT} %40.40c::%-15M %3L %x- %m%n"/>
+    </Console>
+
+  </Appenders>
+
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+
+</Configuration>

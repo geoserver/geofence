@@ -1,0 +1,20 @@
+<Configuration status="INFO" context="geofence_webtest">
+  <Appenders>
+
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%highlight{%-5level} %d{DEFAULT} %40.40c::%-15M %3L - %m%n"/>
+    </Console>
+
+  </Appenders>
+
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="Console"/>
+    </Root>
+
+    <Logger name="org.geoserver.geofence.services" level="debug" />
+    <Logger name="org.hibernate" level="info" />
+    <Logger name="com.trg" level="info" />
+  </Loggers>
+
+</Configuration>
