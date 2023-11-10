@@ -24,6 +24,7 @@
     <modules>
         <module>core</module>
         <module>modules</module>
+        <module>webapp</module>
     </modules>
 
     <properties>
