@@ -17,9 +17,8 @@ Architecture
 
 **GeoFence** can be run either as a standalone Java web application, or embedded into GeoServer.
 
-The **GeoFence** *standalone application* run as a java service, and can be queried for auth by one or more GeoServer instances.
-It provides a graphical user interface to administer GeoServer users and authorization rules. 
-Furthermore, a quite complete [REST API](https://github.com/geoserver/geofence/wiki/REST-API) allows the programmatic administration of the rules and their ancillary data.  
+The **GeoFence** *standalone application* run as a java service, and can be queried for auth by one or more GeoServer instances.   
+It provides a complete [REST API](https://github.com/geoserver/geofence/wiki/REST-API) for the programmatic administration of the rules and their ancillary data; a GUI is no longer provided [since version 3.7](https://github.com/geoserver/geofence/wiki/GS-GF-Compatibility-matrix).  
 In this configuration GeoServer needs a module (the [GeoFence client plugin](https://github.com/geoserver/geoserver/tree/main/src/extension/geofence/geofence)) that will send authorization queries to GeoFence using a configurable protocol (by default it uses Spring remoting over HTTP).
 
 The *embedded* configuration will make the GeoFence engine run within GeoServer itself. The administration GUI will be seamlessly embedded into GeoServer. The embedded GeoFence should be installed as a [GeoServer plugin](https://github.com/geoserver/geoserver/tree/main/src/extension/geofence/geofence-server) as well.
