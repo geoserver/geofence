@@ -5,14 +5,12 @@
 
 package org.geoserver.geofence.services.rest.model;
 
-import org.geoserver.geofence.core.model.enums.GrantType;
-import org.geoserver.geofence.services.rest.model.util.IdName;
-
 import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import org.geoserver.geofence.core.model.enums.GrantType;
+import org.geoserver.geofence.services.rest.model.util.IdName;
 
 /**
  * A compact representation of Rule
@@ -20,7 +18,22 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "Rule")
-@XmlType(propOrder={"id", "priority","grant","username","rolename","instance","ipaddress","service","request","workspace","layer","constraints"})
+@XmlType(
+    propOrder = {
+        "id",
+        "priority",
+        "grant",
+        "username",
+        "rolename",
+        "instance",
+        "ipaddress",
+        "service",
+        "request",
+        "workspace",
+        "layer",
+        "constraints"
+    }
+)
 public class RESTOutputRule implements Serializable {
 
     private Long id;
@@ -43,8 +56,7 @@ public class RESTOutputRule implements Serializable {
 
     private RESTLayerConstraints constraints;
 
-    public RESTOutputRule() {
-    }
+    public RESTOutputRule() {}
 
     public Long getId() {
         return id;
@@ -78,13 +90,11 @@ public class RESTOutputRule implements Serializable {
         return instance;
     }
 
-    public String getIpaddress()
-    {
+    public String getIpaddress() {
         return ipaddress;
     }
 
-    public void setIpaddress(String ipaddress)
-    {
+    public void setIpaddress(String ipaddress) {
         this.ipaddress = ipaddress;
     }
 
@@ -120,8 +130,6 @@ public class RESTOutputRule implements Serializable {
         this.workspace = workspace;
     }
 
-
-
     public RESTLayerConstraints getConstraints() {
         return constraints;
     }
@@ -138,7 +146,6 @@ public class RESTOutputRule implements Serializable {
         this.priority = priority;
     }
 
-
     @XmlAttribute
     public GrantType getGrant() {
         return grant;
@@ -150,9 +157,12 @@ public class RESTOutputRule implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(getClass().getSimpleName())
-                .append("[id:").append(id)
-                .append(" pri:").append(priority);
+        StringBuilder sb =
+                new StringBuilder(getClass().getSimpleName())
+                        .append("[id:")
+                        .append(id)
+                        .append(" pri:")
+                        .append(priority);
 
         if (username != null) {
             sb.append(" user:").append(username);
@@ -183,6 +193,6 @@ public class RESTOutputRule implements Serializable {
         return sb.toString();
     }
 
-    //=========================================================================
-    
+    // =========================================================================
+
 }

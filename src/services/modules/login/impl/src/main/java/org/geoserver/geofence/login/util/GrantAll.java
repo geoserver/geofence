@@ -6,21 +6,18 @@
 package org.geoserver.geofence.login.util;
 
 import java.util.Arrays;
-
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.api.AuthProvider;
 import org.geoserver.geofence.api.dto.Authority;
 import org.geoserver.geofence.api.dto.GrantedAuths;
 import org.geoserver.geofence.api.exception.AuthException;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
-
 /**
  * A dummy AuthProvider which grants all auths to every request.
  *
- * TODO: this class used to provide a GrantAll grant, but since long an MD5 check
- * was implemented here. Naming should be fixed
+ * <p>TODO: this class used to provide a GrantAll grant, but since long an MD5 check was implemented
+ * here. Naming should be fixed
  *
  * @author ETj (etj at geo-solutions.it)
  */
@@ -29,7 +26,8 @@ public class GrantAll implements AuthProvider {
     private static final Logger LOGGER = LogManager.getLogger(GrantAll.class);
 
     @Override
-    public GrantedAuths login(String username, String password, String pwFromDb) throws AuthException {
+    public GrantedAuths login(String username, String password, String pwFromDb)
+            throws AuthException {
         // allow auth to anybody
         LOGGER.warn("Login request from '" + username + "'");
 
@@ -51,6 +49,4 @@ public class GrantAll implements AuthProvider {
     public void logout(String token) {
         // nothing to do
     }
-
-
 }

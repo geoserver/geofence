@@ -5,7 +5,6 @@
 
 package org.geoserver.geofence.services.rest.auth;
 
-
 import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Message;
@@ -16,26 +15,23 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 /**
- *
  * Starting point was JAASLoginInterceptor
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class GeofenceAuthenticationInterceptor extends AbstractPhaseInterceptor<Message>
-{
+public class GeofenceAuthenticationInterceptor extends AbstractPhaseInterceptor<Message> {
 
-    private static final Logger LOGGER = LogManager.getLogger(GeofenceAuthenticationInterceptor.class);
+    private static final Logger LOGGER =
+            LogManager.getLogger(GeofenceAuthenticationInterceptor.class);
 
     // TODO: inject user service
 
-    public GeofenceAuthenticationInterceptor()
-    {
+    public GeofenceAuthenticationInterceptor() {
         super(Phase.UNMARSHAL);
     }
 
     @Override
-    public void handleMessage(Message message) throws Fault
-    {
+    public void handleMessage(Message message) throws Fault {
 
         LOGGER.info("In handleMessage");
         LOGGER.info("Message --> " + message);
@@ -46,8 +42,7 @@ public class GeofenceAuthenticationInterceptor extends AbstractPhaseInterceptor<
         AuthUser user = null;
 
         AuthorizationPolicy policy = (AuthorizationPolicy) message.get(AuthorizationPolicy.class);
-        if (policy != null)
-        {
+        if (policy != null) {
             name = policy.getUserName();
             password = policy.getPassword();
 
@@ -58,14 +53,13 @@ public class GeofenceAuthenticationInterceptor extends AbstractPhaseInterceptor<
             user = new AuthUser();
             user.setName(name);
 
-        }
-        else
-        {
+        } else {
             LOGGER.info("No requesting user -- GUEST access");
         }
 
         GeofenceSecurityContext securityContext = new GeofenceSecurityContext();
-        GeofencePrincipal principal = (user != null) ? new GeofencePrincipal(user) : GeofencePrincipal.createGuest();
+        GeofencePrincipal principal =
+                (user != null) ? new GeofencePrincipal(user) : GeofencePrincipal.createGuest();
         securityContext.setPrincipal(principal);
 
         message.put(SecurityContext.class, securityContext);

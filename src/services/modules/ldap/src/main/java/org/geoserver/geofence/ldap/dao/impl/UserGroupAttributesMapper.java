@@ -4,16 +4,14 @@
  */
 package org.geoserver.geofence.ldap.dao.impl;
 
-import org.geoserver.geofence.core.model.UserGroup;
-
 import java.util.Collections;
-
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.geoserver.geofence.core.model.UserGroup;
 
 /**
  * AttributeMapper for UserGroup objects.
@@ -21,21 +19,19 @@ import org.apache.log4j.Logger;
  * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-public class UserGroupAttributesMapper extends BaseAttributesMapper
-{
+public class UserGroupAttributesMapper extends BaseAttributesMapper {
     private static final Logger LOGGER = LogManager.getLogger(UserGroupAttributesMapper.class);
 
     @Override
-    public Object mapFromAttributes(Attributes attrs) throws NamingException
-    {
+    public Object mapFromAttributes(Attributes attrs) throws NamingException {
         UserGroup group = new UserGroup();
 
         String id = getAttribute(attrs, "id");
-        if(StringUtils.isBlank(id)) {
+        if (StringUtils.isBlank(id)) {
             LOGGER.warn("Empty id for UserGroup");
-            if(LOGGER.isDebugEnabled()) {
-                for(Object oa: Collections.list(attrs.getAll())) {
-                    Attribute a = (Attribute)oa;
+            if (LOGGER.isDebugEnabled()) {
+                for (Object oa : Collections.list(attrs.getAll())) {
+                    Attribute a = (Attribute) oa;
                     LOGGER.debug("---> " + a);
                 }
             }
@@ -46,5 +42,4 @@ public class UserGroupAttributesMapper extends BaseAttributesMapper
 
         return group;
     }
-
 }

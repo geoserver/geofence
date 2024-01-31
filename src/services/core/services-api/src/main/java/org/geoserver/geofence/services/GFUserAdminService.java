@@ -5,20 +5,17 @@
 
 package org.geoserver.geofence.services;
 
+import java.util.List;
 import org.geoserver.geofence.core.model.GFUser;
 import org.geoserver.geofence.services.dto.ShortUser;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
-
-import java.util.List;
-
 
 /**
  * Operations on {@link GFUser GFUser}s.
  *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-public interface GFUserAdminService extends GetProviderService<GFUser>
-{
+public interface GFUserAdminService extends GetProviderService<GFUser> {
 
     // ==========================================================================
     // Basic operations
@@ -31,6 +28,7 @@ public interface GFUserAdminService extends GetProviderService<GFUser>
 
     @Override
     GFUser get(long id) throws NotFoundServiceEx;
+
     GFUser get(String name) throws NotFoundServiceEx;
 
     long getCount(String nameLike);

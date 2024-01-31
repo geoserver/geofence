@@ -8,16 +8,12 @@ package org.geoserver.geofence.services.rest.model;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 @XmlRootElement(name = "RuleList")
-public class RESTOutputRuleList implements Iterable<RESTOutputRule>{
+public class RESTOutputRuleList implements Iterable<RESTOutputRule> {
 
     private List<RESTOutputRule> list;
 

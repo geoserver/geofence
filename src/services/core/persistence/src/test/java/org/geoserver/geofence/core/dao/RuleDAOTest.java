@@ -5,9 +5,11 @@
 
 package org.geoserver.geofence.core.dao;
 
-import com.googlecode.genericdao.search.Search;
-import org.locationtech.jts.geom.MultiPolygon;
 import static org.geoserver.geofence.core.dao.BaseDAOTest.ruleDAO;
+import static org.junit.Assert.*;
+
+import com.googlecode.genericdao.search.Search;
+import java.util.List;
 import org.geoserver.geofence.core.dao.util.SearchUtil;
 import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.IPAddressRange;
@@ -17,17 +19,11 @@ import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.core.model.enums.AccessType;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
-import java.util.List;
-
-import static org.junit.Assert.*;
 import org.junit.Test;
+import org.locationtech.jts.geom.MultiPolygon;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class RuleDAOTest extends BaseDAOTest {
-
 
     private Rule createRule() {
         GSUser user = createUserAndGroup("rule_test");
@@ -35,7 +31,7 @@ public class RuleDAOTest extends BaseDAOTest {
 
         return createRule(user);
     }
-    
+
     private Rule createRule(GSUser persistentUser) {
         Rule rule = new Rule();
         rule.setUsername(persistentUser.getName());
@@ -115,7 +111,6 @@ public class RuleDAOTest extends BaseDAOTest {
             assertNotNull(details);
             assertEquals("default", details.getDefaultStyle());
             assertEquals(4, details.getAttributes().size());
-
         }
 
         // try removing the details
@@ -127,6 +122,7 @@ public class RuleDAOTest extends BaseDAOTest {
             detailsDAO.remove(details);
         }
     }
+
     @Test
     public void testAttributeNullAccessType() throws Exception {
 
@@ -193,7 +189,6 @@ public class RuleDAOTest extends BaseDAOTest {
             details.getAttributes().add(new LayerAttribute("z3", AccessType.READWRITE));
             detailsDAO.persist(details);
         }
-
     }
 
     @Test
@@ -220,49 +215,48 @@ public class RuleDAOTest extends BaseDAOTest {
             } catch (Exception e) {
             }
         }
-
     }
 
+    public void testRuleDetails() {
 
-    public void testRuleDetails()  {
-
-//        RuleAdminServiceImpl ruleAdminService = new RuleAdminServiceImpl();
-//        ruleAdminService.setRuleDAO(ruleDAO);
-//        ruleAdminService.setRuleLimitsDAO(limitsDAO);
-//        ruleAdminService.setLayerDetailsDAO(detailsDAO);
+        //        RuleAdminServiceImpl ruleAdminService = new RuleAdminServiceImpl();
+        //        ruleAdminService.setRuleDAO(ruleDAO);
+        //        ruleAdminService.setRuleLimitsDAO(limitsDAO);
+        //        ruleAdminService.setLayerDetailsDAO(detailsDAO);
 
         final Long id;
 
         {
-            Rule r1 = new Rule(10, null, null, null, null,     "s1", "r1", "w1", "l1", GrantType.ALLOW);
-//            ruleAdminService.insert(r1);
+            Rule r1 = new Rule(10, null, null, null, null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
+            //            ruleAdminService.insert(r1);
             ruleDAO.persist(r1);
             id = r1.getId();
         }
 
         // save details and check it has been saved
-//        final Long lid1;
-//        {
-//            LayerDetails details = new LayerDetails();
-//            details.getAllowedStyles().add("FIRST_style1");
-//            details.getAttributes().add(new LayerAttribute("FIRST_attr1", AccessType.NONE));
-////            ruleAdminService.setDetails(id, details);
-//            setDetails(id, details);
-//            lid1 = details.getId();
-//            assertNotNull(lid1);
-//        }
-//
-//        // check details have been set in Rule
-//        {
-////            Rule loaded = ruleAdminService.get(id);
-//            Rule loaded = ruleDAO.find(id);
-//            LayerDetails details = loaded.getLayerDetails();
-//            assertNotNull(details);
-//            assertEquals(lid1, details.getId());
-//            assertEquals(1, details.getAttributes().size());
-//            assertEquals(1, details.getAllowedStyles().size());
-//            LOGGER.info("Found " + loaded + " --> " + loaded.getLayerDetails());
-//        }
+        //        final Long lid1;
+        //        {
+        //            LayerDetails details = new LayerDetails();
+        //            details.getAllowedStyles().add("FIRST_style1");
+        //            details.getAttributes().add(new LayerAttribute("FIRST_attr1",
+        // AccessType.NONE));
+        ////            ruleAdminService.setDetails(id, details);
+        //            setDetails(id, details);
+        //            lid1 = details.getId();
+        //            assertNotNull(lid1);
+        //        }
+        //
+        //        // check details have been set in Rule
+        //        {
+        ////            Rule loaded = ruleAdminService.get(id);
+        //            Rule loaded = ruleDAO.find(id);
+        //            LayerDetails details = loaded.getLayerDetails();
+        //            assertNotNull(details);
+        //            assertEquals(lid1, details.getId());
+        //            assertEquals(1, details.getAttributes().size());
+        //            assertEquals(1, details.getAllowedStyles().size());
+        //            LOGGER.info("Found " + loaded + " --> " + loaded.getLayerDetails());
+        //        }
 
         // set new details
         final Long lid2;
@@ -276,7 +270,7 @@ public class RuleDAOTest extends BaseDAOTest {
 
             assertEquals(3, details.getAttributes().size());
 
-//            ruleAdminService.setDetails(id, details);
+            //            ruleAdminService.setDetails(id, details);
             setDetails(id, details);
             lid2 = details.getId();
             assertNotNull(lid2);
@@ -284,7 +278,7 @@ public class RuleDAOTest extends BaseDAOTest {
 
         // check details
         {
-//            Rule loaded = ruleAdminService.get(id);
+            //            Rule loaded = ruleAdminService.get(id);
             Rule loaded = ruleDAO.find(id);
             LayerDetails details = loaded.getLayerDetails();
             assertNotNull(details);
@@ -315,14 +309,13 @@ public class RuleDAOTest extends BaseDAOTest {
             assertNotNull(details.getArea());
         }
 
-
         // remove details
         {
-//            assertNotNull(ruleAdminService.get(id).getLayerDetails());
-//            ruleAdminService.setDetails(id, null);
-//
-//            Rule loaded2 = ruleAdminService.get(id);
-//            assertNull(loaded2.getLayerDetails());
+            //            assertNotNull(ruleAdminService.get(id).getLayerDetails());
+            //            ruleAdminService.setDetails(id, null);
+            //
+            //            Rule loaded2 = ruleAdminService.get(id);
+            //            assertNull(loaded2.getLayerDetails());
             assertNotNull(ruleDAO.find(id).getLayerDetails());
             setDetails(id, null);
 
@@ -333,73 +326,74 @@ public class RuleDAOTest extends BaseDAOTest {
         // remove Rule and cascade on details
         {
             LayerDetails details = new LayerDetails();
-//            ruleAdminService.setDetails(id, details);
+            //            ruleAdminService.setDetails(id, details);
             setDetails(id, details);
-//            Rule loaded = ruleAdminService.get(id);
+            //            Rule loaded = ruleAdminService.get(id);
             Rule loaded = ruleDAO.find(id);
             assertNotNull(loaded.getLayerDetails());
 
-//            ruleAdminService.delete(id);
+            //            ruleAdminService.delete(id);
             ruleDAO.removeById(id);
         }
-
     }
 
-//    @Override
+    //    @Override
     public void setDetails(Long ruleId, LayerDetails details) {
         Rule rule = ruleDAO.find(ruleId);
-        if(rule == null)
-            throw new RuntimeException("Rule not found");
+        if (rule == null) throw new RuntimeException("Rule not found");
 
-        if(rule.getLayer() == null && details != null)
+        if (rule.getLayer() == null && details != null)
             throw new RuntimeException("Rule does not refer to a fixed layer");
 
-        if(rule.getAccess() != GrantType.ALLOW && details != null)
+        if (rule.getAccess() != GrantType.ALLOW && details != null)
             throw new RuntimeException("Rule is not of ALLOW type");
 
-
         // remove old details if any
-        if(rule.getLayerDetails() != null) {
+        if (rule.getLayerDetails() != null) {
             detailsDAO.remove(rule.getLayerDetails());
         }
 
         rule = ruleDAO.find(ruleId);
-        if(rule.getLayerDetails() != null)
+        if (rule.getLayerDetails() != null)
             throw new IllegalStateException("LayerDetails (1) should be null");
 
-        if(detailsDAO.find(ruleId) != null)
+        if (detailsDAO.find(ruleId) != null)
             throw new IllegalStateException("LayerDetails (2) should be null");
 
-        if(! detailsDAO.findAll().isEmpty()) {
+        if (!detailsDAO.findAll().isEmpty()) {
             LOGGER.error("LayerDetails (3) should be null --> " + detailsDAO.findAll());
-            throw new IllegalStateException("LayerDetails (3) should be null --> " + detailsDAO.findAll().size());
+            throw new IllegalStateException(
+                    "LayerDetails (3) should be null --> " + detailsDAO.findAll().size());
         }
 
-
-        if(details != null) {
-            LOGGER.info("Setting details " + details
-                    + "for " + rule);
+        if (details != null) {
+            LOGGER.info("Setting details " + details + "for " + rule);
             details.setRule(rule);
             detailsDAO.persist(details);
             // restore old properties
-//            if(oldProps != null) { // always it is, add a size check
-//                LOGGER.info("Restoring " + oldProps.size() + " props from older LayerDetails (id:"+ruleId+")");
-//                detailsDAO.setCustomProps(ruleId, oldProps);
-//            }
+            //            if(oldProps != null) { // always it is, add a size check
+            //                LOGGER.info("Restoring " + oldProps.size() + " props from older
+            // LayerDetails (id:"+ruleId+")");
+            //                detailsDAO.setCustomProps(ruleId, oldProps);
+            //            }
         } else {
-            LOGGER.info("Removing details "
-//                    + (oldProps.isEmpty()?"":"and " + oldProps + " props ")
-                    + "for " + rule);
+            LOGGER.info(
+                    "Removing details "
+                            //                    + (oldProps.isEmpty()?"":"and " + oldProps + "
+                            // props ")
+                            + "for "
+                            + rule);
         }
     }
-
 
     @Test
     public void testDupRuleTest() throws Exception {
 
         {
-            Rule rule1 = new Rule(10, null, null, null, null, "s", null, null, null, GrantType.ALLOW);
-            Rule rule2 = new Rule(10, null, null, null, null, "s", null, null, null, GrantType.ALLOW);
+            Rule rule1 =
+                    new Rule(10, null, null, null, null, "s", null, null, null, GrantType.ALLOW);
+            Rule rule2 =
+                    new Rule(10, null, null, null, null, "s", null, null, null, GrantType.ALLOW);
 
             ruleDAO.persist(rule1);
 
@@ -409,15 +403,36 @@ public class RuleDAOTest extends BaseDAOTest {
             } catch (Exception e) {
                 // ok
             }
-
         }
     }
 
     @Test
     public void testDupRule2Test() throws Exception {
         {
-            Rule rule1 = new Rule(10, null, null, null, new IPAddressRange("1.2.3.4/32"), "s", null, null, null, GrantType.ALLOW);
-            Rule rule2 = new Rule(10, null, null, null, new IPAddressRange("1.2.3.4/32"), "s", null, null, null, GrantType.ALLOW);
+            Rule rule1 =
+                    new Rule(
+                            10,
+                            null,
+                            null,
+                            null,
+                            new IPAddressRange("1.2.3.4/32"),
+                            "s",
+                            null,
+                            null,
+                            null,
+                            GrantType.ALLOW);
+            Rule rule2 =
+                    new Rule(
+                            10,
+                            null,
+                            null,
+                            null,
+                            new IPAddressRange("1.2.3.4/32"),
+                            "s",
+                            null,
+                            null,
+                            null,
+                            GrantType.ALLOW);
 
             ruleDAO.persist(rule1);
 
@@ -433,8 +448,30 @@ public class RuleDAOTest extends BaseDAOTest {
     @Test
     public void testDupRule3Test() throws Exception {
         {
-            Rule rule1 = new Rule(10, null, null, null, new IPAddressRange("1.2.3.5/32"), "s", null, null, null, GrantType.ALLOW);
-            Rule rule2 = new Rule(10, null, null, null, new IPAddressRange("1.2.3.4/32"), "s", null, null, null, GrantType.ALLOW);
+            Rule rule1 =
+                    new Rule(
+                            10,
+                            null,
+                            null,
+                            null,
+                            new IPAddressRange("1.2.3.5/32"),
+                            "s",
+                            null,
+                            null,
+                            null,
+                            GrantType.ALLOW);
+            Rule rule2 =
+                    new Rule(
+                            10,
+                            null,
+                            null,
+                            null,
+                            new IPAddressRange("1.2.3.4/32"),
+                            "s",
+                            null,
+                            null,
+                            null,
+                            GrantType.ALLOW);
 
             ruleDAO.persist(rule1);
 
@@ -447,15 +484,14 @@ public class RuleDAOTest extends BaseDAOTest {
         }
     }
 
-
     @Test
     public void testShift() {
         assertEquals(0, ruleDAO.count(new Search(Rule.class)));
 
-        Rule r1 = new Rule(10, null, null, null, null,     "s1", "r1", "w1", "l1", GrantType.ALLOW);
-        Rule r2 = new Rule(20, null, null, null, null,     "s2", "r2", "w2", "l2", GrantType.ALLOW);
-        Rule r3 = new Rule(30, null, null, null, null,     "s3", "r3", "w3", "l3", GrantType.ALLOW);
-        Rule r4 = new Rule(40, null, null, null, null,     "s4", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r1 = new Rule(10, null, null, null, null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
+        Rule r2 = new Rule(20, null, null, null, null, "s2", "r2", "w2", "l2", GrantType.ALLOW);
+        Rule r3 = new Rule(30, null, null, null, null, "s3", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r4 = new Rule(40, null, null, null, null, "s4", "r3", "w3", "l3", GrantType.ALLOW);
 
         ruleDAO.persist(r1);
         ruleDAO.persist(r2);
@@ -480,9 +516,9 @@ public class RuleDAOTest extends BaseDAOTest {
     public void testSwap() {
         assertEquals(0, ruleDAO.count(new Search(Rule.class)));
 
-        Rule r1 = new Rule(10, null, null, null, null,     "s1", "r1", "w1", "l1", GrantType.ALLOW);
-        Rule r2 = new Rule(20, null, null, null, null,     "s2", "r2", "w2", "l2", GrantType.ALLOW);
-        Rule r3 = new Rule(30, null, null, null, null,     "s3", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r1 = new Rule(10, null, null, null, null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
+        Rule r2 = new Rule(20, null, null, null, null, "s2", "r2", "w2", "l2", GrantType.ALLOW);
+        Rule r3 = new Rule(30, null, null, null, null, "s3", "r3", "w3", "l3", GrantType.ALLOW);
 
         ruleDAO.persist(r1);
         ruleDAO.persist(r2);
@@ -501,7 +537,8 @@ public class RuleDAOTest extends BaseDAOTest {
         long id1;
         {
             assertEquals(0, ruleDAO.count(new Search(Rule.class)));
-            Rule rule1 = new Rule(1000, null, null, null, null, "s", null, null, null, GrantType.ALLOW);
+            Rule rule1 =
+                    new Rule(1000, null, null, null, null, "s", null, null, null, GrantType.ALLOW);
             ruleDAO.persist(rule1, InsertPosition.FROM_START);
             id1 = rule1.getId();
         }
@@ -512,38 +549,41 @@ public class RuleDAOTest extends BaseDAOTest {
             assertEquals(1, loaded.getPriority());
         }
 
-
-        ruleDAO.persist(new Rule(10, null, null, null, null, "s10", null, null, null, GrantType.ALLOW));
-        ruleDAO.persist(new Rule(20, null, null, null, null, "s20", null, null, null, GrantType.ALLOW));
+        ruleDAO.persist(
+                new Rule(10, null, null, null, null, "s10", null, null, null, GrantType.ALLOW));
+        ruleDAO.persist(
+                new Rule(20, null, null, null, null, "s20", null, null, null, GrantType.ALLOW));
 
         {
             assertEquals(3, ruleDAO.count(new Search(Rule.class)));
-            Rule rule1 = new Rule(1000, null, null, null, null, "sZ", null, null, null, GrantType.ALLOW);
+            Rule rule1 =
+                    new Rule(1000, null, null, null, null, "sZ", null, null, null, GrantType.ALLOW);
             long pri = ruleDAO.persist(rule1, InsertPosition.FROM_START);
             assertEquals(21, pri);
         }
 
         {
-            Rule rule1 = new Rule(1, null, null, null, null, "second", null, null, null, GrantType.ALLOW);
+            Rule rule1 =
+                    new Rule(
+                            1, null, null, null, null, "second", null, null, null, GrantType.ALLOW);
             long pri = ruleDAO.persist(rule1, InsertPosition.FROM_START);
             assertEquals(10, pri);
         }
 
         {
-            Rule rule1 = new Rule(0, null, null, null, null, "last", null, null, null, GrantType.ALLOW);
+            Rule rule1 =
+                    new Rule(0, null, null, null, null, "last", null, null, null, GrantType.ALLOW);
             long pri = ruleDAO.persist(rule1, InsertPosition.FROM_END);
             assertEquals(23, pri);
         }
 
         {
-            Rule rule1 = new Rule(1, null, null, null, null, "last2", null, null, null, GrantType.ALLOW);
+            Rule rule1 =
+                    new Rule(1, null, null, null, null, "last2", null, null, null, GrantType.ALLOW);
             long pri = ruleDAO.persist(rule1, InsertPosition.FROM_END);
             assertEquals(23, pri);
         }
-
-
     }
-
 
     @Test
     public void testIPRangeTest() throws Exception {
@@ -551,7 +591,6 @@ public class RuleDAOTest extends BaseDAOTest {
         Long uid;
         Long rid;
         {
-
             GSUser user = createUserAndGroup("rule_test");
             userDAO.persist(user);
 
@@ -575,7 +614,7 @@ public class RuleDAOTest extends BaseDAOTest {
             assertEquals("10.11.0.0/16", loaded.getAddressRange().getCidrSignature());
         }
 
-        //test search
+        // test search
         {
             Search s = new Search(Rule.class);
 
@@ -612,6 +651,4 @@ public class RuleDAOTest extends BaseDAOTest {
             assertNull(loaded.getAddressRange());
         }
     }
-
 }
-

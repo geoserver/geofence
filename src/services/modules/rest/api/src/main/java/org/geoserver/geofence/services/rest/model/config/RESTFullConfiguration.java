@@ -9,10 +9,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 @XmlRootElement(name = "GeofenceConfiguration")
 @XmlType(propOrder = {"userGroupList", "userList", "grUserList", "gsInstanceList", "ruleList"})
 public class RESTFullConfiguration {
@@ -23,8 +20,7 @@ public class RESTFullConfiguration {
     private RESTFullGSInstanceList gsInstanceList;
     private RESTFullRuleList ruleList;
 
-    public RESTFullConfiguration() {
-    }
+    public RESTFullConfiguration() {}
 
     @XmlElement(name = "GSInstances")
     public RESTFullGSInstanceList getGsInstanceList() {
@@ -75,19 +71,19 @@ public class RESTFullConfiguration {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.getClass().getSimpleName()).append('[');
-        if ( userGroupList != null ) {
+        if (userGroupList != null) {
             sb.append(userGroupList);
         }
-        if ( userList != null ) {
+        if (userList != null) {
             sb.append(", ").append(userList);
         }
-        if ( gsInstanceList != null ) {
+        if (gsInstanceList != null) {
             sb.append(", ").append(gsInstanceList);
         }
-        if ( ruleList != null ) {
+        if (ruleList != null) {
             sb.append(", ").append(ruleList);
         }
-        if ( (grUserList != null) && (grUserList.getList() != null) ) {
+        if ((grUserList != null) && (grUserList.getList() != null)) {
             sb.append(", ").append(grUserList.getList().size()).append(" internal users");
         }
         sb.append(']');

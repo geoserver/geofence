@@ -5,17 +5,14 @@
 
 package org.geoserver.geofence.core.dao.impl;
 
+import com.googlecode.genericdao.search.ISearch;
 import java.util.List;
 import java.util.Set;
-
-import com.googlecode.genericdao.search.ISearch;
-
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.core.dao.LayerDetailsDAO;
 import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.LayerDetails;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 import org.hibernate.Hibernate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,24 +29,25 @@ public class LayerDetailsDAOImpl extends BaseDAO<LayerDetails, Long> implements 
     @Override
     public void persist(LayerDetails... entities) {
         for (LayerDetails details : entities) {
-            if ( details.getRule() == null ) {
+            if (details.getRule() == null) {
                 throw new NullPointerException("Rule is not set");
             }
             details.setId(details.getRule().getId());
 
             for (LayerAttribute attr : details.getAttributes()) {
-                if ( attr.getAccess() == null ) {
-                    throw new NullPointerException("Null access type for attribute " + attr.getName() + " in " + details);
+                if (attr.getAccess() == null) {
+                    throw new NullPointerException(
+                            "Null access type for attribute " + attr.getName() + " in " + details);
                 }
             }
         }
         super.persist(entities);
     }
 
-//    @Override
-//    public LayerDetails find(Long id) {
-//        return super.find(id);
-//    }
+    //    @Override
+    //    public LayerDetails find(Long id) {
+    //        return super.find(id);
+    //    }
     @Override
     public List<LayerDetails> findAll() {
         return super.findAll();
@@ -80,10 +78,10 @@ public class LayerDetailsDAOImpl extends BaseDAO<LayerDetails, Long> implements 
     @Override
     public Set<String> getAllowedStyles(Long id) {
         LayerDetails found = find(id);
-        if ( found != null ) {
+        if (found != null) {
             Set<String> styles = found.getAllowedStyles();
 
-            if ( (styles != null) && !Hibernate.isInitialized(styles) ) {
+            if ((styles != null) && !Hibernate.isInitialized(styles)) {
                 Hibernate.initialize(styles); // fetch the props
             }
 
@@ -96,7 +94,7 @@ public class LayerDetailsDAOImpl extends BaseDAO<LayerDetails, Long> implements 
     @Override
     public void setAllowedStyles(Long id, Set<String> styles) {
         LayerDetails found = find(id);
-        if ( found != null ) {
+        if (found != null) {
             found.setAllowedStyles(styles);
         } else {
             throw new IllegalArgumentException("LayerDetails not found");

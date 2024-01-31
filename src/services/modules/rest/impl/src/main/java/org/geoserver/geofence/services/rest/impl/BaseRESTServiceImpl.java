@@ -5,17 +5,18 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
-import java.util.List;
 import java.util.ArrayList;
-
+import java.util.List;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.core.model.GSInstance;
 import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.services.AdminRuleAdminService;
 import org.geoserver.geofence.services.InstanceAdminService;
 import org.geoserver.geofence.services.RuleAdminService;
-import org.geoserver.geofence.services.UserGroupAdminService;
 import org.geoserver.geofence.services.UserAdminService;
+import org.geoserver.geofence.services.UserGroupAdminService;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
 import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
@@ -23,23 +24,16 @@ import org.geoserver.geofence.services.rest.model.RESTOutputUser;
 import org.geoserver.geofence.services.rest.model.RESTShortUser;
 import org.geoserver.geofence.services.rest.model.util.IdName;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;;
-
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public abstract class BaseRESTServiceImpl {
 
     private static final Logger LOGGER = LogManager.getLogger(BaseRESTServiceImpl.class);
-    
+
     protected UserAdminService userAdminService;
     protected UserGroupAdminService userGroupAdminService;
     protected InstanceAdminService instanceAdminService;
     protected RuleAdminService ruleAdminService;
     protected AdminRuleAdminService adminRuleAdminService;
-
 
     protected UserGroup getUserGroup(IdName groupFilter) throws BadRequestRestEx, NotFoundRestEx {
 
@@ -76,9 +70,9 @@ public abstract class BaseRESTServiceImpl {
     protected GSInstance getInstance(IdName filter) throws BadRequestRestEx, NotFoundRestEx {
 
         try {
-            if ( filter.getId() != null ) {
+            if (filter.getId() != null) {
                 return instanceAdminService.get(filter.getId());
-            } else if ( filter.getName() != null ) {
+            } else if (filter.getName() != null) {
                 return instanceAdminService.get(filter.getName());
             } else {
                 throw new BadRequestRestEx("Bad GSInstance filter " + filter);
@@ -119,8 +113,6 @@ public abstract class BaseRESTServiceImpl {
 
         return ret;
     }
-
-
 
     // ==========================================================================
     public void setUserAdminService(UserAdminService service) {

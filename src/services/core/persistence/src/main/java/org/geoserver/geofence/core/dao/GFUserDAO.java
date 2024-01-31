@@ -9,9 +9,7 @@ import org.geoserver.geofence.core.model.GFUser;
 
 /**
  * Public interface to define operations on GRUsers
- * 
+ *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-
-public interface GFUserDAO extends RestrictedGenericDAO<GFUser> {
-}
+public interface GFUserDAO extends RestrictedGenericDAO<GFUser> {}

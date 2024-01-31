@@ -92,7 +92,15 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+              <!-- REVISIT: Skip formatting to avoid errors in geofence-model/generated-sources/original-->
+              <!-- due to the regular expressions used by maven-antrun-plugin not working with the formatted code -->
+              <groupId>com.coveo</groupId>
+              <artifactId>fmt-maven-plugin</artifactId>
+              <configuration>
+                <skip>true</skip>
+              </configuration>
+            </plugin>
         </plugins>
     </build>
 

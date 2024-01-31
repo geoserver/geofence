@@ -4,18 +4,16 @@
  */
 package org.geoserver.geofence.ldap.dao.impl;
 
+import com.googlecode.genericdao.search.Filter;
+import com.googlecode.genericdao.search.Search;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.geoserver.geofence.core.dao.GSUserDAO;
 import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.UserGroup;
-
-import com.googlecode.genericdao.search.Filter;
-import com.googlecode.genericdao.search.Search;
 
 /**
  * GSUserDAO implementation, using an LDAP server as a primary source.
@@ -35,9 +33,7 @@ public class GSUserDAOLdapImpl extends LDAPBaseDAO<GSUserDAO, GSUser> implements
 
     private int maxLevelGroupsSearch = Integer.MAX_VALUE;
 
-    /**
-     *
-     */
+    /** */
     public GSUserDAOLdapImpl() {
         super();
         // set default search base and filter for users
@@ -60,14 +56,15 @@ public class GSUserDAOLdapImpl extends LDAPBaseDAO<GSUserDAO, GSUser> implements
         String dn = user.getExtId();
         String userName = user.getName();
         if (memberFilter != null) {
-            filterStr = MessageFormat.format(memberFilter, new String[] { dn, userName });
+            filterStr = MessageFormat.format(memberFilter, new String[] {dn, userName});
         } else if (StringUtils.isNotBlank(dn)) {
             filter = new Filter("member", dn);
         } else {
             LOGGER.info("User id is null, using username '" + userName + "'");
             String nameAttr = getLDAPAttribute("username");
             String memberSearchFilterAttr = getLDAPAttribute("memberSearchFilter");
-            // e.g memberSearchFilter = uniqueMember=uid={0},ou=users,ou=project,dc=edata,dc=comp,dc=be
+            // e.g memberSearchFilter =
+            // uniqueMember=uid={0},ou=users,ou=project,dc=edata,dc=comp,dc=be
             if (memberSearchFilterAttr != null) {
                 // e.g String member = nameAttr + "=" + userName;
                 String val = memberSearchFilterAttr.split("=")[0]; // e.g get uniqueMember part
@@ -96,9 +93,10 @@ public class GSUserDAOLdapImpl extends LDAPBaseDAO<GSUserDAO, GSUser> implements
         if (level < maxLevelGroupsSearch) {
             List<UserGroup> newGroups = new ArrayList<UserGroup>();
             newGroups.addAll(groups);
-            String filter = MessageFormat.format(nestedMemberFilter,
-                    new String[] { group.getExtId(), group.getName() });
-            for(UserGroup parentGroup : (List<UserGroup>)userGroupDAOLdapImpl.search(filter)) {
+            String filter =
+                    MessageFormat.format(
+                            nestedMemberFilter, new String[] {group.getExtId(), group.getName()});
+            for (UserGroup parentGroup : (List<UserGroup>) userGroupDAOLdapImpl.search(filter)) {
                 if (!newGroups.contains(parentGroup)) {
                     newGroups.add(parentGroup);
                     newGroups = addParentGroups(newGroups, parentGroup, level + 1);
@@ -112,8 +110,7 @@ public class GSUserDAOLdapImpl extends LDAPBaseDAO<GSUserDAO, GSUser> implements
     @Override
     public GSUser getFull(String name) {
         GSUser user = searchByName(name);
-        if (user == null)
-            return null;
+        if (user == null) return null;
 
         return fillWithGroups(user);
     }
@@ -135,8 +132,7 @@ public class GSUserDAOLdapImpl extends LDAPBaseDAO<GSUserDAO, GSUser> implements
         search.addFilter(new Filter("username", name));
         List<GSUser> users = search(search);
 
-        if (users.isEmpty())
-            return null;
+        if (users.isEmpty()) return null;
         else if (users.size() > 1)
             throw new IllegalArgumentException(
                     "Given filter (" + name + ") returns too many users (" + users.size() + ")");

@@ -5,51 +5,45 @@
 
 package org.geoserver.geofence.services.rest.utils;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.simplify.TopologyPreservingSimplifier;
 
-import jaitools.jts.Utils;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
-public class MultiPolygonUtils
-{
+/** @author ETj (etj at geo-solutions.it) */
+public class MultiPolygonUtils {
     private static final Logger LOGGER = LogManager.getLogger(MultiPolygonUtils.class);
 
     /**
-     * Simplifies a MultiPolygon.
-     * <BR/><BR/>
-     * Simplification is performed by first removing collinear points, then
-     * by applying DouglasPeucker simplification.
-     * <BR/>Order <B>is</B> important, since it's more likely to have collinear
-     * points before applying any other simplification.
+     * Simplifies a MultiPolygon. <br>
+     * <br>
+     * Simplification is performed by first removing collinear points, then by applying
+     * DouglasPeucker simplification. <br>
+     * Order <B>is</B> important, since it's more likely to have collinear points before applying
+     * any other simplification.
      */
-    public static MultiPolygon simplifyMultiPolygon(final MultiPolygon mp)
-    {
+    public static MultiPolygon simplifyMultiPolygon(final MultiPolygon mp) {
 
         final Polygon[] simpPolys = new Polygon[mp.getNumGeometries()];
 
-        for (int i = 0; i < mp.getNumGeometries(); i++)
-        {
+        for (int i = 0; i < mp.getNumGeometries(); i++) {
             Polygon p = (Polygon) mp.getGeometryN(i);
-            Polygon s1 = p; //Utils.removeCollinearVertices(p);
+            Polygon s1 = p; // Utils.removeCollinearVertices(p);
             TopologyPreservingSimplifier tps = new TopologyPreservingSimplifier(s1);
             Polygon s2 = (Polygon) tps.getResultGeometry();
             simpPolys[i] = s2;
 
-            if (LOGGER.isInfoEnabled())
-            {
-                LOGGER.info("RCV: simplified poly " + getPoints(p) +
-                    " --> " + getPoints(s1) +
-                    " --> " + getPoints(s2));
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info(
+                        "RCV: simplified poly "
+                                + getPoints(p)
+                                + " --> "
+                                + getPoints(s1)
+                                + " --> "
+                                + getPoints(s2));
             }
         }
 
@@ -60,22 +54,17 @@ public class MultiPolygonUtils
     }
 
     /**
-     * Return the number of points of a polygon in the format
-     * E+I0+I1+...+In
-     * where E is the number of points of the exterior ring and I0..In are
-     * the number of points of the Internal rings.
+     * Return the number of points of a polygon in the format E+I0+I1+...+In where E is the number
+     * of points of the exterior ring and I0..In are the number of points of the Internal rings.
      */
-    public static String getPoints(final Polygon p)
-    {
+    public static String getPoints(final Polygon p) {
         final StringBuilder sb = new StringBuilder();
         sb.append(p.getExteriorRing().getNumPoints());
-        for (int i = 0; i < p.getNumInteriorRing(); i++)
-        {
+        for (int i = 0; i < p.getNumInteriorRing(); i++) {
             LineString ir = p.getInteriorRingN(i);
             sb.append('+').append(ir.getNumPoints());
         }
 
         return sb.toString();
     }
-
 }

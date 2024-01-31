@@ -5,21 +5,22 @@
 
 package org.geoserver.geofence.services.dto;
 
+import java.io.Serializable;
 import org.geoserver.geofence.core.model.Rule;
 
-import java.io.Serializable;
-
-
 /**
- * A Filter for selecting {@link Rule}s. 
- * 
- * <P> For every given field, you may choose to select <UL>
- * <LI>a given value</LI>
- * <LI>any values (no filtering)</LI>
- * <LI>only default rules (null value in a field) </LI>
+ * A Filter for selecting {@link Rule}s.
+ *
+ * <p>For every given field, you may choose to select
+ *
+ * <UL>
+ *   <LI>a given value
+ *   <LI>any values (no filtering)
+ *   <LI>only default rules (null value in a field)
  * </UL>
  *
- * For instances (i.e., classes represented by DB entities) you may specify either the ID or the name.
+ * For instances (i.e., classes represented by DB entities) you may specify either the ID or the
+ * name.
  *
  * @author ETj (etj at geo-solutions.it)
  */
@@ -28,7 +29,6 @@ public class RuleFilter implements Serializable, Cloneable {
     private static final long serialVersionUID = 5629211135629700042L;
 
     public enum FilterType {
-
         NAMEVALUE,
         IDVALUE,
         ANY,
@@ -36,7 +36,6 @@ public class RuleFilter implements Serializable, Cloneable {
     }
 
     public enum SpecialFilterType {
-
         ANY(FilterType.ANY),
         DEFAULT(FilterType.DEFAULT);
         private FilterType relatedType;
@@ -49,6 +48,7 @@ public class RuleFilter implements Serializable, Cloneable {
             return relatedType;
         }
     }
+
     private final TextFilter user;
     private final TextFilter role;
     private final IdNameFilter instance;
@@ -63,10 +63,12 @@ public class RuleFilter implements Serializable, Cloneable {
     }
 
     /**
-     * Creates a RuleFilter by setting all fields filtering either to ANY or DEFAULT. <BR>
-     * If no other field is set, you will get <UL>
-     * <LI>with <B>ANY</B>, all Rules will be returned</LI>
-     * <LI>with <B>DEFAULT</B>, only the default Rule will be returned</LI>
+     * Creates a RuleFilter by setting all fields filtering either to ANY or DEFAULT. <br>
+     * If no other field is set, you will get
+     *
+     * <UL>
+     *   <LI>with <B>ANY</B>, all Rules will be returned
+     *   <LI>with <B>DEFAULT</B>, only the default Rule will be returned
      * </UL>
      */
     public RuleFilter(SpecialFilterType type) {
@@ -103,18 +105,27 @@ public class RuleFilter implements Serializable, Cloneable {
     }
 
     /**
-     * Creates a RuleFilter by heuristically converting special string values into Fitler behaviour:<UL> <LI>a null value will
-     * match only with null</LI> <LI>a '*' value will match everything (no filter condition on that given field)</LI> <LI>any
-     * other string will match literally</LI> </UL>
+     * Creates a RuleFilter by heuristically converting special string values into Fitler behaviour:
      *
-     * @deprecated Please use plain setters if you want to handle by hand special values or filter conditions.
+     * <UL>
+     *   <LI>a null value will match only with null
+     *   <LI>a '*' value will match everything (no filter condition on that given field)
+     *   <LI>any other string will match literally
+     * </UL>
+     *
+     * @deprecated Please use plain setters if you want to handle by hand special values or filter
+     *     conditions.
      */
-    public RuleFilter(String userName, String groupName, String instanceName,
+    public RuleFilter(
+            String userName,
+            String groupName,
+            String instanceName,
             String sourceAddress,
-            String service, String request,
-            String workspace, String layer) {
+            String service,
+            String request,
+            String workspace,
+            String layer) {
         this(SpecialFilterType.DEFAULT);
-
 
         this.user.setHeuristically(userName);
         this.role.setHeuristically(groupName);
@@ -145,8 +156,7 @@ public class RuleFilter implements Serializable, Cloneable {
     }
 
     public RuleFilter setUser(String name) {
-        if(name == null)
-            throw new NullPointerException();
+        if (name == null) throw new NullPointerException();
         user.setText(name);
         return this;
     }
@@ -157,8 +167,7 @@ public class RuleFilter implements Serializable, Cloneable {
     }
 
     public RuleFilter setRole(String name) {
-        if(name == null)
-            throw new NullPointerException();
+        if (name == null) throw new NullPointerException();
         role.setText(name);
         return this;
     }
@@ -265,16 +274,14 @@ public class RuleFilter implements Serializable, Cloneable {
         return workspace;
     }
 
-
-
-//    public InetAddress getSourceAddress() {
-//        return sourceAddress;
-//    }
-//
-//    public RuleFilter setSourceAddress(InetAddress sourceAddress) {
-//        this.sourceAddress = sourceAddress;
-//        return this;
-//    }
+    //    public InetAddress getSourceAddress() {
+    //        return sourceAddress;
+    //    }
+    //
+    //    public RuleFilter setSourceAddress(InetAddress sourceAddress) {
+    //        this.sourceAddress = sourceAddress;
+    //        return this;
+    //    }
 
     @Override
     public boolean equals(Object obj) {
@@ -291,22 +298,26 @@ public class RuleFilter implements Serializable, Cloneable {
         if (this.role != other.role && (this.role == null || !this.role.equals(other.role))) {
             return false;
         }
-        if (this.instance != other.instance && (this.instance == null || !this.instance.equals(other.instance))) {
+        if (this.instance != other.instance
+                && (this.instance == null || !this.instance.equals(other.instance))) {
             return false;
         }
-        if (this.service != other.service && (this.service == null || !this.service.equals(other.service))) {
+        if (this.service != other.service
+                && (this.service == null || !this.service.equals(other.service))) {
             return false;
         }
-        if (this.request != other.request && (this.request == null || !this.request.equals(other.request))) {
+        if (this.request != other.request
+                && (this.request == null || !this.request.equals(other.request))) {
             return false;
         }
-        if (this.workspace != other.workspace && (this.workspace == null || !this.workspace.equals(other.workspace))) {
+        if (this.workspace != other.workspace
+                && (this.workspace == null || !this.workspace.equals(other.workspace))) {
             return false;
         }
         if (this.layer != other.layer && (this.layer == null || !this.layer.equals(other.layer))) {
             return false;
         }
-        //NOTE: ipaddress not in equals() bc it is not used for caching
+        // NOTE: ipaddress not in equals() bc it is not used for caching
         return true;
     }
 
@@ -321,7 +332,7 @@ public class RuleFilter implements Serializable, Cloneable {
         hash = 37 * hash + (this.request != null ? this.request.hashCode() : 0);
         hash = 37 * hash + (this.workspace != null ? this.workspace.hashCode() : 0);
         hash = 37 * hash + (this.layer != null ? this.layer.hashCode() : 0);
-        //NOTE: ipaddress not in hashcode bc it is not used for caching
+        // NOTE: ipaddress not in hashcode bc it is not used for caching
         return hash;
     }
 
@@ -347,13 +358,7 @@ public class RuleFilter implements Serializable, Cloneable {
         return new RuleFilter(this);
     }
 
-
-    /**
-     * A filter that can be either:
-     *  - an id
-     *  - a string
-     *  - a special constraint (DEFAULT, ANY)
-     */
+    /** A filter that can be either: - an id - a string - a special constraint (DEFAULT, ANY) */
     public static class IdNameFilter implements Serializable, Cloneable {
 
         private static final long serialVersionUID = -5984311150423659545L;
@@ -361,8 +366,8 @@ public class RuleFilter implements Serializable, Cloneable {
         private String name;
         private FilterType type;
         /**
-         * Only used in TYPE_ID and TYPE_NAME, tells if also default Rules should be matched. Old code automatically included
-         * default rules.
+         * Only used in TYPE_ID and TYPE_NAME, tells if also default Rules should be matched. Old
+         * code automatically included default rules.
          */
         private boolean includeDefault = true;
 
@@ -390,9 +395,9 @@ public class RuleFilter implements Serializable, Cloneable {
         }
 
         public void setHeuristically(String name) {
-            if ( name == null ) {
+            if (name == null) {
                 this.type = FilterType.DEFAULT;
-            } else if ( name.equals("*") ) {
+            } else if (name.equals("*")) {
                 this.type = FilterType.ANY;
             } else {
                 this.type = FilterType.NAMEVALUE;
@@ -401,7 +406,7 @@ public class RuleFilter implements Serializable, Cloneable {
         }
 
         public void setHeuristically(Long id) {
-            if ( id == null ) {
+            if (id == null) {
                 this.type = FilterType.DEFAULT;
             } else {
                 this.type = FilterType.IDVALUE;
@@ -485,17 +490,16 @@ public class RuleFilter implements Serializable, Cloneable {
                     return type.toString();
 
                 case IDVALUE:
-                    return "id" + (includeDefault?"+:":":") + (id==null?"(null)":id.toString());
+                    return "id"
+                            + (includeDefault ? "+:" : ":")
+                            + (id == null ? "(null)" : id.toString());
 
                 case NAMEVALUE:
                     String tmp;
-                    if(name == null)
-                        tmp = "(null)";
-                    else if (name.isEmpty())
-                        tmp = "(empty)";
-                    else
-                        tmp = name;
-                    return "name" + (includeDefault?"+:":":") + tmp;
+                    if (name == null) tmp = "(null)";
+                    else if (name.isEmpty()) tmp = "(empty)";
+                    else tmp = name;
+                    return "name" + (includeDefault ? "+:" : ":") + tmp;
 
                 default:
                     throw new AssertionError();
@@ -504,23 +508,18 @@ public class RuleFilter implements Serializable, Cloneable {
 
         @Override
         public IdNameFilter clone() throws CloneNotSupportedException {
-            return (IdNameFilter)super.clone();
+            return (IdNameFilter) super.clone();
         }
-
     }
 
-    /**
-     * Contains a fixed text OR a special filtering condition (i.e. ANY, DEFAULT).
-     */
+    /** Contains a fixed text OR a special filtering condition (i.e. ANY, DEFAULT). */
     public static class TextFilter implements Serializable, Cloneable {
 
         private static final long serialVersionUID = 6565336016075974626L;
         private String text;
         private FilterType type;
         private boolean forceUppercase = false;
-        /**
-         * Only used in TYPE_NAME, tells if also default Rules should be matched. 
-         */
+        /** Only used in TYPE_NAME, tells if also default Rules should be matched. */
         private boolean includeDefault = true;
 
         public TextFilter(FilterType type) {
@@ -550,9 +549,9 @@ public class RuleFilter implements Serializable, Cloneable {
         }
 
         public void setHeuristically(String text) {
-            if ( text == null ) {
+            if (text == null) {
                 this.type = FilterType.DEFAULT;
-            } else if ( text.equals("*") ) {
+            } else if (text.equals("*")) {
                 this.type = FilterType.ANY;
             } else {
                 this.type = FilterType.NAMEVALUE;
@@ -627,10 +626,8 @@ public class RuleFilter implements Serializable, Cloneable {
                     return type.toString();
 
                 case NAMEVALUE:
-                    return (text == null ? "(null)"
-                            : text.isEmpty() ? "(empty)"
-                            : '"'+text+'"')
-                            + (includeDefault?"+":"") ;
+                    return (text == null ? "(null)" : text.isEmpty() ? "(empty)" : '"' + text + '"')
+                            + (includeDefault ? "+" : "");
 
                 case IDVALUE:
                 default:
@@ -640,8 +637,7 @@ public class RuleFilter implements Serializable, Cloneable {
 
         @Override
         public TextFilter clone() throws CloneNotSupportedException {
-            return (TextFilter)super.clone();
+            return (TextFilter) super.clone();
         }
-
     }
 }

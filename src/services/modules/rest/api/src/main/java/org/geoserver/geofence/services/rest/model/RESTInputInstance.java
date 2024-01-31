@@ -5,7 +5,6 @@
 
 package org.geoserver.geofence.services.rest.model;
 
-
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -15,7 +14,10 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "instance")
-@XmlType(name="Instance", propOrder={"name","description","baseURL","username","password"})
+@XmlType(
+    name = "Instance",
+    propOrder = {"name", "description", "baseURL", "username", "password"}
+)
 public class RESTInputInstance extends AbstractRESTPayload {
 
     private String name;
@@ -25,8 +27,7 @@ public class RESTInputInstance extends AbstractRESTPayload {
     private String username;
     private String password;
 
-    public RESTInputInstance() {
-    }
+    public RESTInputInstance() {}
 
     public String getBaseURL() {
         return baseURL;
@@ -71,10 +72,11 @@ public class RESTInputInstance extends AbstractRESTPayload {
     @Override
     public String toString() {
         return getClass().getSimpleName()
-                + "[name:" + name
-                + (username!=null? " user:" + username : "")
-                + (password!=null? " pw" : "")
-                + (baseURL!=null? " url:" + baseURL : "")
+                + "[name:"
+                + name
+                + (username != null ? " user:" + username : "")
+                + (password != null ? " pw" : "")
+                + (baseURL != null ? " url:" + baseURL : "")
                 + ']';
     }
 }

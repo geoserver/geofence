@@ -5,12 +5,11 @@
 
 package org.geoserver.geofence.services.rest.model;
 
-import org.geoserver.geofence.core.model.enums.GrantType;
-import org.geoserver.geofence.services.rest.model.util.IdName;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import org.geoserver.geofence.core.model.enums.GrantType;
+import org.geoserver.geofence.services.rest.model.util.IdName;
 
 /**
  * A compact representation of Rule
@@ -18,7 +17,22 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "rule")
-@XmlType(name="Rule", propOrder={"position","grant","username","rolename","instance","ipaddress","service","request","workspace","layer","constraints"})
+@XmlType(
+    name = "Rule",
+    propOrder = {
+        "position",
+        "grant",
+        "username",
+        "rolename",
+        "instance",
+        "ipaddress",
+        "service",
+        "request",
+        "workspace",
+        "layer",
+        "constraints"
+    }
+)
 public class RESTInputRule extends AbstractRESTPayload {
 
     private RESTRulePosition position;
@@ -40,8 +54,7 @@ public class RESTInputRule extends AbstractRESTPayload {
 
     private RESTLayerConstraints constraints;
 
-    public RESTInputRule() {
-    }
+    public RESTInputRule() {}
 
     public String getUsername() {
         return username;
@@ -58,7 +71,7 @@ public class RESTInputRule extends AbstractRESTPayload {
     public void setRolename(String rolename) {
         this.rolename = rolename;
     }
-    
+
     public void setInstanceId(Long id) {
         instance = new IdName(id);
     }
@@ -67,13 +80,11 @@ public class RESTInputRule extends AbstractRESTPayload {
         instance = new IdName(name);
     }
 
-    public String getIpaddress()
-    {
+    public String getIpaddress() {
         return ipaddress;
     }
 
-    public void setIpaddress(String ipaddress)
-    {
+    public void setIpaddress(String ipaddress) {
         this.ipaddress = ipaddress;
     }
 
@@ -117,8 +128,6 @@ public class RESTInputRule extends AbstractRESTPayload {
         this.workspace = workspace;
     }
 
-
-
     public RESTLayerConstraints getConstraints() {
         return constraints;
     }
@@ -149,12 +158,12 @@ public class RESTInputRule extends AbstractRESTPayload {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName());
 
         sb.append('[').append(grant);
-        if(position != null && position.getPosition() != null) {
-            if(position.getPosition() == RESTRulePosition.RulePosition.fixedPriority)
+        if (position != null && position.getPosition() != null) {
+            if (position.getPosition() == RESTRulePosition.RulePosition.fixedPriority)
                 sb.append('=');
-            else if(position.getPosition() == RESTRulePosition.RulePosition.offsetFromTop)
+            else if (position.getPosition() == RESTRulePosition.RulePosition.offsetFromTop)
                 sb.append('+');
-            else if(position.getPosition() == RESTRulePosition.RulePosition.offsetFromBottom)
+            else if (position.getPosition() == RESTRulePosition.RulePosition.offsetFromBottom)
                 sb.append('-');
             sb.append(position.getValue());
         }
@@ -187,5 +196,4 @@ public class RESTInputRule extends AbstractRESTPayload {
 
         return sb.toString();
     }
-
 }

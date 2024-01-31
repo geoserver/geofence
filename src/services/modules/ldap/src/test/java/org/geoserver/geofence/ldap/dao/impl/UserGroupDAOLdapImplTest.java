@@ -5,36 +5,35 @@
 package org.geoserver.geofence.ldap.dao.impl;
 
 import static org.junit.Assert.*;
-import org.geoserver.geofence.core.model.UserGroup;
-
-import java.util.List;
-
-import org.junit.Test;
 
 import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
-
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import org.geoserver.geofence.core.model.UserGroup;
+import org.junit.Test;
 
 /**
  * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-public class UserGroupDAOLdapImplTest extends BaseDAOTest
-{
+public class UserGroupDAOLdapImplTest extends BaseDAOTest {
 
     @Test
-    public void testFindAll()
-    {
+    public void testFindAll() {
         List<UserGroup> groups = userGroupDAO.findAll();
         assertTrue("No groups", groups.size() > 0);
         UserGroup group = groups.get(0);
         assertTrue("Empty group name", group.getName().length() > 0);
 
-
-        Set<String> expected = new HashSet<>(Arrays.asList(new String[]{"adminGroup", "parent", "other", "otherGroup", "destination"}));
+        Set<String> expected =
+                new HashSet<>(
+                        Arrays.asList(
+                                new String[] {
+                                    "adminGroup", "parent", "other", "otherGroup", "destination"
+                                }));
         Set<String> found = new HashSet<>();
         for (UserGroup g : groups) {
             LOGGER.debug("Found group " + g);
@@ -44,15 +43,13 @@ public class UserGroupDAOLdapImplTest extends BaseDAOTest
     }
 
     @Test
-    public void testFind()
-    {
+    public void testFind() {
         UserGroup group = userGroupDAO.find(1l);
         assertNull("Find by id should be disabled in LDAP", group);
     }
 
     @Test
-    public void testSearch()
-    {
+    public void testSearch() {
         Search search = new Search();
         search.addFilter(new Filter("groupname", "adminGroup"));
 
@@ -63,28 +60,26 @@ public class UserGroupDAOLdapImplTest extends BaseDAOTest
     }
 
     @Test
-    public void testCount()
-    {
+    public void testCount() {
         assertEquals(5, userGroupDAO.count(new Search()));
     }
-    
+
     @Test
-    public void testSearchPagination()
-    {
+    public void testSearchPagination() {
         Search search = new Search();
         List<UserGroup> groups = userGroupDAO.search(search);
         assertEquals(5, groups.size());
-        
+
         search.setPage(0);
         search.setMaxResults(2);
         groups = userGroupDAO.search(search);
         assertEquals(2, groups.size());
-        
+
         search.setPage(1);
         search.setMaxResults(2);
         groups = userGroupDAO.search(search);
         assertEquals(2, groups.size());
-        
+
         search.setPage(2);
         search.setMaxResults(2);
         groups = userGroupDAO.search(search);

@@ -5,28 +5,24 @@
 package org.geoserver.geofence.ldap.dao.impl;
 
 import static org.junit.Assert.*;
-import org.geoserver.geofence.core.model.GSUser;
-
-import java.util.List;
-
-import org.junit.Test;
 
 import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.UserGroup;
+import org.junit.Test;
 
 /**
  * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-public class GSUserDAOLdapImplTest extends BaseDAOTest
-{
+public class GSUserDAOLdapImplTest extends BaseDAOTest {
 
     @Test
-    public void testFindAll()
-    {
+    public void testFindAll() {
         List<GSUser> users = userDAO.findAll();
         assertTrue(users.size() > 0);
         GSUser user = users.get(0);
@@ -34,15 +30,13 @@ public class GSUserDAOLdapImplTest extends BaseDAOTest
     }
 
     @Test
-    public void testFind()
-    {
+    public void testFind() {
         GSUser user = userDAO.find(1l);
         assertNull(user);
     }
 
     @Test
-    public void testGetFullByName()
-    {
+    public void testGetFullByName() {
         final String USERNAME = "admin";
         GSUser user = userDAO.getFull(USERNAME);
         assertNotNull(user);
@@ -51,14 +45,12 @@ public class GSUserDAOLdapImplTest extends BaseDAOTest
     }
 
     @Test
-    public void testCount()
-    {
+    public void testCount() {
         assertTrue(userDAO.count(new Search()) > 0);
     }
 
     @Test
-    public void testSearch_admin()
-    {
+    public void testSearch_admin() {
         Search search = new Search();
         search.addFilter(new Filter("username", "admin"));
         List<GSUser> users = userDAO.search(search);
@@ -66,29 +58,26 @@ public class GSUserDAOLdapImplTest extends BaseDAOTest
         GSUser user = users.get(0);
         assertTrue(user.getName().length() > 0);
     }
-    
+
     @Test
-    public void testSearchPagination()
-    {
+    public void testSearchPagination() {
         Search search = new Search();
         List<GSUser> users = userDAO.search(search);
         assertEquals(4, users.size());
-        
+
         search.setPage(0);
         search.setMaxResults(3);
         users = userDAO.search(search);
         assertEquals(3, users.size());
-        
+
         search.setPage(1);
         search.setMaxResults(3);
         users = userDAO.search(search);
         assertEquals(1, users.size());
     }
-    
 
     @Test
-    public void testSearch_groups()
-    {
+    public void testSearch_groups() {
         Search search = new Search();
         search.addFilter(new Filter("username", "destination1"));
         List<GSUser> users = userDAO.search(search);
@@ -98,13 +87,12 @@ public class GSUserDAOLdapImplTest extends BaseDAOTest
     }
 
     @Test
-    public void test_getFullByName_groups()
-    {
+    public void test_getFullByName_groups() {
         GSUser user = userDAO.getFull("destination2");
         assertNotNull(user);
         assertEquals("destination2", user.getName());
         assertEquals(2, user.getGroups().size());
-        
+
         Set<String> gnames = new HashSet<>();
         for (UserGroup g : user.getGroups()) {
             LOGGER.debug("group : " + g.getName());
@@ -114,34 +102,32 @@ public class GSUserDAOLdapImplTest extends BaseDAOTest
         assertTrue(gnames.contains("destination"));
         assertTrue(gnames.contains("otherGroup"));
     }
-    
+
     @Test
-    public void test_getFullByName_hierarchicalGroups()
-    {
-        ((GSUserDAOLdapImpl)userDAO).setEnableHierarchicalGroups(true);
-        ((GSUserDAOLdapImpl)userDAO).setMemberFilter("member={0}");
-        ((GSUserDAOLdapImpl)userDAO).setNestedMemberFilter("member={0}");
+    public void test_getFullByName_hierarchicalGroups() {
+        ((GSUserDAOLdapImpl) userDAO).setEnableHierarchicalGroups(true);
+        ((GSUserDAOLdapImpl) userDAO).setMemberFilter("member={0}");
+        ((GSUserDAOLdapImpl) userDAO).setNestedMemberFilter("member={0}");
         try {
             GSUser user = userDAO.getFull("destination2");
-            
+
             assertNotNull(user);
             assertEquals("destination2", user.getName());
             assertEquals(3, user.getGroups().size());
-            
+
             Set<String> gnames = new HashSet<>();
             for (UserGroup g : user.getGroups()) {
                 LOGGER.debug("group : " + g.getName());
                 gnames.add(g.getName());
             }
-    
+
             assertTrue(gnames.contains("destination"));
             assertTrue(gnames.contains("otherGroup"));
             assertTrue(gnames.contains("parent"));
         } finally {
-            ((GSUserDAOLdapImpl)userDAO).setEnableHierarchicalGroups(false);
-            ((GSUserDAOLdapImpl)userDAO).setMemberFilter(null);
-            ((GSUserDAOLdapImpl)userDAO).setNestedMemberFilter(null);
+            ((GSUserDAOLdapImpl) userDAO).setEnableHierarchicalGroups(false);
+            ((GSUserDAOLdapImpl) userDAO).setMemberFilter(null);
+            ((GSUserDAOLdapImpl) userDAO).setNestedMemberFilter(null);
         }
     }
-
 }

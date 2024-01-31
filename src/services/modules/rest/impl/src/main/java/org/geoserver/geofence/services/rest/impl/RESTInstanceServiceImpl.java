@@ -6,7 +6,10 @@
 package org.geoserver.geofence.services.rest.impl;
 
 import java.util.List;
-
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.geoserver.geofence.core.model.GSInstance;
 import org.geoserver.geofence.core.model.util.PwEncoder;
 import org.geoserver.geofence.services.InstanceAdminService;
@@ -25,20 +28,8 @@ import org.geoserver.geofence.services.rest.model.RESTInputInstance;
 import org.geoserver.geofence.services.rest.model.RESTOutputInstance;
 import org.geoserver.geofence.services.rest.model.RESTShortInstanceList;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
-
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
-public class RESTInstanceServiceImpl
-        extends BaseRESTServiceImpl
-        implements RESTGSInstanceService {
+/** @author ETj (etj at geo-solutions.it) */
+public class RESTInstanceServiceImpl extends BaseRESTServiceImpl implements RESTGSInstanceService {
 
     private static final Logger LOGGER = LogManager.getLogger(RESTInstanceServiceImpl.class);
     private InstanceAdminService instanceAdminService;
@@ -55,7 +46,8 @@ public class RESTInstanceServiceImpl
     }
 
     @Override
-    public RESTOutputInstance get(Long id) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public RESTOutputInstance get(Long id)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
             GSInstance ret = instanceAdminService.get(id);
             return toOutputInstance(ret);
@@ -83,7 +75,8 @@ public class RESTInstanceServiceImpl
     }
 
     @Override
-    public Response insert(RESTInputInstance instance) throws NotFoundRestEx, InternalErrorRestEx, ConflictRestEx {
+    public Response insert(RESTInputInstance instance)
+            throws NotFoundRestEx, InternalErrorRestEx, ConflictRestEx {
 
         // check that no group with same name exists
         boolean exists;
@@ -99,8 +92,8 @@ public class RESTInstanceServiceImpl
             throw new InternalErrorRestEx(ex.getMessage());
         }
 
-        if(exists)
-            throw new ConflictRestEx("GSInstance '"+instance.getName()+"' already exists");
+        if (exists)
+            throw new ConflictRestEx("GSInstance '" + instance.getName() + "' already exists");
 
         // ok: insert it
         try {
@@ -121,7 +114,8 @@ public class RESTInstanceServiceImpl
     }
 
     @Override
-    public void update(String name, RESTInputInstance instance) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public void update(String name, RESTInputInstance instance)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
             GSInstance old = instanceAdminService.get(name);
             update(old.getId(), instance);
@@ -132,12 +126,13 @@ public class RESTInstanceServiceImpl
     }
 
     @Override
-    public void update(Long id, RESTInputInstance instance) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public void update(Long id, RESTInputInstance instance)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
 
         try {
             GSInstance old = instanceAdminService.get(id);
 
-            if ( (instance.getName() != null) ) {
+            if ((instance.getName() != null)) {
                 throw new BadRequestRestEx("Name can't be updated");
             }
 
@@ -145,17 +140,13 @@ public class RESTInstanceServiceImpl
             // the instance update is not homogeneous with the other services
             // where a DTO is used, and null checks are performed in the service
 
-            if(instance.getDescription() != null )
-                old.setDescription(instance.getDescription());
+            if (instance.getDescription() != null) old.setDescription(instance.getDescription());
 
-            if(instance.getBaseURL() != null )
-                old.setBaseURL(instance.getBaseURL());
+            if (instance.getBaseURL() != null) old.setBaseURL(instance.getBaseURL());
 
-            if(instance.getUsername() != null )
-                old.setUsername(instance.getUsername());
+            if (instance.getUsername() != null) old.setUsername(instance.getUsername());
 
-            if(instance.getPassword() != null )
-                old.setPassword(instance.getPassword());
+            if (instance.getPassword() != null) old.setPassword(instance.getPassword());
 
             instanceAdminService.update(old);
 
@@ -175,21 +166,22 @@ public class RESTInstanceServiceImpl
     }
 
     @Override
-    public Response delete(Long id, boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public Response delete(Long id, boolean cascade)
+            throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
-            if ( cascade ) {
+            if (cascade) {
                 ruleAdminService.deleteRulesByInstance(id);
             } else {
                 RuleFilter filter = new RuleFilter(SpecialFilterType.ANY);
                 filter.setInstance(id);
                 filter.getInstance().setIncludeDefault(false);
                 long cnt = ruleAdminService.count(filter);
-                if ( cnt > 0 ) {
+                if (cnt > 0) {
                     throw new ConflictRestEx("Existing rules reference the GSInstance " + id);
                 }
             }
 
-            if ( ! instanceAdminService.delete(id)) {
+            if (!instanceAdminService.delete(id)) {
                 LOGGER.warn("GSInstance not found: " + id);
                 throw new NotFoundRestEx("GSInstance not found: " + id);
             }
@@ -208,7 +200,8 @@ public class RESTInstanceServiceImpl
     }
 
     @Override
-    public Response delete(String name, boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public Response delete(String name, boolean cascade)
+            throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
             long id = instanceAdminService.get(name).getId();
             this.delete(id, cascade);
@@ -223,7 +216,6 @@ public class RESTInstanceServiceImpl
             LOGGER.error(ex.getMessage(), ex);
             throw new InternalErrorRestEx(ex.getMessage());
         }
-
     }
 
     // ==========================================================================
@@ -246,5 +238,4 @@ public class RESTInstanceServiceImpl
     public void setInstanceAdminService(InstanceAdminService instanceAdminService) {
         this.instanceAdminService = instanceAdminService;
     }
-
 }

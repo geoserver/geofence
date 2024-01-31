@@ -7,12 +7,9 @@ package org.geoserver.geofence.services.dto;
 
 import java.io.Serializable;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class AuthUser implements Serializable {
-    
+
     public static enum Role {
         ADMIN,
         USER
@@ -21,8 +18,7 @@ public class AuthUser implements Serializable {
     private String name;
     private Role role;
 
-    public AuthUser() {
-    }
+    public AuthUser() {}
 
     public AuthUser(String name, Role role) {
         this.name = name;
@@ -47,7 +43,7 @@ public class AuthUser implements Serializable {
 
     @Override
     public String toString() {
-        return "AuthUser["+name + ":"+ role + ']';
+        return "AuthUser[" + name + ":" + role + ']';
     }
 
     @Override
@@ -75,5 +71,4 @@ public class AuthUser implements Serializable {
         }
         return true;
     }
-
 }

@@ -5,34 +5,27 @@
 
 package org.geoserver.geofence.ldap.dao.impl;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.ClassPathResource;
-
-import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.ldap.core.support.LdapContextSource;
-import org.springframework.ldap.test.LdapTestUtils;
-import org.springframework.ldap.support.LdapUtils;
-
-import org.geoserver.geofence.core.dao.GSUserDAO;
-import org.geoserver.geofence.core.dao.UserGroupDAO;
+import static org.junit.Assert.*;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-
-import static org.junit.Assert.*;
+import org.geoserver.geofence.core.dao.GSUserDAO;
+import org.geoserver.geofence.core.dao.UserGroupDAO;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.core.support.LdapContextSource;
+import org.springframework.ldap.support.LdapUtils;
+import org.springframework.ldap.test.LdapTestUtils;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
-public abstract class BaseDAOTest
-{
+/** @author ETj (etj at geo-solutions.it) */
+public abstract class BaseDAOTest {
     protected final Logger LOGGER;
 
     protected static GSUserDAO userDAO;
@@ -40,63 +33,63 @@ public abstract class BaseDAOTest
 
     protected static ClassPathXmlApplicationContext ctx = null;
 
-   @Rule
-   public TestName name = new TestName();
+    @Rule public TestName name = new TestName();
 
-    public BaseDAOTest()
-    {
+    public BaseDAOTest() {
         LOGGER = LogManager.getLogger(getClass());
 
         synchronized (BaseDAOTest.class) {
             if (ctx == null) {
                 String[] paths = {
                     "classpath*:applicationContext.xml",
-//                    "applicationContext.xml",
-//                    "applicationContext-geofence-ldap.xml"
-//                         ,"applicationContext-test.xml"
+                    //                    "applicationContext.xml",
+                    //                    "applicationContext-geofence-ldap.xml"
+                    //                         ,"applicationContext-test.xml"
                 };
                 ctx = new ClassPathXmlApplicationContext(paths);
 
                 userDAO = (GSUserDAO) ctx.getBean("gsUserDAO_LDAP");
                 userGroupDAO = (UserGroupDAO) ctx.getBean("userGroupDAO_LDAP");
             }
-
         }
     }
 
     @BeforeClass
-    public static void setUpClass() throws Exception
-    {
+    public static void setUpClass() throws Exception {
         // Start an LDAP server and import test data
-//        LdapTestUtils.startEmbeddedServer(10389, "", "test");
-//        LdapTestUtils.startEmbeddedServer(10389, "dc=example,dc=com", "test");
+        //        LdapTestUtils.startEmbeddedServer(10389, "", "test");
+        //        LdapTestUtils.startEmbeddedServer(10389, "dc=example,dc=com", "test");
         LdapTestUtils.startEmbeddedServer(10389, "dc=com", "test");
         loadData();
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception
-    {
+    public static void tearDownClass() throws Exception {
         LdapTestUtils.shutdownEmbeddedServer();
     }
 
     @Before
-    public void setUp() throws Exception
-    {
-        LOGGER.info("################ Setting up -- " + getClass().getSimpleName() + ":: " + name.getMethodName() );
-//        loadData();
-        LOGGER.info("##### Ending setup for " + getClass().getSimpleName() + " ###----------------------");
+    public void setUp() throws Exception {
+        LOGGER.info(
+                "################ Setting up -- "
+                        + getClass().getSimpleName()
+                        + ":: "
+                        + name.getMethodName());
+        //        loadData();
+        LOGGER.info(
+                "##### Ending setup for "
+                        + getClass().getSimpleName()
+                        + " ###----------------------");
     }
 
-    protected static void loadData() throws Exception
-    {
+    protected static void loadData() throws Exception {
         // Bind to the directory
         LdapContextSource contextSource = new LdapContextSource();
         contextSource.setUrl("ldap://127.0.0.1:10389");
         contextSource.setUserDn("uid=admin,ou=system");
         contextSource.setPassword("secret");
         contextSource.setPooled(false);
-        //contextSource.setDirObjectFactory(null);
+        // contextSource.setDirObjectFactory(null);
         contextSource.afterPropertiesSet();
 
         // Create the Sprint LDAP template
@@ -108,10 +101,8 @@ public abstract class BaseDAOTest
     }
 
     @Test
-    public void testCheckDAOs()
-    {
+    public void testCheckDAOs() {
         assertNotNull(userDAO);
         assertTrue(userDAO instanceof GSUserDAOLdapImpl);
     }
-
 }

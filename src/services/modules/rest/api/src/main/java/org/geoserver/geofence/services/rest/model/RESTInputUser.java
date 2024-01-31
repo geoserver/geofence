@@ -5,22 +5,20 @@
 
 package org.geoserver.geofence.services.rest.model;
 
-import org.geoserver.geofence.services.rest.model.util.IdName;
-
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import org.geoserver.geofence.services.rest.model.util.IdName;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 @XmlRootElement(name = "user")
-@XmlType(name="User", propOrder = {"extId", "name", "password", "fullName", "emailAddress", "groups"})
+@XmlType(
+    name = "User",
+    propOrder = {"extId", "name", "password", "fullName", "emailAddress", "groups"}
+)
 public class RESTInputUser extends AbstractRESTPayload {
 
     private String extId;
@@ -32,7 +30,7 @@ public class RESTInputUser extends AbstractRESTPayload {
     private Boolean admin;
     private List<IdName> groups;
 
-//    @XmlAttribute(name = "extid")
+    //    @XmlAttribute(name = "extid")
     public String getExtId() {
         return extId;
     }
@@ -101,15 +99,15 @@ public class RESTInputUser extends AbstractRESTPayload {
         this.password = password;
     }
 
-//    @Override
-//    public String toString()
-//    {
-//        return this.getClass().getSimpleName() +
-//            '[' +
-//            "sguId=" + extId +
-//            " userName=" + userName +
-//            " profile=" + profile +
-//            (enabled ? " enabled" : " disabled") +
-//            ']';
-//    }
+    //    @Override
+    //    public String toString()
+    //    {
+    //        return this.getClass().getSimpleName() +
+    //            '[' +
+    //            "sguId=" + extId +
+    //            " userName=" + userName +
+    //            " profile=" + profile +
+    //            (enabled ? " enabled" : " disabled") +
+    //            ']';
+    //    }
 }

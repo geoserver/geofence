@@ -5,18 +5,13 @@
 
 package org.geoserver.geofence.api;
 
+import java.util.List;
 import org.geoserver.geofence.api.dto.RegisteredUser;
 
-import java.util.List;
-
-/**
- * 
- * @author Emanuele Tajariol (etj at geo-solutions.it)
- */
+/** @author Emanuele Tajariol (etj at geo-solutions.it) */
 public interface UserRegistry {
 
     List<RegisteredUser> getUsers(String nameLike, int page, int entries);
 
     long getUsersCount(String nameLike);
-
 }
