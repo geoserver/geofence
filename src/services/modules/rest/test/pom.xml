@@ -252,7 +252,7 @@
 
 	</dependencies>
         
-        <profiles>
+<!--        <profiles>
            <profile>
               <id>postgis</id>            
               <dependencies>
@@ -279,7 +279,7 @@
                  </dependency>                
               </dependencies>
            </profile>
-        </profiles>
+        </profiles>-->
 
 
     <build>

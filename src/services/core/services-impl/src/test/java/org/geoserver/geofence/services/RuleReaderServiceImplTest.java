@@ -251,7 +251,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
     public void testNoDefault() {
         assertEquals(0, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY)));
 
-        ruleAdminService.insert(new Rule(0, null, null, null,null,   "WCS", null, null, null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(0, null, null, null,null, "WCS", null,null, null, null, GrantType.ALLOW));
 
         assertEquals(1, getMatchingRules("u0","*","i0",null, "WCS", null,"W0","l0").size());
         assertEquals(GrantType.ALLOW, getAccessInfo("u0","*","i0",null, "WCS", null,"W0","l0").getGrant());
@@ -406,7 +406,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
             int pri = 0;
             {
-                Rule r1 = new Rule(pri++, null, "g1", null,null,      null, null, null, "l1", GrantType.ALLOW);
+                Rule r1 = new Rule(pri++, null, "g1", null,null, null, null,null, null, "l1", GrantType.ALLOW);
                 ruleAdminService.insert(r1);
 
                 LayerDetails d1 = new LayerDetails();
@@ -419,7 +419,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
                 ruleAdminService.setDetails(r1.getId(), d1);
             }
             {
-                Rule r1 = new Rule(pri++, null, "g2", null,null,      null, null, null, "l1", GrantType.ALLOW);
+                Rule r1 = new Rule(pri++, null, "g2", null,null, null, null, null, null, "l1", GrantType.ALLOW);
                 ruleAdminService.insert(r1);
 
                 LayerDetails d1 = new LayerDetails();
@@ -440,7 +440,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
                 ruleAdminService.setDetails(r1.getId(), d1);
             }
             {
-                Rule r1 = new Rule(pri++, null, "g4", null,null,      null, null, null, null, "l1", GrantType.DENY);
+                Rule r1 = new Rule(pri++, null, "g4", null,null, null, null, null, null, "l1", GrantType.DENY);
                 ruleAdminService.insert(r1);
             }
         }

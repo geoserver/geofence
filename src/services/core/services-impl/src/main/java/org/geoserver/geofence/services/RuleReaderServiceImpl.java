@@ -40,12 +40,9 @@ import org.geoserver.geofence.services.util.AccessInfoInternal;
 
 import org.geoserver.geofence.spi.UserResolver;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import java.util.*;
 import java.util.Map.Entry;
+import org.geoserver.geofence.core.model.enums.SpatialFilterType;
 
 
 /**

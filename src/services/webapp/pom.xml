@@ -113,7 +113,7 @@
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
+            <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -238,7 +238,7 @@
                 </configuration>
             </plugin>
 
-            <plugin>
+<!--            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.6.1</version>
@@ -247,11 +247,11 @@
                         <id>copy-spatial-dependencies</id>
                         <phase>prepare-package</phase>
                         <goals>
-                            <!--<goal>copy-dependencies</goal>-->
+                            <goal>copy-dependencies</goal>
                             <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <!-- configure the plugin here -->
+                             configure the plugin here 
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.hibernatespatial</groupId>
@@ -270,7 +270,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
 
         </plugins>
     </build>
@@ -287,7 +287,7 @@
          
          https://github.com/geoserver/geofence/issues/97
     -->
-    <profiles>
+<!--    <profiles>
         <profile>
             <id>postgis</id>            
             <dependencies>
@@ -323,5 +323,5 @@
                 </dependency>
             </dependencies>
         </profile>
-    </profiles>
+    </profiles>-->
 </project>

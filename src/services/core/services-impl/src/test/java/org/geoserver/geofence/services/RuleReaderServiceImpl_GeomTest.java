@@ -12,6 +12,7 @@ import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.core.model.enums.CatalogMode;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.core.model.enums.SpatialFilterType;
+import org.geoserver.geofence.core.model.util.EWKTParser;
 import static org.geoserver.geofence.services.ServiceTestBase.ruleAdminService;
 import static org.geoserver.geofence.services.ServiceTestBase.ruleReaderService;
 import org.geoserver.geofence.services.dto.AccessInfo;
@@ -191,7 +192,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         assertNull(accessInfo.getAreaWkt());
         assertNotNull(accessInfo.getClipAreaWkt());
 
-        Geometry resultArea = (new WKTReader().read(accessInfo.getClipAreaWkt()));
+        Geometry resultArea = EWKTParser.parse(accessInfo.getClipAreaWkt());
         resultArea.normalize();
         assertTrue(testArea.equalsExact(resultArea, 10.0E-15));
     }
@@ -239,7 +240,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         assertNull(accessInfo.getClipAreaWkt());
         assertNotNull(accessInfo.getAreaWkt());
 
-        Geometry resultArea = (new WKTReader().read(accessInfo.getAreaWkt()));
+        Geometry resultArea = EWKTParser.parse((accessInfo.getAreaWkt()));
         resultArea.normalize();
         assertTrue(testArea.equalsExact(resultArea, 10.0E-15));
     }
@@ -288,13 +289,12 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         assertNotNull(accessInfo.getAreaWkt());
         assertNotNull(accessInfo.getClipAreaWkt());
 
-        // the intersects should be equal to the originally defined
-        // allowed area
-        Geometry intersects = new WKTReader().read(accessInfo.getAreaWkt());
+        // the intersects should be equal to the originally defined allowed area
+        Geometry intersects = EWKTParser.parse(accessInfo.getAreaWkt());
         intersects.normalize();
         assertTrue(intersects.equalsExact(area, 10.0E-15));
 
-        Geometry clip = new WKTReader().read(accessInfo.getClipAreaWkt());
+        Geometry clip = EWKTParser.parse(accessInfo.getClipAreaWkt());
         clip.normalize();
         area2.normalize();
         assertTrue(clip.equalsExact(area2, 10.0E-15));
@@ -368,7 +368,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         // allowed area
         Geometry expectedResult = area.intersection(area2).union(area3.intersection(area4));
         expectedResult.normalize();
-        Geometry clip = reader.read(accessInfo.getClipAreaWkt());
+        Geometry clip = EWKTParser.parse(accessInfo.getClipAreaWkt());
         clip.normalize();
         assertTrue(clip.equalsExact(expectedResult, 10.0E-15));
     }
@@ -439,13 +439,13 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         // allowed area
         Geometry expectedIntersects = area3.intersection(area4);
         expectedIntersects.normalize();
-        Geometry intersects = reader.read(accessInfo.getAreaWkt());
+        Geometry intersects = EWKTParser.parse(accessInfo.getAreaWkt());
         intersects.normalize();
         System.out.println(intersects.toString());
         System.out.println(expectedIntersects.toString());
         assertTrue(expectedIntersects.equalsExact(intersects, 10.0E-15));
 
-        Geometry clip = reader.read(accessInfo.getClipAreaWkt());
+        Geometry clip = EWKTParser.parse(accessInfo.getClipAreaWkt());
         clip.normalize();
         Geometry expectedClip = area2.intersection(area);
         expectedClip.normalize();

@@ -95,10 +95,10 @@
             <artifactId>log4j-core</artifactId>
         </dependency>
 
-        <dependency>
+<!--        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-        </dependency>
+        </dependency>-->
 
         <!-- =============================================================== -->
         <!-- HTTP UTILS -->
@@ -272,7 +272,7 @@
 
     </dependencies>
 
-        <profiles>
+<!--        <profiles>
            <profile>
               <id>postgis</id>            
               <dependencies>
@@ -299,7 +299,7 @@
                  </dependency>                
               </dependencies>
            </profile>
-        </profiles>
+        </profiles>-->
 
         <build>
            <finalName>geofence-web-test</finalName>

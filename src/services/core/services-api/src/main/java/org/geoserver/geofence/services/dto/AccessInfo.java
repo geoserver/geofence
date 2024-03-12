@@ -158,7 +158,7 @@ public class AccessInfo implements Serializable, Cloneable {
             sb.append(" cqlW:").append(cqlFilterWrite);
         }
         if (areaWkt != null) {
-            sb.append(" areaWkt:defined");
+            sb.append(" areaWkt:").append(areaWkt.substring(0, 8)).append("..."); 
         }
         if (catalogMode != null) {
             sb.append(" cmode:").append(catalogMode);
