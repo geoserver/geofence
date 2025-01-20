@@ -11,12 +11,12 @@
     <parent>
         <groupId>org.geoserver.geofence</groupId>
         <artifactId>geofence-root</artifactId>
-        <version>3.7-SNAPSHOT</version>
+        <version>3.8-SNAPSHOT</version>
     </parent>
 
     <groupId>org.geoserver.geofence</groupId>
     <artifactId>geofence-web-app</artifactId>
-    <version>3.7-SNAPSHOT</version>
+    <version>3.8-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <name>GeoFence - Webapp</name>
