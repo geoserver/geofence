@@ -126,30 +126,32 @@ public class MainTest implements InitializingBean, ApplicationContextAware {
 
         /* Cite user rules */
         // allow user cite full control over the cite workspace
-        ruleAdminService.insert(new Rule(priority++, citeUsername, null, null, null, null, null, "cite", null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(priority++, citeUsername, null, null, null, null, null, null, "cite", null, GrantType.ALLOW));
         // allow only getmap, getcapatbilities and reflector usage on workspace sf
-        ruleAdminService.insert((new Rule(priority++, citeUsername, null, null, null, "wms", "GetMap", "sf", null, GrantType.ALLOW)));
-        ruleAdminService.insert((new Rule(priority++, citeUsername, null, null, null, "wms", "GetCapabilities", "sf", null, GrantType.ALLOW)));
-        ruleAdminService.insert((new Rule(priority++, citeUsername, null, null, null, "wms", "reflect", "sf", null, GrantType.ALLOW)));
+        ruleAdminService.insert((new Rule(priority++, citeUsername, null, null, null, "wms", "GetMap", null, "sf", null, GrantType.ALLOW)));
+        ruleAdminService.insert((new Rule(priority++, citeUsername, null, null, null, "wms", "GetCapabilities", null, "sf", null, GrantType.ALLOW)));
+        ruleAdminService.insert((new Rule(priority++, citeUsername, null, null, null, "wms", "reflect", null, "sf", null, GrantType.ALLOW)));
         // allow only GetMap and GetFeature the topp workspace
 
         /* wms user rules */
-        ruleAdminService.insert((new Rule(priority++, wmsUsername, null, null, null, "wms", null, null, null, GrantType.ALLOW)));
+        ruleAdminService.insert((new Rule(priority++, wmsUsername, null, null, null, "wms", null, null, null, null, GrantType.ALLOW)));
 
         /* all powerful but only in a restricted area */
-        Rule areaRestriction = new Rule(priority++, areaUsername, null, null, null, null, null, null, null, GrantType.LIMIT);
+        Rule areaRestriction = new Rule(priority++, areaUsername, null, null, null, null, null, null, null, null, GrantType.LIMIT);
         RuleLimits limits = new RuleLimits();
-        limits.setAllowedArea((MultiPolygon) new WKTReader().read(MULTIPOLYGONWKT));
+        MultiPolygon allowedArea = (MultiPolygon) new WKTReader().read(MULTIPOLYGONWKT);
+        allowedArea.setSRID(4326);
+        limits.setAllowedArea(allowedArea);
         long ruleId = ruleAdminService.insert(areaRestriction);
         ruleAdminService.setLimits(ruleId, limits);
-        ruleAdminService.insert((new Rule(priority++, areaUsername, null, null, null, null, null, null, null, GrantType.ALLOW)));
+        ruleAdminService.insert((new Rule(priority++, areaUsername, null, null, null, null, null, null, null, null, GrantType.ALLOW)));
 
         /* some users for interactive testing with the default data directory */
         // uStates can do whatever, but only on topp:states
-        ruleAdminService.insert(new Rule(priority++, statesUsername, null, null, null, null, null, "topp", "states", GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(priority++, statesUsername, null, null, null, null, null, null, "topp", "states", GrantType.ALLOW));
 
         // deny everything else
-        ruleAdminService.insert(new Rule(priority++, null, null, null,  null, null, null, null, null, GrantType.DENY));
+        ruleAdminService.insert(new Rule(priority++, null, null, null,  null, null, null, null, null, null, GrantType.DENY));
         new Thread(new Runnable() {
 
             @Override

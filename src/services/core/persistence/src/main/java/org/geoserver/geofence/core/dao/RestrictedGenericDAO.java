@@ -5,9 +5,7 @@
 
 package org.geoserver.geofence.core.dao;
 
-import org.geoserver.geofence.core.dao.search.Search;
 import java.util.List;
-import org.geoserver.geofence.core.model.Identifiable;
 
 /**
  * Public interface to define a restricted set of operation wrt to ones

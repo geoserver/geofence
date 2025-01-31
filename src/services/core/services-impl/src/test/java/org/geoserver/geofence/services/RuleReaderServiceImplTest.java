@@ -175,9 +175,6 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         baseFilter.setWorkspace("W0");
         baseFilter.setLayer("l0");
 
-
-        AccessInfo accessInfo;
-
         {
             RuleFilter ruleFilter = new RuleFilter(baseFilter);
             ruleFilter.setUser(SpecialFilterType.ANY);
@@ -812,9 +809,34 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         assertRules(createFilter(u3, "p1,p2,NO"), new Integer[]{50,51,52,60,70,999});
     }
 
+    /**
+     * Creates a RuleFilter by heuristically converting special string values into Fitler behaviour:<UL> <LI>a null value will
+     * match only with null</LI> <LI>a '*' value will match everything (no filter condition on that given field)</LI> <LI>any
+     * other string will match literally</LI> </UL>
+     *
+     */
+    private RuleFilter createHeuristicFilter(String userName, String groupName, String instanceName,
+            String sourceAddress,
+            String service, String request, String subfield,
+            String workspace, String layer) {
+
+        RuleFilter filter = new RuleFilter(SpecialFilterType.DEFAULT);
+        filter.getUser().setHeuristically(userName);
+        filter.getRole().setHeuristically(groupName);
+        filter.getInstance().setHeuristically(instanceName);
+        filter.getSourceAddress().setHeuristically(sourceAddress);
+
+        filter.getService().setHeuristically(service);
+        filter.getRequest().setHeuristically(request);
+        filter.getSubfield().setHeuristically(subfield);
+        filter.getWorkspace().setHeuristically(workspace);
+        filter.getLayer().setHeuristically(layer);
+        
+        return filter;
+    }
     
     private RuleFilter createFilter(String userName, String groupName) {
-        return new RuleFilter(userName, groupName, "*", "*", "*", "*", "*", "*", "*");
+        return createHeuristicFilter(userName, groupName, "*", "*", "*", "*", "*", "*", "*");
     }
     
     private void assertRules(RuleFilter filter, Integer[] expectedPriorities) {
@@ -837,7 +859,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
                     String workspace, String layer) {
 
         return ruleReaderService.getMatchingRules(
-                new RuleFilter(userName, profileName, instanceName, sourceAddress, 
+                createHeuristicFilter(userName, profileName, instanceName, sourceAddress, 
                         service, request, null, workspace, layer));
     }
 
@@ -846,7 +868,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
             String service, String request, 
             String workspace, String layer) {
         return ruleReaderService.getAccessInfo(
-                new RuleFilter(userName, roleName, instanceName, sourceAddress, 
+                createHeuristicFilter(userName, roleName, instanceName, sourceAddress, 
                         service, request, null, workspace, layer));
     }
     

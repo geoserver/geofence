@@ -17,7 +17,7 @@ import javax.persistence.criteria.Root;
 
 /**
  *
- * @author geosol
+ * @author Emanuele Tajariol
  */
 public class Search<O, R> {
     
@@ -109,13 +109,12 @@ public class Search<O, R> {
     }
         
     public <F> Fetch<R,F> addFetch(String field, Class<F> type) {
-//        Fetch<Country,Capital> p = c.fetch("capital");
         return root.fetch(field, JoinType.LEFT);
 //        c.setFetchMode(field, FetchMode.EAGER);
     }
     
     public void addFilterNull(String field) {
-        whereClauses.add(cb.isNull(root.get(field))); // )Restrictions.isNull(field));
+        whereClauses.add(cb.isNull(root.get(field)));
     }
 
     public void addFilterNull(JoinInfo j, String field) {

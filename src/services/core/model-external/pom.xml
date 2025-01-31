@@ -126,7 +126,14 @@
                                 </replaceregexp>
 
                                 <replaceregexp byline="true" replace="">
-                                    <regexp pattern="(@Entity|@Cache|@Table|@org.hibernate.annotations.CollectionOfElements|@Fetch|@Index|@Embedded|@Embeddable|@Check).*"/>
+                                    <regexp pattern=".*(@InternalModel).*"/>
+                                    <fileset dir="${project.build.directory}/generated-sources/original">
+                                        <include name="**/*.java"/>
+                                    </fileset>
+                                </replaceregexp>
+
+                                <replaceregexp byline="true" replace="">
+                                    <regexp pattern=".*(@Entity|@Cache|@Table|@org.hibernate.annotations.CollectionOfElements|@Fetch|@Index|@Embedded|@Embeddable|@Check).*"/>
                                     <fileset dir="${project.build.directory}/generated-sources/original">
                                         <include name="**/*.java"/>
                                     </fileset>
@@ -140,7 +147,7 @@
                                 </replaceregexp>
 
                                 <replaceregexp byline="true" replace="">
-                                    <regexp pattern="(@Id|@GeneratedValue|@Enumerated|@Column|@Type|@Temporal|@OneToOne|@ManyToOne|@ManyToMany|@ForeignKey|@UniqueConstraint|@AttributeOverride|@JoinTable).*"/>
+                                    <regexp pattern=".*(@Id|@GeneratedValue|@Enumerated|@Column|@Type|@Temporal|@OneToOne|@ManyToOne|@ManyToMany|@ForeignKey|@UniqueConstraint|@AttributeOverride|@JoinTable|@JoinColumn).*"/>
                                     <fileset dir="${project.build.directory}/generated-sources/original">
                                         <include name="**/*.java"/>
                                     </fileset>

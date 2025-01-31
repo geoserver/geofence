@@ -69,7 +69,7 @@
         <!-- =========================================================== -->
 
         <dependency>
-            <groupId>dom4j</groupId>
+            <groupId>org.dom4j</groupId>
             <artifactId>dom4j</artifactId>
         </dependency>
 
@@ -155,6 +155,15 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <!-- previous geofence h2 version -->
+            <!--<version>1.3.176</version>--> 
+            <!-- same as geoserver --> 
+            <!--<version>1.1.119</version>--> 
+        </dependency>
+        <dependency>
+            <groupId>org.opengeo</groupId>
+            <artifactId>geodb</artifactId>
+            <version>0.9</version>
         </dependency>
 
         <!-- =========================================================== -->
@@ -226,43 +235,64 @@
             <scope>test</scope>     
         </dependency>
 
+        <!-- Used in schemaexporter -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.4.0-jre</version>
+        </dependency>
 
     </dependencies>
 
     <build>
-        <plugins>
+        <plugins>                       
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
-                <artifactId>hibernate3-maven-plugin</artifactId>
-                <version>3.0</version>
-
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <!--<phase>process-classes</phase>-->
-                    </execution>
-                </executions>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <goals>
+                    <goal>exportSchema</goal>
+                </goals>
                 <configuration>
-                    <hibernatetool destdir="target/classes">
-
-                        <annotationconfiguration configurationfile="src/test/resources/hibernate.cfg.xml"/>
-                        <!--<jdbcconfiguration packagename="it" />-->
-                        <!--<hbm2hbmxml destdir="target/generated-sources/hibernate" />-->
-                        <!--<hbm2cfgxml />-->
-                        <!--<hbm2dao jdk5="true" ejb3="true" />-->
-                        <!--hbm2ddl-->
-                        <classpath>
-                            <path location="target/classes"/>
-                        </classpath>
-
-                    </hibernatetool>
-
-
+                    <mainClass>org.geoserver.geofence.SchemaExporter</mainClass>
                 </configuration>
-            </plugin>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.geoserver.geofence</groupId>
+                        <artifactId>geofence-model-internal</artifactId>
+                        <version>${geofence-version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.geoserver.geofence</groupId>
+                        <artifactId>geofence-persistence</artifactId>
+                        <version>${geofence-version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                        <version>33.4.0-jre</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-core</artifactId>
+                        <version>2.24.3</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                        <version>2.24.3</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-simple</artifactId>
+                        <version>1.7.30</version>
+                    </dependency>
+                    
+                </dependencies>
+                
+            </plugin>    
+            
             
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
@@ -280,6 +310,7 @@
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-source-plugin</artifactId>
+               <version>3.3.1</version>
                <executions>
                   <execution>
                      <id>attach-sources</id>
@@ -299,7 +330,16 @@
                     <trimStackTrace>false</trimStackTrace>
                 </configuration>
             </plugin>
-            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
         </plugins>
 
     </build>
