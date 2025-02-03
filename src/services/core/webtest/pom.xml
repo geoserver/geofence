@@ -117,7 +117,6 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -176,12 +175,7 @@
         <!-- =============================================================== -->
 
         <!-- SPRING -->
-        <!--        <dependency>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring</artifactId>
-                    <version>2.5.6</version>
-                </dependency>
-        -->
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
@@ -202,10 +196,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
         </dependency>
-        <!--		<dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-asm</artifactId>
-        </dependency>-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
@@ -232,34 +222,6 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-        <!--		<dependency>
-   <groupId>org.springframework</groupId>
-   <artifactId>org.springframework.web</artifactId>
-   <version>3.1.1.RELEASE</version>
-        </dependency>-->
-
-        <!--		<dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-expression</artifactId>
-        </dependency>-->
-
-        <!-- SCOPE TEST -->
-        <!--		<dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-                <scope>test</scope>
-                <exclusions>
-                        <exclusion>
-                                <groupId>commons-collections</groupId>
-                                <artifactId>commons-collections</artifactId>
-                        </exclusion>
-                        <exclusion>
-                                <groupId>xerces</groupId>
-                                <artifactId>xercesImpl</artifactId>
-                        </exclusion>
-                </exclusions>
-        </dependency>-->
 
         <!-- =============================================================== -->
         <!-- JUnit -->

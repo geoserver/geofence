@@ -219,27 +219,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>
-        <!--		<dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-expression</artifactId>
-        </dependency>-->
-
-        <!-- SCOPE TEST -->
-        <!--		<dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-                <scope>test</scope>
-                <exclusions>
-                        <exclusion>
-                                <groupId>commons-collections</groupId>
-                                <artifactId>commons-collections</artifactId>
-                        </exclusion>
-                        <exclusion>
-                                <groupId>xerces</groupId>
-                                <artifactId>xercesImpl</artifactId>
-                        </exclusion>
-                </exclusions>
-        </dependency>-->
 
         <!-- =============================================================== -->
         <!-- JUnit -->
@@ -247,7 +226,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.13.1</version>
 			<scope>test</scope>
 		</dependency>
 
