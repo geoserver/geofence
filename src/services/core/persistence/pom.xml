@@ -185,26 +185,6 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>asm</groupId>
-                    <artifactId>asm</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>asm</groupId>
-                    <artifactId>asm-attrs</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>cglib</groupId>
-                    <artifactId>cglib</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- CGLIB -->
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib-nodep</artifactId>
         </dependency>
 
         <!-- HTTP UTILS -->

@@ -56,36 +56,10 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>asm</groupId>
-                    <artifactId>asm</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>asm</groupId>
-                    <artifactId>asm-attrs</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>cglib</groupId>
-                    <artifactId>cglib</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.locationtech.jts</groupId>
             <artifactId>jts-core</artifactId>
-        </dependency>
-
-		  	<!-- CGLIB -->
-        <dependency>
-            <groupId>asm</groupId>
-            <artifactId>asm</artifactId>
-            <scope>provided</scope> <!-- the dao module should import them for runtime -->
-        </dependency>
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib-nodep</artifactId>
-            <scope>provided</scope> <!-- the dao module should import them for runtime -->
         </dependency>
    		
         <dependency>
