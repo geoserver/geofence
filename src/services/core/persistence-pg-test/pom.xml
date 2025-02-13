@@ -7,151 +7,112 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-   <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-   <parent>
-      <groupId>org.geoserver.geofence</groupId>
-      <artifactId>geofence-core</artifactId>
-      <version>3.8-SNAPSHOT</version>
-   </parent>
+    <parent>
+        <groupId>org.geoserver.geofence</groupId>
+        <artifactId>geofence-core</artifactId>
+        <version>3.8-SNAPSHOT</version>
+    </parent>
 
-   <groupId>org.geoserver.geofence</groupId>
-   <artifactId>geofence-persistence-pg-test</artifactId>
-   <packaging>jar</packaging>
-   <name>GeoFence - Core - Persistence PostGIS test</name>
+    <groupId>org.geoserver.geofence</groupId>
+    <artifactId>geofence-persistence-pg-test</artifactId>
+    <packaging>jar</packaging>
+    <name>GeoFence - Core - Persistence PostGIS test</name>
 
-   <dependencies>
+    <dependencies>
 
         <dependency>
             <groupId>org.geoserver.geofence</groupId>
             <artifactId>geofence-model-internal</artifactId>
         </dependency>
       
-      <dependency>
-         <groupId>org.geoserver.geofence</groupId>
-         <artifactId>geofence-persistence</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.geoserver.geofence</groupId>
+            <artifactId>geofence-persistence</artifactId>
+        </dependency>
       
-      <dependency>
-         <!-- we need this dep to have a meaningful stacktrace -->
-         <groupId>org.geoserver.geofence</groupId>
-         <artifactId>geofence-persistence</artifactId>
-         <classifier>test-sources</classifier>
-         <type>test-jar</type>
-         <version>${project.version}</version>         
-      </dependency>
+        <dependency>
+            <!-- we need this dep to have a meaningful stacktrace -->
+            <groupId>org.geoserver.geofence</groupId>
+            <artifactId>geofence-persistence</artifactId>
+            <classifier>test-sources</classifier>
+            <type>test-jar</type>
+            <version>${project.version}</version>         
+        </dependency>
                 
-      <dependency>
-         <!-- we need this dep to have a meaningful stacktrace -->
-         <groupId>org.hibernatespatial</groupId>
-         <artifactId>hibernate-spatial</artifactId>
-      </dependency>
-                
-      <dependency>
-         <groupId>org.hibernatespatial</groupId>
-         <artifactId>hibernate-spatial-postgis</artifactId>
-         <scope>test</scope>
-      </dependency>
-        
-      <dependency>
-         <groupId>org.postgis</groupId>
-         <artifactId>postgis-jdbc</artifactId>
-         <exclusions>
-            <exclusion>
-               <groupId>org.postgis</groupId>
-               <artifactId>postgis-stubs</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-spatial</artifactId>
+        </dependency>
+                        
+        <dependency>
+            <groupId>org.postgis</groupId>
+            <artifactId>postgis-jdbc</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.postgis</groupId>
+                    <artifactId>postgis-stubs</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
-      <dependency>
-         <groupId>org.postgresql</groupId>
-         <artifactId>postgresql</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>junit</groupId>
-         <artifactId>junit</artifactId>
-         <scope>test</scope>
-      </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-   </dependencies>
+    </dependencies>
 
-   <build>
-      <testSourceDirectory>${project.build.directory}/original-test-sources</testSourceDirectory>
+    <build>
+        <testSourceDirectory>${project.build.directory}/original-test-sources</testSourceDirectory>
        
-      <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.22.2</version>
-         </plugin>       
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.2</version>
+            </plugin>       
            
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-               <execution>
-                  <id>unpack</id>
-                  <phase>generate-sources</phase>
-                  <goals>
-                     <goal>unpack</goal>
-                  </goals>
-                  <configuration>
-                     <artifactItems>
-                        <artifactItem>
-                           <groupId>org.geoserver.geofence</groupId>
-                           <artifactId>geofence-persistence</artifactId>
-                           <classifier>test-sources</classifier>
-                           <type>test-jar</type>
-                           <version>${project.version}</version>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.geoserver.geofence</groupId>
+                                    <artifactId>geofence-persistence</artifactId>
+                                    <classifier>test-sources</classifier>
+                                    <type>test-jar</type>
+                                    <version>${project.version}</version>
 
-                           <outputDirectory>${project.build.directory}/original-test-sources</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/original-test-sources</outputDirectory>
                            
-                           <!-- we have our one -->
-                           <excludes>geofence-datasource-ovr.properties</excludes>
+                                    <!-- we have our one -->
+                                    <excludes>geofence-datasource-ovr.properties</excludes>
                            
-                        </artifactItem>
-                     </artifactItems>
-                  </configuration>
-               </execution>
-            </executions>
-         </plugin>
-           
-           
-         <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>hibernate3-maven-plugin</artifactId>
-            <version>3.0</version>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
-            <executions>
-               <execution>
-                  <phase>generate-sources</phase>
-                  <goals>
-                     <goal>run</goal>
-                  </goals>
-                  <!--<phase>process-classes</phase>-->
-               </execution>
-            </executions>
-            <configuration>
-               <hibernatetool destdir="target/classes">
+        </plugins>
 
-                  <annotationconfiguration configurationfile="src/test/resources/hibernate.cfg.xml"/>
-                  <!--<jdbcconfiguration packagename="it" />-->
-                  <!--<hbm2hbmxml destdir="target/generated-sources/hibernate" />-->
-                  <!--<hbm2cfgxml />-->
-                  <!--<hbm2dao jdk5="true" ejb3="true" />-->
-                  <!--hbm2ddl-->
-                  <classpath>
-                     <path location="target/classes"/>
-                  </classpath>
-
-               </hibernatetool>
-
-            </configuration>
-         </plugin>
-      </plugins>
-
-   </build>
+    </build>
 
 </project>
