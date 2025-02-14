@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.geoserver.geofence.services.util.FilterUtils;
 
 import static org.geoserver.geofence.services.util.FilterUtils.addCriteria;
 import static org.geoserver.geofence.services.util.FilterUtils.addFixedCriteria;
@@ -190,56 +191,17 @@ public class RuleAdminServiceImpl implements RuleAdminService {
         return convertToShortList(found);
     }
 
-//    /**
-//     * Creating a filter heuristically
-//     * <UL>
-//     * <LI>a null id will only match a null field</LI>
-//     * <LI>an id=="*" will match everything, so no filter condition is needed</LI>
-//     * <LI>a valid numeric id will only match that numeric value</LI>
-//     * </UL>
-//     */
-
-//    /**
-//     * @deprecated
-//     */
-//    @Override
-//    @Deprecated
-//    public List<ShortRule> getList(String userId, String profileId, String instanceId,
-//            String service, String request,
-//            String workspace, String layer,
-//            Integer page, Integer entries) {
-//
-//        RuleFilter filter = new RuleFilter(0L, 0L, 0L, service, request, workspace, layer);
-//        // adjust IDs
-//        adjustFilterHeuristic(filter.getUser(), userId);
-//        adjustFilterHeuristic(filter.getUserGroup(), profileId);
-//        adjustFilterHeuristic(filter.getInstance(), instanceId);
-//
-//        return getList(filter, page, entries);
-//    }
-
-//    private void adjustFilterHeuristic(IdNameFilter filter, String id) {
-//        if (id == null) {
-//            filter.setType(RuleFilter.SpecialFilterType.DEFAULT);
-//        } else if (id.equals("*")) {
-//            filter.setType(RuleFilter.SpecialFilterType.ANY);
-//        } else {
-//            try {
-//                filter.setId(Long.valueOf(id));
-//            } catch (NumberFormatException ex) {
-//                throw new BadRequestServiceEx("Bad id '" + id + "'");
-//            }
-//        }
-//    }
-
     @Override
     public List<ShortRule> getList(RuleFilter filter, Integer page, Integer entries) {
-        Search searchCriteria = buildSearch(page, entries, filter);
-
-        List<Rule> found = ruleDAO.search(searchCriteria);
-        return convertToShortList(found);
+        return convertToShortList(FilterUtils.getFilteredRules(ruleDAO, filter, page, entries));
     }
 
+    @Override
+    public List<Rule> getListFull(RuleFilter filter, Integer page, Integer entries) {
+        return FilterUtils.getFilteredRules(ruleDAO, filter, page, entries);
+    }    
+    
+    // TODO: this method does not filter by ip address
     @Override
     public ShortRule getRule(RuleFilter filter) throws BadRequestServiceEx {
         Search searchCriteria = buildFixedRuleSearch(filter);
@@ -266,33 +228,20 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
     @Override
     public ShortRule getRuleByPriority(long priority) throws BadRequestServiceEx {
-        Search searchCriteria = ruleDAO.createSearch();
-        searchCriteria.addFilterEqual("priority", priority);
-        List<Rule> found = ruleDAO.search(searchCriteria);
-        if(found.isEmpty())
-            return null;
-
-        if(found.size() > 1) {
-            LOGGER.error("Unexpected rule count for priority " + priority + " : " + found);
+        Search search = ruleDAO.createSearch();
+        search.addFilterEqual("priority", priority);
+        List<Rule> found = ruleDAO.search(search);
+        
+        switch (found.size()) {
+            case 0:
+                return null;
+            case 1:
+                return new ShortRule(found.get(0));                                    
+            default:
+                LOGGER.error("Unexpected rule count for priority " + priority + " : " + found);
+                return new ShortRule(found.get(0));                                    
         }
-
-        return new ShortRule(found.get(0));
     }
-
-    @Override
-    public List<Rule> getListFull(RuleFilter filter, Integer page, Integer entries) {
-        Search searchCriteria = buildSearch(page, entries, filter);
-        List<Rule> found = ruleDAO.search(searchCriteria);
-        return found;
-    }
-
-    protected Search buildSearch(Integer page, Integer entries, RuleFilter filter) throws BadRequestServiceEx {
-        Search searchCriteria = buildRuleSearch(filter);
-        addPagingConstraints(searchCriteria, page, entries);
-        searchCriteria.addSortAsc("priority");
-        return searchCriteria;
-    }
-
 
     @Override
     public long getCountAll() {
@@ -301,33 +250,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
     @Override
     public long count(RuleFilter filter) {
-//        if(LOGGER.isDebugEnabled())
-//            LOGGER.debug("Counting rules: " + filter);
-
-        Search searchCriteria = buildRuleSearch(filter);
-//        if(LOGGER.isDebugEnabled())
-//            LOGGER.debug("Counting rules: " + searchCriteria);
-        return ruleDAO.count(searchCriteria);
-    }
-
-    // =========================================================================
-    // Search stuff
-
-    private Search buildRuleSearch(RuleFilter filter) {
-        Search search = ruleDAO.createSearch();
-
-        if(filter != null) {
-            addStringCriteria(search, "username", filter.getUser());
-            addStringCriteria(search, "rolename", filter.getRole());
-            addCriteria(search, search.addJoin("instance"), filter.getInstance());
-
-            addStringCriteria(search, "service", filter.getService()); // see class' javadoc
-            addStringCriteria(search, "request", filter.getRequest()); // see class' javadoc
-            addStringCriteria(search, "workspace", filter.getWorkspace());
-            addStringCriteria(search, "layer", filter.getLayer());
-        }
-
-        return search;
+        return FilterUtils.countFilteredRules(ruleDAO, filter);
     }
 
     //=========================================================================
@@ -348,8 +271,6 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
         return search;
     }
-
-
 
     // =========================================================================
     // Limits
@@ -383,12 +304,6 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     // Details
     // =========================================================================
 
-//    @Override
-//    public LayerDetails getDetails(long id) throws ResourceNotFoundFault {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
-
-
     @Override
     public void setDetails(Long ruleId, LayerDetails detailsNew) {
         Rule rule = ruleDAO.find(ruleId);
@@ -401,7 +316,6 @@ public class RuleAdminServiceImpl implements RuleAdminService {
         if(rule.getAccess() != GrantType.ALLOW && detailsNew != null)
             throw new BadRequestServiceEx("Rule is not of ALLOW type");
 
-//        final Map<String, String> oldProps;
         final Set<String> oldStyles;
         final Set<LayerAttribute> oldAttrs;
 
@@ -412,7 +326,6 @@ public class RuleAdminServiceImpl implements RuleAdminService {
             oldAttrs  = rule.getLayerDetails().getAttributes();
             detailsDAO.remove(rule.getLayerDetails());
         } else{
-//            oldProps = null;
             oldStyles = null;
             oldAttrs = null;
         }
@@ -438,30 +351,22 @@ public class RuleAdminServiceImpl implements RuleAdminService {
                         LOGGER.debug("Setting " + detailsNew.getAttributes().size() + " new attrs " + detailsNew.getAttributes());
                 }
                 // we're using a brand new Set, bc the old one may have been set as deleted by hibernate
-                final Set<LayerAttribute> clonedAttrs = new HashSet<LayerAttribute>(detailsNew.getAttributes());
+                final Set<LayerAttribute> clonedAttrs = new HashSet<>(detailsNew.getAttributes());
                 detailsNew.setAttributes(clonedAttrs);
             }
 
             detailsNew.setRule(rule);
             detailsDAO.persist(detailsNew);
-            // restore old properties
-//            if(oldProps != null) {
-//                LOGGER.info("Restoring " + oldProps.size() + " props from older LayerDetails (id:"+ruleId+")");
-//                //cannot reuse the same Map returned by Hibernate, since it is detached now.
-//                Map<String, String> newProps = new HashMap<String, String>();
-//                newProps.putAll(oldProps);
-//                detailsDAO.setCustomProps(ruleId, newProps);
-//            }
 
             if(detailsNew.getAllowedStyles() != null) {
                 LOGGER.info("Setting " + detailsNew.getAllowedStyles().size() + " new styles");
-                Set<String> newStyles = new HashSet<String>();
+                Set<String> newStyles = new HashSet<>();
                 newStyles.addAll(detailsNew.getAllowedStyles());
                 detailsDAO.setAllowedStyles(ruleId, newStyles);
             } else if(oldStyles != null) {  // no new style list, check for old list to restore
                 LOGGER.info("Restoring " + oldStyles.size() + " styles from older LayerDetails (id:"+ruleId+")");
                 //cannot reuse the same Map returned by Hibernate, since it is detached now.
-                Set<String> newStyles = new HashSet<String>();
+                Set<String> newStyles = new HashSet<>();
                 newStyles.addAll(oldStyles);
                 detailsDAO.setAllowedStyles(ruleId, newStyles);
             }
@@ -500,7 +405,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     // ==========================================================================
 
     private List<ShortRule> convertToShortList(List<Rule> list) {
-        List<ShortRule> shortList = new ArrayList<ShortRule>(list.size());
+        List<ShortRule> shortList = new ArrayList<>(list.size());
         for (Rule rule : list) {
             shortList.add(new ShortRule(rule));
         }

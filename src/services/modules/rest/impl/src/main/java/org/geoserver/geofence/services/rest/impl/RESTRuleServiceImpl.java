@@ -370,6 +370,7 @@ public class RESTRuleServiceImpl
             String userName, Boolean userDefault,
             String roleName, Boolean roleDefault,
             Long instanceId, String instanceName, Boolean instanceDefault,
+            String ipaddress,   Boolean ipaddressDefault,
             String serviceName, Boolean serviceDefault,
             String requestName, Boolean requestDefault,
             String subfieldName, Boolean subfieldDefault,
@@ -381,6 +382,7 @@ public class RESTRuleServiceImpl
                 userName, userDefault,
                 roleName, roleDefault,
                 instanceId, instanceName, instanceDefault,
+                ipaddress,   ipaddressDefault,
                 serviceName, serviceDefault,
                 requestName, requestDefault,
                 subfieldName, subfieldDefault,                
@@ -400,6 +402,7 @@ public class RESTRuleServiceImpl
             String userName, Boolean userDefault,
             String roleName, Boolean groupDefault,
             Long instanceId, String instanceName, Boolean instanceDefault,
+            String ipaddress,   Boolean ipaddressDefault,
             String serviceName, Boolean serviceDefault,
             String requestName, Boolean requestDefault,
             String subfieldName, Boolean subfieldDefault,            
@@ -411,6 +414,7 @@ public class RESTRuleServiceImpl
         setFilter(filter.getUser(), userName, userDefault);
         setFilter(filter.getRole(), roleName, groupDefault);
         setFilter(filter.getInstance(), instanceId, instanceName, instanceDefault);
+        setFilter(filter.getSourceAddress(), ipaddress, ipaddressDefault);
         setFilter(filter.getService(), serviceName, serviceDefault);
         setFilter(filter.getRequest(), requestName, requestDefault);
         setFilter(filter.getSubfield(), subfieldName, subfieldDefault);
@@ -465,6 +469,7 @@ public class RESTRuleServiceImpl
             String userName, Boolean userDefault,
             String roleName, Boolean groupDefault,
             Long instanceId, String instanceName, Boolean instanceDefault,
+            String ipaddress,   Boolean ipaddressDefault,
             String serviceName, Boolean serviceDefault,
             String requestName, Boolean requestDefault,
             String subfieldName, Boolean subfieldDefault,
@@ -476,6 +481,7 @@ public class RESTRuleServiceImpl
                 userName, userDefault,
                 roleName, groupDefault,
                 instanceId, instanceName, instanceDefault,
+                ipaddress,   ipaddressDefault,                
                 serviceName, serviceDefault,
                 requestName, requestDefault,
                 subfieldName, subfieldDefault,

@@ -192,8 +192,8 @@ public class GeoFenceClientTest {
             LOGGER.debug("found rule " + rule);
         }
 
-        assertEquals(2, rsh.get(null, null, true, null, new RuleFilter.TextFilter("group01", false, false), null, null, null, null, null, null).getList().size());
-        assertEquals(3, rsh.get(null, null, true, null, new RuleFilter.TextFilter("group01", false, true), null, null, null, null, null, null).getList().size());
+        assertEquals(2, rsh.get(null, null, true, null, new RuleFilter.TextFilter("group01", false, false), null, null, null, null, null, null, null).getList().size());
+        assertEquals(3, rsh.get(null, null, true, null, new RuleFilter.TextFilter("group01", false, true), null, null, null, null, null, null, null).getList().size());
     }
 
     @Test

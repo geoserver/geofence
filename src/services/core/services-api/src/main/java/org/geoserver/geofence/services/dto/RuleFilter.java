@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  */
 public class RuleFilter implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = 5629211135629700044L;
+    private static final long serialVersionUID = 3809211135629700044L;
 
     public enum FilterType {
 
@@ -161,7 +161,7 @@ public class RuleFilter implements Serializable, Cloneable {
         role.setType(type);
         return this;
     }
-
+    
     public RuleFilter setInstance(Long id) {
         instance.setId(id);
         return this;
@@ -420,6 +420,12 @@ public class RuleFilter implements Serializable, Cloneable {
                 this.type = FilterType.ANY;
             } else {
                 this.type = FilterType.NAMEVALUE;
+                if (name.startsWith("!")) {
+                    this.includeDefault = false;
+                    name = name.substring(1);
+                } else {
+                    this.includeDefault = true;                
+                }
                 this.name = name;
             }
         }
@@ -538,7 +544,7 @@ public class RuleFilter implements Serializable, Cloneable {
      */
     public static class TextFilter implements Serializable, Cloneable {
 
-        private static final long serialVersionUID = 6565336016075974626L;
+        private static final long serialVersionUID = 3805336016075974626L;
         private String text;
         private FilterType type;
         private boolean forceUppercase = false;
@@ -579,14 +585,30 @@ public class RuleFilter implements Serializable, Cloneable {
             } else if ( text.equals("*") ) {
                 this.type = FilterType.ANY;
             } else {
+                if (text.startsWith("!")) {
+                    this.includeDefault = false;
+                    text = text.substring(1);
+                } else {
+                    this.includeDefault = true;                
+                }
+                
                 this.type = FilterType.NAMEVALUE;
                 this.text = forceUppercase ? text.toUpperCase() : text;
             }
         }
+        
+        public TextFilter setFrom(TextFilter other) {
+            this.text = other.text;
+            this.type = other.type;
+            this.includeDefault = other.includeDefault;
+            this.forceUppercase = other.forceUppercase;
+            return this;
+        }
 
-        public void setText(String name) {
+        public TextFilter setText(String name) {
             this.text = forceUppercase ? name.toUpperCase() : name;
             this.type = FilterType.NAMEVALUE;
+            return this;
         }
 
         public void setType(SpecialFilterType type) {
@@ -605,8 +627,9 @@ public class RuleFilter implements Serializable, Cloneable {
             return includeDefault;
         }
 
-        public void setIncludeDefault(boolean includeDefault) {
+        public TextFilter setIncludeDefault(boolean includeDefault) {
             this.includeDefault = includeDefault;
+            return this;
         }
 
         @Override

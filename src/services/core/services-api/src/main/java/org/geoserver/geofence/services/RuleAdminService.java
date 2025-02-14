@@ -64,42 +64,12 @@ public interface RuleAdminService
 
     List<ShortRule> getAll();
 
-//    /**
-//     * Return the Rules according to the filter.
-//     * <UL>
-//     * <LI>If a parameter is set to "*", it will match any null or not null value;</LI>
-//     * <LI>If a parameter is set to <TT>null</TT>, it will match only null values;</LI>
-//     * <LI>If a parameter is set to other values, it will strictly match the related field value;</LI>
-//     * </UL>
-//     *
-//     * @param userId The (Long) id of the GSUser, OR the "*" String, OR null
-//     * @param profileId The (Long) id of the Profile, OR the "*" String, OR null
-//     * @param instanceId The (Long) id of the GSInstance, OR the "*" String, OR null
-//     *
-//     * @param page used for retrieving paged data, may be null if not used. If not null, also <TT>entries</TT> should be defined.
-//     * @param entries used for retrieving paged data, may be null if not used. If not null, also <TT>page</TT> should be defined.
-//     *
-//     * @see RuleReaderService#getMatchingRules(String, String, String,  String,String, String,String) RuleReaderService.getMatchingRules(...)
-//     * @deprecated Use {@link getList(RuleFilter,Integer,Integer)}
-//     */
-//    @GET
-//    @Path("/rules/user.id/{userId}/profile.id/{profileId}/instance.id/{instanceId}/{service}/{request}/{workspace}/{layer}")
-//    List<ShortRule> getList(@PathParam("userId") String userId,
-//        @PathParam("profileId") String profileId,
-//        @PathParam("instanceId") String instanceId,
-//        @PathParam("service") String service,
-//        @PathParam("request") String request,
-//        @PathParam("workspace") String workspace,
-//        @PathParam("layer") String layer,
-//        @QueryParam("page") Integer page,
-//        @QueryParam("entries") Integer entries);
-
-
     /**
      * Return the Rules according to the filter.
      *
      * @param page used for retrieving paged data, may be null if not used. If not null, also <TT>entries</TT> should be defined.
      * @param entries used for retrieving paged data, may be null if not used. If not null, also <TT>page</TT> should be defined.
+     * @return Rules in short format
      *
      * @see RuleReaderService#getMatchingRules(RuleFilter)
      */
@@ -107,18 +77,21 @@ public interface RuleAdminService
 
     /**
      * Search a Rule by priority.
-     *
+     * 
      * Returns the rule having the requested priority, or null if none found.
+     *
+     * @return the Rule in short format or null
      */
     ShortRule getRuleByPriority(long priority);
 
     /**
-     * Return the Rules according to the priority.
+     * Return the Rules according to the priority.Returns the rules having priority greater or equal to <code>priority</code>
+     * 
      *
-     * Returns the rules having priority greater or equal to <code>priority</code>
-     *
+     * @param priority priority threshold
      * @param page used for retrieving paged data, may be null if not used. If not null, also <TT>entries</TT> should be defined.
      * @param entries used for retrieving paged data, may be null if not used. If not null, also <TT>page</TT> should be defined.
+     * @return Rules in short format
      */
     List<ShortRule> getRulesByPriority(long priority, Integer page, Integer entries);
 
@@ -129,18 +102,18 @@ public interface RuleAdminService
      * No ANY filter is allowed.
      * Name/id specification with default inclusion is not allowed.
      *
-     * @return the matching rule or null if not found
+     * @return the matching rule in short format or null if not found
      *
      * @throws BadRequestServiceEx if a wildcard type is used in filter
      */
     ShortRule getRule(RuleFilter filter) throws BadRequestServiceEx;
     
     /**
-     * Return the Rules according to the filter.
-     * Rules will be enriched with all their joined data, so this method may be heavy to execute.
+     * Return the Rules according to the filter.Rules will be enriched with all their joined data, so this method may be heavy to execute.
      *
      * @param page used for retrieving paged data, may be null if not used. If not null, also <TT>entries</TT> should be defined.
      * @param entries used for retrieving paged data, may be null if not used. If not null, also <TT>page</TT> should be defined.
+     * @return the list of Rules in full format
      *
      * @see RuleReaderService#getMatchingRules(RuleFilter)
      */
