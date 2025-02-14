@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -27,7 +28,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  *
  */
 @Entity(name = "GFUser")
-@Table(name = "gf_gfuser")
+@Table(name = "gf_gfuser",
+        uniqueConstraints = { // @InternalModel
+            @UniqueConstraint(
+                    columnNames = {"extid"}, name = "gf_gfuser_extid_key"), // @InternalModel
+            @UniqueConstraint(
+                    columnNames = {"name"}, name = "gf_gfuser_name_key") // @InternalModel
+        } // @InternalModel
+) // @InternalModel
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "GFUser")
 @XmlRootElement(name = "GFUser")
 @XmlType(propOrder={"id","extId","name","enabled","fullName","password","emailAddress","dateCreation"})
@@ -35,11 +43,11 @@ public class GFUser implements Identifiable, Serializable {
 
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = -5161617651332259455L;
+     * 
+     */
+    private static final long serialVersionUID = -3801617651332259455L;
 
-	/** The id. */
+    /** The id. */
     @Id
     @GeneratedValue
     @Column
@@ -48,11 +56,11 @@ public class GFUser implements Identifiable, Serializable {
     /** External Id. An ID used in an external systems.
      * This field should simplify Geofence integration in complex systems.
      */
-    @Column(nullable=true, updatable=false, unique=true)
+    @Column(nullable=true, updatable=false)
     private String extId;
 
     /** The name. */
-    @Column(nullable=false, unique=true)
+    @Column(nullable=false)
     private String name;
 
     /** The user name. */

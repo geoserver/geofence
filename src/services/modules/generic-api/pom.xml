@@ -14,7 +14,7 @@
     <parent>
         <groupId>org.geoserver.geofence</groupId>
         <artifactId>geofence-modules</artifactId>
-        <version>3.7-SNAPSHOT</version>
+        <version>3.8-SNAPSHOT</version>
     </parent>
 
     <groupId>org.geoserver.geofence</groupId>
@@ -33,9 +33,9 @@
         <!-- ================================================================-->
 
         <dependency>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <scope>runtime</scope>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-ri</artifactId>
+            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

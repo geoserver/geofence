@@ -8,16 +8,16 @@ package org.geoserver.geofence.services;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.googlecode.genericdao.search.Filter;
-import com.googlecode.genericdao.search.Search;
-import org.geoserver.geofence.core.dao.AdminRuleDAO;
 import org.geoserver.geofence.core.model.AdminRule;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
+import org.geoserver.geofence.core.dao.AdminRuleDAO;
+import org.geoserver.geofence.core.dao.search.Search;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.ShortAdminRule;
 
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
+
 import static org.geoserver.geofence.services.util.FilterUtils.addCriteria;
 import static org.geoserver.geofence.services.util.FilterUtils.addFixedCriteria;
 import static org.geoserver.geofence.services.util.FilterUtils.addFixedStringCriteria;
@@ -109,8 +109,8 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
 
     @Override
     public void deleteRulesByUser(String username) throws NotFoundServiceEx {
-        Search searchCriteria = new Search(AdminRule.class);
-        searchCriteria.addFilter(Filter.equal("username", username));
+        Search searchCriteria = ruleDAO.createSearch();
+        searchCriteria.addFilterEqual("username", username);
 
         List<AdminRule> list = ruleDAO.search(searchCriteria);
         if(LOGGER.isInfoEnabled())
@@ -124,8 +124,8 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
 
     @Override
     public void deleteRulesByRole(String rolename) throws NotFoundServiceEx {
-        Search searchCriteria = new Search(AdminRule.class);
-        searchCriteria.addFilter(Filter.equal("rolename", rolename));
+        Search searchCriteria = ruleDAO.createSearch();
+        searchCriteria.addFilterEqual("rolename", rolename);
 
         List<AdminRule> list = ruleDAO.search(searchCriteria);
         for (AdminRule rule : list) {
@@ -137,8 +137,8 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
 
     @Override
     public void deleteRulesByInstance(long instanceId) throws NotFoundServiceEx {
-        Search searchCriteria = new Search(AdminRule.class);
-        searchCriteria.addFilter(Filter.equal("instance.id", instanceId));
+        Search searchCriteria = ruleDAO.createSearch();
+        searchCriteria.addFilterEqual("instance.id", instanceId);
 
         List<AdminRule> list = ruleDAO.search(searchCriteria);
         for (AdminRule rule : list) {
@@ -179,18 +179,18 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
 
     @Override
     public List<ShortAdminRule> getRulesByPriority(long priority, Integer page, Integer entries) {
-        Search searchCriteria = new Search(AdminRule.class);
-        searchCriteria.addFilter(Filter.greaterOrEqual("priority", priority));
-        searchCriteria.addSortAsc("priority");
-        addPagingConstraints(searchCriteria, page, entries);
-        List<AdminRule> found = ruleDAO.search(searchCriteria);
+        Search search = ruleDAO.createSearch();
+        search.addFilterGreaterOrEqual("priority", priority);
+        search.addSortAsc("priority");
+        addPagingConstraints(search, page, entries);
+        List<AdminRule> found = ruleDAO.search(search);
         return convertToShortList(found);
     }
 
     @Override
     public ShortAdminRule getRuleByPriority(long priority) throws BadRequestServiceEx {
-        Search searchCriteria = new Search(AdminRule.class);
-        searchCriteria.addFilter(Filter.equal("priority", priority));
+        Search searchCriteria = ruleDAO.createSearch();
+        searchCriteria.addFilterEqual("priority", priority);
         List<AdminRule> found = ruleDAO.search(searchCriteria);
         if(found.isEmpty())
             return null;
@@ -210,7 +210,8 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     }
 
     protected Search buildSearch(Integer page, Integer entries, RuleFilter filter) throws BadRequestServiceEx {
-        Search searchCriteria = buildRuleSearch(filter);
+        Search searchCriteria = ruleDAO.createSearch();
+        searchCriteria = buildRuleSearch(searchCriteria, filter);
         addPagingConstraints(searchCriteria, page, entries);
         searchCriteria.addSortAsc("priority");
         return searchCriteria;
@@ -225,8 +226,8 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     public long count(RuleFilter filter) {
 //        if(LOGGER.isDebugEnabled())
 //            LOGGER.debug("Counting rules: " + filter);
-
-        Search searchCriteria = buildRuleSearch(filter);
+        Search searchCriteria = ruleDAO.createCountSearch();
+        searchCriteria = buildRuleSearch(searchCriteria, filter);
 //        if(LOGGER.isDebugEnabled())
 //            LOGGER.debug("Counting rules: " + searchCriteria);
         return ruleDAO.count(searchCriteria);
@@ -235,36 +236,34 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     // =========================================================================
     // Search stuff
 
-    private Search buildRuleSearch(RuleFilter filter) {
-        Search searchCriteria = new Search(AdminRule.class);
+    private Search buildRuleSearch(Search search, RuleFilter filter) {
+
 
         if(filter != null) {
-            addStringCriteria(searchCriteria, "username", filter.getUser());
-            addStringCriteria(searchCriteria, "rolename", filter.getRole());
-            addCriteria(searchCriteria, "instance", filter.getInstance());
+            addStringCriteria(search, "username", filter.getUser());
+            addStringCriteria(search, "rolename", filter.getRole());
+            addCriteria(search, search.addJoin("instance"), filter.getInstance());
 
-            addStringCriteria(searchCriteria, "workspace", filter.getWorkspace());
+            addStringCriteria(search, "workspace", filter.getWorkspace());
         }
 
-        return searchCriteria;
+        return search;
     }
-
-
 
     //=========================================================================
 
     private Search buildFixedRuleSearch(RuleFilter filter) {
-        Search searchCriteria = new Search(AdminRule.class);
+        Search search = ruleDAO.createSearch();
 
         if(filter != null) {
-            addFixedStringCriteria(searchCriteria, "username", filter.getUser());
-            addFixedStringCriteria(searchCriteria, "rolename", filter.getRole());
-            addFixedCriteria(searchCriteria, "instance", filter.getInstance());
+            addFixedStringCriteria(search, "username", filter.getUser());
+            addFixedStringCriteria(search, "rolename", filter.getRole());
+            addFixedCriteria(search, search.addJoin("instance"), filter.getInstance());
 
-            addFixedStringCriteria(searchCriteria, "workspace", filter.getWorkspace());
+            addFixedStringCriteria(search, "workspace", filter.getWorkspace());
         }
 
-        return searchCriteria;
+        return search;
     }
 
     // ==========================================================================

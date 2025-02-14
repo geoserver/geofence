@@ -7,17 +7,12 @@ package org.geoserver.geofence.core.dao.impl;
 
 import org.geoserver.geofence.core.dao.GSUserDAO;
 import org.geoserver.geofence.core.model.GSUser;
-import org.geoserver.geofence.core.model.UserGroup;
+import org.geoserver.geofence.core.dao.search.Search;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
-
-import org.hibernate.Hibernate;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.googlecode.genericdao.search.ISearch;
-import com.googlecode.genericdao.search.Search;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,8 +25,11 @@ import org.apache.logging.log4j.Logger;
 @Transactional(value = "geofenceTransactionManager")
 public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
 {
-
     private static final Logger LOGGER = LogManager.getLogger(GSUserDAOImpl.class);
+
+    public GSUserDAOImpl() {
+        super(GSUser.class);
+    }
 
     @Override
     public void persist(GSUser... entities)
@@ -51,14 +49,14 @@ public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
     }
 
     @Override
-    public List<GSUser> search(ISearch search)
+    public List<GSUser> search(Search search)
     {
         return super.search(search);
     }
 
     @Override
     public GSUser getFull(String name) {
-        Search search = new Search(GSUser.class);
+        Search search = createSearch();
         search.addFilterEqual("name", name);
         return searchFull(search);
     }
@@ -68,38 +66,17 @@ public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
      */
     protected GSUser searchFull(Search search) {
         search.addFetch("userGroups");
+        // When fetching users with multiple groups, the gsusers list id multiplied for the number of groups found
         search.setDistinct(true);
         List<GSUser> users = super.search(search);
-
-        // When fetching users with multiple groups, the gsusers list id multiplied for the number of groups found.
-        // Next there is a workaround to this problem; maybe this:
-        //    search.setDistinct(true);
-        // Dunno if some annotations in the GSUser definition are wrong, some deeper checks have to be performed.
-
+        
         switch(users.size()) {
             case 0:
                 return null;
             case 1:
                 return users.get(0);
             default:
-//                if(users.size() == users.get(0).getGroups().size()) { // normal hibernate behaviour
-//                    if(LOGGER.isDebugEnabled()) { // perform some more consistency tests only when debugging
-//                        for (GSUser user : users) {
-//                            if(user.getId() != users.get(0).getId() ||
-//                               user.getGroups().size() != users.get(0).getGroups().size()) {
-//                                LOGGER.error("Inconsistent userlist " + user);
-//                            }
-//                        }
-//                    }
-//
-//                    return users.get(0);
-//                } else {
-//                    LOGGER.error("Too many users in unique search " + search);
-//                    for (GSUser user : users) {
-//                        LOGGER.error("   " + user + " grp:"+user.getGroups().size());
-//                    }
-                    throw new IllegalStateException("Found more than one user (search:"+search+")");
-//                }
+                throw new IllegalStateException("Found more than one user (search:"+search+")");
         }
     }
 
@@ -120,6 +97,46 @@ public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
     public boolean removeById(Long id)
     {
         return super.removeById(id);
+    }
+
+    @Override    
+    public List<GSUser> search(String nameLike, Integer page, Integer entries, boolean fetchGroups) throws IllegalArgumentException {
+
+        if( (page != null && entries == null) || (page ==null && entries != null)) {
+            throw new IllegalArgumentException("Page and entries params should be declared together.");
+        }
+
+        Search search = createSearch();
+
+        if(page != null) {
+            search.setMaxResults(entries);
+            search.setPage(page);
+        }
+
+        if(fetchGroups) {
+            search.addFetch("userGroups");
+            search.setDistinct(true);            
+        }
+
+        search.addSortAsc("name");
+
+        if (nameLike != null) {
+            search.addFilterILike("name", nameLike);
+        }
+
+        return search(search);
+    }
+    
+
+    @Override
+    public long countByNameLike(String nameLike) {
+        Search searchCriteria = createCountSearch();
+
+        if (nameLike != null) {
+            searchCriteria.addFilterILike("name", nameLike);
+        }
+
+        return count(searchCriteria);
     }
 
 }

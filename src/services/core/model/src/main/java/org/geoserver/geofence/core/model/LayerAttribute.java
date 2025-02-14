@@ -7,8 +7,6 @@ package org.geoserver.geofence.core.model;
 
 import org.geoserver.geofence.core.model.enums.AccessType;
 import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
@@ -27,7 +25,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @XmlRootElement(name = "LayerAttribute")
 public class LayerAttribute implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = -4739817113509675752L;
+    private static final long serialVersionUID = 3809817113509675752L;
 
     @Column(nullable=false)
     private String name;

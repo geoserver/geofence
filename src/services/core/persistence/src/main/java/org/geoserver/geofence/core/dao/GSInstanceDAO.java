@@ -13,5 +13,6 @@ import org.geoserver.geofence.core.model.GSInstance;
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 
-public interface GSInstanceDAO extends RestrictedGenericDAO<GSInstance> {
+public interface GSInstanceDAO //
+        extends RestrictedGenericDAO<GSInstance>, SearchableDAO<GSInstance> {
 }

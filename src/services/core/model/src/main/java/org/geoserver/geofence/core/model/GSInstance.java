@@ -35,7 +35,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class GSInstance implements Identifiable, Serializable {
 
     /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = -2584592064221812813L;
+    private static final long serialVersionUID = 3804592064221812813L;
 
     /** The id. */
     @Id

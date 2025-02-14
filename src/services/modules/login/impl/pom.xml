@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.geoserver.geofence</groupId>
         <artifactId>geofence-login-parent</artifactId>
-        <version>3.7-SNAPSHOT</version>
+        <version>3.8-SNAPSHOT</version>
     </parent>
 
     <groupId>org.geoserver.geofence</groupId>
@@ -44,11 +44,6 @@
         <!--  Misc support libs -->
         <!-- ================================================================-->
 
-        <dependency>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <scope>runtime</scope>
-        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>

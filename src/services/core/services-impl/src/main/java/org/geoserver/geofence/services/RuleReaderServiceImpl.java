@@ -5,19 +5,29 @@
 
 package org.geoserver.geofence.services;
 
-import com.googlecode.genericdao.search.Filter;
-import com.googlecode.genericdao.search.Search;
-import org.geoserver.geofence.core.model.enums.*;
-import org.geotools.geometry.jts.JTS;
-import org.geotools.referencing.CRS;
 import org.locationtech.jts.geom.Geometry;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.operation.MathTransform;
+import org.geotools.api.referencing.operation.TransformException;
+
 import org.geoserver.geofence.core.dao.AdminRuleDAO;
 import org.geoserver.geofence.core.dao.LayerDetailsDAO;
 import org.geoserver.geofence.core.dao.RuleDAO;
+import org.geoserver.geofence.core.dao.search.Search;
+import org.geoserver.geofence.core.dao.search.Search.JoinInfo;
+import static org.geoserver.geofence.services.util.FilterUtils.filterByAddress;
 import org.geoserver.geofence.core.model.*;
+import org.geoserver.geofence.core.model.enums.AccessType;
+import org.geoserver.geofence.core.model.enums.AdminGrantType;
+import org.geoserver.geofence.core.model.enums.CatalogMode;
+import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.services.dto.AccessInfo;
 import org.geoserver.geofence.services.dto.AuthUser;
 import org.geoserver.geofence.services.dto.RuleFilter;
@@ -27,16 +37,13 @@ import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
 import org.geoserver.geofence.services.dto.ShortRule;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.util.AccessInfoInternal;
+
 import org.geoserver.geofence.spi.UserResolver;
-import org.geotools.api.referencing.FactoryException;
-import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
-import org.geotools.api.referencing.operation.MathTransform;
-import org.geotools.api.referencing.operation.TransformException;
 
 import java.util.*;
 import java.util.Map.Entry;
+import org.geoserver.geofence.core.model.enums.SpatialFilterType;
 
-import static org.geoserver.geofence.services.util.FilterUtils.filterByAddress;
 
 /**
  *
@@ -410,6 +417,9 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         accessInfo.setCatalogMode(cmode);
 
         if (area != null) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Attaching an area to Accessinfo: " + area.getClass().getName() + " " + area.toString());
+            }
             // if we have a clip area we apply clip type
             // since is more restrictive, otherwise we keep
             // the intersect
@@ -640,42 +650,42 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     }
 
     protected List<Rule> getRuleAux(RuleFilter filter, TextFilter roleFilter) {
-        Search searchCriteria = new Search(Rule.class);
-        searchCriteria.addSortAsc("priority");
-        addStringCriteria(searchCriteria, "username", filter.getUser());
-        addStringCriteria(searchCriteria, "rolename", roleFilter);
-        addCriteria(searchCriteria, "instance", filter.getInstance());
-        addStringCriteria(searchCriteria, "service", filter.getService()); // see class' javadoc
-        addStringCriteria(searchCriteria, "request", filter.getRequest()); // see class' javadoc
-        addStringCriteria(searchCriteria, "subfield", filter.getSubfield());
-        addStringCriteria(searchCriteria, "workspace", filter.getWorkspace());
-        addStringCriteria(searchCriteria, "layer", filter.getLayer());
+        Search search = ruleDAO.createSearch();
+        search.addSortAsc("priority");
+        addStringCriteria(search, "username", filter.getUser());
+        addStringCriteria(search, "rolename", roleFilter);
+        addCriteria(search, search.addJoin("instance"), filter.getInstance());
+        addStringCriteria(search, "service", filter.getService()); // see class' javadoc
+        addStringCriteria(search, "request", filter.getRequest()); // see class' javadoc
+        addStringCriteria(search, "subfield", filter.getSubfield());
+        addStringCriteria(search, "workspace", filter.getWorkspace());
+        addStringCriteria(search, "layer", filter.getLayer());
 
-        List<Rule> found = ruleDAO.search(searchCriteria);
+        List<Rule> found = ruleDAO.search(search);
         found = filterByAddress(filter, found);
 
         return found;
     }
 
-    private void addCriteria(Search searchCriteria, String fieldName, IdNameFilter filter) {
+    private void addCriteria(Search searchCriteria, JoinInfo join, IdNameFilter filter) {
         switch (filter.getType()) {
             case ANY:
                 break; // no filtering
 
             case DEFAULT:
-                searchCriteria.addFilterNull(fieldName);
+                searchCriteria.addFilterNull(join.getField());
                 break;
 
             case IDVALUE:
                 searchCriteria.addFilterOr(
-                        Filter.isNull(fieldName),
-                        Filter.equal(fieldName + ".id", filter.getId()));
+                        searchCriteria.isNull(join.getField()),
+                        searchCriteria.isEqual(join, "id", filter.getId()));
                 break;
 
             case NAMEVALUE:
                 searchCriteria.addFilterOr(
-                        Filter.isNull(fieldName),
-                        Filter.equal(fieldName + ".name", filter.getName()));
+                        searchCriteria.isNull(join.getField()),
+                        searchCriteria.isEqual(join, "name", filter.getName()));
                 break;
 
             default:
@@ -694,8 +704,8 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
             case NAMEVALUE:
                 searchCriteria.addFilterOr(
-                        Filter.isNull(fieldName),
-                        Filter.equal(fieldName, filter.getText()));
+                        searchCriteria.isNull(fieldName),
+                        searchCriteria.isEqual(fieldName, filter.getText()));
                 break;
 
             case IDVALUE:
@@ -779,17 +789,17 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     }
 
     protected AdminRule getAdminAuthAux(RuleFilter filter, TextFilter roleFilter) {
-        Search searchCriteria = new Search(AdminRule.class);
-        searchCriteria.addSortAsc("priority");
-        addStringCriteria(searchCriteria, "username", filter.getUser());
-        addStringCriteria(searchCriteria, "rolename", roleFilter);
-        addCriteria(searchCriteria, "instance", filter.getInstance());
-        addStringCriteria(searchCriteria, "workspace", filter.getWorkspace());
+        Search search = adminRuleDAO.createSearch();
+        search.addSortAsc("priority");
+        addStringCriteria(search, "username", filter.getUser());
+        addStringCriteria(search, "rolename", roleFilter);
+        addCriteria(search, search.addJoin("instance"), filter.getInstance());
+        addStringCriteria(search, "workspace", filter.getWorkspace());
 
         // we only need the first match, no need to aggregate (no LIMIT rules here)
-        searchCriteria.setMaxResults(1);
+        search.setMaxResults(1);
 
-        List<AdminRule> found = adminRuleDAO.search(searchCriteria);
+        List<AdminRule> found = adminRuleDAO.search(search);
         found = filterByAddress(filter, found);
 
         switch(found.size()) {

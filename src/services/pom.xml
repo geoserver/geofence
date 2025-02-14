@@ -11,12 +11,12 @@
     <parent>
         <groupId>org.geoserver.geofence</groupId>
         <artifactId>geofence</artifactId>
-        <version>3.7-SNAPSHOT</version>
+        <version>3.8-SNAPSHOT</version>
     </parent>
 
     <groupId>org.geoserver.geofence</groupId>
     <artifactId>geofence-root</artifactId>
-    <version>3.7-SNAPSHOT</version>
+    <version>3.8-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>GeoFence - 0 Services </name>
@@ -28,56 +28,58 @@
     </modules>
 
     <properties>
+        <geofence-version>3.8-SNAPSHOT</geofence-version>
         <main-prefix>geofence</main-prefix>
+        
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        
+        <gt-version>33-SNAPSHOT</gt-version>
+        <jts.version>1.20.0</jts.version>
+        
 
-        <gt-version>30-SNAPSHOT</gt-version>
+        <spring-version>5.3.39</spring-version>
+        <spring-security-version>5.8.16</spring-security-version>
+        <spring-support>2.0.8</spring-support>
+        <spring-ws-version>1.0.1</spring-ws-version>
 
-        <cxf-version>3.1.5</cxf-version>
-        <activemq-version>5.3.0.4-fuse</activemq-version>
-
-        <spring-version>4.2.5.RELEASE</spring-version>
-        <spring-security-version>4.0.4.RELEASE</spring-security-version>
-
-        <camel-version>1.6.1.2-fuse</camel-version>
-
-        <velocity-version>1.6.2</velocity-version>
-        <javax-mail-version>1.4</javax-mail-version>
-        <xalan-version>2.7.0</xalan-version>
-        <xercesImpl-version>2.8.1</xercesImpl-version>
-        <xml-apis-version>1.3.03</xml-apis-version>
+        <xalan-version>2.7.3</xalan-version>
+        <xercesImpl-version>2.12.2</xercesImpl-version>
+        <xml-apis-version>1.4.01</xml-apis-version>
         <jaxws-version>2.1</jaxws-version>
 
         <commons-logging-version>1.2</commons-logging-version>
-        <log4j-version>2.17.2</log4j-version>
+        <log4j-version>2.24.3</log4j-version>
 
         <commons-lang-version>2.3</commons-lang-version>
-        <commons-collections-version>3.2</commons-collections-version>
-        <commons-beanutils-version>1.7.0</commons-beanutils-version>
+        <commons-collections-version>3.2.2</commons-collections-version>
+        <commons-beanutils-version>1.9.4</commons-beanutils-version>
         <commons-dbcp-version>1.2.2</commons-dbcp-version>
-        <commons-codec-version>1.4</commons-codec-version>
+        <commons-codec-version>1.17.1</commons-codec-version>
+        <cxf-version>3.3.2</cxf-version>
+
+        <!--
+        5.4.3 jts mismatch w geolatte
+        6.2.2 package javax.persistence does not exist
+        6.4.4 javax.persistence not found
+        -->
+        <hibernate-version>5.6.15.Final</hibernate-version>
+
+        <postgresql.jdbc.version>42.2.18</postgresql.jdbc.version>
+        <postgis.jdbc.version>1.3.3</postgis.jdbc.version>
 
         <geronimo-specs-version>1.1</geronimo-specs-version>
         <dozer-version>4.0</dozer-version>
-
-        <dom4j-version>1.6.1</dom4j-version>
-
-        <maven-assembly-plugin-version>2.3</maven-assembly-plugin-version>
-
+        <dom4j-version>2.1.4</dom4j-version>
         <xbean-version>3.1.0.2-fuse</xbean-version>
 
-        <spring-support>2.0.8</spring-support>
-        <spring-ws-version>1.0.1</spring-ws-version>
         <aspectj-version>1.5.4</aspectj-version>
+        <ubl-version>2.0</ubl-version>
         <jetty-version>9.2.13.v20150730</jetty-version>
-        <jettison-version>1.2</jettison-version>
 
         <asm-version>2.2.3</asm-version>
-        <cglib-version>2.2</cglib-version>
-
-        <javassist-version>3.8.0.GA</javassist-version>
 
         <gsmanager-version>1.3.3-SNAPSHOT</gsmanager-version>
-
     </properties>
 
     <!-- =========================================================== -->
@@ -185,39 +187,24 @@
                 <version>${geofence-version}</version>
             </dependency>
 
-			<dependency>
+            <dependency>
                 <groupId>org.geoserver.geofence</groupId>
                 <artifactId>geofence-ldap</artifactId>
                 <version>${geofence-version}</version>
             </dependency>
 
-		    <!-- =========================================================== -->
-		    <!--     GeoServer Manager                                       -->
-		    <!-- =========================================================== -->
-			<dependency>
-				<groupId>it.geosolutions</groupId>
-				<artifactId>geoserver-manager</artifactId>
-				<version>${gsmanager-version}</version>
-			</dependency>
-
-		    <!-- =========================================================== -->
-		    <!--     Quartz                                                  -->
-		    <!-- =========================================================== -->
+            <!-- =========================================================== -->
+            <!--     GeoServer Manager                                       -->
+            <!-- =========================================================== -->
             <dependency>
-                <groupId>quartz</groupId>
-                <artifactId>quartz</artifactId>
-                <version>1.5.2</version>
-            </dependency>
-            <dependency>
-                <groupId>javassist</groupId>
-                <artifactId>javassist</artifactId>
-                <version>${javassist-version}</version>
-                <scope>runtime</scope>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>geoserver-manager</artifactId>
+                <version>${gsmanager-version}</version>
             </dependency>
 
-		    <!-- =========================================================== -->
-		    <!--     Logging                                                 -->
-		    <!-- =========================================================== -->
+            <!-- =========================================================== -->
+            <!--     Logging                                                 -->
+            <!-- =========================================================== -->
 
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
@@ -245,12 +232,12 @@
                 <version>${log4j-version}</version>
             </dependency>
 
-		    <!-- =========================================================== -->
-		    <!--     XML libs                                                -->
-		    <!-- =========================================================== -->
+            <!-- =========================================================== -->
+            <!--     XML libs                                                -->
+            <!-- =========================================================== -->
 
             <dependency>
-                <groupId>dom4j</groupId>
+                <groupId>org.dom4j</groupId>
                 <artifactId>dom4j</artifactId>
                 <version>${dom4j-version}</version>
             </dependency>
@@ -258,12 +245,13 @@
             <dependency>
                 <groupId>org.jdom</groupId>
                 <artifactId>jdom</artifactId>
-                <version>1.1</version>
+                <version>1.1.3</version>
             </dependency>
 
-		    <!-- =========================================================== -->
-		    <!--     APACHE COMMONS                                          -->
-		    <!-- =========================================================== -->
+            <!-- =========================================================== -->
+            <!--     APACHE COMMONS                                          -->
+            <!-- =========================================================== -->
+
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
@@ -272,7 +260,7 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>1.4</version>
+                <version>2.6</version>
             </dependency>
             <dependency>
                 <groupId>commons-httpclient</groupId>
@@ -306,9 +294,20 @@
                 <version>${commons-logging-version}</version>
             </dependency>
 
-		    <!-- =========================================================== -->
-		    <!--     APACHE CXF                                              -->
-		    <!-- =========================================================== -->
+            <!-- =========================================================== -->
+            <!--     APACHE CXF                                              -->
+            <!-- =========================================================== -->
+            <dependency>
+                <groupId>javax.xml.ws</groupId>
+                <artifactId>jaxws-api</artifactId>
+                <version>${jaxws-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.jws</groupId>
+                        <artifactId>jsr181-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
             <dependency>
                 <groupId>org.apache.cxf</groupId>
@@ -371,189 +370,140 @@
                 <artifactId>cxf-rt-rs-client</artifactId>
                 <version>${cxf-version}</version>
             </dependency>
-
-
-            <!-- =========================================================== -->
-            <!--     Velocity                                                -->
-            <!-- =========================================================== -->
             <dependency>
-                <groupId>org.apache.velocity</groupId>
-                <artifactId>velocity</artifactId>
-                <version>${velocity-version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>javax.mail</groupId>
-                <artifactId>mail</artifactId>
-                <version>${javax-mail-version}</version>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-rs-extension-providers</artifactId>
+                <version>${cxf-version}</version>
             </dependency>
 
             <!-- =========================================================== -->
             <!--     JAXB                                                    -->
             <!-- =========================================================== -->
-            <dependency>
-                <groupId>jakarta.xml.bind</groupId>
-                <artifactId>jakarta.xml.bind-api</artifactId>
-                <version>2.3.3</version>
+
+            <!-- JAXB for Java 11 -->            
+            <dependency>                      
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>2.4.0-b180830.0359</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jaxb</groupId>
                 <artifactId>jaxb-runtime</artifactId>
+                <version>2.4.0-b180830.0438</version>
+            </dependency>
+            
+<!--            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
                 <version>2.3.3</version>
             </dependency>
-            <dependency>
+      
+-->            <dependency>
                 <groupId>jakarta.xml.ws</groupId>
                 <artifactId>jakarta.xml.ws-api</artifactId>
                 <version>2.3.3</version>
+            </dependency><!--
+
+            <dependency>
+              <groupId>jakarta.xml.bind</groupId>
+              <artifactId>jakarta.xml.bind-api</artifactId>
+              <version>4.0.0</version>
+            </dependency>
+            <dependency>
+              <groupId>com.sun.xml.bind</groupId>
+              <artifactId>jaxb-impl</artifactId>
+              <version>4.0.0</version>
+              <scope>runtime</scope>
+            </dependency>-->
+<!--            <dependency>
+              <groupId>com.sun.xml.bind</groupId>
+              <artifactId>jaxb-api</artifactId>
+              <version>4.0.0</version>
+              <scope>runtime</scope>
+            </dependency>-->
+
+
+            <!-- JAXWS for Java 11 -->
+            
+            
+            <dependency>
+                <groupId>com.sun.xml.ws</groupId>
+                <artifactId>jaxws-rt</artifactId>
+                <version>2.3.2</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.ws</groupId>
+                <artifactId>jaxws-ri</artifactId>
+                <version>2.3.2</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.ws</groupId>
+                <artifactId>rt</artifactId>
+                <version>2.3.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>1.3.2</version>
             </dependency>
 
             <!-- =========================================================== -->
             <!--     SPRING                                                  -->
             <!-- =========================================================== -->
+            
             <dependency>
                 <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
+                <artifactId>spring-framework-bom</artifactId>
                 <version>${spring-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-jmx</artifactId>
-                <version>${spring-support}</version>
-<!--                <scope>provided</scope>-->
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-beans</artifactId>
-                <version>${spring-version}</version>
-<!--                <scope>provided</scope>-->
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${spring-version}</version>
-<!--                <scope>provided</scope>-->
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-tx</artifactId>
-                <version>${spring-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context-support</artifactId>
-                <version>${spring-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-jdbc</artifactId>
-                <version>${spring-version}</version>
-<!--                <scope>provided</scope>-->
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-orm</artifactId>
-                <version>${spring-version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aop</artifactId>
-                <version>${spring-version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>${spring-version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-remoting</artifactId>
-                <version>${spring-version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc</artifactId>
-                <version>${spring-version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
 
-		    <!-- =========================================================== -->
-		    <!--     SPRING SECURITY                                         -->
-		    <!-- =========================================================== -->
+            <!-- =========================================================== -->
+            <!--     SPRING SECURITY                                         -->
+            <!-- =========================================================== -->
+            
             <dependency>
                 <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-core</artifactId>
+                <artifactId>spring-security-bom</artifactId>
                 <version>${spring-security-version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.springframework</groupId>
-						<artifactId>spring-expression</artifactId>
-					</exclusion>
-				</exclusions>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.springframework.ldap</groupId>
+                <artifactId>spring-ldap-core</artifactId>
+                <version>2.3.2.RELEASE</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-taglibs</artifactId>
-                <version>${spring-security-version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.springframework</groupId>
-						<artifactId>spring-expression</artifactId>
-					</exclusion>
-				</exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-acl</artifactId>
-                <version>${spring-security-version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.springframework</groupId>
-						<artifactId>spring-expression</artifactId>
-					</exclusion>
-				</exclusions>
+                <groupId>org.springframework.ldap</groupId>
+                <artifactId>spring-ldap-test</artifactId>
+                <version>2.3.2.RELEASE</version>
             </dependency>
 
-		    <!-- =========================================================== -->
-		    <!--     JAVAX SERVLET                                           -->
-		    <!-- =========================================================== -->
+            <!-- =========================================================== -->
+            <!--     JAVAX SERVLET                                           -->
+            <!-- =========================================================== -->
             <dependency>
                 <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-                <version>2.3</version>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.1.0</version>
                 <scope>provided</scope>
             </dependency>
 
-		    <!-- =========================================================== -->
-		    <!--     CGLIB                                                   -->
-		    <!-- =========================================================== -->
-            <dependency>
-                <groupId>asm</groupId>
-                <artifactId>asm</artifactId>
-                <version>${asm-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cglib</groupId>
-                <artifactId>cglib</artifactId>
-                <version>${cglib-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cglib</groupId>
-                <artifactId>cglib-nodep</artifactId>
-                <version>${cglib-version}</version>
-            </dependency>
-
-		    <!-- =========================================================== -->
-		    <!--     HTTP UTILS                                              -->
-		    <!-- =========================================================== -->
+            <!-- =========================================================== -->
+            <!--     HTTP UTILS                                              -->
+            <!-- =========================================================== -->
+            
             <dependency>
                 <groupId>org.codehaus.jettison</groupId>
                 <artifactId>jettison</artifactId>
-                <version>${jettison-version}</version>
+                <version>1.4.0</version>
             </dependency>
 
             <dependency>
@@ -573,91 +523,39 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.11</version>
+                <version>4.13</version>
                 <scope>test</scope>
             </dependency>
 
-		    <!-- =========================================================== -->
-		    <!--     HIBERNATE-GENERIC-DAO                                   -->
-		    <!-- =========================================================== -->
-
-            <dependency>
-                <groupId>com.googlecode.genericdao</groupId>
-                <artifactId>dao</artifactId>
-                <version>${hibernate-generic-dao-version}</version>
-				<exclusions>
-					<!-- exclude JPA1 dependency -->
-					<!-- JPA2 is needed and imported by hibernate3.-->
-					<exclusion>
-						<groupId>javax.persistence</groupId>
-						<artifactId>persistence-api</artifactId>
-					</exclusion>
-				</exclusions>
-            </dependency>
-            <dependency>
-                <groupId>com.googlecode.genericdao</groupId>
-                <artifactId>search-jpa-hibernate</artifactId>
-                <version>${hibernate-generic-dao-version}</version>
-            </dependency>
-
-		    <!-- =========================================================== -->
-		    <!--     HIBERNATE                                               -->
-		    <!-- =========================================================== -->
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-entitymanager</artifactId>
-                <version>${hibernate-version}</version>
-            </dependency>
+            <!-- =========================================================== -->
+            <!--     HIBERNATE                                               -->
+            <!-- =========================================================== -->
 
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
                 <version>${hibernate-version}</version>
             </dependency>
+            
             <dependency>
                 <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-ehcache</artifactId>
+                <artifactId>hibernate-jcache</artifactId>
+                <version>${hibernate-version}</version>
+            </dependency>
+
+            <!-- =========================================================== -->
+            <!--     HIBERNATE-SPATIAL                                       -->
+            <!-- =========================================================== -->
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-spatial</artifactId>
                 <version>${hibernate-version}</version>
             </dependency>
             
-
-		    <!-- =========================================================== -->
-		    <!--     HIBERNATE-SPATIAL                                       -->
-		    <!-- =========================================================== -->
-
-            <dependency>
-                <groupId>org.hibernatespatial</groupId>
-                <artifactId>hibernate-spatial</artifactId>
-                <version>${hibernate-spatial-version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hibernatespatial</groupId>
-                <artifactId>hibernate-spatial-postgis</artifactId>
-                <version>${hibernate-spatial-version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hibernatespatial</groupId>
-                <artifactId>hibernate-spatial-oracle</artifactId>
-                <version>${hibernate-spatial-version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hibernatespatial</groupId>
-                <artifactId>hibernate-spatial-h2-geodb</artifactId>
-                <version>${hibernate-spatial-version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.javassist</groupId>
-                <artifactId>javassist</artifactId>
-                <version>3.23.1-GA</version>
-            </dependency>
-
-		    <!-- =========================================================== -->
-		    <!--     POSTGRES- POSTGIS                                       -->
-		    <!-- =========================================================== -->
+            <!-- =========================================================== -->
+            <!--     POSTGRES- POSTGIS                                       -->
+            <!-- =========================================================== -->
             <dependency>
                 <groupId>org.postgis</groupId>
                 <artifactId>postgis-jdbc</artifactId>
@@ -667,7 +565,7 @@
                         <groupId>org.postgis</groupId>
                         <artifactId>postgis-stubs</artifactId>
                     </exclusion>
-                </exclusions>                
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.postgresql</groupId>
@@ -675,17 +573,19 @@
                 <version>${postgresql.jdbc.version}</version>
             </dependency>
 
-		    <!-- =========================================================== -->
+            <!-- =========================================================== -->
 
             <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
-                <version>1.3.176</version>
+                <!-- geoserver version -->
+                <!--<version>1.1.119</version>--> 
+                <version>2.3.232</version>
             </dependency>
 
             <!-- =========================================================== -->
-			<!--                                                             -->
-		    <!-- =========================================================== -->
+            <!--                                                             -->
+	    <!-- =========================================================== -->
 
             <dependency>
                 <groupId>org.locationtech.jts</groupId>
@@ -693,43 +593,17 @@
                 <version>${jts.version}</version>
             </dependency>
 
-		    <!-- =========================================================== -->
-			<!-- JAI & ImageIO                                               -->
-		    <!-- =========================================================== -->
-            <dependency>
-                <groupId>javax.media</groupId>
-                <artifactId>jai_core</artifactId>
-                <version>1.1.3</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.media</groupId>
-                <artifactId>jai_codec</artifactId>
-                <version>1.1.3</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.media</groupId>
-                <artifactId>jai_imageio</artifactId>
-                <version>1.1</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.googlecode.jaitools</groupId>
-                <artifactId>jt-utils</artifactId>
-                <version>1.1.1</version>
-            </dependency>
-
-            <dependency>
-                <groupId>net.java.dev.jsr-275</groupId>
-                <artifactId>jsr-275</artifactId>
-                <version>1.0-beta-2</version>
-            </dependency>
-
-		    <!-- =========================================================== -->
-		    <!--     GEOTOOLS                                                -->
-		    <!-- =========================================================== -->
+            <!-- =========================================================== -->
+            <!--     GEOTOOLS                                                -->
+            <!-- =========================================================== -->
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-main</artifactId>
+                <version>${gt-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-api</artifactId>
                 <version>${gt-version}</version>
             </dependency>
             <dependency>
@@ -795,11 +669,23 @@
         <plugins>
             <!-- compilation -->
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <!-- LOOK OUT: YOU SHOULD USE >= 3.8.0! -->
+                <version>3.8.1</version>
+                <configuration>
+                    <release>11</release>
+                    <debug>true</debug>
+                    <encoding>UTF-8</encoding>
+                    <showDeprecation>true</showDeprecation>
+                </configuration>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.6</version>
+                <version>3.3.1</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
                 </configuration>
@@ -808,7 +694,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.17</version>
+                <version>3.5.2</version>
                 <configuration>
 <!--                <includes>
                         <include>**/Test*.java</include>
@@ -816,45 +702,17 @@
                 </includes>-->
                 </configuration>
             </plugin>
+                       
         </plugins>
 
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ftp</artifactId>
-                <version>2.10</version>
-            </extension>
-        </extensions>
-
     </build>
-
-<!--    <repositories>
-
-				 Spring 
-        <repository>
-            <id>spring-release</id>
-            <name>Spring Portfolio Release Repository</name>
-            <url>http://maven.springframework.org/release</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>spring-external</id>
-            <name>Spring Portfolio External Repository</name>
-            <url>http://maven.springframework.org/external</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>-->
 
     <pluginRepositories>
 
         <pluginRepository>
             <id>apache.snapshots</id>
             <name>Apache Snapshots Repository</name>
-            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <url>https://people.apache.org/repo/m2-snapshot-repository</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
@@ -866,7 +724,7 @@
         <pluginRepository>
             <id>apache.incubating</id>
             <name>Apache Incubating Repository</name>
-            <url>http://people.apache.org/repo/m2-incubating-repository</url>
+            <url>https://people.apache.org/repo/m2-incubating-repository</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -874,25 +732,6 @@
                 <enabled>true</enabled>
             </releases>
         </pluginRepository>
-
-<!--        <pluginRepository>
-            <id>mortbay-repo</id>
-            <name>mortbay-repo</name>
-            <url>http://www.mortbay.org/maven2/snapshot</url>
-        </pluginRepository>-->
-
-<!--        <pluginRepository>
-            <id>gwt-maven</id>
-            <name>gwt-maven</name>
-            <url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo</url>
-        </pluginRepository>-->
-
-        <!-- some maven plugins are here -->
-<!--        <pluginRepository>
-            <id>fuse</id>
-            <name>fuse</name>
-            <url>http://repo.fusesource.com/maven2/</url>
-        </pluginRepository>-->
 
     </pluginRepositories>
 

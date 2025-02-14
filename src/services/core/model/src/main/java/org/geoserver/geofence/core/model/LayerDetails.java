@@ -14,10 +14,12 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -32,8 +34,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.ForeignKey;
-import org.hibernate.annotations.Type;
 
 /**
  * Details may be set only for ules with non-wildcarded profile, instance, workspace,layer.
@@ -46,12 +46,19 @@ import org.hibernate.annotations.Type;
  * @author ETj (etj at geo-solutions.it)
  */
 @Entity(name = "LayerDetails")
-@Table(name = "gf_layer_details")
+@Table(name = "gf_layer_details", 
+        uniqueConstraints = { // @InternalModel
+            @UniqueConstraint(
+                    columnNames = "rule_id", name = "gf_layer_details_rule_id_key") // @InternalModel
+        } // @InternalModel
+) // @InternalModel
+        
+
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "LayerDetails")
 @XmlRootElement(name = "LayerDetails")
-public class LayerDetails implements Serializable {
+public class LayerDetails implements Identifiable, Serializable {
 
-    private static final long serialVersionUID = -4150963895550551513L;
+    private static final long serialVersionUID = 3800963895550551513L;
 
     /** The id. */
     @Id
@@ -72,13 +79,12 @@ public class LayerDetails implements Serializable {
     @Column(length=4000)
     private String cqlFilterWrite;
 
-	@Type(type = "org.hibernatespatial.GeometryUserType")
-	@Column(name = "area")
-	private MultiPolygon area;
+    @Column(name = "area")
+    private MultiPolygon area;
 
-	@Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     @Column(name="spatial_filter_type",nullable = true)
-	private SpatialFilterType spatialFilterType;
+    private SpatialFilterType spatialFilterType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "catalog_mode", nullable = true)
@@ -86,27 +92,34 @@ public class LayerDetails implements Serializable {
 
     @OneToOne(optional=false)
 //    @Check(constraints="rule.access='LIMIT'") // ??? check this
-    @ForeignKey(name="fk_details_rule")
+    @JoinColumn(foreignKey = @ForeignKey(name="fk_details_rule"))        
     private Rule rule;
 
     /** Styles allowed for this layer */
-    @org.hibernate.annotations.CollectionOfElements(fetch=FetchType.EAGER)
-    @JoinTable( name = "gf_layer_styles", joinColumns = @JoinColumn(name = "details_id"))
-    @ForeignKey(name="fk_styles_layer")
+    @ElementCollection(fetch=FetchType.EAGER)
+    @JoinTable(
+            name = "gf_layer_styles",  // @InternalModel
+            joinColumns = @JoinColumn(name = "details_id"),
+            foreignKey = @ForeignKey(name="fk_styles_layer")
+    )    // @InternalModel
     @Column(name="styleName")
-    private Set<String> allowedStyles = new HashSet<String>();
+    private Set<String> allowedStyles = new HashSet<>();
 
     /** Feature Attributes associated to the Layer
      * <P>We'll use the pair <TT>(details_id, name)</TT> as PK for the associated table.
      * To do so, we have to perform some trick on the <TT>{@link LayerAttribute#access}</TT> field.
      */
-    @org.hibernate.annotations.CollectionOfElements(fetch=FetchType.EAGER)
-    @JoinTable( name = "gf_layer_attributes",  joinColumns = @JoinColumn(name = "details_id"),  uniqueConstraints = @UniqueConstraint(columnNames={"details_id", "name"}))
+    @ElementCollection(fetch=FetchType.EAGER)
+    @JoinTable( 
+            name = "gf_layer_attributes",  // @InternalModel
+            joinColumns = @JoinColumn(name = "details_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames={"details_id", "name"}, name="gf_layer_attributes_didname_unq"),
+            foreignKey = @ForeignKey(name="fk_attribute_layer")
+    ) // @InternalModel
     // override is used to set the pk as {"details_id", "name"}
 //    @AttributeOverride( name="access", column=@Column(name="access", nullable=false) )
-    @ForeignKey(name="fk_attribute_layer")
     @Fetch(FetchMode.SELECT) // without this, hibernate will duplicate results(!)
-    private Set<LayerAttribute> attributes = new HashSet<LayerAttribute>();
+    private Set<LayerAttribute> attributes = new HashSet<>();
 
     @XmlJavaTypeAdapter(MultiPolygonAdapter.class)
     public MultiPolygon getArea() {

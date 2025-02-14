@@ -5,15 +5,14 @@
 
 package org.geoserver.geofence.core.dao.impl;
 
-import java.util.List;
-
-import com.googlecode.genericdao.search.ISearch;
-
 import org.geoserver.geofence.core.dao.RuleLimitsDAO;
+import org.geoserver.geofence.core.dao.search.Search;
 import org.geoserver.geofence.core.model.RuleLimits;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,11 +23,16 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 @Transactional(value = "geofenceTransactionManager")
-public class RuleLimitsDAOImpl extends BaseDAO<RuleLimits, Long> implements RuleLimitsDAO
+public class RuleLimitsDAOImpl // 
+        extends BaseDAO<RuleLimits, Long> // 
+        implements RuleLimitsDAO
 {
-
     private static final Logger LOGGER = LogManager.getLogger(RuleLimitsDAOImpl.class);
 
+    public RuleLimitsDAOImpl() {
+        super(RuleLimits.class);
+    }
+    
     @Override
     public void persist(RuleLimits... entities)
     {
@@ -42,7 +46,7 @@ public class RuleLimitsDAOImpl extends BaseDAO<RuleLimits, Long> implements Rule
     }
 
     @Override
-    public List<RuleLimits> search(ISearch search)
+    public List<RuleLimits> search(Search search)
     {
         return super.search(search);
     }

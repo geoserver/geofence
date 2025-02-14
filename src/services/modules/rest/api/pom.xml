@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.geoserver.geofence</groupId>
         <artifactId>geofence-rest-root</artifactId>
-        <version>3.7-SNAPSHOT</version>
+        <version>3.8-SNAPSHOT</version>
     </parent>
 
     <groupId>org.geoserver.geofence</groupId>
@@ -57,11 +57,6 @@
 
 
 
-        <dependency>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <scope>runtime</scope>
-        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

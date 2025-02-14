@@ -2,22 +2,20 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-
 package org.geoserver.geofence.core.dao.impl;
 
 import java.util.Date;
 import java.util.List;
 
-import com.googlecode.genericdao.search.ISearch;
-
 import org.geoserver.geofence.core.dao.UserGroupDAO;
 import org.geoserver.geofence.core.model.UserGroup;
+import org.geoserver.geofence.core.dao.search.Search;
+import org.geoserver.geofence.core.model.GSUser;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import org.springframework.transaction.annotation.Transactional;
-
 
 /**
  * Public implementation of the UserGroupDAO interface
@@ -26,17 +24,19 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional(value = "geofenceTransactionManager")
 public class UserGroupDAOImpl extends BaseDAO<UserGroup, Long>
-    // extends GenericDAOImpl<User, Long>
-    implements UserGroupDAO
-{
+        // extends GenericDAOImpl<User, Long>
+        implements UserGroupDAO {
+
     private static final Logger LOGGER = LogManager.getLogger(UserGroupDAOImpl.class);
 
+    public UserGroupDAOImpl() {
+        super(UserGroup.class);
+    }
+
     @Override
-    public void persist(UserGroup... entities)
-    {
+    public void persist(UserGroup... entities) {
         Date now = new Date();
-        for (UserGroup e : entities)
-        {
+        for (UserGroup e : entities) {
             e.setDateCreation(now);
         }
 
@@ -44,35 +44,66 @@ public class UserGroupDAOImpl extends BaseDAO<UserGroup, Long>
     }
 
     @Override
-    public List<UserGroup> findAll()
-    {
+    public List<UserGroup> findAll() {
         return super.findAll();
     }
 
     @Override
-    public List<UserGroup> search(ISearch search)
-    {
-        return super.search(search);
-    }
-
-    @Override
-    public UserGroup merge(UserGroup entity)
-    {
+    public UserGroup merge(UserGroup entity) {
         return super.merge(entity);
     }
 
     @Override
-    public boolean remove(UserGroup entity)
-    {
+    public boolean remove(UserGroup entity) {
         return super.remove(entity);
     }
 
     @Override
-    public boolean removeById(Long id)
-    {
+    public boolean removeById(Long id) {
         return super.removeById(id);
     }
 
-    // ==========================================================================
+    @Override
+    public UserGroup get(String name) {
+        Search search = createSearch();
+        search.addFilterEqual("name", name);
+        return (UserGroup)searchUnique(search);
+    }
+    
+    @Override    
+    public List<UserGroup> search(String nameLike, Integer page, Integer entries) throws IllegalArgumentException {
+
+        if( (page != null && entries == null) || (page ==null && entries != null)) {
+            throw new IllegalArgumentException("Page and entries params should be declared together.");
+        }
+
+        Search search = createSearch();
+
+        if(page != null) {
+            search.setMaxResults(entries);
+            search.setPage(page);
+        }
+
+        search.addSortAsc("name");
+
+        if (nameLike != null) {
+            search.addFilterILike("name", nameLike);
+        }
+
+        return search(search);
+    }
+    
+
+    @Override
+    public long countByNameLike(String nameLike) {
+        Search searchCriteria = createCountSearch();
+
+        if (nameLike != null) {
+            searchCriteria.addFilterILike("name", nameLike);
+        }
+
+        return count(searchCriteria);
+    }
+    
 
 }

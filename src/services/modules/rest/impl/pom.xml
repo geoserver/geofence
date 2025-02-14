@@ -12,12 +12,13 @@
     <parent>
         <groupId>org.geoserver.geofence</groupId>
         <artifactId>geofence-rest-root</artifactId>
-        <version>3.7-SNAPSHOT</version>
+        <version>3.8-SNAPSHOT</version>
     </parent>
 
     <groupId>org.geoserver.geofence</groupId>
     <artifactId>geofence-rest-impl</artifactId>
     <packaging>jar</packaging>
+
     <name>GeoFence - Modules - REST services implementation</name>
 
     <dependencies>
@@ -56,14 +57,14 @@
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-            <version>3.1.5</version>
+            <!--<version>3.3.2</version>-->
 <!--            <scope>test</scope>-->
         </dependency>
 
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-extension-providers</artifactId>
-            <version>3.1.5</version>
+            <!--<version>3.3.2</version>-->
         </dependency>
 
         <dependency>
@@ -79,13 +80,6 @@
         </dependency>
 
 
-
-        <dependency>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
@@ -99,7 +93,6 @@
             <groupId>net.sf.json-lib</groupId>
             <artifactId>json-lib</artifactId>
             <version>2.4</version>
-            <type>jar</type>
             <classifier>jdk15</classifier>
             <scope>compile</scope>
         </dependency>
@@ -107,6 +100,11 @@
             <groupId>xom</groupId>
             <artifactId>xom</artifactId>
             <version>1.1</version>
+        </dependency>-->
+        
+<!--        <dependency>
+            <groupId>com.googlecode.jaitools</groupId>
+            <artifactId>jt-utils</artifactId>
         </dependency>-->
 
         <dependency>
@@ -138,15 +136,16 @@
 
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
+            <artifactId>javax.servlet-api</artifactId>
             <scope>test</scope>
         </dependency>
         
         <dependency>
-            <groupId>org.hibernatespatial</groupId>
-            <artifactId>hibernate-spatial-h2-geodb</artifactId>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-spatial</artifactId>
             <scope>test</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.opengeo</groupId>
             <artifactId>geodb</artifactId>

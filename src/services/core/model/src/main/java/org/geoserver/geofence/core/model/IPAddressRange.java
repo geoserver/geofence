@@ -20,6 +20,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Embeddable
 public class IPAddressRange implements Serializable {
 
+    private static final long serialVersionUID = 3808458156939088033L;
+    
     /**
      * The lower 64 bits.
      * For IPv4, only the lower 32 are used.
@@ -44,7 +46,7 @@ public class IPAddressRange implements Serializable {
     public IPAddressRange(String cidrNotation) {
         SubnetV4Utils su = new SubnetV4Utils(cidrNotation);
 
-        low = new Long(su.getInfo().getAddressAsInteger());
+        low = Long.valueOf(su.getInfo().getAddressAsInteger());
         size = su.getInfo().getMaskSize();
     }
 

@@ -48,8 +48,8 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
         GSUser u1 = createUser("u1", g1, g2, g3, g4);
 
 
-        insertRule(new Rule(20, "u1", null, null,null,      null, null, null, "l1", GrantType.LIMIT), null);
-        insertRule(new Rule(21, null, "g1", null,null,      null, null, null, "l1", GrantType.ALLOW), null);
+        insertRule(new Rule(20, "u1", null, null,null,      null, null, null, null, "l1", GrantType.LIMIT), null);
+        insertRule(new Rule(21, null, "g1", null,null,      null, null, null,  null, "l1", GrantType.ALLOW), null);
 
         LOGGER.info("SETUP ENDED, STARTING TESTS========================================");
 
@@ -76,8 +76,8 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
         GSUser u1 = createUser("u1", g1, g2, g3, g4);
 
 
-        insertRule(new Rule(20, "u1", null, null,null,      null, null, null, "l1", GrantType.LIMIT), null);
-        insertRule(new Rule(21, null, "g1", null,null,      null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
+        insertRule(new Rule(20, "u1", null, null,null, null, null, null,  null, "l1", GrantType.LIMIT), null);
+        insertRule(new Rule(21, null, "g1", null,null, null, null, null,  null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
 
         LOGGER.info("SETUP ENDED, STARTING TESTS========================================");
 
@@ -104,8 +104,8 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
         GSUser u1 = createUser("u1", g1, g2, g3, g4);
 
 
-        insertRule(new Rule(20, "u1", null, null, null,     null, null, null, "l1", GrantType.LIMIT), CatalogMode.HIDE);
-        insertRule(new Rule(21, null, "g1", null, null,     null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
+        insertRule(new Rule(20, "u1", null, null, null, null, null, null,  null, "l1", GrantType.LIMIT), CatalogMode.HIDE);
+        insertRule(new Rule(21, null, "g1", null, null, null, null, null, null , "l1", GrantType.ALLOW), CatalogMode.MIXED);
 
         LOGGER.info("SETUP ENDED, STARTING TESTS========================================");
 
@@ -131,8 +131,8 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
         GSUser u1 = createUser("u1", g1, g2, g3, g4);
 
 
-        insertRule(new Rule(20, null, "g2", null, null,  null, null, null, "l1", GrantType.ALLOW), CatalogMode.HIDE);
-        insertRule(new Rule(21, null, "g1", null, null,  null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
+        insertRule(new Rule(20, null, "g2", null, null, null, null, null, null, "l1", GrantType.ALLOW), CatalogMode.HIDE);
+        insertRule(new Rule(21, null, "g1", null, null, null, null, null, null, "l1", GrantType.ALLOW), CatalogMode.MIXED);
 
         LOGGER.info("SETUP ENDED, STARTING TESTS========================================");
 

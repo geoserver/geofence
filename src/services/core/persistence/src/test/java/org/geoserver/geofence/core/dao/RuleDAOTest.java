@@ -5,16 +5,16 @@
 
 package org.geoserver.geofence.core.dao;
 
-import com.googlecode.genericdao.search.Search;
 import org.geoserver.geofence.core.model.Rule;
+import org.geoserver.geofence.core.dao.search.Search;
+import static org.geoserver.geofence.core.dao.BaseDAOTest.ruleDAO;
 import org.geoserver.geofence.core.model.LayerAttribute;
 import org.geoserver.geofence.core.model.LayerDetails;
 import org.geoserver.geofence.core.model.IPAddressRange;
 import org.geoserver.geofence.core.model.GSUser;
 import org.geoserver.geofence.core.model.enums.SpatialFilterType;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.MultiPolygon;
-import org.geoserver.geofence.core.dao.util.SearchUtil;
+import org.geoserver.geofence.core.dao.search.SearchUtil;
 import org.geoserver.geofence.core.model.enums.AccessType;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
@@ -280,7 +280,7 @@ public class RuleDAOTest extends BaseDAOTest {
         final Long id;
 
         {
-            Rule r1 = new Rule(10, null, null, null, null,     "s1", "r1", "w1", "l1", GrantType.ALLOW);
+            Rule r1 = new Rule(10, null, null, null, null,     "s1", "r1", null, "w1", "l1", GrantType.ALLOW);
 //            ruleAdminService.insert(r1);
             ruleDAO.persist(r1);
             id = r1.getId();
@@ -444,8 +444,8 @@ public class RuleDAOTest extends BaseDAOTest {
     public void testDupRuleTest() throws Exception {
 
         {
-            Rule rule1 = new Rule(10, null, null, null, null, "s", null, null, null, GrantType.ALLOW);
-            Rule rule2 = new Rule(10, null, null, null, null, "s", null, null, null, GrantType.ALLOW);
+            Rule rule1 = new Rule(10, null, null, null, null, "s", null, null, null, null, GrantType.ALLOW);
+            Rule rule2 = new Rule(10, null, null, null, null, "s", null, null, null, null, GrantType.ALLOW);
 
             ruleDAO.persist(rule1);
 
@@ -462,8 +462,8 @@ public class RuleDAOTest extends BaseDAOTest {
     @Test
     public void testDupRule2Test() throws Exception {
         {
-            Rule rule1 = new Rule(10, null, null, null, new IPAddressRange("1.2.3.4/32"), "s", null, null, null, GrantType.ALLOW);
-            Rule rule2 = new Rule(10, null, null, null, new IPAddressRange("1.2.3.4/32"), "s", null, null, null, GrantType.ALLOW);
+            Rule rule1 = new Rule(10, null, null, null, new IPAddressRange("1.2.3.4/32"), "s", null, null, null, null, GrantType.ALLOW);
+            Rule rule2 = new Rule(10, null, null, null, new IPAddressRange("1.2.3.4/32"), "s", null, null, null, null, GrantType.ALLOW);
 
             ruleDAO.persist(rule1);
 
@@ -479,8 +479,8 @@ public class RuleDAOTest extends BaseDAOTest {
     @Test
     public void testDupRule3Test() throws Exception {
         {
-            Rule rule1 = new Rule(10, null, null, null, new IPAddressRange("1.2.3.5/32"), "s", null, null, null, GrantType.ALLOW);
-            Rule rule2 = new Rule(10, null, null, null, new IPAddressRange("1.2.3.4/32"), "s", null, null, null, GrantType.ALLOW);
+            Rule rule1 = new Rule(10, null, null, null, new IPAddressRange("1.2.3.5/32"), "s", null, null, null, null, GrantType.ALLOW);
+            Rule rule2 = new Rule(10, null, null, null, new IPAddressRange("1.2.3.4/32"), "s", null, null, null, null, GrantType.ALLOW);
 
             ruleDAO.persist(rule1);
 
@@ -496,12 +496,12 @@ public class RuleDAOTest extends BaseDAOTest {
 
     @Test
     public void testShift() {
-        assertEquals(0, ruleDAO.count(new Search(Rule.class)));
+        assertEquals(0, ruleDAO.count(ruleDAO.createSearch()));
 
-        Rule r1 = new Rule(10, null, null, null, null,     "s1", "r1", "w1", "l1", GrantType.ALLOW);
-        Rule r2 = new Rule(20, null, null, null, null,     "s2", "r2", "w2", "l2", GrantType.ALLOW);
-        Rule r3 = new Rule(30, null, null, null, null,     "s3", "r3", "w3", "l3", GrantType.ALLOW);
-        Rule r4 = new Rule(40, null, null, null, null,     "s4", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r1 = new Rule(10, null, null, null, null,     "s1", "r1", null, "w1", "l1", GrantType.ALLOW);
+        Rule r2 = new Rule(20, null, null, null, null,     "s2", "r2", null, "w2", "l2", GrantType.ALLOW);
+        Rule r3 = new Rule(30, null, null, null, null,     "s3", "r3", null, "w3", "l3", GrantType.ALLOW);
+        Rule r4 = new Rule(40, null, null, null, null,     "s4", "r3", null, "w3", "l3", GrantType.ALLOW);
 
         ruleDAO.persist(r1);
         ruleDAO.persist(r2);
@@ -511,7 +511,7 @@ public class RuleDAOTest extends BaseDAOTest {
         int n = ruleDAO.shift(20, 5);
         assertEquals(3, n);
 
-        Search s = new Search(Rule.class);
+        Search s = ruleDAO.createSearch();
         s.addFilterEqual("service", "s3");
         List<Rule> loaded = ruleDAO.search(s);
         assertEquals(1, loaded.size());
@@ -524,11 +524,11 @@ public class RuleDAOTest extends BaseDAOTest {
 
     @Test
     public void testSwap() {
-        assertEquals(0, ruleDAO.count(new Search(Rule.class)));
+        assertEquals(0, ruleDAO.count(ruleDAO.createSearch()));
 
-        Rule r1 = new Rule(10, null, null, null, null,     "s1", "r1", "w1", "l1", GrantType.ALLOW);
-        Rule r2 = new Rule(20, null, null, null, null,     "s2", "r2", "w2", "l2", GrantType.ALLOW);
-        Rule r3 = new Rule(30, null, null, null, null,     "s3", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r1 = new Rule(10, null, null, null, null,     "s1", "r1", null, "w1", "l1", GrantType.ALLOW);
+        Rule r2 = new Rule(20, null, null, null, null,     "s2", "r2", null, "w2", "l2", GrantType.ALLOW);
+        Rule r3 = new Rule(30, null, null, null, null,     "s3", "r3", null, "w3", "l3", GrantType.ALLOW);
 
         ruleDAO.persist(r1);
         ruleDAO.persist(r2);
@@ -546,8 +546,8 @@ public class RuleDAOTest extends BaseDAOTest {
 
         long id1;
         {
-            assertEquals(0, ruleDAO.count(new Search(Rule.class)));
-            Rule rule1 = new Rule(1000, null, null, null, null, "s", null, null, null, GrantType.ALLOW);
+            assertEquals(0, ruleDAO.count(ruleDAO.createCountSearch()));
+            Rule rule1 = new Rule(1000, null, null, null, null, "s", null, null, null, null, GrantType.ALLOW);
             ruleDAO.persist(rule1, InsertPosition.FROM_START);
             id1 = rule1.getId();
         }
@@ -559,30 +559,30 @@ public class RuleDAOTest extends BaseDAOTest {
         }
 
 
-        ruleDAO.persist(new Rule(10, null, null, null, null, "s10", null, null, null, GrantType.ALLOW));
-        ruleDAO.persist(new Rule(20, null, null, null, null, "s20", null, null, null, GrantType.ALLOW));
+        ruleDAO.persist(new Rule(10, null, null, null, null, "s10", null, null, null, null, GrantType.ALLOW));
+        ruleDAO.persist(new Rule(20, null, null, null, null, "s20", null, null, null, null, GrantType.ALLOW));
 
         {
-            assertEquals(3, ruleDAO.count(new Search(Rule.class)));
-            Rule rule1 = new Rule(1000, null, null, null, null, "sZ", null, null, null, GrantType.ALLOW);
+            assertEquals(3, ruleDAO.count(ruleDAO.createCountSearch()));
+            Rule rule1 = new Rule(1000, null, null, null, null, "sZ", null, null, null, null, GrantType.ALLOW);
             long pri = ruleDAO.persist(rule1, InsertPosition.FROM_START);
             assertEquals(21, pri);
         }
 
         {
-            Rule rule1 = new Rule(1, null, null, null, null, "second", null, null, null, GrantType.ALLOW);
+            Rule rule1 = new Rule(1, null, null, null, null, "second", null, null, null, null, GrantType.ALLOW);
             long pri = ruleDAO.persist(rule1, InsertPosition.FROM_START);
             assertEquals(10, pri);
         }
 
         {
-            Rule rule1 = new Rule(0, null, null, null, null, "last", null, null, null, GrantType.ALLOW);
+            Rule rule1 = new Rule(0, null, null, null, null, "last", null, null, null, null, GrantType.ALLOW);
             long pri = ruleDAO.persist(rule1, InsertPosition.FROM_END);
             assertEquals(23, pri);
         }
 
         {
-            Rule rule1 = new Rule(1, null, null, null, null, "last2", null, null, null, GrantType.ALLOW);
+            Rule rule1 = new Rule(1, null, null, null, null, "last2", null, null, null, null, GrantType.ALLOW);
             long pri = ruleDAO.persist(rule1, InsertPosition.FROM_END);
             assertEquals(23, pri);
         }
@@ -623,7 +623,7 @@ public class RuleDAOTest extends BaseDAOTest {
 
         //test search
         {
-            Search s = new Search(Rule.class);
+            Search s = ruleDAO.createSearch();
 
             SearchUtil.addAddressRangeSearch(s, new IPAddressRange("10.11.0.0/16"));
 

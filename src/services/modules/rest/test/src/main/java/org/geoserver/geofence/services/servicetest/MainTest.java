@@ -97,14 +97,14 @@ public class MainTest implements InitializingBean {
         gs1.setDescription("A sample instance");
         instanceAdminService.insert(gs1);
 
-        Rule r0 = new Rule(5, u1.getName(), p2.getName(), gs1, null, "s0", "r0", null, null, GrantType.ALLOW);
+        Rule r0 = new Rule(5, u1.getName(), p2.getName(), gs1, null, "s0", "r0", null, null, null, GrantType.ALLOW);
         ruleAdminService.insert(r0);
 
 
         final Long r1id;
 
         {
-            Rule r1 = new Rule(10, null, null, null, null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
+            Rule r1 = new Rule(10, null, null, null, null, "s1", "r1", null, "w1", "l1", GrantType.ALLOW);
             ruleAdminService.insert(r1);
             r1id = r1.getId();
         }

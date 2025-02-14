@@ -43,6 +43,7 @@ public interface RESTConfigService
     /**
      * @deprecated misbehaves since usergroups introduction. Please use backup()
      */
+    @Deprecated(forRemoval = true)
     @GET
     @Path("/full")
     @Produces(MediaType.APPLICATION_XML)
@@ -91,6 +92,7 @@ public interface RESTConfigService
     /**
      * @deprecated
      */
+    @Deprecated
     @PUT
     @Path("/full")
     @Produces(MediaType.APPLICATION_XML)
@@ -103,6 +105,7 @@ public interface RESTConfigService
     /**
      * @deprecated
      */
+    @Deprecated(forRemoval = true)
     @GET
     @Path("/users")
     @Produces(MediaType.APPLICATION_XML)
@@ -112,6 +115,7 @@ public interface RESTConfigService
     /**
      * @deprecated
      */
+    @Deprecated(forRemoval = true)
     @GET
     @Path("/groups")
     @Produces(MediaType.APPLICATION_XML)
@@ -123,6 +127,7 @@ public interface RESTConfigService
     /**
      * @deprecated used for testing only
      */
+    @Deprecated(forRemoval = true)    
     @POST
     @Path("/groups")
     @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
@@ -135,6 +140,7 @@ public interface RESTConfigService
      *
      * @deprecated used for testing only
      */
+    @Deprecated(forRemoval = true)
     @POST
     @Path("/users/short")
     @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
@@ -144,6 +150,7 @@ public interface RESTConfigService
     /**
      * @deprecated used for testing only
      */
+    @Deprecated(forRemoval = true)
     @POST
     @Path("/instances/short")
     @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
@@ -153,6 +160,7 @@ public interface RESTConfigService
     /**
      * @deprecated used for testing only
      */
+    @Deprecated(forRemoval = true)
     @POST
     @Path("/rules/short")
     @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML})

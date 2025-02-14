@@ -16,8 +16,11 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -26,8 +29,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.ForeignKey;
-import org.hibernate.annotations.Index;
 
 /**
  * An AdminRule expresses if a given combination of request access is allowed or not.
@@ -39,14 +40,23 @@ import org.hibernate.annotations.Index;
  * @author ETj (etj at geo-solutions.it)
  */
 @Entity(name = "AdminRule")
-@Table(name = "gf_adminrule", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"username", "rolename", "instance_id", "workspace"})})
+@Table(name = "gf_adminrule", 
+        uniqueConstraints = { // @InternalModel
+            @UniqueConstraint(
+                    columnNames = {"username", "rolename", "instance_id", "workspace"}, // @InternalModel
+                    name = "gf_adminrule_username_rolename_instance_id_workspace_key" // @InternalModel
+                    )}, // @InternalModel
+        indexes = { // @InternalModel
+            @Index(name="idx_adminrule_priority", columnList = "priority"),
+            @Index(name = "idx_adminrule_workspace", columnList = "workspace")
+        } // @InternalModel
+) // @InternalModel
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Rule")
 @XmlRootElement(name = "AdminRule")
 @XmlType(propOrder={"id","priority","username","rolename","instance","addressRange","workspace","access"})
 public class AdminRule implements Identifiable, Serializable, Prioritizable, IPRangeProvider {
 
-    private static final long serialVersionUID = -5127129225384707999L;
+    private static final long serialVersionUID = -3807129225384707999L;
 
     /** The id. */
     @Id
@@ -56,7 +66,6 @@ public class AdminRule implements Identifiable, Serializable, Prioritizable, IPR
 
     /** Lower numbers have higher priority */
     @Column(nullable = false)
-    @Index(name = "idx_adminrule_priority")
     private long priority;
 
     @Column(name = "username", nullable = true)
@@ -66,7 +75,7 @@ public class AdminRule implements Identifiable, Serializable, Prioritizable, IPR
     private String rolename;
 
     @ManyToOne(optional = true, fetch = FetchType.EAGER)
-    @ForeignKey(name = "fk_adminrule_instance")
+    @JoinColumn(foreignKey = @ForeignKey(name="fk_adminrule_instance"))
     private GSInstance instance;
 
     @Embedded
@@ -77,7 +86,6 @@ public class AdminRule implements Identifiable, Serializable, Prioritizable, IPR
     private IPAddressRange addressRange;
 
     @Column
-    @Index(name = "idx_adminrule_workspace")
     private String workspace;
 
     @Enumerated(EnumType.STRING)

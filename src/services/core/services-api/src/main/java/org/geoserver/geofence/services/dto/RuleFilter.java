@@ -9,8 +9,6 @@ import org.geoserver.geofence.core.model.Rule;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -119,32 +117,6 @@ public class RuleFilter implements Serializable, Cloneable {
         workspace.setIncludeDefault(includeDefault);
         layer = new TextFilter(ft);
         layer.setIncludeDefault(includeDefault);
-    }
-
-    /**
-     * Creates a RuleFilter by heuristically converting special string values into Fitler behaviour:<UL> <LI>a null value will
-     * match only with null</LI> <LI>a '*' value will match everything (no filter condition on that given field)</LI> <LI>any
-     * other string will match literally</LI> </UL>
-     *
-     * @deprecated Please use plain setters if you want to handle by hand special values or filter conditions.
-     */
-    public RuleFilter(String userName, String groupName, String instanceName,
-            String sourceAddress,
-            String service, String request, String subfield,
-            String workspace, String layer) {
-        this(SpecialFilterType.DEFAULT);
-
-
-        this.user.setHeuristically(userName);
-        this.role.setHeuristically(groupName);
-        this.instance.setHeuristically(instanceName);
-        this.sourceAddress.setHeuristically(sourceAddress);
-
-        this.service.setHeuristically(service);
-        this.request.setHeuristically(request);
-        this.subfield.setHeuristically(subfield);
-        this.workspace.setHeuristically(workspace);
-        this.layer.setHeuristically(layer);
     }
 
     public RuleFilter(RuleFilter source) {

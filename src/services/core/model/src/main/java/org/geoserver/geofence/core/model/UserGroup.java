@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -30,7 +31,15 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * @author ETj (etj at geo-solutions.it)
  */
 @Entity(name = "UserGroup")
-@Table(name = "gf_usergroup")
+@Table(name = "gf_usergroup",
+        uniqueConstraints = { // @InternalModel
+            @UniqueConstraint(
+                    columnNames = {"extid"}, name = "gf_usergroup_extid_key"), // @InternalModel
+            @UniqueConstraint(
+                    columnNames = {"name"}, name = "gf_usergroup_name_key") // @InternalModel
+        } // @InternalModel
+) // @InternalModel
+
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "usergroup")
 @XmlRootElement(name = "UserGroup")
 @XmlType(propOrder={"id","extId","name","dateCreation"/*,"customProps"*/})
@@ -49,11 +58,11 @@ public class UserGroup implements Identifiable, Serializable {
      * An ID used in an external systems.
      * This field should simplify Geofence integration in complex systems.
      */
-    @Column(nullable=true, updatable=false, unique=true)
+    @Column(nullable=true, updatable=false)
     private String extId;
 
     /** The name. */
-    @Column(nullable=false, updatable=true, unique=true)
+    @Column(nullable=false, updatable=true)
     private String name;
 
     /** The date creation. */

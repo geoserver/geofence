@@ -11,7 +11,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -26,8 +28,6 @@ import org.geoserver.geofence.core.model.enums.SpatialFilterType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Check;
-import org.hibernate.annotations.ForeignKey;
-import org.hibernate.annotations.Type;
 
 import org.locationtech.jts.geom.MultiPolygon;
 
@@ -38,12 +38,16 @@ import org.locationtech.jts.geom.MultiPolygon;
  * @author ETj (etj at geo-solutions.it)
  */
 @Entity(name = "RuleLimits")
-@Table(name = "gf_rule_limits", uniqueConstraints = @UniqueConstraint(columnNames = "rule_id"))
+@Table(name = "gf_rule_limits", 
+        uniqueConstraints = @UniqueConstraint(
+                columnNames = "rule_id", // @InternalModel
+                name = "gf_rule_limits_rule_id_key") // @InternalModel
+) // @InternalModel
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "RuleLimits")
 @XmlRootElement(name = "RuleLimits")
-public class RuleLimits implements Serializable {
+public class RuleLimits implements Identifiable, Serializable {
 
-    private static final long serialVersionUID = 2829839552804345725L;
+    private static final long serialVersionUID = 3809839552804345725L;
 
     /** The id. */
     @Id
@@ -53,10 +57,10 @@ public class RuleLimits implements Serializable {
 
     @OneToOne(optional = false)
     @Check(constraints = "rule.access='LIMIT'") // ??? check this
-    @ForeignKey(name = "fk_limits_rule")
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_limits_rule"))
     private Rule rule;
 
-    @Type(type = "org.hibernatespatial.GeometryUserType")
+    //@Type(type = "org.hibernate.spatial.JTSGeometryType")
     @Column(name = "area")
     private MultiPolygon allowedArea;
 

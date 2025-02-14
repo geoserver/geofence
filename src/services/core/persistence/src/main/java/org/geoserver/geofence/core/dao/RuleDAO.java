@@ -14,7 +14,8 @@ import org.geoserver.geofence.core.model.enums.InsertPosition;
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 
-public interface RuleDAO extends PrioritizableDAO<Rule> {
+public interface RuleDAO // 
+        extends PrioritizableDAO<Rule>, SearchableDAO<Rule> {
 
     long persist(Rule entity, InsertPosition position);
 }

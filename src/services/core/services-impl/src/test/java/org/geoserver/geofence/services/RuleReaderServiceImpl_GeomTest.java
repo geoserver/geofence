@@ -12,6 +12,7 @@ import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.core.model.enums.CatalogMode;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.core.model.enums.SpatialFilterType;
+import org.geoserver.geofence.core.model.util.EWKTParser;
 import static org.geoserver.geofence.services.ServiceTestBase.ruleAdminService;
 import static org.geoserver.geofence.services.ServiceTestBase.ruleReaderService;
 import org.geoserver.geofence.services.dto.AccessInfo;
@@ -36,13 +37,13 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         Long id2 = null;
         try {
             {
-                Rule r1 = new Rule(10, null, null, null, null, "s1", "r1", "w1", "l1", GrantType.LIMIT);
+                Rule r1 = new Rule(10, null, null, null, null, "s1", "r1", null, "w1", "l1", GrantType.LIMIT);
                 ruleAdminService.insert(r1);
                 id = r1.getId();
             }
 
             {
-                Rule r2 = new Rule(11, null, null, null, null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
+                Rule r2 = new Rule(11, null, null, null, null, "s1", "r1", null, "w1", "l1", GrantType.ALLOW);
                 id2 = ruleAdminService.insert(r2);
             }
 
@@ -88,13 +89,13 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         Long id3 = null;
         try {
             {
-                Rule r1 = new Rule(999, null, null, null, null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
+                Rule r1 = new Rule(999, null, null, null, null, "s1", "r1", null, "w1", "l1", GrantType.ALLOW);
                 ruleAdminService.insert(r1);
                 id = r1.getId();
             }
 
             {
-                Rule r2 = new Rule(11, null, null, null, null, "s1", "r1", "w1", "l1", GrantType.LIMIT);
+                Rule r2 = new Rule(11, null, null, null, null, "s1", "r1", null, "w1", "l1", GrantType.LIMIT);
                 id2 = ruleAdminService.insert(r2);
             }
 
@@ -109,7 +110,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
             }
 
             {
-                Rule r3 = new Rule(12, null, null, null, null, "s1", "r1", "w1", "l1", GrantType.LIMIT);
+                Rule r3 = new Rule(12, null, null, null, null, "s1", "r1", null, "w1", "l1", GrantType.LIMIT);
                 id3 = ruleAdminService.insert(r3);
             }
 
@@ -158,8 +159,8 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         UserGroup g2 = createRole("group12");
         GSUser user = createUser("auth11", g1, g2);
 
-        ruleAdminService.insert(new Rule(9999, null, null, null, null, "s11", "r11", "w11", "l11", GrantType.ALLOW));
-        long id = ruleAdminService.insert(new Rule(10, user.getName(), "group11", null, null, "s11", "r11", "w11", "l11", GrantType.LIMIT));
+        ruleAdminService.insert(new Rule(9999, null, null, null, null, "s11", "r11", null, "w11", "l11", GrantType.ALLOW));
+        long id = ruleAdminService.insert(new Rule(10, user.getName(), "group11", null, null, "s11", "r11", null, "w11", "l11", GrantType.LIMIT));
         RuleLimits limits = new RuleLimits();
         limits.setSpatialFilterType(SpatialFilterType.CLIP);
         limits.setCatalogMode(CatalogMode.HIDE);
@@ -168,7 +169,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         limits.setAllowedArea(area);
         ruleAdminService.setLimits(id, limits);
 
-        long id2 = ruleAdminService.insert(new Rule(11, user.getName(), "group12", null, null, "s11", "r11", "w11", "l11", GrantType.LIMIT));
+        long id2 = ruleAdminService.insert(new Rule(11, user.getName(), "group12", null, null, "s11", "r11", null, "w11", "l11", GrantType.LIMIT));
         RuleLimits limits2 = new RuleLimits();
         limits2.setSpatialFilterType(SpatialFilterType.INTERSECT);
         limits2.setCatalogMode(CatalogMode.HIDE);
@@ -191,7 +192,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         assertNull(accessInfo.getAreaWkt());
         assertNotNull(accessInfo.getClipAreaWkt());
 
-        Geometry resultArea = (new WKTReader().read(accessInfo.getClipAreaWkt()));
+        Geometry resultArea = EWKTParser.parse(accessInfo.getClipAreaWkt());
         resultArea.normalize();
         assertTrue(testArea.equalsExact(resultArea, 10.0E-15));
     }
@@ -206,8 +207,8 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         UserGroup g2 = createRole("group14");
         GSUser user = createUser("auth12", g1, g2);
 
-        ruleAdminService.insert(new Rule(9999, null, null, null, null, "s11", "r11", "w11", "l11", GrantType.ALLOW));
-        long id = ruleAdminService.insert(new Rule(13, user.getName(), "group13", null, null, "s11", "r11", "w11", "l11", GrantType.LIMIT));
+        ruleAdminService.insert(new Rule(9999, null, null, null, null, "s11", "r11", null, "w11", "l11", GrantType.ALLOW));
+        long id = ruleAdminService.insert(new Rule(13, user.getName(), "group13", null, null, "s11", "r11", null, "w11", "l11", GrantType.LIMIT));
         RuleLimits limits = new RuleLimits();
         limits.setSpatialFilterType(SpatialFilterType.INTERSECT);
         limits.setCatalogMode(CatalogMode.HIDE);
@@ -216,7 +217,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         limits.setAllowedArea(area);
         ruleAdminService.setLimits(id, limits);
 
-        long id2 = ruleAdminService.insert(new Rule(14, user.getName(), "group14", null, null, "s11", "r11", "w11", "l11", GrantType.LIMIT));
+        long id2 = ruleAdminService.insert(new Rule(14, user.getName(), "group14", null, null, "s11", "r11", null, "w11", "l11", GrantType.LIMIT));
         RuleLimits limits2 = new RuleLimits();
         limits2.setSpatialFilterType(SpatialFilterType.INTERSECT);
         limits2.setCatalogMode(CatalogMode.HIDE);
@@ -239,7 +240,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         assertNull(accessInfo.getClipAreaWkt());
         assertNotNull(accessInfo.getAreaWkt());
 
-        Geometry resultArea = (new WKTReader().read(accessInfo.getAreaWkt()));
+        Geometry resultArea = EWKTParser.parse((accessInfo.getAreaWkt()));
         resultArea.normalize();
         assertTrue(testArea.equalsExact(resultArea, 10.0E-15));
     }
@@ -255,9 +256,9 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         UserGroup g2 = createRole("group23");
         GSUser user = createUser("auth22", g1, g2);
 
-        ruleAdminService.insert(new Rule(999, null, null, null, null, "s22", "r22", "w22", "l22", GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(999, null, null, null, null, "s22", "r22", null, "w22", "l22", GrantType.ALLOW));
 
-        long id = ruleAdminService.insert(new Rule(15, null, "group22", null, null, "s22", "r22", "w22", "l22", GrantType.LIMIT));
+        long id = ruleAdminService.insert(new Rule(15, null, "group22", null, null, "s22", "r22", null, "w22", "l22", GrantType.LIMIT));
         RuleLimits limits = new RuleLimits();
         limits.setSpatialFilterType(SpatialFilterType.INTERSECT);
         limits.setCatalogMode(CatalogMode.HIDE);
@@ -266,7 +267,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         limits.setAllowedArea(area);
         ruleAdminService.setLimits(id, limits);
 
-        long id2 = ruleAdminService.insert(new Rule(16, null, "group23", null, null, "s22", "r22", "w22", "l22", GrantType.LIMIT));
+        long id2 = ruleAdminService.insert(new Rule(16, null, "group23", null, null, "s22", "r22", null, "w22", "l22", GrantType.LIMIT));
         RuleLimits limits2 = new RuleLimits();
         limits2.setSpatialFilterType(SpatialFilterType.CLIP);
         limits2.setCatalogMode(CatalogMode.HIDE);
@@ -288,13 +289,12 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         assertNotNull(accessInfo.getAreaWkt());
         assertNotNull(accessInfo.getClipAreaWkt());
 
-        // the intersects should be equal to the originally defined
-        // allowed area
-        Geometry intersects = new WKTReader().read(accessInfo.getAreaWkt());
+        // the intersects should be equal to the originally defined allowed area
+        Geometry intersects = EWKTParser.parse(accessInfo.getAreaWkt());
         intersects.normalize();
         assertTrue(intersects.equalsExact(area, 10.0E-15));
 
-        Geometry clip = new WKTReader().read(accessInfo.getClipAreaWkt());
+        Geometry clip = EWKTParser.parse(accessInfo.getClipAreaWkt());
         clip.normalize();
         area2.normalize();
         assertTrue(clip.equalsExact(area2, 10.0E-15));
@@ -315,9 +315,9 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
 
         WKTReader reader = new WKTReader();
 
-        ruleAdminService.insert(new Rule(999, null, null, null, null, "s22", "r22", "w22", "l22", GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(999, null, null, null, null, "s22", "r22", null, "w22", "l22", GrantType.ALLOW));
 
-        long id = ruleAdminService.insert(new Rule(17, null, "group31", null, null, "s22", "r22", "w22", "l22", GrantType.LIMIT));
+        long id = ruleAdminService.insert(new Rule(17, null, "group31", null, null, "s22", "r22", null, "w22", "l22", GrantType.LIMIT));
         RuleLimits limits = new RuleLimits();
         limits.setSpatialFilterType(SpatialFilterType.INTERSECT);
         limits.setCatalogMode(CatalogMode.HIDE);
@@ -326,7 +326,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         limits.setAllowedArea(area);
         ruleAdminService.setLimits(id, limits);
 
-        long id2 = ruleAdminService.insert(new Rule(18, null, "group31", null, null, "s22", "r22", "w22", "l22", GrantType.LIMIT));
+        long id2 = ruleAdminService.insert(new Rule(18, null, "group31", null, null, "s22", "r22", null, "w22", "l22", GrantType.LIMIT));
         RuleLimits limits2 = new RuleLimits();
         limits2.setSpatialFilterType(SpatialFilterType.CLIP);
         limits2.setCatalogMode(CatalogMode.HIDE);
@@ -335,7 +335,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         limits2.setAllowedArea(area2);
         ruleAdminService.setLimits(id2, limits2);
 
-        long id3 = ruleAdminService.insert(new Rule(19, null, "group32", null, null, "s22", "r22", "w22", "l22", GrantType.LIMIT));
+        long id3 = ruleAdminService.insert(new Rule(19, null, "group32", null, null, "s22", "r22", null, "w22", "l22", GrantType.LIMIT));
         RuleLimits limits3 = new RuleLimits();
         limits3.setSpatialFilterType(SpatialFilterType.CLIP);
         limits3.setCatalogMode(CatalogMode.HIDE);
@@ -344,7 +344,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         limits3.setAllowedArea(area3);
         ruleAdminService.setLimits(id3, limits3);
 
-        long id4 = ruleAdminService.insert(new Rule(20, null, "group32", null, null, "s22", "r22", "w22", "l22", GrantType.LIMIT));
+        long id4 = ruleAdminService.insert(new Rule(20, null, "group32", null, null, "s22", "r22", null, "w22", "l22", GrantType.LIMIT));
         RuleLimits limits4 = new RuleLimits();
         limits4.setSpatialFilterType(SpatialFilterType.CLIP);
         limits4.setCatalogMode(CatalogMode.HIDE);
@@ -368,7 +368,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         // allowed area
         Geometry expectedResult = area.intersection(area2).union(area3.intersection(area4));
         expectedResult.normalize();
-        Geometry clip = reader.read(accessInfo.getClipAreaWkt());
+        Geometry clip = EWKTParser.parse(accessInfo.getClipAreaWkt());
         clip.normalize();
         assertTrue(clip.equalsExact(expectedResult, 10.0E-15));
     }
@@ -385,9 +385,9 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
 
         WKTReader reader = new WKTReader();
 
-        ruleAdminService.insert(new Rule(999, null, null, null, null, "s22", "r22", "w22", "l22", GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(999, null, null, null, null, "s22", "r22", null, "w22", "l22", GrantType.ALLOW));
 
-        long id = ruleAdminService.insert(new Rule(21, null, "group41", null, null, "s22", "r22", "w22", "l22", GrantType.LIMIT));
+        long id = ruleAdminService.insert(new Rule(21, null, "group41", null, null, "s22", "r22", null, "w22", "l22", GrantType.LIMIT));
         RuleLimits limits = new RuleLimits();
         limits.setSpatialFilterType(SpatialFilterType.CLIP);
         limits.setCatalogMode(CatalogMode.HIDE);
@@ -396,7 +396,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         limits.setAllowedArea(area);
         ruleAdminService.setLimits(id, limits);
 
-        long id2 = ruleAdminService.insert(new Rule(22, null, "group41", null, null, "s22", "r22", "w22", "l22", GrantType.LIMIT));
+        long id2 = ruleAdminService.insert(new Rule(22, null, "group41", null, null, "s22", "r22", null, "w22", "l22", GrantType.LIMIT));
         RuleLimits limits2 = new RuleLimits();
         limits2.setSpatialFilterType(SpatialFilterType.CLIP);
         limits2.setCatalogMode(CatalogMode.HIDE);
@@ -405,7 +405,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         limits2.setAllowedArea(area2);
         ruleAdminService.setLimits(id2, limits2);
 
-        long id3 = ruleAdminService.insert(new Rule(23, null, "group42", null, null, "s22", "r22", "w22", "l22", GrantType.LIMIT));
+        long id3 = ruleAdminService.insert(new Rule(23, null, "group42", null, null, "s22", "r22", null, "w22", "l22", GrantType.LIMIT));
         RuleLimits limits3 = new RuleLimits();
         limits3.setSpatialFilterType(SpatialFilterType.INTERSECT);
         limits3.setCatalogMode(CatalogMode.HIDE);
@@ -414,7 +414,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         limits3.setAllowedArea(area3);
         ruleAdminService.setLimits(id3, limits3);
 
-        long id4 = ruleAdminService.insert(new Rule(24, null, "group42", null, null, "s22", "r22", "w22", "l22", GrantType.LIMIT));
+        long id4 = ruleAdminService.insert(new Rule(24, null, "group42", null, null, "s22", "r22", null, "w22", "l22", GrantType.LIMIT));
         RuleLimits limits4 = new RuleLimits();
         limits4.setSpatialFilterType(SpatialFilterType.INTERSECT);
         limits4.setCatalogMode(CatalogMode.HIDE);
@@ -439,13 +439,13 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         // allowed area
         Geometry expectedIntersects = area3.intersection(area4);
         expectedIntersects.normalize();
-        Geometry intersects = reader.read(accessInfo.getAreaWkt());
+        Geometry intersects = EWKTParser.parse(accessInfo.getAreaWkt());
         intersects.normalize();
         System.out.println(intersects.toString());
         System.out.println(expectedIntersects.toString());
         assertTrue(expectedIntersects.equalsExact(intersects, 10.0E-15));
 
-        Geometry clip = reader.read(accessInfo.getClipAreaWkt());
+        Geometry clip = EWKTParser.parse(accessInfo.getClipAreaWkt());
         clip.normalize();
         Geometry expectedClip = area2.intersection(area);
         expectedClip.normalize();

@@ -63,7 +63,7 @@ public class RESTUserServiceImpl
                 }
             }
 
-            GSUser user = userAdminService.get(username); // may throw NotFoundServiceEx
+            GSUser user = userAdminService.getFull(username); // may throw NotFoundServiceEx
 
             if ( ! userAdminService.delete(user.getId())) {
                 LOGGER.warn("ILLEGAL STATE -- User not found: " + user); // this should not happen
@@ -104,7 +104,7 @@ public class RESTUserServiceImpl
         boolean exists;
         // check that no user with same name exists
         try {
-            userAdminService.get(user.getName());
+            userAdminService.getFull(user.getName());
             exists = true;
         } catch (NotFoundServiceEx ex) {
             // well, ok, user does not exist
@@ -121,7 +121,7 @@ public class RESTUserServiceImpl
 
 
         try {
-            Set<UserGroup> groups = new HashSet<UserGroup>();
+            Set<UserGroup> groups = new HashSet<>();
             // resolve groups
             List<IdName> inputGroups = user.getGroups();
             if ( inputGroups == null || inputGroups.isEmpty() ) {
@@ -169,7 +169,7 @@ public class RESTUserServiceImpl
     @Override
     public void update(String name, RESTInputUser user) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
-            GSUser old = userAdminService.get(name);
+            GSUser old = userAdminService.getFull(name);
             update(old.getId(), user);
         } catch (NotFoundServiceEx ex) {
             LOGGER.warn("User not found: " + name);

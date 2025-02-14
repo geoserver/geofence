@@ -17,8 +17,11 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -28,8 +31,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.ForeignKey;
-import org.hibernate.annotations.Index;
 
 /**
  * A Rule expresses if a given combination of request access is allowed or not.
@@ -61,14 +62,26 @@ import org.hibernate.annotations.Index;
  * @author ETj (etj at geo-solutions.it)
  */
 @Entity(name = "Rule")
-@Table(name = "gf_rule", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"username", "rolename", "instance_id", "service", "request", "workspace", "layer"})})
+@Table(name = "gf_rule", 
+        uniqueConstraints = { // @InternalModel
+            @UniqueConstraint(
+                    columnNames = {"username", "rolename", "instance_id", "service", "request", "workspace", "layer"}, // @InternalModel
+                    name = "gf_rule_username_rolename_instance_id_service_request_works_key" // @InternalModel
+            )}, // @InternalModel
+        indexes = { // @InternalModel
+            @Index(name = "idx_rule_priority", columnList = "priority"),
+            @Index(name = "idx_rule_service", columnList = "service"),
+            @Index(name = "idx_rule_request", columnList = "request"),
+            @Index(name = "idx_rule_workspace", columnList = "workspace"),
+            @Index(name = "idx_rule_layer", columnList = "layer")           
+        } // @InternalModel
+) // @InternalModel
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Rule")
 @XmlRootElement(name = "Rule")
 @XmlType(propOrder={"id","priority","username","rolename","instance","addressRange","service","request","workspace","layer","access","layerDetails","ruleLimits"})
 public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeProvider {
 
-    private static final long serialVersionUID = -5127129225384707164L;
+    private static final long serialVersionUID = -3803809225384707164L;
 
     /** The id. */
     @Id
@@ -78,7 +91,6 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
 
     /** Lower numbers have higher priority */
     @Column(nullable = false)
-    @Index(name = "idx_rule_priority")
     private long priority;
 
     @Column(name = "username", nullable = true)
@@ -88,11 +100,10 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
     private String rolename;
 
     @ManyToOne(optional = true, fetch = FetchType.EAGER)
-    @ForeignKey(name = "fk_rule_instance")
+    @JoinColumn(foreignKey = @ForeignKey(name="fk_rule_instance"))
     private GSInstance instance;
 
     @Column
-    @Index(name = "idx_rule_service")
     private String service;
 
     @Embedded
@@ -103,18 +114,15 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
     private IPAddressRange addressRange;
 
     @Column
-    @Index(name = "idx_rule_request")
     private String request;
 
     @Column
     private String subfield;
     
     @Column
-    @Index(name = "idx_rule_workspace")
     private String workspace;
 
     @Column
-    @Index(name = "idx_rule_layer")
     private String layer;
 
     @Enumerated(EnumType.STRING)
@@ -122,11 +130,11 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
     private GrantType access;
 
     @OneToOne(optional = true, cascade = CascadeType.REMOVE, mappedBy = "rule") // main ref is in LayerDetails
-    @ForeignKey(name = "fk_rule_details")
+    @JoinColumn(foreignKey = @ForeignKey(name="fk_rule_details"))    
     private LayerDetails layerDetails;
 
     @OneToOne(optional = true, cascade = CascadeType.REMOVE, mappedBy = "rule") // main ref is in ruleLimits
-    @ForeignKey(name = "fk_rule_limits")
+    @JoinColumn(foreignKey = @ForeignKey(name="fk_rule_limits"))    
     private RuleLimits ruleLimits;
 
     public Rule() {
@@ -145,15 +153,6 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
         this.workspace = workspace;
         this.layer = layer;
         this.access = access;
-    }
-
-    /**
-     * @deprecated need new subfield argument
-     */
-    @Deprecated
-    public Rule(long priority, String username, String rolename, GSInstance instance, IPAddressRange addressRange,
-                               String service, String request, String workspace, String layer, GrantType access) {
-        this(priority, username, rolename, instance, addressRange, service, request, null, workspace, layer, access);
     }
 
     public Long getId() {
@@ -262,6 +261,7 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
      * @deprecated  This setter is only used by hibernate, should not be called by the user.
      * @param ruleLimits
      */
+    @Deprecated
     public void setRuleLimits(RuleLimits ruleLimits) {
         this.ruleLimits = ruleLimits;
     }
@@ -273,6 +273,7 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
     /**
      * @deprecated This setter is only used by hibernate, should not be called by the user.
      */
+    @Deprecated
     public void setLayerDetails(LayerDetails layerDetails) {
         this.layerDetails = layerDetails;
     }

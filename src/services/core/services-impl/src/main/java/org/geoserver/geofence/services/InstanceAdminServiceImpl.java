@@ -5,18 +5,18 @@
 
 package org.geoserver.geofence.services;
 
-import com.googlecode.genericdao.search.Search;
 import org.geoserver.geofence.core.model.GSInstance;
+import org.geoserver.geofence.core.dao.GSInstanceDAO;
+import org.geoserver.geofence.core.dao.search.Search;
+import org.geoserver.geofence.services.dto.ShortInstance;
+import org.geoserver.geofence.services.exception.BadRequestServiceEx;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import org.geoserver.geofence.core.dao.GSInstanceDAO;
-import org.geoserver.geofence.services.dto.ShortInstance;
-import org.geoserver.geofence.services.exception.BadRequestServiceEx;
-import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import java.util.ArrayList;
 
 /**
@@ -60,7 +60,7 @@ public class InstanceAdminServiceImpl implements InstanceAdminService {
 
     @Override
     public GSInstance get(String name) {
-        Search search = new Search(GSInstance.class);
+        Search search = instanceDAO.createSearch();
         search.addFilterEqual("name", name);
         List<GSInstance> groups = instanceDAO.search(search);
 
@@ -97,7 +97,7 @@ public class InstanceAdminServiceImpl implements InstanceAdminService {
             throw new BadRequestServiceEx("Page and entries params should be declared together.");
         }
 
-        Search searchCriteria = new Search(GSInstance.class);
+        Search searchCriteria = instanceDAO.createSearch();
 
         if(page != null) {
             searchCriteria.setMaxResults(entries);
@@ -128,7 +128,7 @@ public class InstanceAdminServiceImpl implements InstanceAdminService {
 
     @Override
     public long getCount(String nameLike) {
-        Search searchCriteria = new Search(GSInstance.class);
+        Search searchCriteria = instanceDAO.createCountSearch();
 
         if (nameLike != null) {
             searchCriteria.addFilterILike("name", nameLike);

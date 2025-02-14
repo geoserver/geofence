@@ -11,8 +11,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.googlecode.genericdao.search.Filter;
-import com.googlecode.genericdao.search.Search;
 import java.util.HashSet;
 import java.util.Set;
 import org.geoserver.geofence.core.model.UserGroup;
@@ -53,15 +51,13 @@ public class GSUserDAOLdapImplTest extends BaseDAOTest
     @Test
     public void testCount()
     {
-        assertTrue(userDAO.count(new Search()) > 0);
+        assertTrue(userDAO.countByNameLike(null) > 0);
     }
 
     @Test
     public void testSearch_admin()
     {
-        Search search = new Search();
-        search.addFilter(new Filter("username", "admin"));
-        List<GSUser> users = userDAO.search(search);
+        List<GSUser> users = userDAO.search("admin", null, null, true);
         assertTrue(users.size() > 0);
         GSUser user = users.get(0);
         assertTrue(user.getName().length() > 0);
@@ -70,18 +66,13 @@ public class GSUserDAOLdapImplTest extends BaseDAOTest
     @Test
     public void testSearchPagination()
     {
-        Search search = new Search();
-        List<GSUser> users = userDAO.search(search);
+        List<GSUser> users = userDAO.search(null, null, null, true);
         assertEquals(4, users.size());
         
-        search.setPage(0);
-        search.setMaxResults(3);
-        users = userDAO.search(search);
+        users = userDAO.search(null, 0, 3, true);
         assertEquals(3, users.size());
         
-        search.setPage(1);
-        search.setMaxResults(3);
-        users = userDAO.search(search);
+        users = userDAO.search(null, 1, 3, true);
         assertEquals(1, users.size());
     }
     
@@ -89,12 +80,10 @@ public class GSUserDAOLdapImplTest extends BaseDAOTest
     @Test
     public void testSearch_groups()
     {
-        Search search = new Search();
-        search.addFilter(new Filter("username", "destination1"));
-        List<GSUser> users = userDAO.search(search);
-        assertTrue(users.size() == 1);
+        List<GSUser> users = userDAO.search("destination1", null, null, true);
+        assertEquals(1, users.size());
         GSUser user = users.get(0);
-        assertTrue(user.getName().equals("destination1"));
+        assertEquals("destination1", user.getName());
     }
 
     @Test

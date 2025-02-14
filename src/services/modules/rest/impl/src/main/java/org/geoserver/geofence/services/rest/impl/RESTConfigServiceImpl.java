@@ -294,10 +294,10 @@ public class RESTConfigServiceImpl implements RESTConfigService {
 
         RESTConfigurationRemapping remap = new RESTConfigurationRemapping();
 
-        RemapperCache<UserGroup, UserGroupAdminService> groupCache = new RemapperCache<UserGroup, UserGroupAdminService>(userGroupAdminService, remap.getUserGroups());
-        RemapperCache<GSUser, UserAdminService> userCache = new RemapperCache<GSUser, UserAdminService>(userAdminService, remap.getUsers());
+        RemapperCache<UserGroup, UserGroupAdminService> groupCache = new RemapperCache<>(userGroupAdminService, remap.getUserGroups());
+        RemapperCache<GSUser, UserAdminService> userCache = new RemapperCache<>(userAdminService, remap.getUsers());
         RemapperCache<GSInstance, InstanceAdminService> instanceCache =
-                new RemapperCache<GSInstance, InstanceAdminService>(instanceAdminService, remap.getInstances());
+                new RemapperCache<>(instanceAdminService, remap.getInstances());
 
 
         try {
@@ -488,9 +488,9 @@ public class RESTConfigServiceImpl implements RESTConfigService {
     @Override
     public void setRules(RESTOutputRuleList rules) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         int okCnt = 0;
-        Map<String, UserGroup>  groups = new HashMap<String, UserGroup>();
-        Map<String, GSUser>     users = new HashMap<String, GSUser>();
-        Map<String, GSInstance> instances = new HashMap<String, GSInstance>();
+        Map<String, UserGroup>  groups = new HashMap<>();
+        Map<String, GSUser>     users = new HashMap<>();
+        Map<String, GSInstance> instances = new HashMap<>();
 
         for (RESTOutputRule in : rules) {
             try {
@@ -566,7 +566,7 @@ public class RESTConfigServiceImpl implements RESTConfigService {
     // ==========================================================================
     class RemapperCache<TYPE, SERVICE extends GetProviderService<TYPE>> {
 
-        private Map<Long, TYPE> cache = new HashMap<Long, TYPE>();
+        private Map<Long, TYPE> cache = new HashMap<>();
         private final Map<Long, Long> idRemapper;
         private final SERVICE service;
 
