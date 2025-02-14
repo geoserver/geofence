@@ -5,7 +5,6 @@
 
 package org.geoserver.geofence.services.rest;
 
-import org.geoserver.geofence.services.rest.RESTRuleService;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
 
@@ -22,25 +21,28 @@ public class RuleServiceHelper {
     }
 
     public long countAll() {
-        return count(null, null, null, null, null, null, null, null);
+        return count(null, null, null, null, null, null, null, null, null);
     }
 
     public long count(RuleFilter ruleFilter) {
         return count(
-                ruleFilter.getUser(), ruleFilter.getRole(), ruleFilter.getInstance(),
+                ruleFilter.getUser(), ruleFilter.getRole(), 
+                ruleFilter.getInstance(), ruleFilter.getSourceAddress(),
                 ruleFilter.getService(), ruleFilter.getRequest(), ruleFilter.getSubfield(),
                 ruleFilter.getWorkspace(), ruleFilter.getLayer());
     }
 
 
-    public long count(RuleFilter.TextFilter userFilter, RuleFilter.TextFilter ruleFilter, RuleFilter.IdNameFilter instanceFilter,
+    public long count(RuleFilter.TextFilter userFilter, RuleFilter.TextFilter roleFilter, 
+                RuleFilter.IdNameFilter instanceFilter, RuleFilter.TextFilter ipaddressFilter,
                 RuleFilter.TextFilter serviceFilter, RuleFilter.TextFilter requestFilter, RuleFilter.TextFilter subfieldFilter,
                 RuleFilter.TextFilter workspaceFilter, RuleFilter.TextFilter layerFilter) {
 
         return ruleService.count(
                 getFilterName(userFilter), getFilterDefault(userFilter),
-                getFilterName(ruleFilter), getFilterDefault(ruleFilter),
+                getFilterName(roleFilter), getFilterDefault(roleFilter),
                 getFilterId(instanceFilter), getFilterName(instanceFilter), getFilterDefault(instanceFilter),
+                getFilterName(ipaddressFilter), getFilterDefault(ipaddressFilter),
                 getFilterName(serviceFilter), getFilterDefault(serviceFilter),
                 getFilterName(requestFilter), getFilterDefault(requestFilter),
                 getFilterName(subfieldFilter), getFilterDefault(subfieldFilter),
@@ -82,20 +84,22 @@ public class RuleServiceHelper {
     }
 
     public RESTOutputRuleList getAll() {
-        return get(null, null, false, null, null, null, null, null, null, null, null);
+        return get(null, null, false, null, null, null, null, null, null, null, null, null);
     }
 
     public RESTOutputRuleList get(Integer page, Integer entries, boolean full, RuleFilter ruleFilter) {
         return get(
                 page, entries, full,
-                ruleFilter.getUser(), ruleFilter.getRole(), ruleFilter.getInstance(),
+                ruleFilter.getUser(), ruleFilter.getRole(), 
+                ruleFilter.getInstance(), ruleFilter.getSourceAddress(),                
                 ruleFilter.getService(), ruleFilter.getRequest(), ruleFilter.getSubfield(),
                 ruleFilter.getWorkspace(), ruleFilter.getLayer());
     }
 
     public RESTOutputRuleList get(
                 Integer page, Integer entries, boolean full,
-                RuleFilter.TextFilter userFilter, RuleFilter.TextFilter ruleFilter, RuleFilter.IdNameFilter instanceFilter,
+                RuleFilter.TextFilter userFilter, RuleFilter.TextFilter ruleFilter, 
+                RuleFilter.IdNameFilter instanceFilter, RuleFilter.TextFilter ipaddressFilter,
                 RuleFilter.TextFilter serviceFilter, RuleFilter.TextFilter requestFilter, RuleFilter.TextFilter subfieldFilter,
                 RuleFilter.TextFilter workspaceFilter, RuleFilter.TextFilter layerFilter) {
 
@@ -104,6 +108,7 @@ public class RuleServiceHelper {
                 getFilterName(ruleFilter),    getFilterDefault(ruleFilter),
                 getFilterId(instanceFilter),  getFilterName(instanceFilter), getFilterDefault(instanceFilter),
                 getFilterName(serviceFilter), getFilterDefault(serviceFilter),
+                getFilterName(ipaddressFilter), getFilterDefault(ipaddressFilter),
                 getFilterName(requestFilter), getFilterDefault(requestFilter),
                 getFilterName(subfieldFilter), getFilterDefault(subfieldFilter),
                 getFilterName(workspaceFilter), getFilterDefault(workspaceFilter),

@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import org.geoserver.geofence.core.dao.SearchableDAO;
 import org.geoserver.geofence.core.dao.search.Search;
 import org.geoserver.geofence.core.model.IPRangeProvider;
 import org.geoserver.geofence.services.dto.RuleFilter;
@@ -25,6 +26,69 @@ public class FilterUtils {
     private final static Logger LOGGER = LogManager.getLogger(FilterUtils.class);
 
 
+    public static <RULETYPE extends IPRangeProvider> 
+        List<RULETYPE> getFilteredRules(
+                SearchableDAO<RULETYPE> dao, 
+                RuleFilter filter) {
+        return getFilteredRules(dao, filter, null, null);
+    }        
+    
+    public static <RULETYPE extends IPRangeProvider> 
+        List<RULETYPE> getFilteredRules(
+                SearchableDAO<RULETYPE> dao, 
+                RuleFilter filter, 
+                Integer page, Integer entries) {
+        Search search = dao.createSearch();
+        search.addSortAsc("priority");
+        addCriteria(search, filter);
+
+        List<RULETYPE> found = dao.search(search);
+        found = filterByAddress(filter, found);               
+        found = paginateList(found, page, entries);
+        return found;
+    }
+    
+    public static long countFilteredRules(
+            SearchableDAO dao, 
+            RuleFilter filter) {
+        
+        RuleFilter.FilterType ipFilterType = filter.getSourceAddress().getType();
+        if(ipFilterType == RuleFilter.FilterType.ANY) {
+            // speedup: bypass ip filtering
+            return dao.count(addCriteria(dao.createCountSearch(), filter));
+        } else {
+            Search search = addCriteria(dao.createSearch(), filter);
+            List found = dao.search(search);
+            found = filterByAddress(filter, found);
+            return found.size();            
+        }
+    }        
+    
+    public static <T> 
+        List<T> paginateList(
+                List<T> list, 
+                Integer page, Integer entries) {
+        if( (page != null && entries == null) || (page == null && entries != null)) {
+            throw new BadRequestServiceEx("Page and entries params should be declared together.");
+        }        
+        
+        if (page == null) {
+            return list;
+        }        
+        
+        if(entries <= 0 || page <= 0) {
+            throw new IllegalArgumentException("invalid page size: " + entries);
+        }
+    
+        int fromIndex = (page - 1) * entries;
+        if(list == null || list.size() <= fromIndex){
+            return Collections.emptyList();
+        }
+    
+        // toIndex exclusive
+        return list.subList(fromIndex, Math.min(fromIndex + entries, list.size()));
+    }
+    
     /**
      * Filters out rules not matching with ip address filter.
      *
@@ -32,7 +96,9 @@ public class FilterUtils {
      * such results by hand.
      */
     public static <T extends IPRangeProvider>
-        List<T> filterByAddress(RuleFilter filter, List<T> rules)
+        List<T> filterByAddress(
+                RuleFilter filter, 
+                List<T> rules)
     {
         RuleFilter.FilterType type = filter.getSourceAddress().getType();
 
@@ -92,6 +158,20 @@ public class FilterUtils {
         return ret;
     }
 
+    // CRITERIA ================================================================
+
+    private static Search addCriteria(Search search, RuleFilter filter) {
+        addStringCriteria(search, "username", filter.getUser());
+        addStringCriteria(search, "rolename", filter.getRole());
+        addCriteria(search, search.addJoin("instance"), filter.getInstance());
+        addStringCriteria(search, "service", filter.getService()); // see class' javadoc
+        addStringCriteria(search, "request", filter.getRequest()); // see class' javadoc
+        addStringCriteria(search, "subfield", filter.getSubfield());
+        addStringCriteria(search, "workspace", filter.getWorkspace());
+        addStringCriteria(search, "layer", filter.getLayer());
+        return search;    
+    }
+        
     /**
      * Add criteria for <B>searching</B>.
      *
@@ -131,21 +211,6 @@ public class FilterUtils {
         }
     }
 
-    public static void addPagingConstraints(Search search, Integer page, Integer entries) {
-        if( (page != null && entries == null) || (page ==null && entries != null)) {
-            throw new BadRequestServiceEx("Page and entries params should be declared together.");
-        }
-
-        if(LOGGER.isInfoEnabled()) {
-            LOGGER.info("Searching Rule list " + ( page==null? "(unpaged) " : (" p:"+page + "#:"+entries)));
-        }
-
-        if(entries != null) {
-            search.setMaxResults(entries);
-            search.setPage(page);
-        }
-    }
-
     public static void addStringCriteria(Search search, String fieldName, RuleFilter.TextFilter filter) {
         switch (filter.getType()) {
             case ANY:
@@ -171,64 +236,47 @@ public class FilterUtils {
         }
     }
 
-
     /**
      * Add criteria for <B>searching</B>.
      *
      * We're dealing with IDs here, so <U>we'll suppose that the related object id field is called "id"</U>.
      */
     public static void addFixedCriteria(Search search, Search.JoinInfo join, RuleFilter.IdNameFilter filter) {
-        switch (filter.getType()) {
-            case ANY:
-                throw new BadRequestServiceEx(join.getField() + " should be a fixed search and can't be ANY");
-
-            case DEFAULT:
-                search.addFilterNull(join.getField());
-                break;
-
-            case IDVALUE:
-                if(filter.isIncludeDefault()) {
-                    throw new BadRequestServiceEx(join.getField() + " should be a fixed search");
-                } else {
-                    search.addFilterEqual(join, "id", filter.getId());
-                }
-                break;
-
-            case NAMEVALUE:
-                if(filter.isIncludeDefault()) {
-                    throw new BadRequestServiceEx(join.getField() + " should be a fixed search");
-
-                } else {
-                    search.addFilterEqual(join, "name", filter.getName());
-                }
-                break;
-
-            default:
-                throw new AssertionError();
-        }
+        if(filter.getType() == RuleFilter.FilterType.ANY) 
+            throw new BadRequestServiceEx(join.getField() + " should be a fixed search and can't be ANY");
+        
+        if((filter.getType() == RuleFilter.FilterType.IDVALUE || filter.getType() == RuleFilter.FilterType.NAMEVALUE) && filter.isIncludeDefault())
+            throw new BadRequestServiceEx(join.getField() + " should be a fixed search");
+            
+    
+        addCriteria(search, join, filter);       
     }
 
+    public static void addFixedStringCriteria(Search search, String fieldName, RuleFilter.TextFilter filter) {        
+        if(filter.getType() == RuleFilter.FilterType.ANY) 
+            throw new BadRequestServiceEx(fieldName + " should be a fixed search and can't be ANY");
+        
+        if((filter.getType() == RuleFilter.FilterType.NAMEVALUE) && filter.isIncludeDefault())
+            throw new BadRequestServiceEx(fieldName+ " should be a fixed search");
 
-    public static void addFixedStringCriteria(Search search, String fieldName, RuleFilter.TextFilter filter) {
-        switch (filter.getType()) {
-            case ANY:
-                throw new BadRequestServiceEx(fieldName + " should be a fixed search and can't be ANY");
+        addStringCriteria(search, fieldName, filter);
+    }
+    
+    // =========================================================================
+    
+    public static void addPagingConstraints(Search search, Integer page, Integer entries) {
+        if( (page != null && entries == null) || (page ==null && entries != null)) {
+            throw new BadRequestServiceEx("Page and entries params should be declared together.");
+        }
 
-            case DEFAULT:
-                search.addFilterNull(fieldName);
-                break;
+        if(LOGGER.isInfoEnabled()) {
+            LOGGER.info("Searching Rule list " + ( page==null? "(unpaged) " : (" p:"+page + "#:"+entries)));
+        }
 
-            case NAMEVALUE:
-                if(filter.isIncludeDefault()) {
-                    throw new BadRequestServiceEx(fieldName + " should be a fixed search");
-                } else {
-                    search.addFilterEqual(fieldName, filter.getText());
-                }
-                break;
-
-            case IDVALUE:
-            default:
-                throw new AssertionError();
+        if(entries != null) {
+            search.setMaxResults(entries);
+            search.setPage(page);
         }
     }
+    
 }
