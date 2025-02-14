@@ -19,8 +19,6 @@ import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 
 import static org.geoserver.geofence.services.util.FilterUtils.addCriteria;
-import static org.geoserver.geofence.services.util.FilterUtils.addFixedCriteria;
-import static org.geoserver.geofence.services.util.FilterUtils.addFixedStringCriteria;
 import static org.geoserver.geofence.services.util.FilterUtils.addPagingConstraints;
 import static org.geoserver.geofence.services.util.FilterUtils.addStringCriteria;
 
@@ -164,20 +162,6 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     }
 
     @Override
-    public ShortAdminRule getRule(RuleFilter filter) throws BadRequestServiceEx {
-        Search searchCriteria = buildFixedRuleSearch(filter);
-        List<AdminRule> found = ruleDAO.search(searchCriteria);
-        if(found.isEmpty())
-            return null;
-
-        if(found.size() > 1) {
-            LOGGER.error("Unexpected rule count for filter " + filter + " : " + found);
-        }
-
-        return new ShortAdminRule(found.get(0));
-    }
-
-    @Override
     public List<ShortAdminRule> getRulesByPriority(long priority, Integer page, Integer entries) {
         Search search = ruleDAO.createSearch();
         search.addFilterGreaterOrEqual("priority", priority);
@@ -251,22 +235,6 @@ public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
     }
 
     //=========================================================================
-
-    private Search buildFixedRuleSearch(RuleFilter filter) {
-        Search search = ruleDAO.createSearch();
-
-        if(filter != null) {
-            addFixedStringCriteria(search, "username", filter.getUser());
-            addFixedStringCriteria(search, "rolename", filter.getRole());
-            addFixedCriteria(search, search.addJoin("instance"), filter.getInstance());
-
-            addFixedStringCriteria(search, "workspace", filter.getWorkspace());
-        }
-
-        return search;
-    }
-
-    // ==========================================================================
 
     private List<ShortAdminRule> convertToShortList(List<AdminRule> list) {
         List<ShortAdminRule> shortList = new ArrayList(list.size());
