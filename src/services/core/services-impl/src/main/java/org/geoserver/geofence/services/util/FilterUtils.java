@@ -236,32 +236,6 @@ public class FilterUtils {
         }
     }
 
-    /**
-     * Add criteria for <B>searching</B>.
-     *
-     * We're dealing with IDs here, so <U>we'll suppose that the related object id field is called "id"</U>.
-     */
-    public static void addFixedCriteria(Search search, Search.JoinInfo join, RuleFilter.IdNameFilter filter) {
-        if(filter.getType() == RuleFilter.FilterType.ANY) 
-            throw new BadRequestServiceEx(join.getField() + " should be a fixed search and can't be ANY");
-        
-        if((filter.getType() == RuleFilter.FilterType.IDVALUE || filter.getType() == RuleFilter.FilterType.NAMEVALUE) && filter.isIncludeDefault())
-            throw new BadRequestServiceEx(join.getField() + " should be a fixed search");
-            
-    
-        addCriteria(search, join, filter);       
-    }
-
-    public static void addFixedStringCriteria(Search search, String fieldName, RuleFilter.TextFilter filter) {        
-        if(filter.getType() == RuleFilter.FilterType.ANY) 
-            throw new BadRequestServiceEx(fieldName + " should be a fixed search and can't be ANY");
-        
-        if((filter.getType() == RuleFilter.FilterType.NAMEVALUE) && filter.isIncludeDefault())
-            throw new BadRequestServiceEx(fieldName+ " should be a fixed search");
-
-        addStringCriteria(search, fieldName, filter);
-    }
-    
     // =========================================================================
     
     public static void addPagingConstraints(Search search, Integer page, Integer entries) {

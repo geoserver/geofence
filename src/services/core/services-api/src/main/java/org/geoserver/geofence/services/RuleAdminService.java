@@ -11,7 +11,6 @@ import org.geoserver.geofence.core.model.RuleLimits;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.ShortRule;
-import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 
 import java.util.List;
@@ -94,19 +93,6 @@ public interface RuleAdminService
      * @return Rules in short format
      */
     List<ShortRule> getRulesByPriority(long priority, Integer page, Integer entries);
-
-    /**
-     * Return a single Rule according to the filter.
-     *
-     * Search for a precise rule match.
-     * No ANY filter is allowed.
-     * Name/id specification with default inclusion is not allowed.
-     *
-     * @return the matching rule in short format or null if not found
-     *
-     * @throws BadRequestServiceEx if a wildcard type is used in filter
-     */
-    ShortRule getRule(RuleFilter filter) throws BadRequestServiceEx;
     
     /**
      * Return the Rules according to the filter.Rules will be enriched with all their joined data, so this method may be heavy to execute.

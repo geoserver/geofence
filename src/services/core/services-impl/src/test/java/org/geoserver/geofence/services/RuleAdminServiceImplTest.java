@@ -137,42 +137,6 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         assertEquals(2, ruleAdminService.count(f1));
     }
 
-    @Test
-    public void testGetFixedRule() {
-        assertEquals(0, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY)));
-
-        UserGroup p1 = createRole("p1");
-        UserGroup p2 = createRole("p2");
-
-        Rule r1 = new Rule(10, null, "p1", null,null, "s1", "r1", null, "w1", "l1", GrantType.ALLOW);
-        Rule r2 = new Rule(20, null, "p2", null,null, "s1", "r2", null, "w2", "l2", GrantType.ALLOW);
-        Rule r3 = new Rule(30, null, "p1", null,null, "s3", "r3", null, "w3", "l3", GrantType.ALLOW);
-        Rule r4 = new Rule(40, null, "p1", null,null, null, null, null, null, null, GrantType.ALLOW);
-
-        ruleAdminService.insert(r1);
-        ruleAdminService.insert(r2);
-        ruleAdminService.insert(r3);
-        ruleAdminService.insert(r4);
-
-        assertNull(ruleAdminService.getRule(new RuleFilter(SpecialFilterType.DEFAULT)));
-
-        RuleFilter f1 = new RuleFilter(SpecialFilterType.DEFAULT, false);
-        f1.setRole("p1");
-        assertNotNull(ruleAdminService.getRule(f1));
-        f1.setRole("p99");
-        assertNull(ruleAdminService.getRule(f1));
-        f1.setRole("p1");
-        f1.setService("s3");
-        assertNull(ruleAdminService.getRule(f1));
-        f1.setRequest("r3");
-        assertNull(ruleAdminService.getRule(f1));
-        f1.setWorkspace("w3");
-        assertNull(ruleAdminService.getRule(f1));
-        f1.setLayer("l3");
-        assertNotNull(ruleAdminService.getRule(f1));
-    }
-
-
     public void testRuleLimits() throws NotFoundServiceEx {
         final Long id;
 

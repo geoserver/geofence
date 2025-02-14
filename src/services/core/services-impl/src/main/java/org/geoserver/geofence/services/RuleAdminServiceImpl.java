@@ -30,11 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.geoserver.geofence.services.util.FilterUtils;
 
-import static org.geoserver.geofence.services.util.FilterUtils.addCriteria;
-import static org.geoserver.geofence.services.util.FilterUtils.addFixedCriteria;
-import static org.geoserver.geofence.services.util.FilterUtils.addFixedStringCriteria;
 import static org.geoserver.geofence.services.util.FilterUtils.addPagingConstraints;
-import static org.geoserver.geofence.services.util.FilterUtils.addStringCriteria;
 
 /**
  *
@@ -201,21 +197,6 @@ public class RuleAdminServiceImpl implements RuleAdminService {
         return FilterUtils.getFilteredRules(ruleDAO, filter, page, entries);
     }    
     
-    // TODO: this method does not filter by ip address
-    @Override
-    public ShortRule getRule(RuleFilter filter) throws BadRequestServiceEx {
-        Search searchCriteria = buildFixedRuleSearch(filter);
-        List<Rule> found = ruleDAO.search(searchCriteria);
-        if(found.isEmpty())
-            return null;
-
-        if(found.size() > 1) {
-            LOGGER.error("Unexpected rule count for filter " + filter + " : " + found);
-        }
-
-        return new ShortRule(found.get(0));
-    }
-
     @Override
     public List<ShortRule> getRulesByPriority(long priority, Integer page, Integer entries) {
         Search searchCriteria = ruleDAO.createSearch();
@@ -251,25 +232,6 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     @Override
     public long count(RuleFilter filter) {
         return FilterUtils.countFilteredRules(ruleDAO, filter);
-    }
-
-    //=========================================================================
-
-    private Search buildFixedRuleSearch(RuleFilter filter) {
-        Search search = ruleDAO.createSearch();
-
-        if(filter != null) {
-            addFixedStringCriteria(search, "username", filter.getUser());
-            addFixedStringCriteria(search, "rolename", filter.getRole());
-            addFixedCriteria(search, search.addJoin("instance"), filter.getInstance());
-
-            addFixedStringCriteria(search, "service", filter.getService()); // see class' javadoc
-            addFixedStringCriteria(search, "request", filter.getRequest()); // see class' javadoc
-            addFixedStringCriteria(search, "workspace", filter.getWorkspace());
-            addFixedStringCriteria(search, "layer", filter.getLayer());
-        }
-
-        return search;
     }
 
     // =========================================================================

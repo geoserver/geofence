@@ -9,7 +9,6 @@ import org.geoserver.geofence.core.model.AdminRule;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.ShortAdminRule;
-import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 
 import java.util.List;
@@ -115,19 +114,6 @@ public interface AdminRuleAdminService
      * @param entries used for retrieving paged data, may be null if not used. If not null, also <TT>page</TT> should be defined.
      */
     List<ShortAdminRule> getRulesByPriority(long priority, Integer page, Integer entries);
-
-    /**
-     * Return a single Rule according to the filter.
-     *
-     * Search for a precise rule match.
-     * No ANY filter is allowed.
-     * Name/id specification with default inclusion is not allowed.
-     *
-     * @return the matching rule or null if not found
-     *
-     * @throws BadRequestServiceEx if a wildcard type is used in filter
-     */
-    ShortAdminRule getRule(RuleFilter filter) throws BadRequestServiceEx;
     
     /**
      * Return the Rules according to the filter.
