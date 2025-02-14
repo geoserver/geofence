@@ -76,11 +76,11 @@ public class FilterUtils {
             return list;
         }        
         
-        if(entries <= 0 || page <= 0) {
+        if(entries <= 0 || page < 0) {
             throw new IllegalArgumentException("invalid page size: " + entries);
         }
     
-        int fromIndex = (page - 1) * entries;
+        int fromIndex = page * entries;
         if(list == null || list.size() <= fromIndex){
             return Collections.emptyList();
         }
