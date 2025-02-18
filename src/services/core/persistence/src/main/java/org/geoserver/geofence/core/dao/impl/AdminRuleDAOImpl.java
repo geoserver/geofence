@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Public implementation of the GSUserDAO interface
+ * Public implementation of the AdminRuleDAO interface
  *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
@@ -44,7 +44,7 @@ public class AdminRuleDAOImpl
 
         for (AdminRule rule : entities) {
             // check there are no dups for the rules received
-            Search search = getDupSearch(rule);
+            Search<AdminRule> search = getDupSearch(rule);
             List<AdminRule> dups = search(search);
             for (AdminRule dup : dups) {
                 if(dup.getId().equals(rule.getId())) {
@@ -81,8 +81,8 @@ public class AdminRuleDAOImpl
         this.persist(entity);
     }
 
-    protected Search getDupSearch(AdminRule rule) {
-        Search search = createSearch();
+    protected Search<AdminRule> getDupSearch(AdminRule rule) {
+        Search<AdminRule> search = createSearch();
         addSearchField(search, "username", rule.getUsername());
         addSearchField(search, "rolename", rule.getRolename());
         addSearchField(search, "instance", rule.getInstance());
@@ -99,13 +99,8 @@ public class AdminRuleDAOImpl
     }
 
     @Override
-    public List<AdminRule> search(Search search) {
-        return super.search(search);
-    }
-
-    @Override
     public AdminRule merge(AdminRule entity) {
-        Search search = getDupSearch(entity);
+        Search<AdminRule> search = getDupSearch(entity);
 
         // check if we are dup'ing some other Rule.
         List<AdminRule> existent = search(search);

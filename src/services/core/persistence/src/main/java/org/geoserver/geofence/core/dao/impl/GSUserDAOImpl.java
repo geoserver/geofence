@@ -7,6 +7,7 @@ package org.geoserver.geofence.core.dao.impl;
 
 import org.geoserver.geofence.core.dao.GSUserDAO;
 import org.geoserver.geofence.core.model.GSUser;
+import org.geoserver.geofence.core.dao.search.LongSearch;
 import org.geoserver.geofence.core.dao.search.Search;
 
 import java.util.Date;
@@ -49,14 +50,8 @@ public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
     }
 
     @Override
-    public List<GSUser> search(Search search)
-    {
-        return super.search(search);
-    }
-
-    @Override
     public GSUser getFull(String name) {
-        Search search = createSearch();
+        Search<GSUser> search = createSearch();
         search.addFilterEqual("name", name);
         return searchFull(search);
     }
@@ -64,7 +59,7 @@ public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
     /**
      * Fetch a GSUser with all of its related groups
      */
-    protected GSUser searchFull(Search search) {
+    protected GSUser searchFull(Search<GSUser> search) {
         search.addFetch("userGroups");
         // When fetching users with multiple groups, the gsusers list id multiplied for the number of groups found
         search.setDistinct(true);
@@ -106,7 +101,7 @@ public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
             throw new IllegalArgumentException("Page and entries params should be declared together.");
         }
 
-        Search search = createSearch();
+        Search<GSUser> search = createSearch();
 
         if(page != null) {
             search.setMaxResults(entries);
@@ -130,13 +125,13 @@ public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
 
     @Override
     public long countByNameLike(String nameLike) {
-        Search searchCriteria = createCountSearch();
+        LongSearch<GSUser> search = createLongSearch();
 
         if (nameLike != null) {
-            searchCriteria.addFilterILike("name", nameLike);
+            search.addFilterILike("name", nameLike);
         }
 
-        return count(searchCriteria);
+        return count(search);
     }
 
 }

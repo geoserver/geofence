@@ -6,6 +6,7 @@
 package org.geoserver.geofence.services;
 
 import org.geoserver.geofence.core.dao.GFUserDAO;
+import org.geoserver.geofence.core.dao.search.LongSearch;
 import org.geoserver.geofence.core.dao.search.Search;
 import org.geoserver.geofence.core.model.GFUser;
 import org.geoserver.geofence.services.dto.ShortUser;
@@ -110,13 +111,13 @@ public class GFUserAdminServiceImpl implements GFUserAdminService {
 
     @Override
     public long getCount(String nameLike) {
-        Search searchCriteria = gfUserDAO.createCountSearch();
+        LongSearch search = gfUserDAO.createLongSearch();
 
         if (nameLike != null) {
-            searchCriteria.addFilterILike("name", nameLike);
+            search.addFilterILike("name", nameLike);
         }
 
-        return gfUserDAO.count(searchCriteria);
+        return gfUserDAO.count(search);
     }
 
     // ==========================================================================

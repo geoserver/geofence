@@ -9,7 +9,6 @@ import java.util.List;
 
 
 import org.geoserver.geofence.core.dao.GSInstanceDAO;
-import org.geoserver.geofence.core.dao.search.Search;
 import org.geoserver.geofence.core.model.GSInstance;
 
 import org.apache.logging.log4j.LogManager;
@@ -43,12 +42,6 @@ public class GSInstanceDAOImpl extends BaseDAO<GSInstance, Long> implements GSIn
     public List<GSInstance> findAll()
     {
         return super.findAll();
-    }
-
-    @Override
-    public List<GSInstance> search(Search search)
-    {
-        return super.search(search);
     }
 
     @Override

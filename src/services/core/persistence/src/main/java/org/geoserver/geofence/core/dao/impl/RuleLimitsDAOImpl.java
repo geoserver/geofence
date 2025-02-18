@@ -46,12 +46,6 @@ public class RuleLimitsDAOImpl //
     }
 
     @Override
-    public List<RuleLimits> search(Search search)
-    {
-        return super.search(search);
-    }
-
-    @Override
     public RuleLimits merge(RuleLimits entity)
     {
         return super.merge(entity);

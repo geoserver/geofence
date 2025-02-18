@@ -7,17 +7,18 @@ package org.geoserver.geofence.services;
 
 import org.geoserver.geofence.core.model.GSInstance;
 import org.geoserver.geofence.core.dao.GSInstanceDAO;
+import org.geoserver.geofence.core.dao.search.LongSearch;
 import org.geoserver.geofence.core.dao.search.Search;
 import org.geoserver.geofence.services.dto.ShortInstance;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 
 /**
  *
@@ -128,13 +129,13 @@ public class InstanceAdminServiceImpl implements InstanceAdminService {
 
     @Override
     public long getCount(String nameLike) {
-        Search searchCriteria = instanceDAO.createCountSearch();
+        LongSearch search = instanceDAO.createLongSearch();
 
         if (nameLike != null) {
-            searchCriteria.addFilterILike("name", nameLike);
+            search.addFilterILike("name", nameLike);
         }
 
-        return instanceDAO.count(searchCriteria);
+        return instanceDAO.count(search);
     }
 
     // ==========================================================================

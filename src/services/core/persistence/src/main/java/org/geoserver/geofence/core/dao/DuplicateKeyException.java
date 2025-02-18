@@ -9,6 +9,7 @@ package org.geoserver.geofence.core.dao;
 *
 * @author ETj (etj at geo-solutions.it) */
 public class DuplicateKeyException extends RuntimeException {
+    static final long serialVersionUID = 3804897190745766939L;   
 
     public DuplicateKeyException() {
     }

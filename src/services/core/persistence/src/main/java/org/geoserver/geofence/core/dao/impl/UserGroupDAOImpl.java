@@ -10,10 +10,10 @@ import java.util.List;
 import org.geoserver.geofence.core.dao.UserGroupDAO;
 import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.core.dao.search.Search;
-import org.geoserver.geofence.core.model.GSUser;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.geoserver.geofence.core.dao.search.LongSearch;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,9 +65,9 @@ public class UserGroupDAOImpl extends BaseDAO<UserGroup, Long>
 
     @Override
     public UserGroup get(String name) {
-        Search search = createSearch();
+        Search<UserGroup>  search = createSearch();
         search.addFilterEqual("name", name);
-        return (UserGroup)searchUnique(search);
+        return searchUnique(search);
     }
     
     @Override    
@@ -77,7 +77,7 @@ public class UserGroupDAOImpl extends BaseDAO<UserGroup, Long>
             throw new IllegalArgumentException("Page and entries params should be declared together.");
         }
 
-        Search search = createSearch();
+        Search<UserGroup> search = createSearch();
 
         if(page != null) {
             search.setMaxResults(entries);
@@ -96,13 +96,13 @@ public class UserGroupDAOImpl extends BaseDAO<UserGroup, Long>
 
     @Override
     public long countByNameLike(String nameLike) {
-        Search searchCriteria = createCountSearch();
+        LongSearch<UserGroup> search = createLongSearch();
 
         if (nameLike != null) {
-            searchCriteria.addFilterILike("name", nameLike);
+            search.addFilterILike("name", nameLike);
         }
 
-        return count(searchCriteria);
+        return count(search);
     }
     
 
