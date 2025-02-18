@@ -5,16 +5,17 @@
 package org.geoserver.geofence.core.dao;
 
 import java.util.List;
+import org.geoserver.geofence.core.dao.search.LongSearch;
 import org.geoserver.geofence.core.dao.search.Search;
 
 /**
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-public interface SearchableDAO<ENTITY> {    
+public interface SearchableDAO<ENTITY> {
     
-    public Search createSearch();
-    public Search createCountSearch();
+    public Search<ENTITY> createSearch();
+    public LongSearch<ENTITY> createLongSearch();
 
-    public List<ENTITY> search(Search search);
-    public long count(Search search);    
+    public List<ENTITY> search(Search<ENTITY> search);
+    public long count(LongSearch<ENTITY> search);    
 }

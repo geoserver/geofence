@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 
 /**
- * Public implementation of the GSUserDAO interface
+ * Public implementation of the GFUserDAO interface
  *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
@@ -51,12 +51,6 @@ public class GFUserDAOImpl //
     public List<GFUser> findAll()
     {
         return super.findAll();
-    }
-
-    @Override
-    public List<GFUser> search(Search search)
-    {
-        return super.search(search);
     }
 
     @Override

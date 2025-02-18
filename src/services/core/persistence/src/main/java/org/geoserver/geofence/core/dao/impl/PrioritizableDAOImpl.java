@@ -9,13 +9,14 @@ import org.geoserver.geofence.core.model.enums.InsertPosition;
 import org.geoserver.geofence.core.model.Prioritizable;
 import org.geoserver.geofence.core.dao.PrioritizableDAO;
 import org.geoserver.geofence.core.dao.search.Search;
-import org.geoserver.geofence.core.dao.search.Search.Field;
+import org.geoserver.geofence.core.dao.search.BaseSearch.Field;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import javax.persistence.Query;
+import org.geoserver.geofence.core.dao.search.LongSearch;
 import org.geoserver.geofence.core.model.Identifiable;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -42,13 +43,13 @@ public abstract class PrioritizableDAOImpl<T extends Prioritizable & Identifiabl
                 // priority is already set
                 break;
             case FROM_START:
-                Search search = createSearch(clazz);
+                Search<T> search = createSearch();
                 search.setFirstResult((int)entity.getPriority());
                 search.setMaxResults(1);
                 search.addSortAsc("priority");
-                List<Prioritizable> list = super._search(search);
+                List<? extends Prioritizable> list = super.search(search);
                 if(list.isEmpty()) { // no rule found at given position: let's find out why
-                    long count = count(createSearch(clazz));
+                    long count = count(null);
                     if(LOGGER.isDebugEnabled())
                         LOGGER.debug("No rule found at position " + entity.getPriority() + " -- rules count:"+count);
 
@@ -57,9 +58,9 @@ public abstract class PrioritizableDAOImpl<T extends Prioritizable & Identifiabl
                             LOGGER.debug("Inserting first rule");
                         entity.setPriority(1); // this is the only rule so far, let's put in an arbitrary value
                     } else { // some rules in, the requested postion is at bottom
-                        Search s1 = createSearch(clazz);
+                        LongSearch<T> s1 = createLongSearch();
                         s1.addField("priority", Field.OP_MAX);
-                        long maxPri = (Long)searchUnique(s1);
+                        long maxPri = searchUnique(s1);
                         entity.setPriority(maxPri+1);
                         if(LOGGER.isDebugEnabled())
                             LOGGER.debug("Inserting rule in last position");
@@ -80,7 +81,7 @@ public abstract class PrioritizableDAOImpl<T extends Prioritizable & Identifiabl
             case FROM_END:
                 // 0 based: if set to 0, this rule will go in last position
                 long posFromEnd = entity.getPriority();
-                long count = count(createSearch(clazz));
+                long count = count(null);
                 if(count == 0) {
                     if(LOGGER.isDebugEnabled())
                         LOGGER.debug("Inserting first rule");
@@ -99,11 +100,11 @@ public abstract class PrioritizableDAOImpl<T extends Prioritizable & Identifiabl
                     }
 
 
-                    Search searchEnd = createSearch(clazz);
+                    Search<T> searchEnd = createSearch();
                     searchEnd.setFirstResult((int)posFromStart);
                     searchEnd.setMaxResults(1);
                     searchEnd.addSortAsc("priority");
-                    List<Prioritizable> list1 = super._search(searchEnd);
+                    List<? extends Prioritizable> list1 = super.search(searchEnd);
                     if(list1.isEmpty()) { // no rule found at given position: let's find out why
                         throw new IllegalArgumentException("Bad position from end ("+posFromEnd+") with count="+count);
                     } else {
@@ -139,7 +140,7 @@ public abstract class PrioritizableDAOImpl<T extends Prioritizable & Identifiabl
      * Each subclass needs its own filtering.
      */
 
-    protected abstract Search getDupSearch(T rule);
+    protected abstract Search<T> getDupSearch(T rule);
     
     
     protected int shift(Class<T >clazz, long priorityStart, long offset) {
@@ -147,10 +148,10 @@ public abstract class PrioritizableDAOImpl<T extends Prioritizable & Identifiabl
             throw new IllegalArgumentException("Positive offset required");
         }
 
-        Search search = createSearch(clazz);
+        LongSearch<T> search = createLongSearch();
         search.addFilterGreaterOrEqual("priority", priorityStart);
         search.addFilterLessThan("priority", priorityStart + offset);
-        if ( super.count(search) == 0 ) {
+        if ( count(search) == 0 ) {
             return -1;
         }
 
@@ -176,11 +177,6 @@ public abstract class PrioritizableDAOImpl<T extends Prioritizable & Identifiabl
         rule1.setPriority(rule2.getPriority());
         rule2.setPriority(tmp);
         super.merge(rule1, rule2);
-    }
-
-    @Override
-    public List<T> search(Search search) {
-        return super.search(search);
     }
 
 }

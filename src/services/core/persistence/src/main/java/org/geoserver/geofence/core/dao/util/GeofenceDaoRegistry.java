@@ -28,7 +28,7 @@ public class GeofenceDaoRegistry implements ApplicationContextAware
 {
     private static final Logger LOGGER = LogManager.getLogger(GeofenceDaoRegistry.class);
 
-    private static final Set<Class> REGISTERABLE_CLASSES = new HashSet<>(Arrays.asList(GSUserDAO.class, UserGroupDAO.class));
+    private static final Set<Class<? extends RegistrableDAO>> REGISTERABLE_CLASSES = new HashSet<>(Arrays.asList(GSUserDAO.class, UserGroupDAO.class));
 
     public static class DaoRegistrar
     {
@@ -42,13 +42,13 @@ public class GeofenceDaoRegistry implements ApplicationContextAware
         }
     }
 
-    private Map<Class, Map<String, RegistrableDAO>> registry = new HashMap<>();
+    private Map<Class<?>, Map<String, RegistrableDAO>> registry = new HashMap<>();
     private String selectedType;
 
 
     private GeofenceDaoRegistry()
     {
-        for (Class registerableClass : REGISTERABLE_CLASSES) {
+        for (Class<?> registerableClass : REGISTERABLE_CLASSES) {
             registry.put(registerableClass, new HashMap<>());
         }
     }
@@ -64,18 +64,19 @@ public class GeofenceDaoRegistry implements ApplicationContextAware
         this.selectedType = selectedType;
     }
 
+    //@SuppressWarnings("unchecked")
     public <T extends RegistrableDAO> T getDao(Class<T> t) {
 
         Map<String, RegistrableDAO> registryMap = registry.get(t);
         if(registryMap == null)
             throw new IllegalArgumentException("Unregistered class " + t);
 
-        T dao = (T)registryMap.get(selectedType);
-        if(dao == null)
+        RegistrableDAO found = registryMap.get(selectedType);
+        if(found == null)
             throw new IllegalArgumentException("DAO not found for class " +t.getSimpleName()+ " and type " + selectedType);
-
+        
         LOGGER.info("Returning DAO type " + selectedType + " for class " + t.getSimpleName());
-        return dao;
+        return (T)found;
     }
 
     @Override
@@ -90,7 +91,7 @@ public class GeofenceDaoRegistry implements ApplicationContextAware
     protected void addRegistrar(DaoRegistrar registrar) {
         RegistrableDAO dao = registrar.dao;
         
-        for (Class registerableClass : REGISTERABLE_CLASSES) {
+        for (Class<?> registerableClass : REGISTERABLE_CLASSES) {
             if(registerableClass.isAssignableFrom(dao.getClass())) {
                 LOGGER.info("Registering DAO type " + registrar.name + " for class " + dao.getClass().getSimpleName());
 

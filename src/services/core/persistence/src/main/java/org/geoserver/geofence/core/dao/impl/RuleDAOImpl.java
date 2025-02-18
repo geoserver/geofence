@@ -21,7 +21,7 @@ import org.geoserver.geofence.core.dao.search.Search;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Public implementation of the GSUserDAO interface
+ * Public implementation of the RuleDAO interface
  *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
@@ -42,7 +42,7 @@ public class RuleDAOImpl extends PrioritizableDAOImpl<Rule> implements RuleDAO {
         for (Rule rule : entities) {
             // check there are no dups for the rules received
             if ( rule.getAccess() != GrantType.LIMIT ) { // there may be as many LIMIT rules as desired
-                Search search = getDupSearch(rule);
+                Search<Rule> search = getDupSearch(rule);
                 List<Rule> dups = search(search);
                 for (Rule dup : dups) {
                     if ( dup.getAccess() != GrantType.LIMIT ) {
@@ -82,8 +82,8 @@ public class RuleDAOImpl extends PrioritizableDAOImpl<Rule> implements RuleDAO {
     }
 
 
-    protected Search getDupSearch(Rule rule) {
-        Search search = createSearch();
+    protected Search<Rule> getDupSearch(Rule rule) {
+        Search<Rule> search = createSearch();
         addSearchField(search, "username", rule.getUsername());
         addSearchField(search, "rolename", rule.getRolename());
         addSearchField(search, "instance", rule.getInstance());
@@ -104,13 +104,8 @@ public class RuleDAOImpl extends PrioritizableDAOImpl<Rule> implements RuleDAO {
     }
 
     @Override
-    public List<Rule> search(Search search) {
-        return super.search(search);
-    }
-
-    @Override
     public Rule merge(Rule entity) {
-        Search search = getDupSearch(entity);
+        Search<Rule> search = getDupSearch(entity);
 
         // check if we are dup'ing some other Rule.
         List<Rule> existent = search(search);

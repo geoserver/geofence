@@ -12,8 +12,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import org.geoserver.geofence.core.dao.SearchableDAO;
+import org.geoserver.geofence.core.dao.search.BaseSearch;
 import org.geoserver.geofence.core.dao.search.Search;
 import org.geoserver.geofence.core.model.IPRangeProvider;
+import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 
@@ -55,7 +57,7 @@ public class FilterUtils {
         RuleFilter.FilterType ipFilterType = filter.getSourceAddress().getType();
         if(ipFilterType == RuleFilter.FilterType.ANY) {
             // speedup: bypass ip filtering
-            return dao.count(addCriteria(dao.createCountSearch(), filter));
+            return dao.count(addCriteria(dao.createLongSearch(), filter));
         } else {
             Search search = addCriteria(dao.createSearch(), filter);
             List found = dao.search(search);
@@ -160,7 +162,7 @@ public class FilterUtils {
 
     // CRITERIA ================================================================
 
-    private static Search addCriteria(Search search, RuleFilter filter) {
+    private static <OUT,ROOT, T extends BaseSearch<OUT,ROOT>> T addCriteria(T search, RuleFilter filter) {
         addStringCriteria(search, "username", filter.getUser());
         addStringCriteria(search, "rolename", filter.getRole());
         addCriteria(search, search.addJoin("instance"), filter.getInstance());
@@ -169,15 +171,15 @@ public class FilterUtils {
         addStringCriteria(search, "subfield", filter.getSubfield());
         addStringCriteria(search, "workspace", filter.getWorkspace());
         addStringCriteria(search, "layer", filter.getLayer());
-        return search;    
+        return search;
     }
-        
+
     /**
      * Add criteria for <B>searching</B>.
      *
      * We're dealing with IDs here, so <U>we'll suppose that the related object id field is called "id"</U>.
      */
-    public static void addCriteria(Search search, Search.JoinInfo join, RuleFilter.IdNameFilter filter) {
+    public static void addCriteria(BaseSearch search, BaseSearch.JoinInfo join, RuleFilter.IdNameFilter filter) {
         switch (filter.getType()) {
             case ANY:
                 break; // no filtering
@@ -211,7 +213,7 @@ public class FilterUtils {
         }
     }
 
-    public static void addStringCriteria(Search search, String fieldName, RuleFilter.TextFilter filter) {
+    public static void addStringCriteria(BaseSearch search, String fieldName, RuleFilter.TextFilter filter) {
         switch (filter.getType()) {
             case ANY:
                 break; // no filtering

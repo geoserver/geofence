@@ -20,6 +20,7 @@ import org.geoserver.geofence.services.dto.ShortRule;
 
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
+import org.geoserver.geofence.services.util.FilterUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,9 +29,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.geoserver.geofence.services.util.FilterUtils;
 
-import static org.geoserver.geofence.services.util.FilterUtils.addPagingConstraints;
 
 /**
  *
@@ -199,11 +198,11 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     
     @Override
     public List<ShortRule> getRulesByPriority(long priority, Integer page, Integer entries) {
-        Search searchCriteria = ruleDAO.createSearch();
-        searchCriteria.addFilterGreaterOrEqual("priority", priority);
-        searchCriteria.addSortAsc("priority");
-        addPagingConstraints(searchCriteria, page, entries);
-        List<Rule> found = ruleDAO.search(searchCriteria);
+        Search search = ruleDAO.createSearch();
+        search.addFilterGreaterOrEqual("priority", priority);
+        search.addSortAsc("priority");
+        FilterUtils.addPagingConstraints(search, page, entries);
+        List<Rule> found = ruleDAO.search(search);
         return convertToShortList(found);
     }
 

@@ -4,7 +4,10 @@
  */
 package org.geoserver.geofence.core.dao.impl;
 
+import org.geoserver.geofence.core.dao.search.LongSearch;
 import org.geoserver.geofence.core.dao.search.Search;
+import org.geoserver.geofence.core.dao.search.BaseSearch;
+import org.geoserver.geofence.core.model.Identifiable;
 
 import java.io.Serializable;
 import java.util.List;
@@ -14,17 +17,17 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import org.geoserver.geofence.core.model.Identifiable;
+
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 /**
  *
- * The base DAO furnish a set of methods usually used
+ * The base DAO provides a set of common methods 
  *
  */
 @Repository(value = "geofence")
-public class BaseDAO<E extends Identifiable, ID extends Serializable> // extends GenericDAOImpl<T, ID>
+public class BaseDAO<E extends Identifiable, ID extends Serializable>
 {
     protected final Class<E> ENTITY;
 
@@ -47,28 +50,13 @@ public class BaseDAO<E extends Identifiable, ID extends Serializable> // extends
     public Session session() {
         return em.unwrap(Session.class);
     }
-
-    public class DSearch extends Search {
-
-        public DSearch(EntityManager em, Class resultType ) {
-            super(em, resultType);
-        }
-
-        public DSearch(EntityManager em, Class resultType, Class baseClass) {
-            super(em, resultType, baseClass);
-        }
-    }
     
-    public Search createSearch(Class resultType) {
-        return new DSearch(em, resultType);
-    }
-    
-    public Search createSearch() {
-        return createSearch(ENTITY);
+    public Search<E> createSearch() {
+        return new Search<>(em, ENTITY);
     }
 
-    public Search createCountSearch() {
-        return new DSearch(em, Long.class, ENTITY);
+    public LongSearch<E> createLongSearch() {
+        return new LongSearch<>(em, this.ENTITY);
     }
     
     public List<E> findAll() {
@@ -113,16 +101,20 @@ public class BaseDAO<E extends Identifiable, ID extends Serializable> // extends
         return true;
     }
 
-    public List _search(Search search) {
-        return search(search);
+    public List<E> search(Search<E> search) {
+        return search
+                .getQuery()
+                .getResultList();      
     }
-
-    public List<E> search(Search search) {
-        return search.getQuery().getResultList();      
+    
+    public <OUT> List<OUT> searchExt(BaseSearch<OUT,E> search) {
+        return search
+                .getQuery()
+                .getResultList();      
     }
-
-    protected Object searchUnique(Search search) {
-        List found = search(search);
+    
+    protected <OUT> OUT searchUnique(BaseSearch<OUT, E> search) {
+        List<OUT> found = searchExt(search);
         switch (found.size()) {
             case 0:
                 return null;
@@ -133,12 +125,12 @@ public class BaseDAO<E extends Identifiable, ID extends Serializable> // extends
         }
     }
 
-    public long count(Search search) {
+    public long count(LongSearch<E> search) {
         if(search == null) {
-            search = createSearch();
+            search = createLongSearch();
         }
         
-        return (Long)search.getCountQuery().getSingleResult();      
+        return search.getCountQuery().getSingleResult();      
     }
 
 }

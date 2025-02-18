@@ -5,7 +5,7 @@
 
 package org.geoserver.geofence.core.dao.search;
 
-import org.geoserver.geofence.core.dao.search.Search.JoinInfo;
+import org.geoserver.geofence.core.dao.search.BaseSearch.JoinInfo;
 import org.geoserver.geofence.core.model.IPAddressRange;
 
 /**
@@ -18,10 +18,10 @@ public class SearchUtil {
      * Adds a search field for finding the precise addressrange instance.
      * Does <b>NOT</b> search for an address in a range.
      */
-    public static void addAddressRangeSearch(Search search, IPAddressRange addressRange) {
+    public static <T> void addAddressRangeSearch(Search<T> search, IPAddressRange addressRange) {
         
 //        search.addFetch("addressRange", IPAddressRange.class);
-        JoinInfo ar = search.addJoin("addressRange");
+        JoinInfo<T,?> ar = search.addJoin("addressRange");
         
         if(addressRange != null ) {
             // it's embedded
@@ -45,7 +45,7 @@ public class SearchUtil {
 //        }
     }
 
-    public static void addSearchField(Search search, String field, Object o) {
+    public static <T> void addSearchField(Search<T> search, String field, Object o) {
         if ( o == null ) {
             search.addFilterNull(field);
         } else {
@@ -53,7 +53,7 @@ public class SearchUtil {
         }
     }
     
-    public static void addSearchField(Search search, JoinInfo j, String field, Object o) {
+    public static <T> void addSearchField(Search<T> search, JoinInfo<T,?> j, String field, Object o) {
         if ( o == null ) {
             search.addFilterNull(j, field);
         } else {

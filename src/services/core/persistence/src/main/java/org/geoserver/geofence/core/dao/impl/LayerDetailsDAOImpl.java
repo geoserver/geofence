@@ -20,7 +20,7 @@ import org.hibernate.Hibernate;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Public implementation of the RuleLimitsDAO interface
+ * Public implementation of the LayerDetailsDAO interface
  *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
@@ -52,18 +52,9 @@ public class LayerDetailsDAOImpl
         super.persist(entities);
     }
 
-//    @Override
-//    public LayerDetails find(Long id) {
-//        return super.find(id);
-//    }
     @Override
     public List<LayerDetails> findAll() {
         return super.findAll();
-    }
-
-    @Override
-    public List<LayerDetails> search(Search search) {
-        return super.search(search);
     }
 
     @Override
