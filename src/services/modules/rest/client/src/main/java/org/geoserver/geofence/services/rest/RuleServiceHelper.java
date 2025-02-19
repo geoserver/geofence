@@ -6,6 +6,8 @@
 package org.geoserver.geofence.services.rest;
 
 import org.geoserver.geofence.services.dto.RuleFilter;
+import org.geoserver.geofence.services.dto.RuleFilter.IdNameFilter;
+import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
 import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
 
 /**
@@ -21,56 +23,59 @@ public class RuleServiceHelper {
     }
 
     public long countAll() {
-        return count(null, null, null, null, null, null, null, null, null);
+        return count(null, null, null, null, null, null, null, null, null, null);
     }
 
     public long count(RuleFilter ruleFilter) {
         return count(
                 ruleFilter.getUser(), ruleFilter.getRole(), 
                 ruleFilter.getInstance(), ruleFilter.getSourceAddress(),
+                ruleFilter.getDate(),
                 ruleFilter.getService(), ruleFilter.getRequest(), ruleFilter.getSubfield(),
                 ruleFilter.getWorkspace(), ruleFilter.getLayer());
     }
 
 
-    public long count(RuleFilter.TextFilter userFilter, RuleFilter.TextFilter roleFilter, 
-                RuleFilter.IdNameFilter instanceFilter, RuleFilter.TextFilter ipaddressFilter,
-                RuleFilter.TextFilter serviceFilter, RuleFilter.TextFilter requestFilter, RuleFilter.TextFilter subfieldFilter,
-                RuleFilter.TextFilter workspaceFilter, RuleFilter.TextFilter layerFilter) {
+    public long count(TextFilter user, TextFilter role, 
+                IdNameFilter instance, TextFilter ipaddress,
+                TextFilter date,
+                TextFilter service, TextFilter request, TextFilter subfield,
+                TextFilter workspace, TextFilter layer) {
 
         return ruleService.count(
-                getFilterName(userFilter), getFilterDefault(userFilter),
-                getFilterName(roleFilter), getFilterDefault(roleFilter),
-                getFilterId(instanceFilter), getFilterName(instanceFilter), getFilterDefault(instanceFilter),
-                getFilterName(ipaddressFilter), getFilterDefault(ipaddressFilter),
-                getFilterName(serviceFilter), getFilterDefault(serviceFilter),
-                getFilterName(requestFilter), getFilterDefault(requestFilter),
-                getFilterName(subfieldFilter), getFilterDefault(subfieldFilter),
-                getFilterName(workspaceFilter), getFilterDefault(workspaceFilter),
-                getFilterName(layerFilter), getFilterDefault(layerFilter));
+                getFilterText(user), getFilterDefault(user),
+                getFilterText(role), getFilterDefault(role),
+                getFilterId(instance), getFilterName(instance), getFilterDefault(instance),
+                getFilterText(ipaddress), getFilterDefault(ipaddress),
+                getFilterText(date), getFilterDefault(date),
+                getFilterText(service), getFilterDefault(service),
+                getFilterText(request), getFilterDefault(request),
+                getFilterText(subfield), getFilterDefault(subfield),
+                getFilterText(workspace), getFilterDefault(workspace),
+                getFilterText(layer), getFilterDefault(layer));
     }
 
-    private static Long getFilterId(RuleFilter.IdNameFilter filter) {
+    private static Long getFilterId(IdNameFilter filter) {
         return filter==null?
                     null:
                     filter.getType()==RuleFilter.FilterType.IDVALUE?
                         filter.getId():
                         null;
     }
-    private static String getFilterName(RuleFilter.IdNameFilter filter) {
+    private static String getFilterName(IdNameFilter filter) {
         return filter==null?
                     null:
                     filter.getType()==RuleFilter.FilterType.NAMEVALUE?
                         filter.getName():
                         null;
     }
-    private static Boolean getFilterDefault(RuleFilter.IdNameFilter filter) {
+    private static Boolean getFilterDefault(IdNameFilter filter) {
         return filter==null?
                     null:
                     (filter.isIncludeDefault() || filter .getType()==RuleFilter.FilterType.DEFAULT);
     }
 
-    private static String getFilterName(RuleFilter.TextFilter filter) {
+    private static String getFilterText(TextFilter filter) {
         return filter==null?
                     null:
                     filter.getType()==RuleFilter.FilterType.NAMEVALUE?
@@ -84,35 +89,38 @@ public class RuleServiceHelper {
     }
 
     public RESTOutputRuleList getAll() {
-        return get(null, null, false, null, null, null, null, null, null, null, null, null);
+        return get(null, null, false, null, null, null, null, null, null, null, null, null, null);
     }
 
     public RESTOutputRuleList get(Integer page, Integer entries, boolean full, RuleFilter ruleFilter) {
         return get(
                 page, entries, full,
-                ruleFilter.getUser(), ruleFilter.getRole(), 
-                ruleFilter.getInstance(), ruleFilter.getSourceAddress(),                
+                ruleFilter.getUser(), ruleFilter.getRole(),
+                ruleFilter.getInstance(), ruleFilter.getSourceAddress(),
+                ruleFilter.getDate(),
                 ruleFilter.getService(), ruleFilter.getRequest(), ruleFilter.getSubfield(),
                 ruleFilter.getWorkspace(), ruleFilter.getLayer());
     }
 
     public RESTOutputRuleList get(
                 Integer page, Integer entries, boolean full,
-                RuleFilter.TextFilter userFilter, RuleFilter.TextFilter ruleFilter, 
-                RuleFilter.IdNameFilter instanceFilter, RuleFilter.TextFilter ipaddressFilter,
-                RuleFilter.TextFilter serviceFilter, RuleFilter.TextFilter requestFilter, RuleFilter.TextFilter subfieldFilter,
-                RuleFilter.TextFilter workspaceFilter, RuleFilter.TextFilter layerFilter) {
+                TextFilter user, TextFilter role, 
+                IdNameFilter instance, TextFilter ipaddress,
+                TextFilter date,
+                TextFilter service, TextFilter request, TextFilter subfield,
+                TextFilter workspace, TextFilter layer) {
 
         return ruleService.get(page,entries,full,
-                getFilterName(userFilter),    getFilterDefault(userFilter),
-                getFilterName(ruleFilter),    getFilterDefault(ruleFilter),
-                getFilterId(instanceFilter),  getFilterName(instanceFilter), getFilterDefault(instanceFilter),
-                getFilterName(serviceFilter), getFilterDefault(serviceFilter),
-                getFilterName(ipaddressFilter), getFilterDefault(ipaddressFilter),
-                getFilterName(requestFilter), getFilterDefault(requestFilter),
-                getFilterName(subfieldFilter), getFilterDefault(subfieldFilter),
-                getFilterName(workspaceFilter), getFilterDefault(workspaceFilter),
-                getFilterName(layerFilter),   getFilterDefault(layerFilter));
+                getFilterText(user),    getFilterDefault(user),
+                getFilterText(role),    getFilterDefault(role),
+                getFilterId(instance),  getFilterName(instance), getFilterDefault(instance),
+                getFilterText(service), getFilterDefault(service),
+                getFilterText(ipaddress), getFilterDefault(ipaddress),
+                getFilterText(date),    getFilterDefault(date),
+                getFilterText(request), getFilterDefault(request),
+                getFilterText(subfield), getFilterDefault(subfield),
+                getFilterText(workspace), getFilterDefault(workspace),
+                getFilterText(layer),   getFilterDefault(layer));
     }
 
 

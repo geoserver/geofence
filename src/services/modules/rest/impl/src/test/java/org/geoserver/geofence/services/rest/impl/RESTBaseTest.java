@@ -81,7 +81,7 @@ public abstract class RESTBaseTest {
         LOGGER.info("============================== TEST " + name.getMethodName());
         LOGGER.info("");
 
-        RESTOutputRuleList rules = restRuleService.get(null, null, false, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        RESTOutputRuleList rules = restRuleService.get(null, null, false, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
         for (RESTOutputRule rule : rules) {
             LOGGER.warn("Removing " + rule);
             restRuleService.delete(rule.getId());

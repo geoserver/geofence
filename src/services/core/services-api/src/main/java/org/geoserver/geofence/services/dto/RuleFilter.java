@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  */
 public class RuleFilter implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = 3809211135629700044L;
+    private static final long serialVersionUID = 3800101135629700044L;
 
     public enum FilterType {
 
@@ -66,6 +66,7 @@ public class RuleFilter implements Serializable, Cloneable {
     private final TextFilter role;
     private final IdNameFilter instance;
     private final TextFilter sourceAddress;
+    private final TextFilter date;
     private final TextFilter service;
     private final TextFilter request;
     private final TextFilter subfield;
@@ -90,6 +91,7 @@ public class RuleFilter implements Serializable, Cloneable {
         role = new TextFilter(ft);
         instance = new IdNameFilter(ft);
         sourceAddress = new TextFilter(ft);
+        date = new TextFilter(ft);
         service = new TextFilter(ft, true);
         request = new TextFilter(ft, true);
         subfield = new TextFilter(ft, true);
@@ -100,37 +102,31 @@ public class RuleFilter implements Serializable, Cloneable {
     public RuleFilter(SpecialFilterType type, boolean includeDefault) {
         FilterType ft = type.getRelatedType();
 
-        user = new TextFilter(ft);
-        user.setIncludeDefault(includeDefault);
-        role = new TextFilter(ft);
-        role.setIncludeDefault(includeDefault);
+        user = new TextFilter(ft).setIncludeDefault(includeDefault);
+        role = new TextFilter(ft).setIncludeDefault(includeDefault);
         instance = new IdNameFilter(ft, includeDefault);
-        sourceAddress = new TextFilter(ft);
-        sourceAddress.setIncludeDefault(includeDefault);
-        service = new TextFilter(ft, true);
-        service.setIncludeDefault(includeDefault);
-        request = new TextFilter(ft, true);
-        request.setIncludeDefault(includeDefault);
-        subfield = new TextFilter(ft, true);
-        subfield.setIncludeDefault(includeDefault);
-        workspace = new TextFilter(ft);
-        workspace.setIncludeDefault(includeDefault);
-        layer = new TextFilter(ft);
-        layer.setIncludeDefault(includeDefault);
+        sourceAddress = new TextFilter(ft).setIncludeDefault(includeDefault);
+        date = new TextFilter(ft).setIncludeDefault(includeDefault);
+        service = new TextFilter(ft, true).setIncludeDefault(includeDefault);
+        request = new TextFilter(ft, true).setIncludeDefault(includeDefault);
+        subfield = new TextFilter(ft, true).setIncludeDefault(includeDefault);
+        workspace = new TextFilter(ft).setIncludeDefault(includeDefault);
+        layer = new TextFilter(ft).setIncludeDefault(includeDefault);
     }
 
-    public RuleFilter(RuleFilter source) {
+    public RuleFilter(RuleFilter other) {
 
         try {
-            user = source.user.clone();
-            role = source.role.clone();
-            instance = source.instance.clone();
-            sourceAddress = source.sourceAddress.clone();
-            service = source.service.clone();
-            request = source.request.clone();
-            subfield = source.subfield.clone();
-            workspace = source.workspace.clone();
-            layer = source.layer.clone();
+            user = other.user.clone();
+            role = other.role.clone();
+            instance = other.instance.clone();
+            sourceAddress = other.sourceAddress.clone();
+            date = other.date.clone();
+            service = other.service.clone();
+            request = other.request.clone();
+            subfield = other.subfield.clone();
+            workspace = other.workspace.clone();
+            layer = other.layer.clone();
         } catch (CloneNotSupportedException ex) {
             // Should not happen
             throw new UnknownError("Clone error - should not happen");
@@ -184,6 +180,16 @@ public class RuleFilter implements Serializable, Cloneable {
 
     public RuleFilter setSourceAddress(SpecialFilterType type) {
         sourceAddress.setType(type);
+        return this;
+    }
+    
+    public RuleFilter setDate(String yyyy_mm_dd) {
+        date.setText(yyyy_mm_dd);
+        return this;
+    }
+
+    public RuleFilter setDate(SpecialFilterType type) {
+        date.setType(type);
         return this;
     }
 
@@ -243,6 +249,10 @@ public class RuleFilter implements Serializable, Cloneable {
 
     public TextFilter getSourceAddress() {
         return sourceAddress;
+    }
+    
+    public TextFilter getDate() {
+        return date;
     }
 
     public TextFilter getLayer() {
@@ -313,6 +323,9 @@ public class RuleFilter implements Serializable, Cloneable {
         if (this.instance != other.instance && (this.instance == null || !this.instance.equals(other.instance))) {
             return false;
         }
+        if (this.date != other.date && (this.date == null || !this.date.equals(other.date))) {
+            return false;
+        }
         if (this.service != other.service && (this.service == null || !this.service.equals(other.service))) {
             return false;
         }
@@ -339,6 +352,7 @@ public class RuleFilter implements Serializable, Cloneable {
         hash = 37 * hash + (this.role != null ? this.role.hashCode() : 0);
         hash = 37 * hash + (this.instance != null ? this.instance.hashCode() : 0);
         hash = 37 * hash + (this.sourceAddress != null ? this.sourceAddress.hashCode() : 0);
+        hash = 37 * hash + (this.date != null ? this.date.hashCode() : 0);
         hash = 37 * hash + (this.service != null ? this.service.hashCode() : 0);
         hash = 37 * hash + (this.request != null ? this.request.hashCode() : 0);
         hash = 37 * hash + (this.subfield != null ? this.subfield.hashCode() : 0);
@@ -356,6 +370,7 @@ public class RuleFilter implements Serializable, Cloneable {
         sb.append(" role:").append(role);
         sb.append(" inst:").append(instance);
         sb.append(" ip:").append(sourceAddress);
+        sb.append(" date:").append(date);
         sb.append(" serv:").append(service);
         sb.append(" req:").append(request);
         if(subfield != null) sb.append(" sub:").append(subfield);

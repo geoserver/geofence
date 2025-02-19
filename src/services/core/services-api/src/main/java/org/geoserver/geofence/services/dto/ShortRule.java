@@ -18,7 +18,7 @@ import java.io.Serializable;
 public class ShortRule implements Serializable
 {
 
-    private static final long serialVersionUID = -9127101015688510864L;
+    private static final long serialVersionUID = 3800101015688510864L;
 
     private Long id;
     private Long priority;
@@ -31,6 +31,8 @@ public class ShortRule implements Serializable
     private String instanceName;
 
     private String addressRange;
+    private String validAfter;
+    private String validBefore;
 
     private String service;
     private String request;
@@ -51,23 +53,21 @@ public class ShortRule implements Serializable
         setUserName(rule.getUsername());
         setRoleName(rule.getRolename());
 
-        if (rule.getInstance() != null)
+        if (rule.getInstance() != null) 
         {
             setInstanceId(rule.getInstance().getId());
             setInstanceName(rule.getInstance().getName());
         }
 
         setService(rule.getService());
-        if(rule.getAddressRange() != null) 
-        {
-            setAddressRange(rule.getAddressRange().toString());
-        }
+        setAddressRange(rule.getAddressRangeString());
+        setValidAfter(rule.getValidAfterString());
+        setValidBefore(rule.getValidBeforeString());        
         setRequest(rule.getRequest());
         setSubfield(rule.getSubfield());
         setWorkspace(rule.getWorkspace());
         setLayer(rule.getLayer());
-        setAccess(rule.getAccess());
-        
+        setAccess(rule.getAccess());        
     }
 
     public GrantType getAccess()
@@ -186,6 +186,22 @@ public class ShortRule implements Serializable
         this.userName = userName;
     }
 
+    public String getValidAfter() {
+        return validAfter;
+    }
+
+    public void setValidAfter(String validAfter) {
+        this.validAfter = validAfter;
+    }
+
+    public String getValidBefore() {
+        return validBefore;
+    }
+
+    public void setValidBefore(String validBefore) {
+        this.validBefore = validBefore;
+    }
+    
     public String getWorkspace()
     {
         return workspace;
@@ -203,58 +219,28 @@ public class ShortRule implements Serializable
                 .append("[id:").append(id)
                 .append(" pri:").append(priority);
 
-        if (userName != null)
-        {
-            sb.append(" user:").append(userName);
-        }
-
-        if (roleName != null)
-        {
-            sb.append(" role:").append(roleName);
-        }
-
-        if (instanceId != null)
-        {
-            sb.append(" iId:").append(instanceId);
-        }
-        if (instanceName != null)
-        {
-            sb.append(" iName:").append(instanceName);
-        }
-
-        if (addressRange != null)
-        {
-            sb.append(" ip:").append(addressRange);
-        }
-
-        if (service != null)
-        {
-            sb.append(" srv:").append(service);
-        }
-        if (request != null)
-        {
-            sb.append(" req:").append(request);
-        }
-        if (subfield != null)
-        {
-            sb.append(" sub:").append(subfield);
-        }
-
-        if (workspace != null)
-        {
-            sb.append(" ws:").append(workspace);
-        }
-        if (layer != null)
-        {
-            sb.append(" l:").append(layer);
-        }
-
+        _sbappend(sb, "user", userName);
+        _sbappend(sb, "role", roleName);
+        _sbappend(sb, "iId", instanceId);
+        _sbappend(sb, "iName", instanceName);
+        _sbappend(sb, "ip", addressRange);
+        _sbappend(sb, "aft", validAfter);
+        _sbappend(sb, "bfr", validBefore);
+        _sbappend(sb, "srv", service);
+        _sbappend(sb, "req", request);
+        _sbappend(sb, "sub", subfield);
+        _sbappend(sb, "ws", workspace);
+        _sbappend(sb, "l", layer);
+        
         sb.append(" acc:").append(access);
         sb.append(']');
 
         return sb.toString();
-
     }
-
-
+    
+    private static void _sbappend(StringBuilder sb, String label, Object value) {
+        if (value != null) {
+            sb.append(" ").append(label).append(":").append(value);
+        }    
+    }
 }

@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "Rule")
-@XmlType(propOrder={"id", "priority","grant","username","rolename","instance","ipaddress","service","request","subfield","workspace","layer","constraints"})
+@XmlType(propOrder={"id", "priority","grant","username","rolename","instance","ipaddress","validafter","validbefore","service","request","subfield","workspace","layer","constraints"})
 public class RESTOutputRule implements Serializable {
 
     private Long id;
@@ -33,6 +33,9 @@ public class RESTOutputRule implements Serializable {
 
     private String ipaddress;
 
+    private String validafter;
+    private String validbefore;
+    
     private String service;
     private String request;
     
@@ -88,6 +91,22 @@ public class RESTOutputRule implements Serializable {
     public void setIpaddress(String ipaddress)
     {
         this.ipaddress = ipaddress;
+    }
+
+    public String getValidafter() {
+        return validafter;
+    }
+
+    public void setValidafter(String validafter) {
+        this.validafter = validafter;
+    }
+
+    public String getValidbefore() {
+        return validbefore;
+    }
+
+    public void setValidbefore(String validbefore) {
+        this.validbefore = validbefore;
     }
 
     public String getLayer() {
@@ -164,38 +183,29 @@ public class RESTOutputRule implements Serializable {
                 .append("[id:").append(id)
                 .append(" pri:").append(priority);
 
-        if (username != null) {
-            sb.append(" user:").append(username);
-        }
-        if (rolename != null) {
-            sb.append(" role:").append(rolename);
-        }
-        if (instance != null) {
-            sb.append(" instance:").append(instance);
-        }
-        if (ipaddress != null) {
-            sb.append(" ipaddr:").append(ipaddress);
-        }
-        if (service != null) {
-            sb.append(" service:").append(service);
-        }
-        if (request != null) {
-            sb.append(" request:").append(request);
-        }
-        if (subfield != null) {
-            sb.append(" sub:").append(subfield);
-        }
-        if (workspace != null) {
-            sb.append(" workspace:").append(workspace);
-        }
-        if (layer != null) {
-            sb.append(" layer:").append(layer);
-        }
+        _sbappend(sb, "user", username);
+        _sbappend(sb, "role", rolename);
+        _sbappend(sb, "instance", instance);
+        _sbappend(sb, "ipaddr", ipaddress);
+        _sbappend(sb, "after", validafter);
+        _sbappend(sb, "before", validbefore);
+        _sbappend(sb, "service", service);
+        _sbappend(sb, "request", request);
+        _sbappend(sb, "sub", subfield);
+        _sbappend(sb, "workspace", workspace);
+        _sbappend(sb, "layer", layer);
+        
         sb.append(']');
 
         return sb.toString();
     }
 
+    private void _sbappend(StringBuilder sb, String label, Object value) {
+        if (value != null) {
+            sb.append(" ").append(label).append(":").append(value);
+        }    
+    }
+    
     //=========================================================================
     
 }

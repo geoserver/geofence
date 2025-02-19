@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "rule")
-@XmlType(name="Rule", propOrder={"position","grant","username","rolename","instance","ipaddress","service","request","subfield","workspace","layer","constraints"})
+@XmlType(name="Rule", propOrder={"position","grant","username","rolename","instance","ipaddress","validafter","validbefore","service","request","subfield","workspace","layer","constraints"})
 public class RESTInputRule extends AbstractRESTPayload {
 
     private RESTRulePosition position;
@@ -29,6 +29,9 @@ public class RESTInputRule extends AbstractRESTPayload {
     private IdName instance;
 
     private String ipaddress;
+    
+    private String validafter;
+    private String validbefore;
 
     private String service;
     private String request;
@@ -79,6 +82,22 @@ public class RESTInputRule extends AbstractRESTPayload {
         this.ipaddress = ipaddress;
     }
 
+    public String getValidafter() {
+        return validafter;
+    }
+
+    public void setValidafter(String validafter) {
+        this.validafter = validafter;
+    }
+
+    public String getValidbefore() {
+        return validbefore;
+    }
+
+    public void setValidbefore(String validbefore) {
+        this.validbefore = validbefore;
+    }    
+    
     public void setInstance(IdName instance) {
         this.instance = instance;
     }
@@ -160,42 +179,43 @@ public class RESTInputRule extends AbstractRESTPayload {
 
         sb.append('[').append(grant);
         if(position != null && position.getPosition() != null) {
-            if(position.getPosition() == RESTRulePosition.RulePosition.fixedPriority)
-                sb.append('=');
-            else if(position.getPosition() == RESTRulePosition.RulePosition.offsetFromTop)
-                sb.append('+');
-            else if(position.getPosition() == RESTRulePosition.RulePosition.offsetFromBottom)
-                sb.append('-');
+            switch (position.getPosition()) {
+                case fixedPriority:
+                    sb.append('=');
+                    break;
+                case offsetFromTop:
+                    sb.append('+');
+                    break;
+                case offsetFromBottom:
+                    sb.append('-');
+                    break;
+                default:
+                    break;
+            }
             sb.append(position.getValue());
         }
 
-        if (rolename != null) {
-            sb.append(" rolename:").append(rolename);
-        }
-        if (username != null) {
-            sb.append(" username:").append(username);
-        }
-        if (instance != null) {
-            sb.append(" instance:").append(instance);
-        }
-        if (ipaddress != null) {
-            sb.append(" ipaddr:").append(ipaddress);
-        }
-        if (service != null) {
-            sb.append(" service:").append(service);
-        }
-        if (request != null) {
-            sb.append(" request:").append(request);
-        }
-        if (workspace != null) {
-            sb.append(" workspace:").append(workspace);
-        }
-        if (layer != null) {
-            sb.append(" layer:").append(layer);
-        }
+        _sbappend(sb, "role", rolename);
+        _sbappend(sb, "user", username);
+        _sbappend(sb, "instance", instance);
+        _sbappend(sb, "ipaddr", ipaddress);
+        _sbappend(sb, "after", validafter);
+        _sbappend(sb, "before", validbefore);
+        _sbappend(sb, "service", service);
+        _sbappend(sb, "request", request);
+        _sbappend(sb, "sub", subfield);
+        _sbappend(sb, "workspace", workspace);
+        _sbappend(sb, "layer", layer);
+        
         sb.append(']');
 
         return sb.toString();
     }
+    
+    private static void _sbappend(StringBuilder sb, String label, Object value) {
+        if (value != null) {
+            sb.append(" ").append(label).append(":").append(value);
+        }    
+    }    
 
 }

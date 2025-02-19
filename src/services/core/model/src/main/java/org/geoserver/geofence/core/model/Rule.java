@@ -7,7 +7,9 @@ package org.geoserver.geofence.core.model;
 
 import org.geoserver.geofence.core.model.adapter.FKGSInstanceAdapter;
 import org.geoserver.geofence.core.model.enums.GrantType;
+
 import java.io.Serializable;
+import java.sql.Date;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
@@ -39,10 +41,13 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * behavior. <BR>
  * Filtering can be done on <UL>
  * <LI> the requesting user </LI>
- * <LI> the profile associated to the requesting user</LI>
+ * <LI> the group associated to the requesting user</LI>
  * <LI> the instance of the accessed geoserver</LI>
+ * <LI> the ip address of the requesting client</LI>
+ * <LI> the date the request is performed</LI>
  * <LI> the accessed service (e.g.: WMS)</LI>
  * <LI> the requested operation inside the accessed service (e.g.: getMap)</LI>
+ * <LI> a custom field </LI> 
  * <LI> the workspace in geoserver</LI>
  * <LI> the requested layer </LI>
  * </UL>
@@ -65,23 +70,30 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "gf_rule", 
         uniqueConstraints = { // @InternalModel
             @UniqueConstraint(
-                    columnNames = {"username", "rolename", "instance_id", "service", "request", "workspace", "layer"}, // @InternalModel
+                    columnNames = {                                                          // @InternalModel
+                        "username", "rolename", "instance_id",                               // @InternalModel
+                        "ip_low", "ip_high", "ip_size", "valid_after", "valid_before",       // @InternalModel
+                        "service", "request", "subfield", "workspace", "layer"},             // @InternalModel
                     name = "gf_rule_username_rolename_instance_id_service_request_works_key" // @InternalModel
-            )}, // @InternalModel
-        indexes = { // @InternalModel
+            )},                                                                              // @InternalModel
+        indexes = {                                                                          // @InternalModel
             @Index(name = "idx_rule_priority", columnList = "priority"),
             @Index(name = "idx_rule_service", columnList = "service"),
             @Index(name = "idx_rule_request", columnList = "request"),
             @Index(name = "idx_rule_workspace", columnList = "workspace"),
-            @Index(name = "idx_rule_layer", columnList = "layer")           
-        } // @InternalModel
-) // @InternalModel
+            @Index(name = "idx_rule_layer", columnList = "layer"),
+            @Index(name = "idx_rule_after", columnList = "valid_after"),
+            @Index(name = "idx_rule_before", columnList = "valid_before")
+        }   // @InternalModel
+)           // @InternalModel
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Rule")
 @XmlRootElement(name = "Rule")
-@XmlType(propOrder={"id","priority","username","rolename","instance","addressRange","service","request","workspace","layer","access","layerDetails","ruleLimits"})
+@XmlType(propOrder={"id","priority","username","rolename","instance",
+    "addressRange", "validAfter", "validBefore",
+    "service","request","workspace","layer","access","layerDetails","ruleLimits"})
 public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeProvider {
 
-    private static final long serialVersionUID = -3803809225384707164L;
+    private static final long serialVersionUID = -3800109225384707164L;
 
     /** The id. */
     @Id
@@ -112,7 +124,13 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
         @AttributeOverride(name="high", column=@Column(name="ip_high")),
         @AttributeOverride(name="size", column=@Column(name="ip_size"))   })
     private IPAddressRange addressRange;
+    
+    @Column(name = "valid_after")
+    private Date validAfter;
 
+    @Column(name = "valid_before")
+    private Date validBefore;
+    
     @Column
     private String request;
 
@@ -124,7 +142,7 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
 
     @Column
     private String layer;
-
+    
     @Enumerated(EnumType.STRING)
     @Column(name = "grant_type", nullable = false)
     private GrantType access;
@@ -140,13 +158,21 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
     public Rule() {
     }
 
-    public Rule(long priority, String username, String rolename, GSInstance instance, IPAddressRange addressRange,
-                               String service, String request, String subfield, String workspace, String layer, GrantType access) {
+    public Rule(long priority, GrantType access) {
+        this.priority = priority;
+        this.access = access;
+    }    
+    
+    public Rule(long priority, String username, String rolename, GSInstance instance, 
+                IPAddressRange addressRange, Date validAfter, Date validBefore,
+                String service, String request, String subfield, String workspace, String layer, GrantType access) {
         this.priority = priority;
         this.username = username;
         this.rolename = rolename;
         this.instance = instance;
         this.addressRange = addressRange;
+        this.validAfter = validAfter;
+        this.validBefore = validBefore;
         this.service = service;
         this.request = request;
         this.subfield = subfield;
@@ -155,6 +181,14 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
         this.access = access;
     }
 
+    public Rule(long priority, String username, String rolename, GSInstance instance, IPAddressRange addressRange,
+                               String service, String request, String subfield, String workspace, String layer, GrantType access) {
+        this(priority, username, rolename, instance, 
+                addressRange, null, null, 
+                service, request, subfield, workspace, layer, access);        
+    }
+    
+    
     public Long getId() {
         return id;
     }
@@ -167,8 +201,44 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
         return addressRange;
     }
 
-    public void setAddressRange(IPAddressRange addressRange) {
+    public String getAddressRangeString() {
+        return addressRange == null ? null: addressRange.getCidrSignature();
+    }
+        
+    public Rule setAddressRange(IPAddressRange addressRange) {
         this.addressRange = addressRange;
+        return this;
+    }
+
+    public Rule setAddressRange(String cidr) {
+        this.addressRange = new IPAddressRange(cidr);
+        return this;
+    }
+    
+    public Date getValidAfter() {
+        return validAfter;
+    }
+    
+    public String getValidAfterString() {
+        return validAfter == null ? null : validAfter.toString();
+    }
+
+    public Rule setValidAfter(Date validAfter) {
+        this.validAfter = validAfter;
+        return this;
+    }
+
+    public Date getValidBefore() {
+        return validBefore;
+    }
+    
+    public String getValidBeforeString() {
+        return validBefore == null ? null : validBefore.toString();
+    }
+
+    public Rule setValidBefore(Date validBefore) {
+        this.validBefore = validBefore;
+        return this;
     }
 
     public long getPriority() {
@@ -183,16 +253,18 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
         return username;
     }
 
-    public void setUsername(String username) {
+    public Rule setUsername(String username) {
         this.username = username;
+        return this;
     }
 
     public String getRolename() {
         return rolename;
     }
 
-    public void setRolename(String rolename) {
+    public Rule setRolename(String rolename) {
         this.rolename = rolename;
+        return this;
     }
 
 
@@ -201,56 +273,63 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
         return instance;
     }
 
-    public void setInstance(GSInstance instance) {
+    public Rule setInstance(GSInstance instance) {
         this.instance = instance;
+        return this;
     }
 
     public String getLayer() {
         return layer;
     }
 
-    public void setLayer(String layer) {
+    public Rule setLayer(String layer) {
         this.layer = layer;
+        return this;
     }
 
     public String getService() {
         return service;
     }
 
-    public void setService(String service) {
+    public Rule setService(String service) {
         this.service = service;
+        return this;
     }
 
     public String getRequest() {
         return request;
     }
 
-    public void setRequest(String request) {
+    public Rule setRequest(String request) {
         this.request = request;
+        return this;
     }
 
     public String getSubfield() {
        return subfield;
     }
 
-    public void setSubfield(String subfield) {
+    public Rule setSubfield(String subfield) {
        this.subfield = subfield;
+        return this;       
     }        
 
     public String getWorkspace() {
         return workspace;
     }
 
-    public void setWorkspace(String workspace) {
+    public Rule setWorkspace(String workspace) {
         this.workspace = workspace;
+        return this;
     }
 
     public GrantType getAccess() {
         return access;
     }
 
-    public void setAccess(GrantType access) {
+    public Rule setAccess(GrantType access) {
         this.access = access;
+        return this;
     }
 
     public RuleLimits getRuleLimits() {
@@ -284,39 +363,21 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
                 .append("[id:").append(id)
                 .append(" pri:").append(priority);
 
-        if (username != null) {
-            sb.append(" user:").append(prepare(username));
-        }
-
-        if (rolename != null) {
-            sb.append(" role:").append(prepare(rolename));
-        }
+        _sbappend(sb, "user", username);
+        _sbappend(sb, "role", rolename);
 
         if (instance != null) {
             sb.append(" iId:").append(instance.getId());
             sb.append(" iName:").append(prepare(instance.getName()));
         }
-
-        if (addressRange != null) {
-            sb.append(" addr:").append(addressRange.getCidrSignature());
-        }
-
-        if (service != null) {
-            sb.append(" srv:").append(service);
-        }
-        if (request != null) {
-            sb.append(" req:").append(request);
-        }
-        if (subfield != null) {
-            sb.append(" sub:").append(subfield);
-        }
-
-        if (workspace != null) {
-            sb.append(" ws:").append(workspace);
-        }
-        if (layer != null) {
-            sb.append(" l:").append(layer);
-        }
+        _sbappend(sb, "addr", addressRange);
+        _sbappend(sb, "aft", validAfter);
+        _sbappend(sb, "bfr", validBefore);
+        _sbappend(sb, "srv", service);
+        _sbappend(sb, "req", request);
+        _sbappend(sb, "sub", subfield);
+        _sbappend(sb, "ws", workspace);
+        _sbappend(sb, "l", layer);
 
         sb.append(" acc:").append(access);
         sb.append(']');
@@ -325,6 +386,11 @@ public class Rule implements Identifiable, Serializable, Prioritizable, IPRangeP
 
     }
     
+    private static void _sbappend(StringBuilder sb, String label, Object value) {
+        if (value != null) {
+            sb.append(" ").append(label).append(":").append(value);
+        }    
+    }    
     private static String prepare(String s) {
         if(s==null)
             return "(null)";

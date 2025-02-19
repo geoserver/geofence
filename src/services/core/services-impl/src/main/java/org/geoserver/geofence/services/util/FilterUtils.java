@@ -5,9 +5,11 @@
 
 package org.geoserver.geofence.services.util;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.persistence.criteria.Predicate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -165,6 +167,7 @@ public class FilterUtils {
     private static <OUT,ROOT, T extends BaseSearch<OUT,ROOT>> T addCriteria(T search, RuleFilter filter) {
         addStringCriteria(search, "username", filter.getUser());
         addStringCriteria(search, "rolename", filter.getRole());
+        addDateCriteria(search, filter.getDate());
         addCriteria(search, search.addJoin("instance"), filter.getInstance());
         addStringCriteria(search, "service", filter.getService()); // see class' javadoc
         addStringCriteria(search, "request", filter.getRequest()); // see class' javadoc
@@ -229,6 +232,45 @@ public class FilterUtils {
                             search.isEqual(fieldName, filter.getText()));
                 } else {
                     search.addFilterEqual(fieldName, filter.getText());
+                }
+                break;
+
+            case IDVALUE:
+            default:
+                throw new AssertionError();
+        }
+    }
+
+    public static void addDateCriteria(BaseSearch search, RuleFilter.TextFilter filter) {
+        final String AFTER = "validAfter";
+        final String BEFORE = "validBefore";
+        
+        switch (filter.getType()) {
+            case ANY:
+                // no filtering
+                break; 
+
+            case DEFAULT:
+                search.addFilterNull(AFTER);
+                search.addFilterNull(BEFORE);
+                break;
+
+            case NAMEVALUE:
+                Date date = Date.valueOf(filter.getText()); // throws Illegal
+
+                // if there is a date range, make sure it's matching
+                search.addFilterOr(
+                        search.isNull(AFTER),
+                        search.isAfter(AFTER, date));
+                search.addFilterOr(
+                        search.isNull(BEFORE),
+                        search.isBefore(BEFORE, date));
+                                
+                if( !filter.isIncludeDefault()) {
+                    // we need at least one field not null to tell whether the date filtering is active
+                    search.addFilterOr(
+                            search.isNotNull(AFTER),
+                            search.isNotNull(BEFORE));
                 }
                 break;
 

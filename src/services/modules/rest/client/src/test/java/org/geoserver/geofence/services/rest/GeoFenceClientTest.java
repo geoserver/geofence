@@ -192,8 +192,8 @@ public class GeoFenceClientTest {
             LOGGER.debug("found rule " + rule);
         }
 
-        assertEquals(2, rsh.get(null, null, true, null, new RuleFilter.TextFilter("group01", false, false), null, null, null, null, null, null, null).getList().size());
-        assertEquals(3, rsh.get(null, null, true, null, new RuleFilter.TextFilter("group01", false, true), null, null, null, null, null, null, null).getList().size());
+        assertEquals(2, rsh.get(null, null, true, null, new RuleFilter.TextFilter("group01", false, false), null, null, null, null, null, null, null, null).getList().size());
+        assertEquals(3, rsh.get(null, null, true, null, new RuleFilter.TextFilter("group01", false, true), null, null, null, null, null, null, null, null).getList().size());
     }
 
     @Test
@@ -276,7 +276,7 @@ public class GeoFenceClientTest {
         String id = response.getEntityTag().getValue();
         assertNotNull(id);
 
-        RESTOutputRule outRule = client.getRuleService().get(Long.parseLong(id));
+        RESTOutputRule outRule = client.getRuleService().get(Long.valueOf(id));
         assertNotNull(outRule);
 
         assertEquals(roleName, outRule.getRolename());
