@@ -444,8 +444,8 @@ public class RuleDAOTest extends BaseDAOTest {
     public void testDupRuleTest() throws Exception {
 
         {
-            Rule rule1 = new Rule(10, null, null, null, null, "s", null, null, null, null, GrantType.ALLOW);
-            Rule rule2 = new Rule(10, null, null, null, null, "s", null, null, null, null, GrantType.ALLOW);
+            Rule rule1 = new Rule(10, GrantType.ALLOW).setService("s");
+            Rule rule2 = new Rule(10, GrantType.ALLOW).setService("s");
 
             ruleDAO.persist(rule1);
 

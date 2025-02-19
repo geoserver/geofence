@@ -2,6 +2,7 @@
  */
 package org.geoserver.geofence.core.dao.search;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -147,6 +148,10 @@ public abstract class BaseSearch<OUTCLASS, ROOTCLASS> {
         return cb.isNull(root.get(field));
     }
 
+    public Predicate isNotNull(String field) {
+        return cb.isNotNull(root.get(field));
+    }
+
     public Predicate isEqual(String field, Object val) {
         return cb.equal(root.get(field), val);
     }
@@ -158,11 +163,37 @@ public abstract class BaseSearch<OUTCLASS, ROOTCLASS> {
     public Predicate isGE(String field, Number val) {
         return cb.ge(root.get(field), val);
     }
-
+    
+    public void addFilterIsAfter(String field, Date value) {
+        whereClauses.add(isAfter(field, value));
+    }
+    
+    public void addFilterIsBefore(String field, Date value) {
+        whereClauses.add(isBefore(field, value));
+    }
+    
+    public Predicate isAfter(String field, Date value) {
+        return cb.lessThan(root.get(field), value);
+    }
+    
+    public Predicate isBefore(String field, Date value) {
+         return cb.greaterThan(root.get(field), value);
+    }
+    
+    public Predicate and(Predicate f1, Predicate f2) {
+         return cb.and(f1, f2);
+    }
+    
+    public Predicate or(Predicate f1, Predicate f2) {
+         return cb.or(f1, f2);
+    }
     
     public void addFilterOr(Predicate f1, Predicate f2) {
-        whereClauses.add(cb.or(f1, f2));    
-//        c.add(Restrictions.or(f1.getCriterion(),f2.getCriterion()));
+        whereClauses.add(cb.or(f1, f2));
+    }
+    
+    public void addFilterAnd(Predicate f1, Predicate f2) {
+        whereClauses.add(cb.and(f1, f2));
     }
     
 //    public void addFilter(Predicate f) {

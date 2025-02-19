@@ -5,6 +5,7 @@
 
 package org.geoserver.geofence.services.rest.impl;
 
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -333,7 +334,7 @@ public class RESTRuleServiceImpl
             String [] areaAr=areaWKT.split(";");
             String srid=areaAr[0].split("=")[1];
             result=reader.read(areaAr[1]);
-            result.setSRID(Integer.valueOf(srid));
+            result.setSRID(Integer.parseInt(srid));
         }
         return result;
     }
@@ -371,6 +372,7 @@ public class RESTRuleServiceImpl
             String roleName, Boolean roleDefault,
             Long instanceId, String instanceName, Boolean instanceDefault,
             String ipaddress,   Boolean ipaddressDefault,
+            String date,        Boolean dateDefault,
             String serviceName, Boolean serviceDefault,
             String requestName, Boolean requestDefault,
             String subfieldName, Boolean subfieldDefault,
@@ -383,6 +385,7 @@ public class RESTRuleServiceImpl
                 roleName, roleDefault,
                 instanceId, instanceName, instanceDefault,
                 ipaddress,   ipaddressDefault,
+                date,        dateDefault,
                 serviceName, serviceDefault,
                 requestName, requestDefault,
                 subfieldName, subfieldDefault,                
@@ -403,6 +406,7 @@ public class RESTRuleServiceImpl
             String roleName, Boolean groupDefault,
             Long instanceId, String instanceName, Boolean instanceDefault,
             String ipaddress,   Boolean ipaddressDefault,
+            String date,        Boolean dateDefault,
             String serviceName, Boolean serviceDefault,
             String requestName, Boolean requestDefault,
             String subfieldName, Boolean subfieldDefault,            
@@ -415,6 +419,7 @@ public class RESTRuleServiceImpl
         setFilter(filter.getRole(), roleName, groupDefault);
         setFilter(filter.getInstance(), instanceId, instanceName, instanceDefault);
         setFilter(filter.getSourceAddress(), ipaddress, ipaddressDefault);
+        setFilter(filter.getDate(), date, dateDefault);
         setFilter(filter.getService(), serviceName, serviceDefault);
         setFilter(filter.getRequest(), requestName, requestDefault);
         setFilter(filter.getSubfield(), subfieldName, subfieldDefault);
@@ -470,6 +475,7 @@ public class RESTRuleServiceImpl
             String roleName, Boolean groupDefault,
             Long instanceId, String instanceName, Boolean instanceDefault,
             String ipaddress,   Boolean ipaddressDefault,
+            String date,        Boolean dateDefault,
             String serviceName, Boolean serviceDefault,
             String requestName, Boolean requestDefault,
             String subfieldName, Boolean subfieldDefault,
@@ -481,7 +487,8 @@ public class RESTRuleServiceImpl
                 userName, userDefault,
                 roleName, groupDefault,
                 instanceId, instanceName, instanceDefault,
-                ipaddress,   ipaddressDefault,                
+                ipaddress,   ipaddressDefault,
+                date,        dateDefault,
                 serviceName, serviceDefault,
                 requestName, requestDefault,
                 subfieldName, subfieldDefault,
@@ -527,7 +534,7 @@ public class RESTRuleServiceImpl
     */
     private List<Rule> findRules(String rulesIds) {
         //Before Java8
-        List<Rule> ruleList = new ArrayList<Rule>();
+        List<Rule> ruleList = new ArrayList<>();
         for (String id : Arrays.asList(rulesIds.split(","))) {
             Rule ru = ruleAdminService.get(Long.parseLong(id)) ;
             if(ru != null) {
@@ -560,10 +567,10 @@ public class RESTRuleServiceImpl
             out.setInstance(new IdName(rule.getInstance().getId(), rule.getInstance().getName()));
         }
 
-        if(rule.getAddressRange() != null) {
-            out.setIpaddress(rule.getAddressRange().getCidrSignature());
-        }
-
+        out.setIpaddress(rule.getAddressRangeString());
+        out.setValidafter(rule.getValidAfterString());
+        out.setValidbefore(rule.getValidBeforeString());
+        
         out.setService(rule.getService());
         out.setRequest(rule.getRequest());
         out.setSubfield(rule.getSubfield());
@@ -616,6 +623,13 @@ public class RESTRuleServiceImpl
 
         if(StringUtils.isNotBlank(in.getIpaddress())) {
             rule.setAddressRange(new IPAddressRange(in.getIpaddress()));
+        }
+        
+        if(StringUtils.isNotBlank(in.getValidafter())) {
+            rule.setValidAfter(Date.valueOf(in.getValidafter()));
+        }
+        if(StringUtils.isNotBlank(in.getValidbefore())) {
+            rule.setValidBefore(Date.valueOf(in.getValidbefore()));
         }
 
         rule.setService(in.getService());
