@@ -1,7 +1,7 @@
 GeoFence
 ==================================================
 
-**GeoFence** is an advanced authentication/authorization engine for [GeoServer](http://www.geoserver.org) 
+**GeoFence** is an advanced authentication/authorization engine for [GeoServer](https://www.geoserver.org) implementing the interface described in [GSIP 57](https://github.com/geoserver/geoserver/wiki/GSIP-57).
 
 Features
 --------------------------------------------------
@@ -17,19 +17,18 @@ Architecture
 
 **GeoFence** can be run either as a standalone Java web application, or embedded into GeoServer.
 
-The **GeoFence** *standalone application* run as a java service, and can be queried for auth by one or more GeoServer instances.   
+The GeoFence **standalone application** runs as a java webapp, and can be queried for auth by one or more GeoServer instances.   
 It provides a complete [REST API](https://github.com/geoserver/geofence/wiki/REST-API) for the programmatic administration of the rules and their ancillary data; a GUI is no longer provided [since version 3.7](https://github.com/geoserver/geofence/wiki/GS-GF-Compatibility-matrix).  
-In this configuration GeoServer needs a module (the [GeoFence client plugin](https://github.com/geoserver/geoserver/tree/main/src/extension/geofence/geofence)) that will send authorization queries to GeoFence using a configurable protocol (by default it uses Spring remoting over HTTP).
+In this configuration GeoServer needs the [GeoFence client plugin](https://github.com/geoserver/geoserver/tree/main/src/extension/geofence/geofence) that will send authorization queries to GeoFence using a configurable protocol (by default it uses Spring remoting over HTTP).
 
-The *embedded* configuration will make the GeoFence engine run within GeoServer itself. The administration GUI will be seamlessly embedded into GeoServer. The embedded GeoFence should be installed as a [GeoServer plugin](https://github.com/geoserver/geoserver/tree/main/src/extension/geofence/geofence-server) as well.
+The **embedded configuration** will make the GeoFence engine run within GeoServer itself. The administration GUI will be seamlessly embedded into GeoServer. The embedded GeoFence should be installed as a [GeoServer plugin](https://github.com/geoserver/geoserver/tree/main/src/extension/geofence/geofence-server) as well.
 
-**GeoFence** provides the authorization services using the interface described in [GSIP 57](http://geoserver.org/display/GEOS/GSIP+57+-+Improving+GeoServer+authorization+framework).
-
+More info in the related [wiki page](https://github.com/geoserver/geofence/wiki/GeoFence-setup-architectures).
 
 License
 ==================================================
 
-**GeoFence** core modules and GUI, as well as the **GeoFence** plugins in GeoServer, are free and Open Source software, released under the GPL license (which is [GPL v2.0](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)), as it implements a GeoServer Java API.
+**GeoFence** core modules and the **GeoFence** plugins in GeoServer are free and Open Source software, released under the GPL license (which is [GPL v2.0](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)), as it implements a GeoServer Java API.
 
 
 Getting GeoFence
@@ -37,14 +36,11 @@ Getting GeoFence
 
 Since there are two different ways to run **GeoFence**, you'll need different set of files according to your configuration.
 
-<dl>
-  <dt>Standalone</dt>
-  <dd>You'll need the <em>GeoFence</em> .war file, and the <code>geofence</code> plugin to be deployed into GeoServer.</dd>
+- *Standalone*:  
+  You'll need the <code>geofence.war</code> file, and the <code>geofence</code> plugin to be deployed into GeoServer.
 
-  <dt>Embedded</dt>
-  <dd>You'll only need to deploy the <code>geofence-server</code> plugin into GeoServer.</dd>
-</dl>
-
+- *Embedded*:  
+  You'll only need to deploy the <code>geofence-server</code> plugin into GeoServer.
 
 Since GeoFence and GeoServer run side to side, every change of the API in either side requires a change on the other one.
 
