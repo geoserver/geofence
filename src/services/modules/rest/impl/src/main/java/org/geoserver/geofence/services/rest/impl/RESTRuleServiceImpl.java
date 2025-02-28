@@ -297,7 +297,7 @@ public class RESTRuleServiceImpl
             if(isDetailUpdated) {
                 if(LOGGER.isDebugEnabled())
                     LOGGER.debug("Updating details " + detailsOld);
-                    ruleAdminService.setDetails(id, detailsOld);
+                ruleAdminService.setDetails(id, detailsOld);
             } else {
                 if(LOGGER.isDebugEnabled())
                     LOGGER.debug("Details not changed for rule " + rule);
@@ -327,7 +327,7 @@ public class RESTRuleServiceImpl
     private Geometry toGeometryAllowedArea(String areaWKT) throws ParseException {
         WKTReader reader = new WKTReader();
         Geometry result;
-        if(areaWKT.indexOf("SRID=")==-1){
+        if(!areaWKT.contains("SRID=")){
             result=reader.read(areaWKT);
             result.setSRID(4326);
         } else {
@@ -371,7 +371,7 @@ public class RESTRuleServiceImpl
             String userName, Boolean userDefault,
             String roleName, Boolean roleDefault,
             Long instanceId, String instanceName, Boolean instanceDefault,
-            String ipaddress,   Boolean ipaddressDefault,
+            String ipAddress,   Boolean ipAddressDefault,
             String date,        Boolean dateDefault,
             String serviceName, Boolean serviceDefault,
             String requestName, Boolean requestDefault,
@@ -384,7 +384,7 @@ public class RESTRuleServiceImpl
                 userName, userDefault,
                 roleName, roleDefault,
                 instanceId, instanceName, instanceDefault,
-                ipaddress,   ipaddressDefault,
+                ipAddress,   ipAddressDefault,
                 date,        dateDefault,
                 serviceName, serviceDefault,
                 requestName, requestDefault,
@@ -405,7 +405,7 @@ public class RESTRuleServiceImpl
             String userName, Boolean userDefault,
             String roleName, Boolean groupDefault,
             Long instanceId, String instanceName, Boolean instanceDefault,
-            String ipaddress,   Boolean ipaddressDefault,
+            String ipAddress,   Boolean ipAddressDefault,
             String date,        Boolean dateDefault,
             String serviceName, Boolean serviceDefault,
             String requestName, Boolean requestDefault,
@@ -418,7 +418,7 @@ public class RESTRuleServiceImpl
         setFilter(filter.getUser(), userName, userDefault);
         setFilter(filter.getRole(), roleName, groupDefault);
         setFilter(filter.getInstance(), instanceId, instanceName, instanceDefault);
-        setFilter(filter.getSourceAddress(), ipaddress, ipaddressDefault);
+        setFilter(filter.getSourceAddress(), ipAddress, ipAddressDefault);
         setFilter(filter.getDate(), date, dateDefault);
         setFilter(filter.getService(), serviceName, serviceDefault);
         setFilter(filter.getRequest(), requestName, requestDefault);
@@ -474,7 +474,7 @@ public class RESTRuleServiceImpl
             String userName, Boolean userDefault,
             String roleName, Boolean groupDefault,
             Long instanceId, String instanceName, Boolean instanceDefault,
-            String ipaddress,   Boolean ipaddressDefault,
+            String ipAddress,   Boolean ipAddressDefault,
             String date,        Boolean dateDefault,
             String serviceName, Boolean serviceDefault,
             String requestName, Boolean requestDefault,
@@ -487,7 +487,7 @@ public class RESTRuleServiceImpl
                 userName, userDefault,
                 roleName, groupDefault,
                 instanceId, instanceName, instanceDefault,
-                ipaddress,   ipaddressDefault,
+                ipAddress,   ipAddressDefault,
                 date,        dateDefault,
                 serviceName, serviceDefault,
                 requestName, requestDefault,

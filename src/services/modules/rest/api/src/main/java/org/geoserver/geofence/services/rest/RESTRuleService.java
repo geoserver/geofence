@@ -74,8 +74,8 @@ public interface RESTRuleService
         @QueryParam("instanceName") String  instanceName,
         @QueryParam("instanceAny")  Boolean instanceAny,
 
-        @QueryParam("ipaddress")     String  ipaddress,
-        @QueryParam("ipaddressAny")  Boolean ipaddressAny,
+        @QueryParam("ipAddress")     String  ipAddress,
+        @QueryParam("ipAddressAny")  Boolean ipAddressAny,
         
         @QueryParam("date")     String  date,
         @QueryParam("dateAny")  Boolean dateAny,
@@ -109,8 +109,8 @@ public interface RESTRuleService
         @QueryParam("instanceName") String  instanceName,
         @QueryParam("instanceAny")  Boolean instanceAny,
 
-        @QueryParam("ipaddress")     String  ipaddress,
-        @QueryParam("ipaddressAny")  Boolean ipaddressAny,
+        @QueryParam("ipAddress")     String  ipAddress,
+        @QueryParam("ipAddressAny")  Boolean ipAddressAny,
         
         @QueryParam("date")     String  date,
         @QueryParam("dateAny")  Boolean dateAny,        
