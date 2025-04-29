@@ -34,6 +34,8 @@ import org.apache.logging.log4j.Logger;
  * @author ETj (etj at geo-solutions.it)
  * 
  * @see http://chrisdail.com/2008/03/31/apache-cxf-with-http-basic-authentication/
+ * link might return 404 archived version can be accessed below
+ * https://web.archive.org/web/20200811010137/http://chrisdail.com/2008/03/31/apache-cxf-with-http-basic-authentication/
  */
 public class BasicAuthInterceptor extends AbstractInDatabindingInterceptor {
 
