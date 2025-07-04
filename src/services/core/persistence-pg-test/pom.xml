@@ -21,12 +21,15 @@
     <name>GeoFence - Core - Persistence PostGIS test</name>
 
     <dependencies>
+        <!-- =========================================================== -->
+        <!--     GeoFence Core Modules                                    -->
+        <!-- =========================================================== -->
 
         <dependency>
             <groupId>org.geoserver.geofence</groupId>
             <artifactId>geofence-model-internal</artifactId>
         </dependency>
-      
+
         <dependency>
             <groupId>org.geoserver.geofence</groupId>
             <artifactId>geofence-persistence</artifactId>
@@ -40,21 +43,14 @@
             <type>test-jar</type>
             <version>${project.version}</version>         
         </dependency>
-                
+
+        <!-- =========================================================== -->
+        <!--     JDBC                                                    -->
+        <!-- =========================================================== -->
+
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-spatial</artifactId>
-        </dependency>
-                        
-        <dependency>
-            <groupId>org.postgis</groupId>
+            <groupId>net.postgis</groupId>
             <artifactId>postgis-jdbc</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.postgis</groupId>
-                    <artifactId>postgis-stubs</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -62,9 +58,28 @@
             <artifactId>postgresql</artifactId>
         </dependency>
 
+        <!-- JUnit -->
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.30</version>
+            <scope>test</scope>     
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
             <scope>test</scope>
         </dependency>
 
