@@ -221,6 +221,19 @@
         </dependency>
 
         <!-- =============================================================== -->
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opengeo</groupId>
+            <artifactId>geodb</artifactId>
+            <version>0.9</version>
+        </dependency>
+
+
+        <!-- =============================================================== -->
         <!-- JUnit -->
         <!-- =============================================================== -->
 		<dependency>
