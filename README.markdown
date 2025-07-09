@@ -48,11 +48,14 @@ Here's a compatibility table for the most recent versions of both applications (
 
 | GeoFence       | GeoServer       |   Main changes                        |
 |----------------|-----------------|---------------------------------------|
-| 3.7.x ([main][main_war])         | 2.25            |  |
-| 3.7.1          | 2.24.x          | Fix log4j libs <br/> |
-| 3.7-RC         | 2.24.0          | GeoTools 30: opengis packages renaming <br/> JDK11 compatibility <br/> GUI removed|
-| 3.6.1          | 2.23.x          | Fix log4j libs |
-| [3.6.0][3.6.x] | 2.23.0 - 2.23.3 | DTO changes (#226 - subfield) |
+| 3.8.1          | 2.28.0 <br/> 2.27.2 - 2.27.x          | JDBC deps fixes          |   
+| 3.8.0          | 2.27.0 - 2.27.1                       | Major libs refactoring, hibernate upgrade |   
+| 3.7.2          | 2.26.1 - 2.26.x </br> 2.25.5 - 2.25.x |                 |   
+| 3.7.x          | 2.26.0 <br/> 2.25.0 - 2.25.4          |
+| 3.7.1          | 2.24.1 - 2.24.x                       | Fix log4j libs <br/> |
+| 3.7-RC         | 2.24.0                    | GeoTools 30: opengis packages renaming <br/> JDK11 compatibility <br/> GUI removed|
+| 3.6.1          | 2.23.4 - 2.23.x           | Fix log4j libs |
+| [3.6.0][3.6.x] | 2.23.0 - 2.23.3           | DTO changes (#226 - subfield) |
 | 3.5.1          | 2.22.0 - 2.22.x  ([client][2.22_client]) ([embedded][2.22_embedded]) <br/> 2.21.2 - 2.21.x <br/> 2.20.6 - 2.20.x| #222: Improve filtering by role <br/> #87: Exclude JPA1 dep |
 | 3.5.0          | 2.21.0 - 2.21.1 <br/> 2.20.0 - 2.20.5 <br/>2.19.0 - 2.19.6  | DTO changes (#163 - restricted area, clip) |
 | [3.4.6.1]      | 2.18.x <br/> 2.17.x      | #166: JTS Version update <br/> Minor DTO changes |
