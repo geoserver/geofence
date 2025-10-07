@@ -136,10 +136,13 @@ public abstract class BaseSearch<OUTCLASS, ROOTCLASS> {
     }
 
     public void addFilterILike(String name, String like) {
+        if(!like.contains("%"))
+            like = "%" + like + "%";
+        
         whereClauses.add(        
                cb.like(
                     cb.lower(root.get(name)), 
-                    cb.lower(cb.literal("%" + like + "%")
+                    cb.lower(cb.literal(like)
         )));         
 //        c.add(Restrictions.ilike(name, like));
     }

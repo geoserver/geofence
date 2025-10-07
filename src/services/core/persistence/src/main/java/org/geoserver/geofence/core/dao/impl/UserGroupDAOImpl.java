@@ -9,11 +9,12 @@ import java.util.List;
 
 import org.geoserver.geofence.core.dao.UserGroupDAO;
 import org.geoserver.geofence.core.model.UserGroup;
+import org.geoserver.geofence.core.dao.search.LongSearch;
 import org.geoserver.geofence.core.dao.search.Search;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.geoserver.geofence.core.dao.search.LongSearch;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,7 +87,7 @@ public class UserGroupDAOImpl extends BaseDAO<UserGroup, Long>
 
         search.addSortAsc("name");
 
-        if (nameLike != null) {
+        if (StringUtils.isNotBlank(nameLike)) {
             search.addFilterILike("name", nameLike);
         }
 
@@ -98,7 +99,7 @@ public class UserGroupDAOImpl extends BaseDAO<UserGroup, Long>
     public long countByNameLike(String nameLike) {
         LongSearch<UserGroup> search = createLongSearch();
 
-        if (nameLike != null) {
+        if (StringUtils.isNotBlank(nameLike)) {
             search.addFilterILike("name", nameLike);
         }
 

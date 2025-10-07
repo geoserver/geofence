@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -115,7 +116,7 @@ public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
 
         search.addSortAsc("name");
 
-        if (nameLike != null) {
+        if (StringUtils.isNotBlank(nameLike)) {
             search.addFilterILike("name", nameLike);
         }
 
@@ -127,7 +128,7 @@ public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
     public long countByNameLike(String nameLike) {
         LongSearch<GSUser> search = createLongSearch();
 
-        if (nameLike != null) {
+        if (StringUtils.isNotBlank(nameLike)) {
             search.addFilterILike("name", nameLike);
         }
 

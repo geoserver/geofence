@@ -159,16 +159,18 @@ public class GSUserDAOLdapImpl //
     public void setEnableHierarchicalGroups(boolean enableHierarchicalGroups) {
         this.enableHierarchicalGroups = enableHierarchicalGroups;
     }
-
+                
     @Override
     public List<GSUser> search(String nameLike, Integer page, Integer entries, boolean fetchGroups) throws IllegalArgumentException {
+        // filtering needed -- we'll perform filtering by hand, and contextually
+        // pagination will be evaluated, in order to save memory and time
 
-        if (StringUtils.isBlank(nameLike)) {
+        FilterType filterType = getFilterType(nameLike);
+
+        if (filterType==FilterType.NONE) {
             return paginate(findAll(), entries, page);
         }
-
-        // filtering needed -- we'll perform filtering by hand, and contectually
-        // pagination will be evalueated, in order to save memory and time
+        String nameFilter = StringUtils.strip(nameLike, "%").toLowerCase();
         
         int firstIndex = getFirstPaginationIndex(entries, page);
         int lastIndex = getLastPaginationIndex(entries, page);
@@ -176,7 +178,7 @@ public class GSUserDAOLdapImpl //
         List<GSUser> ret = new LinkedList<>();
         int index = 0;        
         for (GSUser user : findAll()) { 
-            if(user.getName().contains(nameLike)) {
+            if(filterMatches(user.getName().toLowerCase(), filterType, nameFilter)) {
                 if(++index > firstIndex ) {
                     ret.add(user); 
                 }
@@ -189,17 +191,20 @@ public class GSUserDAOLdapImpl //
         
         return ret;
     }
-    
+        
     @Override
     public long countByNameLike(String nameLike) {
-        
-        if (StringUtils.isBlank(nameLike)) {
+        FilterType filterType = getFilterType(nameLike);
+
+        if (filterType==FilterType.NONE) {
             return findAll().size();
         }
 
+        String nameFilter = StringUtils.strip(nameLike, "%").toLowerCase();
+        
         int cnt = 0;        
         for (GSUser user : findAll()) { 
-            if(user.getName().contains(nameLike)) {
+            if(filterMatches(user.getName().toLowerCase(), filterType, nameFilter)) {
                 ++cnt;
             }
         }

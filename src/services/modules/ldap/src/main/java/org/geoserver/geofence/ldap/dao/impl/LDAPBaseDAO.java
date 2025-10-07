@@ -19,6 +19,7 @@ import com.google.common.cache.LoadingCache;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import org.apache.commons.lang.StringUtils;
 
 import org.geoserver.geofence.core.dao.RestrictedGenericDAO;
 import org.geoserver.geofence.core.model.GSUser;
@@ -221,6 +222,58 @@ public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R>
         } catch (ExecutionException ex) {
             LOGGER.warn("Error while getting LDAP info: " + ex.getMessage(), ex);
             return Collections.EMPTY_LIST;
+        }
+    }
+
+    static enum FilterType {
+        NONE,
+        EQUALS,
+        STARTS_WITH,
+        ENDS_WITH,
+        CONTAINS
+    };
+    
+    protected FilterType getFilterType(String nameLike) {
+        if(StringUtils.isBlank(nameLike))
+            return FilterType.NONE;
+        if(nameLike.equals("%") || nameLike.equals("%%"))
+            return FilterType.NONE;
+            
+        int cnt = StringUtils.countMatches(nameLike, "%");
+        switch (cnt) {
+            case 0:                
+                // This should be an EQUALS, but we're forcing a contains for backward compat
+                return FilterType.CONTAINS; 
+            case 1:
+                if(nameLike.startsWith("%"))
+                    return FilterType.ENDS_WITH;
+                else if(nameLike.endsWith("%"))
+                    return FilterType.STARTS_WITH;
+                break;
+            case 2:
+                if(nameLike.startsWith("%") && nameLike.endsWith("%"))
+                    return FilterType.CONTAINS;
+                break;
+        }
+
+        throw new IllegalArgumentException(
+                "Bad format for filter (" + nameLike + ")");
+    }
+
+    protected boolean filterMatches(String name, FilterType filterType, String filterName) {
+        switch (filterType) {
+            case NONE:
+                return true;
+            case EQUALS:
+                return name.equals(filterName);
+            case STARTS_WITH:
+                return name.startsWith(filterName);
+            case ENDS_WITH:
+                return name.endsWith(filterName);
+            case CONTAINS:
+                return name.contains(filterName);
+            default:
+                return false;
         }
     }
 

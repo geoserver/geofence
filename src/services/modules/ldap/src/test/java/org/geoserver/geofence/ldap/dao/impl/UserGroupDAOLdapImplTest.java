@@ -14,6 +14,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"
@@ -57,12 +58,49 @@ public class UserGroupDAOLdapImplTest extends BaseDAOTest
         assertEquals("adminGroup", groups.get(0).getName());
     }
 
-    @Test
-    public void testCount()
+    public void searchAux(String namelike, String... exp)
     {
-        assertEquals(5, userGroupDAO.countByNameLike(null));
+        Set<String> expected = Set.of(exp);
+        List<UserGroup> groups = userGroupDAO.search(namelike, null, null);
+        assertEquals(expected, groups.stream().map(g->g.getName()).collect(Collectors.toSet()));    
+        assertEquals(expected.size(), userGroupDAO.countByNameLike(namelike));    
     }
     
+    @Test
+    public void testSearchWildcardEnd()
+    {
+        searchAux("oth%", "otherGroup", "other");
+    }
+    
+    @Test
+    public void testSearchWildcardStart()
+    {
+        searchAux("%Group", "otherGroup", "adminGroup");
+    }
+    
+    @Test
+    public void testSearchWildcardContains()
+    {
+        searchAux("%in%", "destination", "adminGroup");
+    }
+
+    @Test
+    public void testSearchWildcardDefault()
+    {
+        searchAux("in", "destination", "adminGroup");
+    }
+    
+    @Test
+    public void testSearchWildcardAll()
+    {
+        String[] all = {"adminGroup", "otherGroup", "parent", "other", "destination"};
+        
+        searchAux(null, all);
+        searchAux("", all);
+        searchAux("%", all);
+        searchAux("%%", all);
+    }
+
     @Test
     public void testSearchPagination()
     {

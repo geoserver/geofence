@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.geoserver.geofence.core.model.UserGroup;
 
 /**
@@ -132,5 +133,48 @@ public class GSUserDAOLdapImplTest extends BaseDAOTest
             ((GSUserDAOLdapImpl)userDAO).setNestedMemberFilter(null);
         }
     }
+    
+    public void searchAux(String namelike, String... exp)
+    {
+        Set<String> expected = Set.of(exp);
+        List<GSUser> found = userDAO.search(namelike, null, null, false);
+        assertEquals(expected, found.stream().map(g->g.getName()).collect(Collectors.toSet()));    
+        assertEquals(expected.size(), userDAO.countByNameLike(namelike));    
+    }
+    
+    @Test
+    public void testSearchWildcardEnd()
+    {
+        searchAux("des%", "destination1", "destination2");
+    }
+    
+    @Test
+    public void testSearchWildcardStart()
+    {
+        searchAux("%er", "other");
+    }
+    
+    @Test
+    public void testSearchWildcardContains()
+    {
+        searchAux("%in%", "destination1", "destination2", "admin");
+    }
 
+    @Test
+    public void testSearchWildcardDefault()
+    {
+        searchAux("in", "destination1", "destination2", "admin");
+    }
+    
+    @Test
+    public void testSearchWildcardAll()
+    {
+        String[] all = {"destination1", "destination2", "admin", "other"};
+        
+        searchAux(null, all);
+        searchAux("", all);
+        searchAux("%", all);
+        searchAux("%%", all);
+    }
+    
 }

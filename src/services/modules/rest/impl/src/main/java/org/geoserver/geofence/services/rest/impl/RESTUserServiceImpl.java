@@ -256,6 +256,11 @@ public class RESTUserServiceImpl
     public long count(String nameLike) {
         return userAdminService.getCount(nameLike);
     }
+    
+    @Override
+    public long count2(String nameLike) {
+        return count(nameLike);
+    }
 
     // ==========================================================================
     public static RESTShortUser toShortUser(GSUser user) {

@@ -51,6 +51,10 @@ public interface RESTUserGroupService
     @Path("/count/{nameLike}")
     long count(@PathParam("nameLike") String nameLike);
 
+    @GET
+    @Path("/count")
+    long count2(@QueryParam("nameLike") String nameLike);
+
 //    @GET
 //    @Path("/id/{id}")
 //    @Produces(MediaType.APPLICATION_XML)

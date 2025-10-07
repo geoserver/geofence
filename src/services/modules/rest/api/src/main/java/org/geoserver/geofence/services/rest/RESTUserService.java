@@ -67,6 +67,10 @@ public interface RESTUserService {
     @Path("/count/{nameLike}")
     long count(@PathParam("nameLike") String nameLike);
 
+    @GET
+    @Path("/count")
+    long count2(@QueryParam("nameLike") String nameLike);
+
     /**
      * Returns a single user.
      *

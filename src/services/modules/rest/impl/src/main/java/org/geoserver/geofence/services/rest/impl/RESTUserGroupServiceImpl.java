@@ -49,6 +49,11 @@ public class RESTUserGroupServiceImpl
     public long count(String nameLike) {
         return userGroupAdminService.getCount(nameLike);
     }
+    
+    @Override
+    public long count2(String nameLike) {
+        return count(nameLike);
+    }
 
     @Override
     public ShortGroup get(String name) throws NotFoundRestEx, InternalErrorRestEx {
