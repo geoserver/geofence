@@ -175,6 +175,7 @@ public class GSUserDAOLdapImplTest extends BaseDAOTest
         searchAux("", all);
         searchAux("%", all);
         searchAux("%%", all);
+        searchAux("%%%", all);
     }
     
 }

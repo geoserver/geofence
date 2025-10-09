@@ -165,11 +165,13 @@ public class GSUserDAOLdapImpl //
         // filtering needed -- we'll perform filtering by hand, and contextually
         // pagination will be evaluated, in order to save memory and time
 
+        nameLike = sanitizeLike(nameLike);
         FilterType filterType = getFilterType(nameLike);
 
         if (filterType==FilterType.NONE) {
             return paginate(findAll(), entries, page);
         }
+
         String nameFilter = StringUtils.strip(nameLike, "%").toLowerCase();
         
         int firstIndex = getFirstPaginationIndex(entries, page);
@@ -194,6 +196,7 @@ public class GSUserDAOLdapImpl //
         
     @Override
     public long countByNameLike(String nameLike) {
+        nameLike = sanitizeLike(nameLike);        
         FilterType filterType = getFilterType(nameLike);
 
         if (filterType==FilterType.NONE) {

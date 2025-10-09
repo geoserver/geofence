@@ -99,6 +99,7 @@ public class UserGroupDAOLdapImplTest extends BaseDAOTest
         searchAux("", all);
         searchAux("%", all);
         searchAux("%%", all);
+        searchAux("%%%", all);
     }
 
     @Test

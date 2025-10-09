@@ -232,6 +232,10 @@ public abstract class LDAPBaseDAO<T extends RestrictedGenericDAO<R>, R>
         ENDS_WITH,
         CONTAINS
     };
+        
+    protected String sanitizeLike(String nameLike) {
+        return nameLike == null? null : nameLike.replaceAll("%+", "%");
+    }
     
     protected FilterType getFilterType(String nameLike) {
         if(StringUtils.isBlank(nameLike))
