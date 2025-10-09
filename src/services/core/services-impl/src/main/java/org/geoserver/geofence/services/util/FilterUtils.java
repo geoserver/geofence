@@ -42,14 +42,23 @@ public class FilterUtils {
                 SearchableDAO<RULETYPE> dao, 
                 RuleFilter filter, 
                 Integer page, Integer entries) {
+
         Search search = dao.createSearch();
         search.addSortAsc("priority");
         addCriteria(search, filter);
 
-        List<RULETYPE> found = dao.search(search);
-        found = filterByAddress(filter, found);               
-        found = paginateList(found, page, entries);
-        return found;
+        RuleFilter.FilterType type = filter.getSourceAddress().getType();
+        if(type == RuleFilter.FilterType.ANY ) {
+            // SHORTCUT: no ipaddress filtering, make pagination through db
+            addPagingConstraints(search, page, entries);
+            return dao.search(search);
+        }
+        else {
+            List<RULETYPE> found = dao.search(search);
+            found = filterByAddress(filter, found);               
+            found = paginateList(found, page, entries);
+            return found;
+        }           
     }
     
     public static long countFilteredRules(
