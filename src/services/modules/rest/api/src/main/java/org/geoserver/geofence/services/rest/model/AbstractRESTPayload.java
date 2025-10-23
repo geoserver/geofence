@@ -7,7 +7,7 @@ package org.geoserver.geofence.services.rest.model;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * A compact representation of UserGroup holding only the insertable/updatadable fields

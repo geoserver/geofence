@@ -8,7 +8,7 @@ package org.geoserver.geofence.services.rest.model.config.adapter;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  *

@@ -9,8 +9,8 @@ import org.geoserver.geofence.core.model.util.SubnetV4Utils;
 import java.io.Serializable;
 import java.net.Inet4Address;
 import java.net.InetAddress;
-import javax.persistence.Embeddable;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.persistence.Embeddable;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  *

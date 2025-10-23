@@ -15,7 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import javax.persistence.Query;
+import jakarta.persistence.Query;
 import org.geoserver.geofence.core.dao.search.LongSearch;
 import org.geoserver.geofence.core.model.Identifiable;
 

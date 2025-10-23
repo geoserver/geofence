@@ -49,7 +49,7 @@
         <dependency>
             <groupId>jakarta.jws</groupId>
             <artifactId>jakarta.jws-api</artifactId>
-            <version>2.1.0</version>
+            <version>3.0.0</version>
         </dependency>
     </dependencies>
 

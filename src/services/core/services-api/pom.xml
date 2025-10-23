@@ -26,6 +26,11 @@
 
    	<!-- APACHE COMMONS -->
     <!-- GeoFence -->
+    <dependency>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>3.0.1</version>
+    </dependency>
         <dependency>
             <groupId>org.geoserver.geofence</groupId>
             <artifactId>geofence-model</artifactId>

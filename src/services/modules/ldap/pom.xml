@@ -139,9 +139,10 @@
             <scope>test</scope>            
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-spatial</artifactId>
             <scope>test</scope>
+      <version>6.5.3.Final</version>
         </dependency>
 
         <dependency>

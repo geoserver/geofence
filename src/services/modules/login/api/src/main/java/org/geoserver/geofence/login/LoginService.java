@@ -8,9 +8,9 @@ package org.geoserver.geofence.login;
 import org.geoserver.geofence.api.dto.GrantedAuths;
 import org.geoserver.geofence.api.exception.AuthException;
 
-import javax.jws.WebParam;
-import javax.jws.WebResult;
-import javax.jws.WebService;
+import jakarta.jws.WebParam;
+import jakarta.jws.WebResult;
+import jakarta.jws.WebService;
 
 /**
  * 

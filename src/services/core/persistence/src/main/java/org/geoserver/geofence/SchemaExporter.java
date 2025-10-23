@@ -24,7 +24,6 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
-import org.hibernate.tool.hbm2ddl.SchemaExport.Action;
 import org.hibernate.tool.schema.TargetType;
 
 /**
@@ -48,7 +47,7 @@ public class SchemaExporter {
 
     public void createSqlFile(String dialect, String outputFile, boolean stdout) {
 
-        Map<String, String> settings = new HashMap<>();
+        Map<String, Object> settings = new HashMap<>();
 
         settings.put("hibernate.dialect", dialect);
 //        settings.put("hibernate.show_sql", "true");
@@ -59,7 +58,7 @@ public class SchemaExporter {
 
         MetadataSources sources = new MetadataSources(serviceRegistry);
 
-        Class<?> modelClasses[] = {
+        Class<?>[] modelClasses = {
             AdminRule.class,
             GFUser.class,
             GSInstance.class,
@@ -83,13 +82,13 @@ public class SchemaExporter {
         if(stdout) {
             enumSet.add(TargetType.STDOUT);
         }
-        
+
         SchemaExport schemaExport = new SchemaExport();
         schemaExport.setOutputFile(outputFile)
                 .setOverrideOutputFileContent()
                 .setDelimiter(";")
                 .setFormat(true)
-                .execute(enumSet, Action.CREATE, sources.buildMetadata());
+                .execute(enumSet, SchemaExport.Action.CREATE, sources.buildMetadata());
     }
         
 }

@@ -11,7 +11,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.HashSet;
-import javax.xml.bind.JAXB;
+import jakarta.xml.bind.JAXB;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

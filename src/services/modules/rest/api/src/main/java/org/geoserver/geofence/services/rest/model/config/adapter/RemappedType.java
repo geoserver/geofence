@@ -5,8 +5,8 @@
 
 package org.geoserver.geofence.services.rest.model.config.adapter;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  *

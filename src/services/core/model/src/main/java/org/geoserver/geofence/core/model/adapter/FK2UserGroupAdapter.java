@@ -6,7 +6,7 @@
 package org.geoserver.geofence.core.model.adapter;
 
 import org.geoserver.geofence.core.model.adapter.dual.IdNameBundle;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.locationtech.jts.io.ParseException;
 import org.geoserver.geofence.core.model.UserGroup;

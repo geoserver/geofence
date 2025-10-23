@@ -25,8 +25,8 @@ import org.geoserver.geofence.services.rest.model.RESTInputInstance;
 import org.geoserver.geofence.services.rest.model.RESTOutputInstance;
 import org.geoserver.geofence.services.rest.model.RESTShortInstanceList;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

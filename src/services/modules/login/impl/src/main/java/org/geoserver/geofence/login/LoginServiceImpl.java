@@ -5,8 +5,8 @@
 
 package org.geoserver.geofence.login;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 
 import org.geoserver.geofence.api.AuthProvider;
 import org.geoserver.geofence.api.dto.Authority;

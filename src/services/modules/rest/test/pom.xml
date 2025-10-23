@@ -71,8 +71,9 @@
         <!-- =============================================================== -->
         <!-- =============================================================== -->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-spatial</artifactId>
+      <version>6.0.2.Final</version>
         </dependency>
         
         <!-- =============================================================== -->
@@ -113,9 +114,10 @@
             <artifactId>jettison</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
             <scope>provided</scope>
+      <version>5.0.0</version>
         </dependency>
 
         <!--        <dependency>

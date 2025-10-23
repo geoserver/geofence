@@ -5,7 +5,7 @@
 
 package org.geoserver.geofence.api.exception;
 
-import javax.xml.ws.WebFault;
+import jakarta.xml.ws.WebFault;
 
 /**
  * 

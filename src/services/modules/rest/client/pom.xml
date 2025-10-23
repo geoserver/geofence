@@ -34,6 +34,12 @@
             <groupId>org.geoserver.geofence</groupId>
             <artifactId>geofence-services-api</artifactId>
         </dependency>
+    <dependency>
+      <groupId>jakarta.ws.rs</groupId>
+      <artifactId>jakarta.ws.rs-api</artifactId>
+      <version>3.0.0</version>
+      <scope>test</scope>
+    </dependency>
 
         <dependency>
             <groupId>org.geoserver.geofence</groupId>

@@ -11,7 +11,7 @@ import org.geoserver.geofence.services.rest.model.RESTInputUser;
 import org.geoserver.geofence.services.rest.model.RESTOutputUser;
 import org.geoserver.geofence.services.rest.model.util.IdName;
 import java.util.ArrayList;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

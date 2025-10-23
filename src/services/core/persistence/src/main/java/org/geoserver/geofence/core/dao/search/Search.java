@@ -2,8 +2,8 @@
  */
 package org.geoserver.geofence.core.dao.search;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.Selection;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.Selection;
 
 /**
  * A search on the BASE class returning instances of the BASE class.

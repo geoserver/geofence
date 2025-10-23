@@ -28,8 +28,8 @@ import org.geoserver.geofence.services.rest.model.util.IdName;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

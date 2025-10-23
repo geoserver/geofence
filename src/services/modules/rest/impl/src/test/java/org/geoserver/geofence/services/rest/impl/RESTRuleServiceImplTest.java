@@ -20,7 +20,7 @@ import org.geoserver.geofence.services.rest.model.util.IdName;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.geoserver.geofence.services.rest.model.RESTRulePosition;

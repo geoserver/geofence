@@ -27,8 +27,8 @@ import org.geoserver.geofence.services.rest.model.RESTOutputAdminRuleList;
 import org.geoserver.geofence.services.rest.model.RESTRulePosition.RulePosition;
 import org.geoserver.geofence.services.rest.RESTAdminRuleService;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.bind.JAXB;
+import jakarta.xml.bind.JAXB;
 import org.geoserver.geofence.services.rest.model.RESTRulePosition.RulePosition;
 
 import org.junit.Test;

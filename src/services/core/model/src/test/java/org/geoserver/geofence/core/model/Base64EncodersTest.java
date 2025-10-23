@@ -6,7 +6,7 @@
 package org.geoserver.geofence.core.model;
 
 import java.util.Arrays;
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;

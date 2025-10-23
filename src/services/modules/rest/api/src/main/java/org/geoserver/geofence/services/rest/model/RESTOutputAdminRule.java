@@ -10,9 +10,9 @@ import org.geoserver.geofence.services.rest.model.util.IdName;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * A compact representation of AdminRule

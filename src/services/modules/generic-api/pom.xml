@@ -50,6 +50,7 @@
         <dependency>
             <groupId>jakarta.xml.ws</groupId>
             <artifactId>jakarta.xml.ws-api</artifactId>
+      <scope>provided</scope>
         </dependency>
     </dependencies>
 

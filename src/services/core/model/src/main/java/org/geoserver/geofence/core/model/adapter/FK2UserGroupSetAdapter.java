@@ -6,7 +6,7 @@
 package org.geoserver.geofence.core.model.adapter;
 
 import org.geoserver.geofence.core.model.adapter.dual.IdNameBundle;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.locationtech.jts.io.ParseException;
 import org.geoserver.geofence.core.model.UserGroup;
@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import javax.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElement;
 
 /**
  * Transform a UserGroup into its id.

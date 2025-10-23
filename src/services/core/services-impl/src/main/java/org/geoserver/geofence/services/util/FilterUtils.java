@@ -9,7 +9,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Predicate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
