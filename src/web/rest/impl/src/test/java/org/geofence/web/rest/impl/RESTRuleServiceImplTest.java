@@ -1,0 +1,330 @@
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+package org.geofence.web.rest.impl;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import jakarta.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.geofence.core.model.LayerAttribute;
+import org.geofence.core.model.Rule;
+import org.geofence.core.model.enums.AccessType;
+import org.geofence.core.services.RuleAdminService;
+import org.geofence.web.rest.api.exception.BadRequestRestEx;
+import org.geofence.web.rest.api.model.RESTInputGroup;
+import org.geofence.web.rest.api.model.RESTInputRule;
+import org.geofence.web.rest.api.model.RESTInputUser;
+import org.geofence.web.rest.api.model.RESTLayerAttribute;
+import org.geofence.web.rest.api.model.RESTLayerConstraints;
+import org.geofence.web.rest.api.model.RESTOutputRule;
+import org.geofence.web.rest.api.model.RESTRulePosition;
+import org.geofence.web.rest.api.model.enums.RESTAccessType;
+import org.geofence.web.rest.api.model.enums.RESTGrantType;
+import org.geofence.web.rest.api.model.util.IdName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+/** @author ETj (etj at geo-solutions.it) */
+public class RESTRuleServiceImplTest extends RESTBaseTest {
+    private static final Logger LOGGER = LogManager.getLogger(RESTRuleServiceImplTest.class);
+
+    @Autowired
+    RuleAdminService ruleAdminService;
+
+    @Test
+    public void testInsert() {
+        RESTInputGroup group = new RESTInputGroup();
+        group.setName("g1");
+        Response res = restUserGroupService.insert(group);
+        long gid1 = (Long) res.getEntity();
+
+        RESTInputUser user = new RESTInputUser();
+        user.setName("user0");
+        user.setEnabled(Boolean.TRUE);
+        user.setGroups(new ArrayList<>());
+        user.getGroups().add(new IdName("g1"));
+        Response userResp = restUserService.insert(user);
+        Long id = (Long) userResp.getEntity();
+
+        RESTInputRule rule = new RESTInputRule();
+        rule.setUsername("user0");
+
+        try {
+            restRuleService.insert(rule).getEntity();
+            fail("Missing position not trapped");
+        } catch (BadRequestRestEx e) {
+            LOGGER.info("Exception properly trapped");
+        }
+
+        rule.setPosition(new RESTRulePosition(RESTRulePosition.RESTPositionReference.offsetFromTop, 0));
+        rule.setGrant(RESTGrantType.ALLOW);
+
+        Long rid = (Long) restRuleService.insert(rule).getEntity();
+        assertNotNull(rid);
+
+        {
+            RESTOutputRule out = restRuleService.get(rid);
+            assertNotNull(out);
+            assertEquals("user0", out.getUsername());
+            assertNull(out.getConstraints());
+        }
+    }
+
+    @Test
+    public void testMissingLayerOnConstraints() {
+
+        RESTInputRule rule = new RESTInputRule();
+        rule.setPosition(new RESTRulePosition(RESTRulePosition.RESTPositionReference.offsetFromTop, 0));
+        rule.setGrant(RESTGrantType.ALLOW);
+
+        RESTLayerConstraints constraints = new RESTLayerConstraints();
+        rule.setConstraints(constraints);
+
+        try {
+            restRuleService.insert(rule).getEntity();
+            fail("Missing layer not trapped");
+        } catch (BadRequestRestEx e) {
+            LOGGER.info("Exception properly trapped");
+        }
+        rule.setLayer("l0");
+        Long rid = (Long) restRuleService.insert(rule).getEntity();
+        assertNotNull(rid);
+    }
+
+    @Test
+    public void testUpdateToNull() {
+        RESTInputRule rule = new RESTInputRule();
+        rule.setPosition(new RESTRulePosition(RESTRulePosition.RESTPositionReference.offsetFromTop, 0));
+        rule.setGrant(RESTGrantType.ALLOW);
+        rule.setService("s0");
+        rule.setWorkspace("w0");
+        rule.setLayer("l0");
+        Long rid = (Long) restRuleService.insert(rule).getEntity();
+        assertNotNull(rid);
+
+        {
+            RESTOutputRule out = restRuleService.get(rid);
+            assertNotNull(out);
+            assertEquals("S0", out.getService()); // upper case?!?
+            assertEquals("w0", out.getWorkspace());
+            assertEquals("l0", out.getLayer());
+
+            RESTInputRule up = new RESTInputRule();
+            up.setLayer("l1");
+            up.setWorkspace("");
+
+            restRuleService.update(rid, up);
+        }
+        {
+            RESTOutputRule out = restRuleService.get(rid);
+            assertNotNull(out);
+            assertEquals("S0", out.getService()); // not changed
+            assertNull(out.getWorkspace()); // nulled
+            assertEquals("l1", out.getLayer()); // changed
+        }
+    }
+
+    @Test
+    public void testEmptyDetails() {
+        RESTInputRule rule = new RESTInputRule();
+        rule.setPosition(new RESTRulePosition(RESTRulePosition.RESTPositionReference.offsetFromTop, 0));
+        rule.setGrant(RESTGrantType.ALLOW);
+        rule.setLayer("l0");
+        Long rid = (Long) restRuleService.insert(rule).getEntity();
+        assertNotNull(rid);
+
+        {
+            RESTOutputRule out = restRuleService.get(rid);
+            assertNotNull(out);
+            LOGGER.debug("Constraints: " + out.getConstraints());
+            assertNull(out.getConstraints());
+
+            // Try to update not existing constr
+
+            RESTInputRule up = new RESTInputRule();
+            RESTLayerConstraints constraints = new RESTLayerConstraints();
+            constraints.setAllowedStyles(new HashSet<>(Arrays.asList("r1", "r2", "r3")));
+            up.setConstraints(constraints);
+            restRuleService.update(rid, up);
+        }
+        {
+            RESTOutputRule out = restRuleService.get(rid);
+            assertNotNull(out);
+            LOGGER.debug("Constraints: " + out.getConstraints());
+            assertNotNull(out.getConstraints());
+            assertNotNull(out.getConstraints().getAllowedStyles());
+            assertEquals(
+                    new HashSet<>(Arrays.asList("r1", "r2", "r3")),
+                    out.getConstraints().getAllowedStyles());
+        }
+    }
+
+    @Test
+    public void testDetails() {
+
+        Long rid;
+
+        {
+            RESTInputRule rule = new RESTInputRule();
+            rule.setPosition(new RESTRulePosition(RESTRulePosition.RESTPositionReference.offsetFromTop, 0));
+            rule.setGrant(RESTGrantType.ALLOW);
+            rule.setWorkspace("w0");
+            rule.setLayer("l0");
+
+            RESTLayerConstraints constraints = new RESTLayerConstraints();
+            constraints.setAllowedStyles(new HashSet<>(Arrays.asList("s1", "s2")));
+            rule.setConstraints(constraints);
+
+            rid = (Long) restRuleService.insert(rule).getEntity();
+            assertNotNull(rid);
+        }
+
+        {
+            RESTOutputRule out = restRuleService.get(rid);
+            assertNotNull(out);
+            LOGGER.debug("Constraints " + out.getConstraints());
+            assertNotNull(out.getConstraints());
+            assertNotNull(out.getConstraints().getAllowedStyles());
+            assertEquals(2, out.getConstraints().getAllowedStyles().size());
+
+            // update allowedStyles only
+            RESTInputRule up = new RESTInputRule();
+            RESTLayerConstraints constraints = new RESTLayerConstraints();
+            constraints.setAllowedStyles(new HashSet<>(Arrays.asList("r1", "r2", "r3")));
+            up.setConstraints(constraints);
+            restRuleService.update(rid, up);
+        }
+
+        {
+            RESTOutputRule out = restRuleService.get(rid);
+            assertNotNull(out);
+            assertEquals("l0", out.getLayer());
+            LOGGER.debug("Constraints " + out.getConstraints());
+            assertNotNull(out.getConstraints());
+            assertNotNull(out.getConstraints().getAllowedStyles());
+            assertEquals(
+                    new HashSet<>(Arrays.asList("r1", "r2", "r3")),
+                    out.getConstraints().getAllowedStyles());
+
+            RESTInputRule up = new RESTInputRule();
+            RESTLayerConstraints constraints = new RESTLayerConstraints();
+            constraints.setAllowedStyles(new HashSet<>(Arrays.asList("r1", "r2")));
+            up.setConstraints(constraints);
+            restRuleService.update(rid, up);
+        }
+    }
+
+    @Test
+    public void testAttribs() {
+
+        Long rid;
+        int ccnt = 0;
+
+        {
+            RESTInputRule rule = new RESTInputRule();
+            rule.setPosition(new RESTRulePosition(RESTRulePosition.RESTPositionReference.fixedPriority, 42));
+            rule.setGrant(RESTGrantType.ALLOW);
+            rule.setWorkspace("w0");
+            rule.setLayer("l0");
+
+            RESTLayerConstraints constraints = new RESTLayerConstraints();
+            constraints.setAttributes(new HashSet<>(Arrays.asList(
+                    new RESTLayerAttribute("attr1", RESTAccessType.NONE),
+                    new RESTLayerAttribute("attr2", RESTAccessType.READWRITE))));
+            rule.setConstraints(constraints);
+
+            rid = (Long) restRuleService.insert(rule).getEntity();
+            assertNotNull(rid);
+        }
+
+        {
+            LOGGER.debug("=== CHECK " + ccnt++);
+            RESTOutputRule out = restRuleService.get(rid);
+            assertNotNull(out);
+            LOGGER.debug("Constraints " + out.getConstraints());
+            assertNotNull(out.getConstraints());
+            assertEquals(
+                    new HashSet<>(Arrays.asList(
+                            new LayerAttribute("attr1", AccessType.NONE),
+                            new LayerAttribute("attr2", AccessType.READWRITE))),
+                    out.getConstraints().getAttributes());
+        }
+
+        String allowedArea = "MULTIPOLYGON (((4146.5 1301.4, 4147.5 1301.1, 4147.8 1301.4, 4146.5 1301.4)))";
+
+        // update allowedStyles only
+        {
+            RESTInputRule up = new RESTInputRule();
+            RESTLayerConstraints constraints = new RESTLayerConstraints();
+            constraints.setRestrictedAreaWkt(allowedArea);
+
+            up.setConstraints(constraints);
+            restRuleService.update(rid, up);
+        }
+
+        {
+            LOGGER.debug("=== CHECK " + ccnt++);
+            RESTOutputRule out = restRuleService.get(rid);
+            assertNotNull(out);
+            LOGGER.debug("Constraints " + out.getConstraints());
+            assertNotNull(out.getConstraints());
+            assertEquals("SRID=4326;" + allowedArea, out.getConstraints().getRestrictedAreaWkt());
+            // check that attribs have not been changed
+            assertEquals(
+                    new HashSet<>(Arrays.asList(
+                            new LayerAttribute("attr1", AccessType.NONE),
+                            new LayerAttribute("attr2", AccessType.READWRITE))),
+                    out.getConstraints().getAttributes());
+        }
+    }
+
+    @Test
+    public void testAllowedAreaSRID() {
+
+        Long rid;
+
+        {
+            RESTInputRule rule = new RESTInputRule();
+            rule.setPosition(new RESTRulePosition(RESTRulePosition.RESTPositionReference.fixedPriority, 42));
+            rule.setGrant(RESTGrantType.ALLOW);
+            rule.setWorkspace("w0");
+            rule.setLayer("l0");
+
+            RESTLayerConstraints constraints = new RESTLayerConstraints();
+            constraints.setAttributes(new HashSet<>(Arrays.asList(
+                    new RESTLayerAttribute("attr1", RESTAccessType.NONE),
+                    new RESTLayerAttribute("attr2", RESTAccessType.READWRITE))));
+            rule.setConstraints(constraints);
+
+            rid = (Long) restRuleService.insert(rule).getEntity();
+            assertNotNull(rid);
+        }
+
+        String allowedArea = "SRID=3857;MULTIPOLYGON (((4146.5 1301.4, 4147.5 1301.1, 4147.8 1301.4, 4146.5 1301.4)))";
+
+        {
+            RESTInputRule up = new RESTInputRule();
+            RESTLayerConstraints constraints = new RESTLayerConstraints();
+            constraints.setRestrictedAreaWkt(allowedArea);
+
+            up.setConstraints(constraints);
+            restRuleService.update(rid, up);
+        }
+
+        {
+            RESTOutputRule out = restRuleService.get(rid);
+
+            assertEquals(allowedArea, out.getConstraints().getRestrictedAreaWkt());
+
+            Rule r = ruleAdminService.get(rid);
+            assertEquals(3857, r.getLayerDetails().getArea().getSRID());
+        }
+    }
+}

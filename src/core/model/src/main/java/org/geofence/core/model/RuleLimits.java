@@ -1,0 +1,125 @@
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+package org.geofence.core.model;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.Serializable;
+import org.geofence.core.model.adapter.MultiPolygonAdapter;
+import org.geofence.core.model.enums.CatalogMode;
+import org.geofence.core.model.enums.GrantType;
+import org.geofence.core.model.enums.SpatialFilterType;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.locationtech.jts.geom.MultiPolygon;
+
+/**
+ * Defines general limits (such as an Area ) for a {@link Rule}. <br>
+ * RuleLimits may be set only for rules with a {@link GrantType#LIMIT} access type.
+ *
+ * @author ETj (etj at geo-solutions.it)
+ */
+@Entity(name = "RuleLimits")
+@Table(
+        name = "gf_rule_limits",
+        uniqueConstraints =
+                @UniqueConstraint(
+                        columnNames = "rule_id", // @InternalModel
+                        name = "gf_rule_limits_rule_id_key") // @InternalModel
+        ) // @InternalModel
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "RuleLimits")
+@XmlRootElement(name = "RuleLimits")
+public class RuleLimits implements Identifiable, Serializable {
+
+    private static final long serialVersionUID = 3809839552804345725L;
+
+    /** The id. */
+    @Id
+    // @GeneratedValue
+    @Column
+    private Long id;
+
+    @MapsId
+    @OneToOne(optional = false)
+    @JoinColumn(name = "id", foreignKey = @ForeignKey(name = "fk_limits_rule"))
+    Rule rule;
+
+    // @Type(type = "org.hibernate.spatial.JTSGeometryType")
+    @Column(name = "area")
+    private MultiPolygon allowedArea;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "spatial_filter_type", nullable = true)
+    private SpatialFilterType spatialFilterType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "catalog_mode", nullable = true)
+    private CatalogMode catalogMode;
+
+    @XmlJavaTypeAdapter(MultiPolygonAdapter.class)
+    public MultiPolygon getAllowedArea() {
+        return allowedArea;
+    }
+
+    public void setAllowedArea(MultiPolygon allowedArea) {
+        this.allowedArea = allowedArea;
+    }
+
+    public CatalogMode getCatalogMode() {
+        return catalogMode;
+    }
+
+    public void setCatalogMode(CatalogMode catalogMode) {
+        this.catalogMode = catalogMode;
+    }
+
+    public SpatialFilterType getSpatialFilterType() {
+        return spatialFilterType != null ? spatialFilterType : SpatialFilterType.INTERSECT;
+    }
+
+    public void setSpatialFilterType(SpatialFilterType spatialFilterType) {
+        this.spatialFilterType = spatialFilterType;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @XmlTransient
+    public Rule getRule() {
+        return rule;
+    }
+
+    protected void setRule(Rule rule) {
+        this.rule = rule;
+    }
+
+    @Override
+    public String toString() {
+        return "RuleLimits["
+                + "id=" + id
+                + " rule=" + rule
+                + " allowedArea=" + allowedArea
+                + (catalogMode == null ? "" : (" mode=" + catalogMode))
+                + ']';
+    }
+}

@@ -1,0 +1,233 @@
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+package org.geofence.core.model;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+import org.geofence.core.model.adapter.MultiPolygonAdapter;
+import org.geofence.core.model.enums.CatalogMode;
+import org.geofence.core.model.enums.LayerType;
+import org.geofence.core.model.enums.SpatialFilterType;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.locationtech.jts.geom.MultiPolygon;
+
+/**
+ * Details may be set only for ules with non-wildcarded profile, instance, workspace,layer.
+ *
+ * <p><B>TODO</B>
+ *
+ * <UL>
+ *   <LI>What about externally defined styles?
+ * </UL>
+ *
+ * @author ETj (etj at geo-solutions.it)
+ */
+@Entity(name = "LayerDetails")
+@Table(
+        name = "gf_layer_details",
+        uniqueConstraints = { // @InternalModel
+            @UniqueConstraint(columnNames = "rule_id", name = "gf_layer_details_rule_id_key") // @InternalModel
+        } // @InternalModel
+        ) // @InternalModel
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "LayerDetails")
+@XmlRootElement(name = "LayerDetails")
+public class LayerDetails implements Identifiable, Serializable {
+
+    private static final long serialVersionUID = 3800963895550551513L;
+
+    /** The id. */
+    @Id
+    //    @GeneratedValue
+    @Column
+    private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true /*false*/)
+    private LayerType type;
+
+    @Column
+    private String defaultStyle;
+
+    @Column(length = 4000)
+    private String cqlFilterRead;
+
+    @Column(length = 4000)
+    private String cqlFilterWrite;
+
+    @Column(name = "area")
+    private MultiPolygon area;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "spatial_filter_type", nullable = true)
+    private SpatialFilterType spatialFilterType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "catalog_mode", nullable = true)
+    private CatalogMode catalogMode;
+
+    @MapsId
+    @OneToOne(optional = false)
+    @JoinColumn(name = "id", foreignKey = @ForeignKey(name = "fk_details_rule"))
+    Rule rule;
+
+    /** Styles allowed for this layer */
+    @ElementCollection(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "gf_layer_styles",
+            joinColumns = @JoinColumn(name = "details_id"),
+            foreignKey = @ForeignKey(name = "fk_styles_layer"))
+    @Column(name = "styleName")
+    private Set<String> allowedStyles = new HashSet<>();
+
+    /**
+     * Feature Attributes associated to the Layer
+     *
+     * <p>We'll use the pair <TT>(details_id, name)</TT> as PK for the associated table. To do so, we have to perform
+     * some trick on the <TT>{@link LayerAttribute#access}</TT> field.
+     */
+    @ElementCollection(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "gf_layer_attributes", // @InternalModel
+            joinColumns = @JoinColumn(name = "details_id"),
+            uniqueConstraints =
+                    @UniqueConstraint(
+                            columnNames = {"details_id", "name"},
+                            name = "gf_layer_attributes_didname_unq"),
+            foreignKey = @ForeignKey(name = "fk_attribute_layer")) // @InternalModel
+    // override is used to set the pk as {"details_id", "name"}
+    //    @AttributeOverride( name="access", column=@Column(name="access", nullable=false) )
+    @Fetch(FetchMode.SELECT) // without this, hibernate will duplicate results(!)
+    private Set<LayerAttribute> attributes = new HashSet<>();
+
+    @XmlJavaTypeAdapter(MultiPolygonAdapter.class)
+    public MultiPolygon getArea() {
+        return area;
+    }
+
+    public void setArea(MultiPolygon area) {
+        this.area = area;
+    }
+
+    public CatalogMode getCatalogMode() {
+        return catalogMode;
+    }
+
+    public void setCatalogMode(CatalogMode catalogMode) {
+        this.catalogMode = catalogMode;
+    }
+
+    public String getCqlFilterRead() {
+        return cqlFilterRead;
+    }
+
+    public void setCqlFilterRead(String cqlFilterRead) {
+        this.cqlFilterRead = cqlFilterRead;
+    }
+
+    public String getCqlFilterWrite() {
+        return cqlFilterWrite;
+    }
+
+    public void setCqlFilterWrite(String cqlFilterWrite) {
+        this.cqlFilterWrite = cqlFilterWrite;
+    }
+
+    public String getDefaultStyle() {
+        return defaultStyle;
+    }
+
+    public void setDefaultStyle(String defaultStyle) {
+        this.defaultStyle = defaultStyle;
+    }
+
+    public Set<String> getAllowedStyles() {
+        return allowedStyles;
+    }
+
+    public void setAllowedStyles(Set<String> allowedStyles) {
+        this.allowedStyles = allowedStyles;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @XmlTransient
+    public Rule getRule() {
+        return rule;
+    }
+
+    protected void setRule(Rule rule) {
+        this.rule = rule;
+    }
+
+    @XmlElement(name = "attribute")
+    public Set<LayerAttribute> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(Set<LayerAttribute> attributes) {
+        this.attributes = attributes;
+    }
+
+    public LayerType getType() {
+        return type;
+    }
+
+    public void setType(LayerType type) {
+        this.type = type;
+    }
+
+    public SpatialFilterType getSpatialFilterType() {
+        return spatialFilterType != null ? spatialFilterType : SpatialFilterType.INTERSECT;
+    }
+
+    public void setSpatialFilterType(SpatialFilterType spatialFilterType) {
+        this.spatialFilterType = spatialFilterType;
+    }
+
+    @Override
+    public String toString() {
+        return "LayerDetails{"
+                + "id=" + id
+                + " type=" + type
+                + " defStyle=" + defaultStyle
+                + " cqlr=" + cqlFilterRead
+                + " cqlw=" + cqlFilterWrite
+                + " catmode" + catalogMode
+                + " area=" + area
+                + " rule=" + rule
+                + " attrs=" + attributes
+                + " styles=" + allowedStyles
+                + '}';
+    }
+}
