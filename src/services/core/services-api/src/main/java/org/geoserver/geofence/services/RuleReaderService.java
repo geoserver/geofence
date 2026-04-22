@@ -12,6 +12,8 @@ import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.ShortRule;
 
 import java.util.List;
+import org.geoserver.geofence.services.dto.PermsResult;
+
 
 /**
  * Operations on
@@ -25,6 +27,8 @@ public interface RuleReaderService
      * Return info on resource accessibility.
      */
     AccessInfo getAccessInfo(RuleFilter filter);
+
+    PermsResult getPermissionFilter(RuleFilter filter);
 
     /**
      * info about admin authorization on a given workspace.

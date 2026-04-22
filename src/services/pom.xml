@@ -655,6 +655,11 @@
                 <artifactId>gt-epsg-wkt</artifactId>
                 <version>${gt-version}</version>
             </dependency>
+           <dependency>
+               <groupId>org.geotools</groupId>
+               <artifactId>gt-cql</artifactId>
+               <version>${gt-version}</version>
+           </dependency>            
         </dependencies>
 
     </dependencyManagement>

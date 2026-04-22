@@ -33,6 +33,7 @@ import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.core.model.enums.SpatialFilterType;
 import org.geoserver.geofence.services.dto.AccessInfo;
 import org.geoserver.geofence.services.dto.AuthUser;
+import org.geoserver.geofence.services.dto.PermsResult;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.IdNameFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
@@ -40,8 +41,12 @@ import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
 import org.geoserver.geofence.services.dto.ShortRule;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.util.AccessInfoInternal;
+import org.geoserver.geofence.services.util.PermsResultBuilder;
+import org.geoserver.geofence.services.util.PermsResultInternal;
 
 import org.geoserver.geofence.spi.UserResolver;
+import org.geotools.api.filter.FilterFactory;
+import org.geotools.factory.CommonFactoryFinder;
 
 
 
@@ -57,7 +62,8 @@ import org.geoserver.geofence.spi.UserResolver;
 public class RuleReaderServiceImpl implements RuleReaderService {
 
     private final static Logger LOGGER = LogManager.getLogger(RuleReaderServiceImpl.class);
-
+    private static final FilterFactory ff = CommonFactoryFinder.getFilterFactory();
+        
     private RuleDAO ruleDAO;
     private AdminRuleDAO adminRuleDAO;
     private LayerDetailsDAO detailsDAO;
@@ -737,5 +743,61 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
     }
 
+    public PermsResult getPermissionFilter(RuleFilter ruleFilter) 
+    {               
+        validatePermissionRuleFilter(ruleFilter);
+        
+        RuleFilter discoveryFilter = new RuleFilter(SpecialFilterType.ANY);
+        discoveryFilter.getSourceAddress().setFrom(ruleFilter.getSourceAddress());
+        discoveryFilter.getDate().setFrom(ruleFilter.getDate());        
+        discoveryFilter.getUser().setFrom(ruleFilter.getUser());
+        discoveryFilter.getRole().setFrom(ruleFilter.getRole());
+        
+        Map<String, List<Rule>> groupedRules = getRules(discoveryFilter);
+
+        PermsResultBuilder permsBuilder = new PermsResultBuilder();        
+        PermsResultInternal accumulatedPerms = new PermsResultInternal();
+
+        for (Entry<String, List<Rule>> ruleGroup : groupedRules.entrySet()) {
+            String role = ruleGroup.getKey();
+            List<Rule> rules = ruleGroup.getValue();
+
+            PermsResultInternal groupPerms = permsBuilder.computePerms(rules);
+            
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Filter for user" + discoveryFilter.getUser().getText() + " on role " + role + " has filter " + groupPerms.getCqlFilter());
+            }
+
+            accumulatedPerms.or(groupPerms);
+        }
+
+        return accumulatedPerms.toPermsResult();
+    }
+    
+    private void validatePermissionRuleFilter(RuleFilter ruleFilter) 
+    {
+        // These values should not be set
+        assertFilterAny(ruleFilter.getService(), "service");
+        assertFilterAny(ruleFilter.getRequest(), "request");
+        assertFilterAny(ruleFilter.getSubfield(), "subfield");
+        assertFilterAny(ruleFilter.getWorkspace(), "workspace");
+        assertFilterAny(ruleFilter.getLayer(), "layer");
+
+        // user may be type=DEFAULT (anonymous) || NAMEVALUE + includeDefault       
+        if(ruleFilter.getUser().getType() != RuleFilter.FilterType.DEFAULT 
+                && !(ruleFilter.getUser().getType() == RuleFilter.FilterType.NAMEVALUE && ruleFilter.getUser().isIncludeDefault()))
+            throw new IllegalArgumentException("User filter not acceptable: " + ruleFilter.getUser());
+        
+        // role may be type=ANY (group from userservice) || NAMEVALUE (csv list from geoserver)
+        if(ruleFilter.getRole().getType() != RuleFilter.FilterType.ANY 
+                && !(ruleFilter.getRole().getType() == RuleFilter.FilterType.NAMEVALUE))
+            throw new IllegalArgumentException("Role filter not acceptable: " + ruleFilter.getRole());
+    }
+    
+    private void assertFilterAny(TextFilter filter, String fieldname) {
+        if(filter.getType() != RuleFilter.FilterType.ANY) {
+            throw new IllegalArgumentException("Filter should not specify a " + fieldname);
+        }
+    }
 
 }

@@ -14,6 +14,7 @@ import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.services.AdminRuleAdminService;
 import org.geoserver.geofence.services.InstanceAdminService;
 import org.geoserver.geofence.services.RuleAdminService;
+import org.geoserver.geofence.services.RuleReaderService;
 import org.geoserver.geofence.services.UserGroupAdminService;
 import org.geoserver.geofence.services.UserAdminService;
 import org.geoserver.geofence.services.exception.NotFoundServiceEx;
@@ -24,7 +25,7 @@ import org.geoserver.geofence.services.rest.model.RESTShortUser;
 import org.geoserver.geofence.services.rest.model.util.IdName;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -39,6 +40,7 @@ public abstract class BaseRESTServiceImpl {
     protected InstanceAdminService instanceAdminService;
     protected RuleAdminService ruleAdminService;
     protected AdminRuleAdminService adminRuleAdminService;
+    protected RuleReaderService ruleReaderService;
 
 
     protected UserGroup getUserGroup(IdName groupFilter) throws BadRequestRestEx, NotFoundRestEx {
@@ -142,4 +144,8 @@ public abstract class BaseRESTServiceImpl {
     public void setAdminRuleAdminService(AdminRuleAdminService adminRuleAdminService) {
         this.adminRuleAdminService = adminRuleAdminService;
     }
+    
+    public void setRuleReaderService(RuleReaderService ruleReaderService) {
+        this.ruleReaderService = ruleReaderService;
+    }    
 }

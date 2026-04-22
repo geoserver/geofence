@@ -25,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.geoserver.geofence.services.dto.AccessInfo;
 
 
 /**
@@ -140,5 +141,33 @@ public interface RESTRuleService
     Response move(
         @QueryParam("rulesIds") String rulesIds,
         @QueryParam("targetPriority") Integer targetPriority
+    ) throws BadRequestRestEx, InternalErrorRestEx;
+    
+    @GET
+    @Path("/access")
+    @Produces(MediaType.APPLICATION_XML)
+    AccessInfo getAccessInfo(
+        @QueryParam("userName") String userName,
+        @QueryParam("groupName") String groupName,
+        @QueryParam("instanceName") String  instanceName,
+        @QueryParam("ipAddress")     String  ipAddress,
+        @QueryParam("date")     String  date,
+        @QueryParam("service")     String  serviceName,
+        @QueryParam("request")     String  requestName,
+        @QueryParam("subfield")     String  subfieldName,
+        @QueryParam("workspace") String  workspace,
+        @QueryParam("layer") String  layer
+    ) throws BadRequestRestEx, InternalErrorRestEx;
+    
+    @GET
+    @Path("/perms")
+    @Produces(MediaType.TEXT_PLAIN)
+    String getPermissions(
+        @QueryParam("userName")     String userName,
+        @QueryParam("groupName")    String groupName,
+        @QueryParam("instanceName") String instanceName,
+        @QueryParam("ipAddress")    String ipAddress,
+        @QueryParam("date")         String date,
+        @QueryParam("format")       String format
     ) throws BadRequestRestEx, InternalErrorRestEx;
 }
