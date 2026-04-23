@@ -7,6 +7,7 @@ package org.geoserver.geofence.services;
 
 import java.util.SortedSet;
 import org.geoserver.geofence.core.model.Rule;
+import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.services.dto.PermsResult;
 import org.geoserver.geofence.services.dto.RuleFilter;
@@ -282,6 +283,145 @@ public class RuleReaderPermissionFilterTest extends ServiceTestBase {
 
         assertEquals("Global ALLOW in any role should produce INCLUDE", "INCLUDE", result.getCqlFilter());
         assertTrue(result.getAccessibleResources().contains("*:*"));
+    }
+
+    /**
+     * Named user, role resolved from the user's groups (role=ANY).
+     * The user must exist in the DB with its UserGroup associations.
+     */
+    private RuleFilter buildUserAnyRoleFilter(String username) {
+        RuleFilter filter = new RuleFilter(SpecialFilterType.ANY, true);
+        filter.getUser().setText(username);
+        filter.getUser().setIncludeDefault(true);
+        // role stays ANY → roles will be resolved from GSUser.usergroups
+        return filter;
+    }
+
+    // -------------------------------------------------------------------------
+    // Tests: user specified, roles resolved from GSUser.usergroups
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void testUserWithSingleGroup_rolesResolvedFromUserGroups() {
+        // User u1 belongs to role p1; a workspace ALLOW exists for p1.
+        // Filter specifies only the user (role=ANY) → the system resolves p1 from the DB.
+        UserGroup role1 = createRole("p1");
+        createUser("u1", role1);
+
+        ruleAdminService.insert(new Rule(10, null, "p1", null, null, null, null, null, "ws1", null, GrantType.ALLOW));
+
+        PermsResult result = ruleReaderService.getPermissionFilter(buildUserAnyRoleFilter("u1"));
+
+        SortedSet<String> resources = result.getAccessibleResources();
+        assertTrue("User's group p1 should grant ws1", resources.contains("ws1:*"));
+    }
+
+    @Test
+    public void testUserWithMultipleGroups_allGroupsContributeToPermissions() {
+        // User u1 belongs to roles p1 and p2; each role grants a different workspace.
+        // Filter specifies only the user → both roles are resolved and OR-merged.
+        UserGroup role1 = createRole("p1");
+        UserGroup role2 = createRole("p2");
+        createUser("u1", role1, role2);
+
+        ruleAdminService.insert(new Rule(10, null, "p1", null, null, null, null, null, "ws1", null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(20, null, "p2", null, null, null, null, null, "ws2", null, GrantType.ALLOW));
+
+        PermsResult result = ruleReaderService.getPermissionFilter(buildUserAnyRoleFilter("u1"));
+
+        SortedSet<String> resources = result.getAccessibleResources();
+        assertTrue("Role p1 should contribute ws1", resources.contains("ws1:*"));
+        assertTrue("Role p2 should contribute ws2", resources.contains("ws2:*"));
+    }
+
+    @Test
+    public void testUserWithNoGroups_onlyDefaultRulesApply() {
+        // User u_nogroup has no group memberships.
+        // When role=ANY, the resolver returns an empty set →
+        // the system falls back to DEFAULT (null-role) rules only.
+        createUser("u_nogroup");
+
+        ruleAdminService.insert(new Rule(10, null, "p1", null, null, null, null, null, "ws_role", null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(20, null, null, null, null, null, null, null, "ws_default", null, GrantType.ALLOW));
+
+        PermsResult result = ruleReaderService.getPermissionFilter(buildUserAnyRoleFilter("u_nogroup"));
+
+        SortedSet<String> resources = result.getAccessibleResources();
+        assertFalse("Role-specific rule should not apply to a group-less user", resources.contains("ws_role:*"));
+        assertTrue("Default (null-role) rule should apply", resources.contains("ws_default:*"));
+    }
+
+    @Test
+    public void testUserNotInDb_onlyDefaultRulesApply() {
+        // A username not present in the DB also has no resolved roles →
+        // only default (null-role) rules should apply.
+        ruleAdminService.insert(new Rule(10, null, "p1", null, null, null, null, null, "ws_role", null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(20, null, null, null, null, null, null, null, "ws_default", null, GrantType.ALLOW));
+
+        PermsResult result = ruleReaderService.getPermissionFilter(buildUserAnyRoleFilter("unknown_user"));
+
+        SortedSet<String> resources = result.getAccessibleResources();
+        assertFalse("Role-specific rule should not apply for an unknown user", resources.contains("ws_role:*"));
+        assertTrue("Default (null-role) rule should apply", resources.contains("ws_default:*"));
+    }
+
+    @Test
+    public void testUserGroupDenyDoesNotAffectOtherUsersGroups() {
+        // u1 belongs to p1 only; u2 belongs to p2 only.
+        // A DENY for p2 should not affect u1's result.
+        UserGroup role1 = createRole("p1");
+        UserGroup role2 = createRole("p2");
+        createUser("u1", role1);
+        createUser("u2", role2);
+
+        ruleAdminService.insert(new Rule(10, null, "p1", null, null, null, null, null, "ws1", null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(20, null, "p2", null, null, null, null, null, null, null, GrantType.DENY));
+
+        PermsResult resultU1 = ruleReaderService.getPermissionFilter(buildUserAnyRoleFilter("u1"));
+        PermsResult resultU2 = ruleReaderService.getPermissionFilter(buildUserAnyRoleFilter("u2"));
+
+        assertTrue("u1 (p1) should have ws1", resultU1.getAccessibleResources().contains("ws1:*"));
+        assertEquals("u2 (p2) should be fully denied", "EXCLUDE", resultU2.getCqlFilter());
+    }
+
+    @Test
+    public void testUserDefaultRulesIncludedViaIncludeDefault() {
+        // u1 belongs to p1; rules exist for both p1 and null-role (default).
+        // The filter has user=u1, role=ANY with includeDefault=true,
+        // so both the role-specific and the default rule should be included.
+        UserGroup role1 = createRole("p1");
+        createUser("u1", role1);
+
+        ruleAdminService.insert(new Rule(10, null, "p1", null, null, null, null, null, "ws_role", null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(20, null, null, null, null, null, null, null, "ws_default", null, GrantType.ALLOW));
+
+        PermsResult result = ruleReaderService.getPermissionFilter(buildUserAnyRoleFilter("u1"));
+
+        SortedSet<String> resources = result.getAccessibleResources();
+        assertTrue("Role-specific ws should be accessible", resources.contains("ws_role:*"));
+        assertTrue("Default ws should also be accessible (includeDefault=true)", resources.contains("ws_default:*"));
+    }
+
+    @Test
+    public void testTwoUsersInDifferentGroupsGetDifferentPermissions() {
+        // u1 belongs to p1, u2 belongs to p2; each role grants a different workspace.
+        // Querying each user separately should return only that user's accessible workspaces.
+        UserGroup role1 = createRole("p1");
+        UserGroup role2 = createRole("p2");
+        createUser("u1", role1);
+        createUser("u2", role2);
+
+        ruleAdminService.insert(new Rule(10, null, "p1", null, null, null, null, null, "ws1", null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(20, null, "p2", null, null, null, null, null, "ws2", null, GrantType.ALLOW));
+
+        PermsResult resultU1 = ruleReaderService.getPermissionFilter(buildUserAnyRoleFilter("u1"));
+        PermsResult resultU2 = ruleReaderService.getPermissionFilter(buildUserAnyRoleFilter("u2"));
+
+        assertTrue("u1 should see ws1", resultU1.getAccessibleResources().contains("ws1:*"));
+        assertFalse("u1 should not see ws2", resultU1.getAccessibleResources().contains("ws2:*"));
+
+        assertFalse("u2 should not see ws1", resultU2.getAccessibleResources().contains("ws1:*"));
+        assertTrue("u2 should see ws2", resultU2.getAccessibleResources().contains("ws2:*"));
     }
 
     // -------------------------------------------------------------------------
