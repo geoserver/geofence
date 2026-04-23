@@ -259,8 +259,8 @@ public class RuleReaderPermissionFilterTest extends ServiceTestBase {
     @Test
     public void testDefaultRulesIncludedWithRoleFilter() {
         // A rule with no role (default), plus a role-specific rule: both should be returned
-        ruleAdminService.insert(new Rule(10, null, "p1",  null, null, null, null, null, "ws_role",    null, GrantType.ALLOW));
-        ruleAdminService.insert(new Rule(20, null, null,  null, null, null, null, null, "ws_default", null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(10, null, "p1", null, null, null, null, null, "ws_role", null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(20, null, null, null, null, null, null, null, "ws_default", null, GrantType.ALLOW));
 
         // role p1 filter includes default rules (includeDefault=true on the role filter)
         RuleFilter filter = buildAnonRoleFilter("p1");
