@@ -101,7 +101,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     @Override
     public AccessInfo getAccessInfo(RuleFilter filter)
     {
-        LOGGER.info("Requesting access for " + filter);
+        LOGGER.info("gAI: Requesting access for " + filter);
         Map<String, List<Rule>> groupedRules = getRules(filter);
 
         AccessInfoInternal currAccessInfo = null;
@@ -112,7 +112,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
             AccessInfoInternal accessInfo = resolveRuleset(rules);
             if(LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Filter " + filter + " on role " + role + " has access " + accessInfo);
+                LOGGER.debug("gAI: Filter " + filter + " on role " + role + " has access " + accessInfo);
             }
 
             currAccessInfo = enlargeAccessInfo(currAccessInfo, accessInfo);
@@ -121,7 +121,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         AccessInfo ret;
 
         if(currAccessInfo == null) {
-            LOGGER.warn("No access for filter " + filter);
+            LOGGER.warn("gAI: No access for filter " + filter);
             // Denying by default
             ret = new AccessInfo(GrantType.DENY);
         } else {
@@ -132,7 +132,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             ret.setAdminRights(getAdminAuth(filter));
         }
 
-        LOGGER.info("Returning " + ret + " for " + filter);
+        LOGGER.info("gAI: Returning " + ret + " for " + filter);
         return ret;
     }
 
@@ -552,7 +552,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             boolean ruleFound = false;
             for (Entry<String, List<Rule>> entry : ret.entrySet()) {
                 String role = entry.getKey();
-                LOGGER.debug("    Role:"+ role );
+                LOGGER.debug("    Role:"+ role + " ["+entry.getValue().size()+"]" );
                 for (Rule rule : entry.getValue()) {
                     LOGGER.debug("    Role:"+ role + " ---> " + rule);
                     ruleFound = true;
@@ -765,7 +765,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             PermsResultInternal groupPerms = permsBuilder.computePerms(rules);
             
             if(LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Filter for user" + discoveryFilter.getUser().getText() + " on role " + role + " has filter " + groupPerms.getCqlFilter());
+                LOGGER.debug("gPF: Filter for user " + discoveryFilter.getUser().getText() + "@" + role + " --> " + groupPerms.getCqlFilter());
             }
 
             accumulatedPerms.or(groupPerms);

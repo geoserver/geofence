@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.geoserver.geofence.services.dto.PermsResult;
 import org.geotools.api.filter.Filter;
 import org.geotools.api.filter.FilterFactory;
@@ -18,6 +20,7 @@ import org.geotools.filter.visitor.SimplifyingFilterVisitor;
  */
 public class PermsResultInternal {
 
+    private final static Logger LOGGER = LogManager.getLogger(PermsResultInternal.class);
     private static final FilterFactory ff = CommonFactoryFinder.getFilterFactory();
         
     private Filter filter;
@@ -60,18 +63,17 @@ public class PermsResultInternal {
                                      .addAll(layers);
         });
         
+        
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Merged PRI -> " + this.getCqlFilter());
+        }
+        
         // 3. Optimization: Clean up redundant specific layers if a workspace has "*"
         cleanUpRedundancies();
     }
 
     private void cleanUpRedundancies() {
         
-//        for (Set<String> layers : accessibleResources.values()) {
-//            if (layers.size() > 1 && layers.contains("*")) {
-//                layers.clear();
-//                layers.add("*");
-//            }
-//        }
         for (Set<String> layers : accessibleResources.values()) {
            if (layers.contains("*")) {
                // 1. Identify all exclusions (starting with !)
