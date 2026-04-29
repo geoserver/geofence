@@ -745,14 +745,8 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
     public PermsResult getPermissionFilter(RuleFilter ruleFilter) 
     {               
-        validatePermissionRuleFilter(ruleFilter);
-        
-        RuleFilter discoveryFilter = new RuleFilter(SpecialFilterType.ANY);
-        discoveryFilter.getSourceAddress().setFrom(ruleFilter.getSourceAddress());
-        discoveryFilter.getDate().setFrom(ruleFilter.getDate());        
-        discoveryFilter.getUser().setFrom(ruleFilter.getUser());
-        discoveryFilter.getRole().setFrom(ruleFilter.getRole());
-        
+        RuleFilter discoveryFilter = validatePermissionRuleFilter(ruleFilter);
+                
         Map<String, List<Rule>> groupedRules = getRules(discoveryFilter);
 
         PermsResultBuilder permsBuilder = new PermsResultBuilder();        
@@ -774,7 +768,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         return accumulatedPerms.toPermsResult();
     }
     
-    private void validatePermissionRuleFilter(RuleFilter ruleFilter) 
+    private RuleFilter validatePermissionRuleFilter(RuleFilter ruleFilter) 
     {
         // These values should not be set
         assertFilterAny(ruleFilter.getService(), "service");
@@ -792,6 +786,16 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         if(ruleFilter.getRole().getType() != RuleFilter.FilterType.ANY 
                 && !(ruleFilter.getRole().getType() == RuleFilter.FilterType.NAMEVALUE))
             throw new IllegalArgumentException("Role filter not acceptable: " + ruleFilter.getRole());
+
+        // Now collect the valid constraints
+        RuleFilter discoveryFilter = new RuleFilter(SpecialFilterType.ANY);
+        discoveryFilter.getInstance().setFrom(ruleFilter.getInstance());
+        discoveryFilter.getSourceAddress().setFrom(ruleFilter.getSourceAddress());
+        discoveryFilter.getDate().setFrom(ruleFilter.getDate());        
+        discoveryFilter.getUser().setFrom(ruleFilter.getUser());
+        discoveryFilter.getRole().setFrom(ruleFilter.getRole());
+        
+        return discoveryFilter;
     }
     
     private void assertFilterAny(TextFilter filter, String fieldname) {
