@@ -682,7 +682,7 @@ public class RESTRuleServiceImpl
     @Override
     public AccessInfo getAccessInfo(
             String userName,
-            String roleName,
+            String groupName,
             String instanceName,
             String ipAddress,
             String date,
@@ -695,7 +695,7 @@ public class RESTRuleServiceImpl
 
         RuleFilter filter = buildFilter(
                 userName, true,
-                roleName, true,
+                groupName, true,
                 null, instanceName, true,
                 ipAddress,   true,
                 date,        true,
@@ -709,7 +709,7 @@ public class RESTRuleServiceImpl
             AccessInfo accessInfo = ruleReaderService.getAccessInfo(filter);
             return accessInfo;
         } catch (Exception ex) {
-            LOGGER.error(ex);
+            LOGGER.error("Unexpected exception while retrieving access info", ex);
             throw new InternalErrorRestEx(ex.getMessage());
         }
     }

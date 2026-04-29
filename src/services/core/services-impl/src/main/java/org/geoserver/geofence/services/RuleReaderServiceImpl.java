@@ -45,10 +45,6 @@ import org.geoserver.geofence.services.util.PermsResultBuilder;
 import org.geoserver.geofence.services.util.PermsResultInternal;
 
 import org.geoserver.geofence.spi.UserResolver;
-import org.geotools.api.filter.FilterFactory;
-import org.geotools.factory.CommonFactoryFinder;
-
-
 
 /**
  *
@@ -62,7 +58,6 @@ import org.geotools.factory.CommonFactoryFinder;
 public class RuleReaderServiceImpl implements RuleReaderService {
 
     private final static Logger LOGGER = LogManager.getLogger(RuleReaderServiceImpl.class);
-    private static final FilterFactory ff = CommonFactoryFinder.getFilterFactory();
         
     private RuleDAO ruleDAO;
     private AdminRuleDAO adminRuleDAO;
@@ -101,7 +96,9 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     @Override
     public AccessInfo getAccessInfo(RuleFilter filter)
     {
-        LOGGER.info("gAI: Requesting access for " + filter);
+        if(LOGGER.isInfoEnabled()) {
+            LOGGER.info("gAI: Requesting access for " + filter);
+        }
         Map<String, List<Rule>> groupedRules = getRules(filter);
 
         AccessInfoInternal currAccessInfo = null;
@@ -132,7 +129,9 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             ret.setAdminRights(getAdminAuth(filter));
         }
 
-        LOGGER.info("gAI: Returning " + ret + " for " + filter);
+        if(LOGGER.isInfoEnabled()) {
+            LOGGER.info("gAI: Returning " + ret + " for " + filter);
+        }
         return ret;
     }
 
@@ -743,6 +742,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
     }
 
+    @Override
     public PermsResult getPermissionFilter(RuleFilter ruleFilter) 
     {               
         RuleFilter discoveryFilter = validatePermissionRuleFilter(ruleFilter);
