@@ -454,6 +454,14 @@ public class RuleFilter implements Serializable, Cloneable {
             }
         }
 
+        public IdNameFilter setFrom(IdNameFilter other) {
+            this.id = other.id;
+            this.name = other.name;
+            this.type = other.type;
+            this.includeDefault = other.includeDefault;
+            return this;
+        }
+        
         public void setId(Long id) {
             this.id = id;
             this.type = FilterType.IDVALUE;

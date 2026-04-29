@@ -33,6 +33,7 @@ import org.geoserver.geofence.core.model.enums.GrantType;
 import org.geoserver.geofence.core.model.enums.SpatialFilterType;
 import org.geoserver.geofence.services.dto.AccessInfo;
 import org.geoserver.geofence.services.dto.AuthUser;
+import org.geoserver.geofence.services.dto.PermsResult;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.IdNameFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
@@ -40,10 +41,10 @@ import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
 import org.geoserver.geofence.services.dto.ShortRule;
 import org.geoserver.geofence.services.exception.BadRequestServiceEx;
 import org.geoserver.geofence.services.util.AccessInfoInternal;
+import org.geoserver.geofence.services.util.PermsResultBuilder;
+import org.geoserver.geofence.services.util.PermsResultInternal;
 
 import org.geoserver.geofence.spi.UserResolver;
-
-
 
 /**
  *
@@ -57,7 +58,7 @@ import org.geoserver.geofence.spi.UserResolver;
 public class RuleReaderServiceImpl implements RuleReaderService {
 
     private final static Logger LOGGER = LogManager.getLogger(RuleReaderServiceImpl.class);
-
+        
     private RuleDAO ruleDAO;
     private AdminRuleDAO adminRuleDAO;
     private LayerDetailsDAO detailsDAO;
@@ -95,7 +96,9 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     @Override
     public AccessInfo getAccessInfo(RuleFilter filter)
     {
-        LOGGER.info("Requesting access for " + filter);
+        if(LOGGER.isInfoEnabled()) {
+            LOGGER.info("gAI: Requesting access for " + filter);
+        }
         Map<String, List<Rule>> groupedRules = getRules(filter);
 
         AccessInfoInternal currAccessInfo = null;
@@ -106,7 +109,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
             AccessInfoInternal accessInfo = resolveRuleset(rules);
             if(LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Filter " + filter + " on role " + role + " has access " + accessInfo);
+                LOGGER.debug("gAI: Filter " + filter + " on role " + role + " has access " + accessInfo);
             }
 
             currAccessInfo = enlargeAccessInfo(currAccessInfo, accessInfo);
@@ -115,7 +118,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         AccessInfo ret;
 
         if(currAccessInfo == null) {
-            LOGGER.warn("No access for filter " + filter);
+            LOGGER.warn("gAI: No access for filter " + filter);
             // Denying by default
             ret = new AccessInfo(GrantType.DENY);
         } else {
@@ -126,7 +129,9 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             ret.setAdminRights(getAdminAuth(filter));
         }
 
-        LOGGER.info("Returning " + ret + " for " + filter);
+        if(LOGGER.isInfoEnabled()) {
+            LOGGER.info("gAI: Returning " + ret + " for " + filter);
+        }
         return ret;
     }
 
@@ -546,7 +551,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             boolean ruleFound = false;
             for (Entry<String, List<Rule>> entry : ret.entrySet()) {
                 String role = entry.getKey();
-                LOGGER.debug("    Role:"+ role );
+                LOGGER.debug("    Role:"+ role + " ["+entry.getValue().size()+"]" );
                 for (Rule rule : entry.getValue()) {
                     LOGGER.debug("    Role:"+ role + " ---> " + rule);
                     ruleFound = true;
@@ -737,5 +742,65 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
     }
 
+    @Override
+    public PermsResult getPermissionFilter(RuleFilter ruleFilter) 
+    {               
+        RuleFilter discoveryFilter = validatePermissionRuleFilter(ruleFilter);
+
+        Map<String, List<Rule>> groupedRules = getRules(discoveryFilter);
+
+        PermsResultInternal accumulatedPerms = new PermsResultInternal();
+
+        for (Entry<String, List<Rule>> ruleGroup : groupedRules.entrySet()) {
+            String role = ruleGroup.getKey();
+            List<Rule> rules = ruleGroup.getValue();
+
+            PermsResultInternal groupPerms = PermsResultBuilder.computePerms(rules);
+            
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("gPF: Filter for user " + discoveryFilter.getUser().getText() + "@" + role + " --> " + groupPerms.getCqlFilter());
+            }
+
+            accumulatedPerms.or(groupPerms);
+        }
+
+        return accumulatedPerms.toPermsResult();
+    }
+    
+    private RuleFilter validatePermissionRuleFilter(RuleFilter ruleFilter) 
+    {
+        // These values should not be set
+        assertFilterAny(ruleFilter.getService(), "service");
+        assertFilterAny(ruleFilter.getRequest(), "request");
+        assertFilterAny(ruleFilter.getSubfield(), "subfield");
+        assertFilterAny(ruleFilter.getWorkspace(), "workspace");
+        assertFilterAny(ruleFilter.getLayer(), "layer");
+
+        // user may be type=DEFAULT (anonymous) || NAMEVALUE + includeDefault       
+        if(ruleFilter.getUser().getType() != RuleFilter.FilterType.DEFAULT 
+                && !(ruleFilter.getUser().getType() == RuleFilter.FilterType.NAMEVALUE && ruleFilter.getUser().isIncludeDefault()))
+            throw new IllegalArgumentException("User filter not acceptable: " + ruleFilter.getUser());
+        
+        // role may be type=ANY (group from userservice) || NAMEVALUE (csv list from geoserver)
+        if(ruleFilter.getRole().getType() != RuleFilter.FilterType.ANY 
+                && !(ruleFilter.getRole().getType() == RuleFilter.FilterType.NAMEVALUE))
+            throw new IllegalArgumentException("Role filter not acceptable: " + ruleFilter.getRole());
+
+        // Now collect the valid constraints
+        RuleFilter discoveryFilter = new RuleFilter(SpecialFilterType.ANY);
+        discoveryFilter.getInstance().setFrom(ruleFilter.getInstance());
+        discoveryFilter.getSourceAddress().setFrom(ruleFilter.getSourceAddress());
+        discoveryFilter.getDate().setFrom(ruleFilter.getDate());        
+        discoveryFilter.getUser().setFrom(ruleFilter.getUser());
+        discoveryFilter.getRole().setFrom(ruleFilter.getRole());
+        
+        return discoveryFilter;
+    }
+    
+    private void assertFilterAny(TextFilter filter, String fieldname) {
+        if(filter.getType() != RuleFilter.FilterType.ANY) {
+            throw new IllegalArgumentException("Filter should not specify a " + fieldname);
+        }
+    }
 
 }

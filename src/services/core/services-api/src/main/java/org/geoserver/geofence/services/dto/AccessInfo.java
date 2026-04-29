@@ -10,12 +10,14 @@ import org.geoserver.geofence.core.model.enums.GrantType;
 
 import java.io.Serializable;
 import java.util.Set;
+import javax.xml.bind.annotation.XmlRootElement;
 
 
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
+@XmlRootElement(name = "AccessInfo")
 public class AccessInfo implements Serializable, Cloneable {
     
     private static final long serialVersionUID = -9108763358187355343L;

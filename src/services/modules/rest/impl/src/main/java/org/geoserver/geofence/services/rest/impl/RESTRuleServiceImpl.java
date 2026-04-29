@@ -26,6 +26,8 @@ import org.geoserver.geofence.core.model.LayerDetails;
 import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.core.model.enums.InsertPosition;
 
+import org.geoserver.geofence.services.dto.AccessInfo;
+import org.geoserver.geofence.services.dto.PermsResult;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.IdNameFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
@@ -676,4 +678,85 @@ public class RESTRuleServiceImpl
     }
     // ==========================================================================
     // ==========================================================================
+
+    @Override
+    public AccessInfo getAccessInfo(
+            String userName,
+            String groupName,
+            String instanceName,
+            String ipAddress,
+            String date,
+            String serviceName,
+            String requestName,
+            String subfieldName,
+            String workspace,
+            String layer)
+            throws BadRequestRestEx, InternalErrorRestEx {
+
+        RuleFilter filter = buildFilter(
+                userName, true,
+                groupName, true,
+                null, instanceName, true,
+                ipAddress,   true,
+                date,        true,
+                serviceName, true,
+                requestName, true,
+                subfieldName, true,                
+                workspace, true,
+                layer, true);
+
+        try {
+            AccessInfo accessInfo = ruleReaderService.getAccessInfo(filter);
+            return accessInfo;
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected exception while retrieving access info", ex);
+            throw new InternalErrorRestEx(ex.getMessage());
+        }
+    }
+
+    @Override
+    public String getPermissions(
+            String userName,
+            String groupName,
+            String instanceName,
+            String ipAddress,
+            String date,
+            String format            
+    )
+            throws BadRequestRestEx, InternalErrorRestEx 
+    {
+        RuleFilter filter = buildFilter(
+                userName, true, // either value+includedefault or null+includedefault(->DEFAULT)
+                groupName, groupName != null,
+                null, instanceName, true,
+                ipAddress,   ipAddress != null,
+                date,        date != null,
+                null, false, // ANY
+                null, false, // ANY
+                null, false, // ANY
+                null, false, // ANY
+                null, false // ANY
+        );
+                
+        PermsResult permissionFilter;
+        try {
+            permissionFilter = ruleReaderService.getPermissionFilter(filter);
+        } catch(IllegalArgumentException e) {
+            throw new BadRequestRestEx("Bad filter: "+ e.getMessage() +"\n");
+        }
+        
+        if(format == null || "filter".equals(format)) {
+            return permissionFilter.getCqlFilter();
+        } else if ("list".equals(format)) {
+            StringBuilder sb = new StringBuilder();
+            for(String resource: permissionFilter.getAccessibleResources()) {
+                sb.append(resource).append('\n');
+            }
+            return sb.toString();
+        } else {
+            throw new BadRequestRestEx("Unknown format '"+format+"'. Allowed values: filter, list\n");
+        }
+    }    
+    
 }
+
