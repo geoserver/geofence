@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.core.model.enums.GrantType;
+import org.geotools.filter.visitor.SimplifyingFilterVisitor;
 
 
 public class PermsResultBuilder {
@@ -21,7 +22,7 @@ public class PermsResultBuilder {
     private final static Logger LOGGER = LogManager.getLogger(PermsResultBuilder.class);        
     private static final FilterFactory ff = CommonFactoryFinder.getFilterFactory();
 
-    public PermsResultInternal computePerms(List<Rule> sortedRules) {
+    public static PermsResultInternal computePerms(List<Rule> sortedRules) {
         
         List<Rule> survivingAllows = new ArrayList<>();
         List<Rule> activeDenies = new ArrayList<>();
@@ -55,7 +56,7 @@ public class PermsResultBuilder {
         return buildPerms(survivingAllows, activeDenies);
     }
 
-    private boolean isCompletelyBlocked(Rule allowRule, List<Rule> denies) {
+    private static boolean isCompletelyBlocked(Rule allowRule, List<Rule> denies) {
         for (Rule deny : denies) {
             boolean wsMatches = (deny.getWorkspace() == null || deny.getWorkspace().equals(allowRule.getWorkspace()));
             boolean layerMatches = (deny.getLayer() == null || deny.getLayer().equals(allowRule.getLayer()));
@@ -67,13 +68,29 @@ public class PermsResultBuilder {
         return false;
     }   
       
-    private PermsResultInternal buildPerms(List<Rule> finalAllowedRules, List<Rule> activeDenies) {
+    private static PermsResultInternal buildPerms(List<Rule> finalAllowedRules, List<Rule> activeDenies) {
         Map<String, Set<String>> resources = new HashMap<>();
         for (Rule rule : finalAllowedRules) {
             if(rule.getWorkspace() == null && rule.getLayer() == null) {
-                resources.clear();
-                resources.put("*", Set.of("*"));
-                return new PermsResultInternal(Filter.INCLUDE, resources);
+                // Global grant found
+                Set<String> globalLayers = resources.computeIfAbsent("*", k -> new HashSet<>());
+                globalLayers.add("*");
+
+                // Add all existing DENY rules as exclusions to the global grant
+                for (Rule deny : activeDenies) {
+                    String dWs = deny.getWorkspace() == null ? "*" : deny.getWorkspace();
+                    String dLy = deny.getLayer() == null ? "*" : deny.getLayer();
+
+                    // Represent exclusion. If ws is specific, we might need a special key
+                    // but for simplicity and consistency with your test:
+                    if (!"*".equals(dWs)) {
+                        resources.computeIfAbsent(dWs, k -> new HashSet<>()).add("!" + dLy);
+                    } else {
+                        globalLayers.add("!" + dLy);
+                    }
+                }
+                // Return with the corrected filter
+                return new PermsResultInternal(compactGrants(finalAllowedRules, activeDenies), resources);                
             }
             
             String ws = rule.getWorkspace() == null ? "*" : rule.getWorkspace();
@@ -97,7 +114,7 @@ public class PermsResultBuilder {
         return new PermsResultInternal(compactGrants(finalAllowedRules, activeDenies),resources);
     }
     
-    private Filter compactGrants(List<Rule> finalAllowedRules, List<Rule> activeDenies) {
+    private static Filter compactGrants(List<Rule> finalAllowedRules, List<Rule> activeDenies) {
         Map<String, Set<String>> workspaceToLayers = new HashMap<>();
         Set<String> fullWorkspaceGrants = new HashSet<>();
         Set<String> crossWorkspaceLayers = new HashSet<>(); // Handles ws=null, layer=X
@@ -107,8 +124,20 @@ public class PermsResultBuilder {
             String layer = rule.getLayer();
 
             if (ws == null && layer == null) {
-                // global wildcard (e.g., a rule granting global service access)
-                return Filter.INCLUDE; 
+                Filter globalBase = Filter.INCLUDE;
+                if (!activeDenies.isEmpty()) {
+                    List<Filter> holes = new ArrayList<>();
+                    for (Rule deny : activeDenies) {
+                        // Collect every specific DENY to punch holes in the global grant
+                        holes.add(createRuleFilter(deny)); 
+                    }
+                    globalBase = ff.and(globalBase, ff.not(ff.or(holes)));               
+                }
+                
+                // If we found a global grant, this is the most permissive we can be.
+                // We can return this immediately because it covers all other grants.
+                return (Filter) globalBase.accept(new SimplifyingFilterVisitor(), null);
+
             } else if (ws == null && layer != null) {
                 // Layer applies to ANY workspace
                 crossWorkspaceLayers.add(layer);
@@ -183,5 +212,30 @@ public class PermsResultBuilder {
         if (groupedFilters.isEmpty()) return Filter.EXCLUDE;
         if (groupedFilters.size() == 1) return groupedFilters.get(0);
         return ff.or(groupedFilters);
-    }   
+    }
+    
+    /**
+     * Converts a single Rule into a GeoTools Filter. Used for building the base
+     * ALLOW blocks and for creating the NOT blocks (holes).
+     */
+    private static Filter createRuleFilter(Rule rule) {
+        List<Filter> conditions = new ArrayList<>();
+
+        if (rule.getWorkspace() != null) {
+            conditions.add(ff.equals(ff.property("workspace"), ff.literal(rule.getWorkspace())));
+        }
+
+        if (rule.getLayer() != null) {
+            conditions.add(ff.equals(ff.property("layer"), ff.literal(rule.getLayer())));
+        }
+
+        // If both are null, it's a global wildcard
+        if (conditions.isEmpty()) {
+            return Filter.INCLUDE;
+        }
+
+        // If only one is set, return it; otherwise AND them
+        return conditions.size() == 1 ? conditions.get(0) : ff.and(conditions);
+    }    
+    
 }

@@ -6,6 +6,7 @@
 package org.geoserver.geofence.services;
 
 import java.util.SortedSet;
+import org.geoserver.geofence.core.model.GSInstance;
 import org.geoserver.geofence.core.model.Rule;
 import org.geoserver.geofence.core.model.UserGroup;
 import org.geoserver.geofence.core.model.enums.GrantType;
@@ -526,4 +527,60 @@ public class RuleReaderPermissionFilterTest extends ServiceTestBase {
             // expected
         }
     }
+    
+    
+    private GSInstance createInstance(String name) {
+        GSInstance instance = new GSInstance();
+        instance.setName(name);
+        instance.setBaseURL("http://" + name + "/geoserver");
+        instance.setUsername("admin");
+        instance.setPassword("geoserver");
+        instance.setDescription("test instance " + name);
+        instanceAdminService.insert(instance);
+        return instance;
+    }
+
+    @Test
+    public void testInstanceFilterIsRespected_crossInstanceLeak() {
+        GSInstance instanceA = createInstance("instA");
+        GSInstance instanceB = createInstance("instB");
+
+        // ALLOW for instance A on ws_a:*
+        ruleAdminService.insert(new Rule(10, null, null, instanceA, null, null, null, null, "ws_a", null, GrantType.ALLOW));
+        // ALLOW for instance B on ws_b:* (should NOT be visible from instance A's perspective)
+        ruleAdminService.insert(new Rule(20, null, null, instanceB, null, null, null, null, "ws_b", null, GrantType.ALLOW));
+
+        RuleFilter filter = buildAnonAnyRoleFilter();
+        filter.setInstance("instA");
+
+        PermsResult result = ruleReaderService.getPermissionFilter(filter);
+
+        SortedSet<String> resources = result.getAccessibleResources();
+        assertTrue("Instance A's grant should appear", resources.contains("ws_a:*"));
+        assertFalse("Instance B's grant should NOT leak into instance A's permission filter — "
+                + "if this assertion fails, the cross-instance leak bug is confirmed",
+                resources.contains("ws_b:*"));
+    }
+
+    @Test
+    public void testGlobalAllowRespectsHigherPriorityWorkspaceDeny() {
+        // Higher priority: full-block DENY for a specific (workspace, layer)
+        ruleAdminService.insert(new Rule(10, null, null, null, null, null, null, null, "secret", "top_secret", GrantType.DENY));
+        // Lower priority: global ALLOW
+        ruleAdminService.insert(new Rule(20, null, null, null, null, null, null, null, null, null, GrantType.ALLOW));
+
+        PermsResult result = ruleReaderService.getPermissionFilter(buildAnonAnyRoleFilter());
+
+        SortedSet<String> resources = result.getAccessibleResources();
+        String cql = result.getCqlFilter();
+
+        assertFalse("Global ALLOW should not produce a bare INCLUDE when a higher-priority "
+                + "workspace-specific DENY exists — if this assertion fails, the "
+                + "global-ALLOW-drops-DENY-holes bug is confirmed: result is '" + cql + "'",
+                "INCLUDE".equals(cql) && resources.contains("*:*") && resources.size() == 1);
+
+        assertTrue("CQL should NOT (workspace='secret' AND layer='top_secret') somewhere — got: " + cql,
+                cql.contains("secret") && cql.contains("top_secret") && cql.toUpperCase().contains("NOT"));
+    }
+    
 }

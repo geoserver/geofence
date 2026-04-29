@@ -746,17 +746,16 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     public PermsResult getPermissionFilter(RuleFilter ruleFilter) 
     {               
         RuleFilter discoveryFilter = validatePermissionRuleFilter(ruleFilter);
-                
+
         Map<String, List<Rule>> groupedRules = getRules(discoveryFilter);
 
-        PermsResultBuilder permsBuilder = new PermsResultBuilder();        
         PermsResultInternal accumulatedPerms = new PermsResultInternal();
 
         for (Entry<String, List<Rule>> ruleGroup : groupedRules.entrySet()) {
             String role = ruleGroup.getKey();
             List<Rule> rules = ruleGroup.getValue();
 
-            PermsResultInternal groupPerms = permsBuilder.computePerms(rules);
+            PermsResultInternal groupPerms = PermsResultBuilder.computePerms(rules);
             
             if(LOGGER.isDebugEnabled()) {
                 LOGGER.debug("gPF: Filter for user " + discoveryFilter.getUser().getText() + "@" + role + " --> " + groupPerms.getCqlFilter());
