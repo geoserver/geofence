@@ -30,7 +30,8 @@ import org.apache.logging.log4j.Logger;;
  * @author Tobia di Pisa (tobia.dipisa at geo-solutions.it)
  *
  * @see http://chrisdail.com/2008/08/13/http-basic-authentication-with-apache-cxf-revisited/
- *
+ * link might return 404 archived version can be accessed below
+ * https://web.archive.org/web/20240414170311/http://chrisdail.com/2008/08/13/http-basic-authentication-with-apache-cxf-revisited/
  */
 public class AuthenticationHandler extends AbstractInDatabindingInterceptor
 {
