@@ -48,7 +48,8 @@ Here's a compatibility table for the most recent versions of both applications (
 
 | GeoFence       | GeoServer       |   Main changes                        |
 |----------------|-----------------|---------------------------------------|
-| [3.8.2]        | 2.28.x <br/> 2.27.3 - 2.27.x | Some REST improvements   | 
+| [3.8.3]        | 2.28.4 - 2.28.x | Fix [GEOS-12096](https://osgeo-org.atlassian.net/browse/GEOS-12096) |
+| [3.8.2]        | 2.28.0 - 2.28.3 <br/> 2.27.3 - 2.27.x | Some REST improvements   | 
 | [3.8.1]        | 2.28.0 <br/> 2.27.2                   | JDBC deps fixes          |   
 | 3.8.0          | 2.27.0 - 2.27.1                       | Major libs refactoring, hibernate upgrade |   
 | 3.7.2          | 2.26.1 - 2.26.x </br> 2.25.5 - 2.25.x |                 |   
@@ -62,6 +63,7 @@ Here's a compatibility table for the most recent versions of both applications (
 | [3.4.6.1]      | 2.18.x <br/> 2.17.x      | #166: JTS Version update <br/> Minor DTO changes |
 
 [main_war]: https://build.geoserver.org/geofence/nightly/main/geofence-main-latest-war.zip
+[3.8.3]: https://github.com/geoserver/geofence/releases/tag/v3.8.3
 [3.8.2]: https://github.com/geoserver/geofence/releases/tag/v3.8.2
 [3.8.1]: https://github.com/geoserver/geofence/releases/tag/v3.8.1
 [3.6.x]: https://build.geoserver.org/geofence/nightly/3.6.x/geofence-3.6.x-latest-war.zip
