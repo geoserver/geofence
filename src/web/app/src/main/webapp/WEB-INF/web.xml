@@ -41,18 +41,36 @@
     </filter-mapping>
 
     <!-- Standard Context -->
+    
+    <servlet>
+        <servlet-name>jersey</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+
+        <init-param>
+            <param-name>jakarta.ws.rs.Application</param-name>
+            <param-value>org.geofence.web.StartupService</param-value>
+        </init-param>
+
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>jersey</servlet-name>
+        <url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>    
+    
 
     <!-- *****************************************************************************************  -->
     <!-- **                                DISPATCHER                                           **  -->
     <!-- *****************************************************************************************  -->
-    <servlet>
+<!--    <servlet>
         <servlet-name>dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
-    </servlet>
+    </servlet>-->
 
     <!-- CXF Servlet -->
-    <servlet>
+<!--    <servlet>
         <servlet-name>CXFServlet</servlet-name>
         <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
     </servlet>
@@ -60,18 +78,18 @@
     <servlet-mapping>
         <servlet-name>CXFServlet</servlet-name>
         <url-pattern>/rest/*</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping>-->
 
     <!-- Spring remoting -->
-    <servlet>
+<!--    <servlet>
         <servlet-name>remoting</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
-    </servlet>
-
+    </servlet>-->
+<!--
     <servlet-mapping>
         <servlet-name>remoting</servlet-name>
         <url-pattern>/remoting/*</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping>-->
 
 </web-app>

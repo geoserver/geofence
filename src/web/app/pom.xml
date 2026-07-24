@@ -105,13 +105,26 @@
     <!-- =============================================================== -->
     <!-- HTTP UTILS -->
     <!-- =============================================================== -->
-    <dependency>
+    <!--    <dependency>
       <groupId>org.codehaus.jettison</groupId>
       <artifactId>jettison</artifactId>
-    </dependency>
+    </dependency>-->
 
     <!-- =============================================================== -->
-
+    <dependency>
+      <groupId>org.glassfish.jersey.containers</groupId>
+      <artifactId>jersey-container-servlet</artifactId>
+      <version>3.1.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.inject</groupId>
+      <artifactId>jersey-hk2</artifactId>
+      <version>3.1.5</version>
+    </dependency>
     <!-- =============================================================== -->
     <!-- =============================================================== -->
     <!-- CLIENT -->
@@ -164,9 +177,9 @@
     <plugins>
       <!-- Run the application using "mvn jetty:run" -->
       <plugin>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>maven-jetty-plugin</artifactId>
-        <version>6.1.26</version>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>11.0.26</version>
         <configuration>
           <webAppConfig>
             <contextPath>/geofence</contextPath>

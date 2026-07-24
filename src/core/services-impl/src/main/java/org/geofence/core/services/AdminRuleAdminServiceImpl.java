@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /** @author ETj (etj at geo-solutions.it) */
-@Service
+@Service("adminRuleAdminService")
 public class AdminRuleAdminServiceImpl implements AdminRuleAdminService {
 
     private static final Logger LOGGER = LogManager.getLogger(AdminRuleAdminServiceImpl.class);

@@ -5,13 +5,10 @@
 
 package org.geofence.web;
 
+import jakarta.ws.rs.core.Application;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.InitializingBean;
 
-public class StartupService implements InitializingBean {
+public class StartupService extends Application {
     private static final Logger LOGGER = LogManager.getLogger(StartupService.class);
-
-    @Override
-    public void afterPropertiesSet() throws Exception {}
 }

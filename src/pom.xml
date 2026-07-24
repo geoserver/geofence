@@ -93,7 +93,7 @@
 
     <jts.version>1.20.0</jts.version>
 
-    <gt.version>35-SNAPSHOT</gt.version>
+    <gt.version>36-SNAPSHOT</gt.version>
 
     <spring.version>7.0.5</spring.version>
     <spring.security.version>7.0.3</spring.security.version>
@@ -101,7 +101,7 @@
     <spring.ldap.version>4.0.1</spring.ldap.version>
     <spring-integration.version>5.5.18</spring-integration.version>
 
-    <hibernate-version>7.1.4.Final</hibernate-version>
+    <hibernate-version>7.4.5.Final</hibernate-version>
 
     <xalan-version>2.7.3</xalan-version>
 

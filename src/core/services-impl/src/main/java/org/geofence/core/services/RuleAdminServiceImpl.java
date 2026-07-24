@@ -35,7 +35,7 @@ import org.springframework.stereotype.Service;
  *
  * @author ETj (etj at geo-solutions.it)
  */
-@Service
+@Service("ruleAdminService")
 public class RuleAdminServiceImpl implements RuleAdminService {
 
     private static final Logger LOGGER = LogManager.getLogger(RuleAdminServiceImpl.class);

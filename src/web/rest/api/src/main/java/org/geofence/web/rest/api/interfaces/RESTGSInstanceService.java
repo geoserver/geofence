@@ -26,7 +26,7 @@ import org.geofence.web.rest.api.model.RESTShortInstanceList;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 /** @author Emanuele Tajariol (etj at geo-solutions.it) */
-@Path("/")
+@Path("/instance")
 public interface RESTGSInstanceService {
 
     /** @return a sample user list */

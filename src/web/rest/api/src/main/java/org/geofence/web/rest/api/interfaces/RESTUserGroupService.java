@@ -26,7 +26,7 @@ import org.geofence.web.rest.api.model.config.RESTFullUserGroupList;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 /** @author Emanuele Tajariol (etj at geo-solutions.it) */
-@Path("/")
+@Path("/usergroup")
 public interface RESTUserGroupService {
 
     /** @return a sample user list */

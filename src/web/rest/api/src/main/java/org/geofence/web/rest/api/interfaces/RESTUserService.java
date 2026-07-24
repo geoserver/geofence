@@ -26,7 +26,7 @@ import org.geofence.web.rest.api.model.RESTShortUserList;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 /** @author Emanuele Tajariol (etj at geo-solutions.it) */
-@Path("/")
+@Path("/user")
 public interface RESTUserService {
 
     /**

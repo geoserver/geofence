@@ -1,0 +1,13 @@
+# Sample override file for GeoFence's own database connection.
+#
+# Copy this file to "geofence-datasource-ovr.properties" and place it in the directory pointed to
+# by the "geofence.dir" system property/env var, or under "geofence/" inside the directory pointed
+# to by "GEOSERVER_DATA_DIR" (checked automatically, no extra configuration needed when GeoFence
+# runs embedded in GeoServer), or point "geofence-datasource-file" directly at this file.
+#
+# All four properties are required; there is no built-in default database.
+
+geofence.datasource.driver=org.postgresql.Driver
+geofence.datasource.url=jdbc:postgresql://localhost:5432/geofence
+geofence.datasource.username=geofence
+geofence.datasource.password=geofence
