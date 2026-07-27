@@ -1,9 +1,10 @@
-# Sample override file for GeoFence's own database connection.
+# Sample datasource configuration file for GeoFence's own database connection.
 #
-# Copy this file to "geofence-datasource-ovr.properties" and place it in the directory pointed to
-# by the "geofence.dir" system property/env var, or under "geofence/" inside the directory pointed
-# to by "GEOSERVER_DATA_DIR" (checked automatically, no extra configuration needed when GeoFence
-# runs embedded in GeoServer), or point "geofence-datasource-file" directly at this file.
+# Copy this file to "geofence-datasource.properties" and place it wherever
+# GEOFENCE_DATASOURCE_FILE (system property or env var) points to - an absolute path if set to
+# one, or the current working directory otherwise. When running embedded in GeoServer, it's also
+# checked automatically under "geofence/" inside GeoServer's own data directory, no extra
+# configuration needed.
 #
 # All four properties are required; there is no built-in default database.
 
