@@ -125,6 +125,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         assertEquals(2, ruleAdminService.count(f1));
     }
 
+    @Test
     public void testRuleLimits() throws NotFoundServiceEx {
         final Long id;
 
@@ -151,13 +152,13 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
             LOGGER.info("Found " + loaded + " --> " + loaded.getRuleLimits());
         }
 
-        // set new limits
-        final Long lid2;
+        // set new limits over existing ones: updates the existing entity in place (same @MapsId
+        // identity), so the id shows up on the persisted state, not necessarily on this same
+        // now-superseded RuleLimits instance
         {
             RuleLimits limits = new RuleLimits();
             ruleAdminService.setLimits(id, limits);
-            lid2 = limits.getId();
-            assertNotNull(lid2);
+            assertNotNull(ruleAdminService.get(id).getRuleLimits().getId());
         }
 
         // remove limits
@@ -181,6 +182,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         }
     }
 
+    @Test
     public void testRuleLimitsErrors() throws NotFoundServiceEx {
 
         try {
@@ -205,6 +207,30 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         }
     }
 
+    // reproduces RulesRestController.update()'s exact sequence: get(), then update() an unrelated
+    // field, then setLimits() again - as opposed to testRuleLimits(), which calls setLimits() twice
+    // with no intervening get()/update() call
+    @Test
+    public void testUpdateThenSetLimits() throws NotFoundServiceEx {
+        Rule r1 = new Rule(10, null, null, null, null, "s1", "r1", null, "w1", "l1", GrantType.LIMIT);
+        ruleAdminService.insert(r1);
+        Long id = r1.getId();
+
+        RuleLimits limits1 = new RuleLimits();
+        ruleAdminService.setLimits(id, limits1);
+
+        Rule theRule = ruleAdminService.get(id);
+        theRule.setPriority(99);
+        ruleAdminService.update(theRule);
+
+        RuleLimits limits2 = new RuleLimits();
+        ruleAdminService.setLimits(id, limits2);
+
+        Rule loaded = ruleAdminService.get(id);
+        assertNotNull(loaded.getRuleLimits());
+    }
+
+    @Test
     public void testRuleDetails() throws NotFoundServiceEx {
         final Long id;
 
@@ -290,6 +316,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         }
     }
 
+    @Test
     public void testAllowedStyles() throws NotFoundServiceEx {
         final Long id;
 
@@ -381,6 +408,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         }
     }
 
+    @Test
     public void testAttribs() throws NotFoundServiceEx {
         final Long id;
 
@@ -450,6 +478,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         }
     }
 
+    @Test
     public void testRuleDetailsErrors() throws NotFoundServiceEx {
 
         try {
@@ -485,6 +514,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         }
     }
 
+    @Test
     public void testRuleDetailsProps() throws NotFoundServiceEx {
         final Long id;
         final Long lid1;

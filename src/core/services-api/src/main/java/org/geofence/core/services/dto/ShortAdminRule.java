@@ -5,11 +5,14 @@
 
 package org.geofence.core.services.dto;
 
+import java.io.Serializable;
 import org.geofence.core.model.AdminRule;
 import org.geofence.core.model.enums.AdminGrantType;
 
 /** @author ETj (etj at geo-solutions.it) */
-public class ShortAdminRule {
+public class ShortAdminRule implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Long id;
     private Long priority;
 

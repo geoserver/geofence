@@ -113,6 +113,13 @@ public class RuleLimits implements Identifiable, Serializable {
         this.rule = rule;
     }
 
+    /** Copies the data fields (not id/rule) from another instance - e.g. to update this entity in place. */
+    public void copyFrom(RuleLimits other) {
+        setAllowedArea(other.getAllowedArea());
+        setCatalogMode(other.getCatalogMode());
+        setSpatialFilterType(other.getSpatialFilterType());
+    }
+
     @Override
     public String toString() {
         return "RuleLimits["

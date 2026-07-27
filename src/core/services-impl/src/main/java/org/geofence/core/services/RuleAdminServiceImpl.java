@@ -237,19 +237,25 @@ public class RuleAdminServiceImpl implements RuleAdminService {
         if (rule.getAccess() != GrantType.LIMIT && limits != null)
             throw new BadRequestServiceEx("Rule is not of LIMIT type");
 
-        // remove old limits if any
-        if (rule.getRuleLimits() != null) {
-            limitsDAO.remove(rule.getRuleLimits());
+        RuleLimits existing = rule.getRuleLimits();
+
+        if (limits == null) {
+            if (existing != null) {
+                // orphanRemoval on Rule.ruleLimits deletes it on flush, same as setDetails() does
+                // for LayerDetails - no separate remove() call needed
+                rule.setRuleLimits(null);
+                ruleDAO.merge(rule);
+            }
+            return;
         }
 
-        if (limits != null) {
-            limits.setId(ruleId);
-            //            limits.setRule(rule);
+        if (existing != null) {
+            // update in place: same @MapsId identity, so no remove+recreate dance is needed at all
+            existing.copyFrom(limits);
+            limitsDAO.merge(existing);
+        } else {
             rule.setRuleLimits(limits);
             limitsDAO.persist(limits);
-        } else {
-            LOGGER.info("Removing limits for " + rule);
-            // TODO: remove limits (already removed above?)
         }
     }
 
