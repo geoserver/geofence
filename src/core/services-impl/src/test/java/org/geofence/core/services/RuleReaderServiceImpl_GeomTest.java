@@ -11,6 +11,7 @@ import org.geofence.core.model.enums.GrantType;
 import org.geofence.core.model.enums.SpatialFilterType;
 import org.geofence.core.model.util.EWKTParser;
 import org.geofence.core.services.dto.AccessInfo;
+import org.geofence.core.services.dto.GrantTypeDTO;
 import org.geofence.core.services.dto.RuleFilter;
 import org.geofence.core.services.exception.NotFoundServiceEx;
 import org.junit.jupiter.api.Test;
@@ -179,7 +180,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         filter.setLayer("l11");
 
         AccessInfo accessInfo = ruleReaderService.getAccessInfo(filter);
-        assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+        assertEquals(GrantTypeDTO.ALLOW, accessInfo.getGrant());
         assertFalse(accessInfo.getAdminRights());
 
         // area in same group, the result should an itersection of the
@@ -232,7 +233,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         filter.setLayer("l11");
 
         AccessInfo accessInfo = ruleReaderService.getAccessInfo(filter);
-        assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+        assertEquals(GrantTypeDTO.ALLOW, accessInfo.getGrant());
         assertFalse(accessInfo.getAdminRights());
 
         // area in same group, the result should an itersection of the
@@ -287,7 +288,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         filter.setLayer("l22");
         filter.setUser(user.getName());
         AccessInfo accessInfo = ruleReaderService.getAccessInfo(filter);
-        assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+        assertEquals(GrantTypeDTO.ALLOW, accessInfo.getGrant());
         assertFalse(accessInfo.getAdminRights());
 
         // we got a user in two groups one with an intersect spatialFilterType
@@ -374,7 +375,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         filter.setLayer("l22");
         filter.setUser(user.getName());
         AccessInfo accessInfo = ruleReaderService.getAccessInfo(filter);
-        assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+        assertEquals(GrantTypeDTO.ALLOW, accessInfo.getGrant());
         assertFalse(accessInfo.getAdminRights());
         // we should have only the clip geometry
         assertNull(accessInfo.getAreaWkt());
@@ -453,7 +454,7 @@ public class RuleReaderServiceImpl_GeomTest extends ServiceTestBase {
         filter.setLayer("l22");
         filter.setUser(user.getName());
         AccessInfo accessInfo = ruleReaderService.getAccessInfo(filter);
-        assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+        assertEquals(GrantTypeDTO.ALLOW, accessInfo.getGrant());
         assertFalse(accessInfo.getAdminRights());
 
         // we should have both

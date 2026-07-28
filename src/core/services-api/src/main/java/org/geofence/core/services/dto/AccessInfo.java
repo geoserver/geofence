@@ -6,20 +6,18 @@
 package org.geofence.core.services.dto;
 
 import java.util.Set;
-import org.geofence.core.model.LayerAttribute;
-import org.geofence.core.model.enums.GrantType;
 
 /** @author ETj (etj at geo-solutions.it) */
 public class AccessInfo implements Cloneable {
 
     /** Default "allow everything" AccessInfo */
-    public static final AccessInfo ALLOW_ALL = new AccessInfo(GrantType.ALLOW);
+    public static final AccessInfo ALLOW_ALL = new AccessInfo(GrantTypeDTO.ALLOW);
 
     /** Default "deny everything" AccessInfo */
-    public static final AccessInfo DENY_ALL = new AccessInfo(GrantType.DENY);
+    public static final AccessInfo DENY_ALL = new AccessInfo(GrantTypeDTO.DENY);
 
     /** The resulting grant: allow or deny. */
-    private GrantType grant = GrantType.DENY;
+    private GrantTypeDTO grant = GrantTypeDTO.DENY;
 
     //    private Geometry area;
     private String areaWkt;
@@ -33,14 +31,14 @@ public class AccessInfo implements Cloneable {
     private String cqlFilterRead;
     private String cqlFilterWrite;
 
-    private Set<LayerAttribute> attributes;
+    private Set<LayerAttributeDTO> attributes;
     private Set<String> allowedStyles;
 
     private boolean adminRights = false;
 
     public AccessInfo() {}
 
-    public AccessInfo(GrantType grant) {
+    public AccessInfo(GrantTypeDTO grant) {
         this.grant = grant;
     }
 
@@ -60,11 +58,11 @@ public class AccessInfo implements Cloneable {
         this.clipAreaWkt = clipAreaWkt;
     }
 
-    public Set<LayerAttribute> getAttributes() {
+    public Set<LayerAttributeDTO> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(Set<LayerAttribute> attributes) {
+    public void setAttributes(Set<LayerAttributeDTO> attributes) {
         this.attributes = attributes;
     }
 
@@ -108,12 +106,12 @@ public class AccessInfo implements Cloneable {
         this.allowedStyles = allowedStyles;
     }
 
-    public GrantType getGrant() {
+    public GrantTypeDTO getGrant() {
         return grant;
     }
 
-    public void setGrant(GrantType grant) {
-        if (grant != GrantType.ALLOW && grant != GrantType.DENY)
+    public void setGrant(GrantTypeDTO grant) {
+        if (grant != GrantTypeDTO.ALLOW && grant != GrantTypeDTO.DENY)
             throw new IllegalArgumentException("Bad grant type " + grant);
         this.grant = grant;
     }

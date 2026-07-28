@@ -26,6 +26,7 @@
     <module>model</module>
     <module>persistence</module>
     <module>services-api</module>
+    <module>admin-services-api</module>
     <module>services-impl</module>
   </modules>
 

@@ -6,7 +6,6 @@
 package org.geofence.core.services;
 
 import java.util.List;
-import org.geofence.core.model.Rule;
 import org.geofence.core.services.dto.AccessInfo;
 import org.geofence.core.services.dto.RuleFilter;
 import org.geofence.core.services.dto.ShortRule;

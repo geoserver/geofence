@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
 import org.geofence.core.model.*;
 import org.geofence.core.model.enums.*;
 import org.geofence.core.services.dto.AccessInfo;
+import org.geofence.core.services.dto.AccessTypeDTO;
+import org.geofence.core.services.dto.GrantTypeDTO;
+import org.geofence.core.services.dto.LayerAttributeDTO;
 import org.geofence.core.services.dto.RuleFilter;
 import org.geofence.core.services.dto.RuleFilter.SpecialFilterType;
 import org.geofence.core.services.dto.ShortRule;
@@ -177,14 +180,16 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
             assertEquals(2, ruleReaderService.getMatchingRules(ruleFilter).size());
             assertEquals(
-                    GrantType.ALLOW, ruleReaderService.getAccessInfo(ruleFilter).getGrant());
+                    GrantTypeDTO.ALLOW,
+                    ruleReaderService.getAccessInfo(ruleFilter).getGrant());
         }
         {
             RuleFilter ruleFilter = new RuleFilter(baseFilter).setRole(SpecialFilterType.ANY);
 
             assertEquals(2, ruleReaderService.getMatchingRules(ruleFilter).size());
             assertEquals(
-                    GrantType.ALLOW, ruleReaderService.getAccessInfo(ruleFilter).getGrant());
+                    GrantTypeDTO.ALLOW,
+                    ruleReaderService.getAccessInfo(ruleFilter).getGrant());
         }
         {
             RuleFilter ruleFilter =
@@ -192,7 +197,8 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
             assertEquals(1, ruleReaderService.getMatchingRules(ruleFilter).size());
             assertEquals(
-                    GrantType.DENY, ruleReaderService.getAccessInfo(ruleFilter).getGrant());
+                    GrantTypeDTO.DENY,
+                    ruleReaderService.getAccessInfo(ruleFilter).getGrant());
         }
         {
             RuleFilter ruleFilter =
@@ -200,7 +206,8 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
             assertEquals(1, ruleReaderService.getMatchingRules(ruleFilter).size());
             assertEquals(
-                    GrantType.DENY, ruleReaderService.getAccessInfo(ruleFilter).getGrant());
+                    GrantTypeDTO.DENY,
+                    ruleReaderService.getAccessInfo(ruleFilter).getGrant());
         }
     }
 
@@ -240,7 +247,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
             LOGGER.info("Matching rules: " + matchingRules);
             assertEquals(1, matchingRules.size());
             accessInfo = ruleReaderService.getAccessInfo(ruleFilter);
-            assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+            assertEquals(GrantTypeDTO.ALLOW, accessInfo.getGrant());
             assertNull(accessInfo.getAreaWkt());
         }
     }
@@ -255,14 +262,14 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
                 1,
                 getMatchingRules("u0", "*", "i0", null, "WCS", null, "W0", "l0").size());
         assertEquals(
-                GrantType.ALLOW,
+                GrantTypeDTO.ALLOW,
                 getAccessInfo("u0", "*", "i0", null, "WCS", null, "W0", "l0").getGrant());
 
         assertEquals(
                 1,
                 getMatchingRules("*", "p0", "i0", null, "WCS", null, "W0", "l0").size());
         assertEquals(
-                GrantType.ALLOW,
+                GrantTypeDTO.ALLOW,
                 getAccessInfo("*", "p0", "i0", null, "WCS", null, "W0", "l0").getGrant());
 
         assertEquals(
@@ -270,7 +277,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
                 getMatchingRules("u0", "*", "i0", null, "UNMATCH", null, "W0", "l0")
                         .size());
         assertEquals(
-                GrantType.DENY,
+                GrantTypeDTO.DENY,
                 getAccessInfo("u0", "*", "i0", null, "UNMATCH", null, "W0", "l0")
                         .getGrant());
 
@@ -279,7 +286,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
                 getMatchingRules("*", "p0", "i0", null, "UNMATCH", null, "W0", "l0")
                         .size());
         assertEquals(
-                GrantType.DENY,
+                GrantTypeDTO.DENY,
                 getAccessInfo("*", "p0", "i0", null, "UNMATCH", null, "W0", "l0")
                         .getGrant());
     }
@@ -315,11 +322,12 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
             filter.setService("s1");
             assertEquals(2, ruleReaderService.getMatchingRules(filter).size());
             assertEquals(
-                    GrantType.ALLOW, ruleReaderService.getAccessInfo(filter).getGrant());
+                    GrantTypeDTO.ALLOW, ruleReaderService.getAccessInfo(filter).getGrant());
 
             filter.setService("s2");
             assertEquals(1, ruleReaderService.getMatchingRules(filter).size());
-            assertEquals(GrantType.DENY, ruleReaderService.getAccessInfo(filter).getGrant());
+            assertEquals(
+                    GrantTypeDTO.DENY, ruleReaderService.getAccessInfo(filter).getGrant());
         }
 
         {
@@ -327,7 +335,8 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
             filter = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
             filter.setUser(u2.getName());
             assertEquals(0, ruleReaderService.getMatchingRules(filter).size());
-            assertEquals(GrantType.DENY, ruleReaderService.getAccessInfo(filter).getGrant());
+            assertEquals(
+                    GrantTypeDTO.DENY, ruleReaderService.getAccessInfo(filter).getGrant());
         }
     }
 
@@ -361,8 +370,10 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         assertEquals(1, ruleReaderService.getMatchingRules(filterU1).size());
         assertEquals(1, ruleReaderService.getMatchingRules(filterU2).size());
 
-        assertEquals(GrantType.ALLOW, ruleReaderService.getAccessInfo(filterU1).getGrant());
-        assertEquals(GrantType.DENY, ruleReaderService.getAccessInfo(filterU2).getGrant());
+        assertEquals(
+                GrantTypeDTO.ALLOW, ruleReaderService.getAccessInfo(filterU1).getGrant());
+        assertEquals(
+                GrantTypeDTO.DENY, ruleReaderService.getAccessInfo(filterU2).getGrant());
     }
 
     @Test
@@ -395,8 +406,10 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         assertEquals(1, ruleReaderService.getMatchingRules(filterU1).size());
         assertEquals(1, ruleReaderService.getMatchingRules(filterU2).size());
 
-        assertEquals(GrantType.ALLOW, ruleReaderService.getAccessInfo(filterU1).getGrant());
-        assertEquals(GrantType.DENY, ruleReaderService.getAccessInfo(filterU2).getGrant());
+        assertEquals(
+                GrantTypeDTO.ALLOW, ruleReaderService.getAccessInfo(filterU1).getGrant());
+        assertEquals(
+                GrantTypeDTO.DENY, ruleReaderService.getAccessInfo(filterU2).getGrant());
     }
 
     @Test
@@ -471,7 +484,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
             LOGGER.info("getAccessInfo ========================================");
             AccessInfo accessInfo = ruleReaderService.getAccessInfo(filterU1);
-            assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+            assertEquals(GrantTypeDTO.ALLOW, accessInfo.getGrant());
         }
 
         // TEST u2
@@ -483,14 +496,14 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
             assertEquals(1, ruleReaderService.getMatchingRules(filter).size());
 
             AccessInfo accessInfo = ruleReaderService.getAccessInfo(filter);
-            assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+            assertEquals(GrantTypeDTO.ALLOW, accessInfo.getGrant());
             assertNotNull(accessInfo.getAttributes());
             assertEquals(3, accessInfo.getAttributes().size());
             assertEquals(
                     new HashSet(Arrays.asList(
-                            new LayerAttribute("att1", "String", AccessType.READONLY),
-                            new LayerAttribute("att2", "String", AccessType.READWRITE),
-                            new LayerAttribute("att3", "String", AccessType.NONE))),
+                            new LayerAttributeDTO("att1", "String", AccessTypeDTO.READONLY),
+                            new LayerAttributeDTO("att2", "String", AccessTypeDTO.READWRITE),
+                            new LayerAttributeDTO("att3", "String", AccessTypeDTO.NONE))),
                     accessInfo.getAttributes());
 
             assertEquals(2, accessInfo.getAllowedStyles().size());
@@ -507,14 +520,14 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
             assertEquals(2, ruleReaderService.getMatchingRules(filter).size());
 
             AccessInfo accessInfo = ruleReaderService.getAccessInfo(filter);
-            assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+            assertEquals(GrantTypeDTO.ALLOW, accessInfo.getGrant());
             assertNotNull(accessInfo.getAttributes());
             assertEquals(3, accessInfo.getAttributes().size());
             assertEquals(
                     new HashSet(Arrays.asList(
-                            new LayerAttribute("att1", "String", AccessType.READONLY),
-                            new LayerAttribute("att2", "String", AccessType.READWRITE),
-                            new LayerAttribute("att3", "String", AccessType.READWRITE))),
+                            new LayerAttributeDTO("att1", "String", AccessTypeDTO.READONLY),
+                            new LayerAttributeDTO("att2", "String", AccessTypeDTO.READWRITE),
+                            new LayerAttributeDTO("att3", "String", AccessTypeDTO.READWRITE))),
                     accessInfo.getAttributes());
 
             assertEquals(3, accessInfo.getAllowedStyles().size());
@@ -532,7 +545,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
             assertEquals(2, ruleReaderService.getMatchingRules(filter).size());
 
             AccessInfo accessInfo = ruleReaderService.getAccessInfo(filter);
-            assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+            assertEquals(GrantTypeDTO.ALLOW, accessInfo.getGrant());
             LOGGER.info("attributes: " + accessInfo.getAttributes());
             assertTrue(accessInfo.getAttributes().isEmpty());
             //            assertEquals(3, accessInfo.getAttributes().size());
@@ -595,7 +608,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
             LOGGER.info("getAccessInfo ========================================");
             AccessInfo accessInfo = ruleReaderService.getAccessInfo(filterU1);
-            assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+            assertEquals(GrantTypeDTO.ALLOW, accessInfo.getGrant());
 
             assertTrue(accessInfo.getAllowedStyles().isEmpty());
         }
@@ -722,7 +735,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         RuleFilter filter = new RuleFilter(SpecialFilterType.ANY, true).setWorkspace("w1");
 
         AccessInfo accessInfo = ruleReaderService.getAccessInfo(filter);
-        assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+        assertEquals(GrantTypeDTO.ALLOW, accessInfo.getGrant());
         assertFalse(accessInfo.getAdminRights());
 
         // let's add a USER adminrule
@@ -730,7 +743,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         adminruleAdminService.insert(new AdminRule(20, user.getName(), null, null, null, null, AdminGrantType.USER));
 
         accessInfo = ruleReaderService.getAccessInfo(filter);
-        assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+        assertEquals(GrantTypeDTO.ALLOW, accessInfo.getGrant());
         assertFalse(accessInfo.getAdminRights());
 
         // let's add an ADMIN adminrule on workspace w1
@@ -738,7 +751,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         adminruleAdminService.insert(new AdminRule(10, user.getName(), null, null, null, "w1", AdminGrantType.ADMIN));
 
         accessInfo = ruleReaderService.getAccessInfo(filter);
-        assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+        assertEquals(GrantTypeDTO.ALLOW, accessInfo.getGrant());
         assertTrue(accessInfo.getAdminRights());
     }
 

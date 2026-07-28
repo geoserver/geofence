@@ -21,6 +21,7 @@ import org.geofence.core.model.enums.CatalogMode;
 import org.geofence.core.model.enums.GrantType;
 import org.geofence.core.model.enums.SpatialFilterType;
 import org.geofence.core.services.dto.AccessInfo;
+import org.geofence.core.services.dto.GrantTypeDTO;
 import org.geofence.core.services.dto.RuleFilter;
 import org.geofence.core.services.dto.RuleFilter.IdNameFilter;
 import org.geofence.core.services.dto.RuleFilter.SpecialFilterType;
@@ -29,6 +30,7 @@ import org.geofence.core.services.dto.ShortRule;
 import org.geofence.core.services.exception.BadRequestServiceEx;
 import org.geofence.core.services.spi.UserResolver;
 import org.geofence.core.services.util.AccessInfoInternal;
+import org.geofence.core.services.util.DtoMapper;
 import org.geofence.core.services.util.FilterUtils;
 import org.geotools.api.referencing.FactoryException;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
@@ -62,9 +64,6 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
     @Autowired
     private UserResolver userResolver;
-
-    @Autowired
-    private AuthorizationService authorizationService;
 
     /**
      * <B>TODO: REFACTOR</B>
@@ -117,12 +116,12 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         if (currAccessInfo == null) {
             LOGGER.warn("No access for filter " + filter);
             // Denying by default
-            ret = new AccessInfo(GrantType.DENY);
+            ret = new AccessInfo(GrantTypeDTO.DENY);
         } else {
             ret = currAccessInfo.toAccessInfo();
         }
 
-        if (ret.getGrant() == GrantType.ALLOW) {
+        if (ret.getGrant() == GrantTypeDTO.ALLOW) {
             ret.setAdminRights(getAdminAuth(filter));
         }
 
@@ -132,7 +131,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
     @Override
     public AccessInfo getAdminAuthorization(RuleFilter filter) {
-        AccessInfo ret = new AccessInfo(GrantType.ALLOW);
+        AccessInfo ret = new AccessInfo(GrantTypeDTO.ALLOW);
         ret.setAdminRights(getAdminAuth(filter));
         return ret;
     }
@@ -581,7 +580,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     private List<ShortRule> convertToShortList(List<Rule> list) {
         List<ShortRule> shortList = new ArrayList<>(list.size());
         for (Rule rule : list) {
-            shortList.add(new ShortRule(rule));
+            shortList.add(DtoMapper.toShortRule(rule));
         }
 
         return shortList;

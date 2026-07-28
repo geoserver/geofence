@@ -155,13 +155,13 @@ public class AccessInfoInternal implements Serializable {
     public AccessInfo toAccessInfo() {
         AccessInfo ret = new AccessInfo();
 
-        ret.setGrant(grant);
+        ret.setGrant(DtoMapper.map(grant));
         ret.setDefaultStyle(defaultStyle);
         ret.setAllowedStyles(
                 allowedStyles == null
                         ? null
                         : new HashSet(allowedStyles)); // new Set will prevent marshalling hibernate classes
-        ret.setAttributes(attributes == null ? null : new HashSet<LayerAttribute>(attributes));
+        ret.setAttributes(DtoMapper.mapAttributes(attributes));
         ret.setCqlFilterRead(cqlFilterRead);
         ret.setCqlFilterWrite(cqlFilterWrite);
         if (area != null) {

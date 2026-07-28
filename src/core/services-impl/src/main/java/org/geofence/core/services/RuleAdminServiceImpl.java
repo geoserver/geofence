@@ -25,6 +25,7 @@ import org.geofence.core.services.dto.RuleFilter;
 import org.geofence.core.services.dto.ShortRule;
 import org.geofence.core.services.exception.BadRequestServiceEx;
 import org.geofence.core.services.exception.NotFoundServiceEx;
+import org.geofence.core.services.util.DtoMapper;
 import org.geofence.core.services.util.FilterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -208,10 +209,10 @@ public class RuleAdminServiceImpl implements RuleAdminService {
             case 0:
                 return null;
             case 1:
-                return new ShortRule(found.get(0));
+                return DtoMapper.toShortRule(found.get(0));
             default:
                 LOGGER.error("Unexpected rule count for priority " + priority + " : " + found);
-                return new ShortRule(found.get(0));
+                return DtoMapper.toShortRule(found.get(0));
         }
     }
 
@@ -364,7 +365,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     private List<ShortRule> convertToShortList(List<Rule> list) {
         List<ShortRule> shortList = new ArrayList<>(list.size());
         for (Rule rule : list) {
-            shortList.add(new ShortRule(rule));
+            shortList.add(DtoMapper.toShortRule(rule));
         }
 
         return shortList;

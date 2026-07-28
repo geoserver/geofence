@@ -8,7 +8,6 @@ package org.geofence.core.services.dto;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import org.geofence.core.model.Rule;
 
 /**
  * A Filter for selecting {@link Rule}s.

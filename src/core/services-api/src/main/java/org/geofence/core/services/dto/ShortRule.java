@@ -6,8 +6,6 @@
 package org.geofence.core.services.dto;
 
 import java.io.Serializable;
-import org.geofence.core.model.Rule;
-import org.geofence.core.model.enums.GrantType;
 
 /** @author ETj (etj at geo-solutions.it) */
 public class ShortRule implements Serializable {
@@ -33,37 +31,15 @@ public class ShortRule implements Serializable {
     private String workspace;
     private String layer;
 
-    private GrantType access;
+    private GrantTypeDTO access;
 
     public ShortRule() {}
 
-    public ShortRule(Rule rule) {
-        setId(rule.getId());
-        setPriority(rule.getPriority());
-        setUserName(rule.getUsername());
-        setRoleName(rule.getRolename());
-
-        if (rule.getInstance() != null) {
-            setInstanceId(rule.getInstance().getId());
-            setInstanceName(rule.getInstance().getName());
-        }
-
-        setService(rule.getService());
-        setAddressRange(rule.getAddressRangeString());
-        setValidAfter(rule.getValidAfterString());
-        setValidBefore(rule.getValidBeforeString());
-        setRequest(rule.getRequest());
-        setSubfield(rule.getSubfield());
-        setWorkspace(rule.getWorkspace());
-        setLayer(rule.getLayer());
-        setAccess(rule.getAccess());
-    }
-
-    public GrantType getAccess() {
+    public GrantTypeDTO getAccess() {
         return access;
     }
 
-    public void setAccess(GrantType access) {
+    public void setAccess(GrantTypeDTO access) {
         this.access = access;
     }
 

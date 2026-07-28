@@ -15,6 +15,7 @@ import org.geofence.core.model.UserGroup;
 import org.geofence.core.model.enums.CatalogMode;
 import org.geofence.core.model.enums.GrantType;
 import org.geofence.core.services.dto.CatalogModeDTO;
+import org.geofence.core.services.dto.GrantTypeDTO;
 import org.geofence.core.services.dto.RuleFilter;
 import org.geofence.core.services.exception.NotFoundServiceEx;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,8 @@ public class RuleReaderCatalogModeTest extends ServiceTestBase {
         filterU1.setUser("u1");
 
         assertEquals(2, ruleReaderService.getMatchingRules(filterU1).size());
-        assertEquals(GrantType.ALLOW, ruleReaderService.getAccessInfo(filterU1).getGrant());
+        assertEquals(
+                GrantTypeDTO.ALLOW, ruleReaderService.getAccessInfo(filterU1).getGrant());
         assertEquals(null, ruleReaderService.getAccessInfo(filterU1).getCatalogMode());
     }
 
