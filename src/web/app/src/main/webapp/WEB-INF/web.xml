@@ -4,13 +4,15 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
 
-    <!-- pick up all spring application contexts -->
+    <!-- annotation-based Spring context: GeofenceRESTConfig component-scans org.geofence.web.rest (REST impls,
+         JerseyConfig) and imports GeofenceServiceConfig (the core engine, itself importing GeofencePersistenceConfig) -->
+    <context-param>
+        <param-name>contextClass</param-name>
+        <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+    </context-param>
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>
-            classpath*:/applicationContext-common.xml
-            classpath*:applicationContext.xml
-        </param-value>
+        <param-value>org.geofence.web.rest.config.GeofenceRESTConfig</param-value>
     </context-param>
 
     <!-- Log4j configuration -->
@@ -48,7 +50,7 @@
 
         <init-param>
             <param-name>jakarta.ws.rs.Application</param-name>
-            <param-value>org.geofence.web.StartupService</param-value>
+            <param-value>org.geofence.web.rest.config.JerseyConfig</param-value>
         </init-param>
 
         <load-on-startup>1</load-on-startup>
