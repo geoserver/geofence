@@ -22,6 +22,10 @@
   <name>GeoFence - Web - REST services implementation</name>
 
   <dependencies>
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+    </dependency>
     <!-- ================================================================-->
     <!-- GeoFence modules -->
     <!-- ================================================================-->
@@ -29,14 +33,22 @@
       <groupId>jakarta.ws.rs</groupId>
       <artifactId>jakarta.ws.rs-api</artifactId>
     </dependency>
+
     <dependency>
-      <groupId>jakarta.servlet</groupId>
-      <artifactId>jakarta.servlet-api</artifactId>
+      <groupId>javax.annotation</groupId>
+      <artifactId>jsr250-api</artifactId>
+      <version>1.0</version>
     </dependency>
+
     <dependency>
-      <groupId>jakarta.xml.ws</groupId>
-      <artifactId>jakarta.xml.ws-api</artifactId>
-      <scope>provided</scope>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-jaxrs</artifactId>
+      <version>1.9.13</version>
     </dependency>
 
     <dependency>
@@ -46,12 +58,17 @@
 
     <dependency>
       <groupId>org.geofence</groupId>
+      <artifactId>geofence-rest-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.geofence</groupId>
       <artifactId>geofence-services-api</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.geofence</groupId>
-      <artifactId>geofence-rest-api</artifactId>
+      <artifactId>geofence-services-impl</artifactId>
     </dependency>
 
     <!-- ================================================================-->
@@ -72,23 +89,11 @@
     </dependency>
     <dependency>
       <groupId>org.glassfish.jersey.media</groupId>
-      <artifactId>jersey-media-json-jackson</artifactId>
+      <artifactId>jersey-media-jaxb</artifactId>
     </dependency>
     <dependency>
       <groupId>org.glassfish.jersey.media</groupId>
-      <artifactId>jersey-media-jaxb</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-jaxrs</artifactId>
-      <version>1.9.13</version>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>jsr250-api</artifactId>
-      <version>1.0</version>
+      <artifactId>jersey-media-json-jackson</artifactId>
     </dependency>
 
     <dependency>
@@ -99,15 +104,10 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-tx</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>org.geofence</groupId>
-      <artifactId>geofence-services-impl</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
+      <groupId>jakarta.xml.ws</groupId>
+      <artifactId>jakarta.xml.ws-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -119,6 +119,17 @@
       <artifactId>log4j-slf4j-impl</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.geofence</groupId>
+      <artifactId>geofence-persistence</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.testcontainers</groupId>
@@ -128,17 +139,6 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers-postgresql</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.geofence</groupId>
-      <artifactId>geofence-persistence</artifactId>
-      <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
   </dependencies>

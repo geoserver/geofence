@@ -26,13 +26,13 @@
 
     <dependency>
       <groupId>org.geofence</groupId>
-      <artifactId>geofence-services-api</artifactId>
-      <version>${project.version}</version>
+      <artifactId>geofence-model</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.geofence</groupId>
-      <artifactId>geofence-model</artifactId>
+      <artifactId>geofence-services-api</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
   </dependencies>

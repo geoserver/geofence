@@ -34,38 +34,9 @@
   </properties>
 
   <dependencies>
-    <!-- ================================================================-->
-    <!-- GeoStore modules -->
-    <!-- ================================================================-->
-
     <dependency>
-      <groupId>org.geofence</groupId>
-      <artifactId>geofence-model</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.geofence</groupId>
-      <artifactId>geofence-persistence</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.geofence</groupId>
-      <artifactId>geofence-services-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.geofence</groupId>
-      <artifactId>geofence-services-impl</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.geofence</groupId>
-      <artifactId>geofence-rest-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.geofence</groupId>
-      <artifactId>geofence-rest-impl</artifactId>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
     </dependency>
 
     <!-- =============================================================== -->
@@ -82,18 +53,16 @@
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
     </dependency>
-    <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
-    </dependency>
 
-    <!-- =============================================================== -->
-    <!-- 4J UTILS -->
-    <!-- =============================================================== -->
-
+    <!--        <dependency>
+          <groupId>javax.ws.rs</groupId>
+          <artifactId>javax.ws.rs</artifactId>
+          <version>1.0</version>
+        </dependency>-->
     <dependency>
-      <groupId>org.dom4j</groupId>
-      <artifactId>dom4j</artifactId>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>jsr311-api</artifactId>
+      <version>1.1.1</version>
     </dependency>
 
     <dependency>
@@ -112,22 +81,51 @@
       <groupId>org.codehaus.jettison</groupId>
       <artifactId>jettison</artifactId>
     </dependency>
+
+    <!-- =============================================================== -->
+    <!-- 4J UTILS -->
+    <!-- =============================================================== -->
+
     <dependency>
-      <groupId>jakarta.servlet</groupId>
-      <artifactId>jakarta.servlet-api</artifactId>
-      <version>5.0.0</version>
-      <scope>provided</scope>
+      <groupId>org.dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+    </dependency>
+    <!-- ================================================================-->
+    <!-- GeoStore modules -->
+    <!-- ================================================================-->
+
+    <dependency>
+      <groupId>org.geofence</groupId>
+      <artifactId>geofence-model</artifactId>
     </dependency>
 
-    <!--        <dependency>
-          <groupId>javax.ws.rs</groupId>
-          <artifactId>javax.ws.rs</artifactId>
-          <version>1.0</version>
-        </dependency>-->
     <dependency>
-      <groupId>javax.ws.rs</groupId>
-      <artifactId>jsr311-api</artifactId>
-      <version>1.1.1</version>
+      <groupId>org.geofence</groupId>
+      <artifactId>geofence-persistence</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.geofence</groupId>
+      <artifactId>geofence-rest-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.geofence</groupId>
+      <artifactId>geofence-rest-impl</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.geofence</groupId>
+      <artifactId>geofence-services-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.geofence</groupId>
+      <artifactId>geofence-services-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
     </dependency>
     <!-- =============================================================== -->
 
@@ -158,11 +156,7 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-aop</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-tx</artifactId>
+      <artifactId>spring-jdbc</artifactId>
     </dependency>
     <!--		<dependency>
                 <groupId>org.springframework</groupId>
@@ -174,11 +168,17 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-jdbc</artifactId>
+      <artifactId>spring-tx</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>5.0.0</version>
+      <scope>provided</scope>
     </dependency>
 
   </dependencies>

@@ -28,6 +28,21 @@
   <dependencies>
 
     <!-- =============================================================== -->
+    <!--
+            Next deps are defined in core::dao, but seems not to be transitively
+            imported
+        -->
+    <!-- =============================================================== -->
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+    </dependency>
+
+    <!-- =============================================================== -->
     <!-- APACHE COMMONS -->
     <!-- =============================================================== -->
     <dependency>
@@ -38,43 +53,17 @@
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
-    </dependency>
 
     <!-- =============================================================== -->
-    <!--
-            Next deps are defined in core::dao, but seems not to be transitively
-            imported
-        -->
+    <!-- Logging                                                         -->
     <!-- =============================================================== -->
     <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
     </dependency>
-
-    <!-- =============================================================== -->
-    <!-- GeoFence -->
-    <!-- =============================================================== -->
     <dependency>
-      <groupId>org.geofence</groupId>
-      <artifactId>geofence-model</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.geofence</groupId>
-      <artifactId>geofence-services-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.geofence</groupId>
-      <artifactId>geofence-services-impl</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.geofence</groupId>
-      <artifactId>geofence-rest-impl</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
     </dependency>
 
     <!--    <dependency>
@@ -91,15 +80,26 @@
     </dependency>
 
     <!-- =============================================================== -->
-    <!-- Logging                                                         -->
+    <!-- GeoFence -->
     <!-- =============================================================== -->
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
+      <groupId>org.geofence</groupId>
+      <artifactId>geofence-model</artifactId>
     </dependency>
+
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j-impl</artifactId>
+      <groupId>org.geofence</groupId>
+      <artifactId>geofence-rest-impl</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.geofence</groupId>
+      <artifactId>geofence-services-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.geofence</groupId>
+      <artifactId>geofence-services-impl</artifactId>
     </dependency>
 
     <!-- =============================================================== -->
@@ -125,6 +125,10 @@
       <artifactId>jersey-hk2</artifactId>
       <version>3.1.5</version>
     </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+    </dependency>
     <!-- =============================================================== -->
     <!-- =============================================================== -->
     <!-- CLIENT -->
@@ -146,11 +150,7 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-aop</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-tx</artifactId>
+      <artifactId>spring-jdbc</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -158,7 +158,7 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-jdbc</artifactId>
+      <artifactId>spring-tx</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

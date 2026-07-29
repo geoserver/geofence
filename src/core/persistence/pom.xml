@@ -21,56 +21,6 @@
   <name>GeoFence - Core - Persistence</name>
 
   <dependencies>
-    <!-- =========================================================== -->
-    <!--     GeoFence Core Modules                                    -->
-    <!-- =========================================================== -->
-
-    <dependency>
-      <groupId>org.geofence</groupId>
-      <artifactId>geofence-model</artifactId>
-    </dependency>
-
-    <!-- =========================================================== -->
-    <!--     Apache commons                                          -->
-    <!-- =========================================================== -->
-
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j-impl</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- =========================================================== -->
-    <!-- 4J UTILS                                                    -->
-    <!-- =========================================================== -->
-
-    <dependency>
-      <groupId>org.dom4j</groupId>
-      <artifactId>dom4j</artifactId>
-    </dependency>
 
     <!-- =========================================================== -->
     <!--     Jackson (see GefencePersistenceConfig's json_format_mapper workaround) -->
@@ -82,34 +32,11 @@
       <version>2.22.0</version>
     </dependency>
 
-    <!-- =========================================================== -->
-    <!--     SPRING                                                  -->
-    <!-- =========================================================== -->
-
+    <!-- Used in schemaexporter -->
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-aop</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-orm</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-jdbc</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>33.5.0-jre</version>
     </dependency>
 
     <!-- =========================================================== -->
@@ -125,6 +52,66 @@
       <artifactId>HikariCP</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+    </dependency>
+
+    <!-- =========================================================== -->
+    <!--     Apache commons                                          -->
+    <!-- =========================================================== -->
+
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <version>3.2.0</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
+
+    <!-- =========================================================== -->
+    <!-- 4J UTILS                                                    -->
+    <!-- =========================================================== -->
+
+    <dependency>
+      <groupId>org.dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.ehcache/ehcache -->
+    <dependency>
+      <groupId>org.ehcache</groupId>
+      <artifactId>ehcache</artifactId>
+      <version>3.10.9</version>
+      <classifier>jakarta</classifier>
+    </dependency>
+    <!-- =========================================================== -->
+    <!--     GeoFence Core Modules                                    -->
+    <!-- =========================================================== -->
+
+    <dependency>
+      <groupId>org.geofence</groupId>
+      <artifactId>geofence-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-ant</artifactId>
+      <version>${hibernate-version}</version>
+      <type>jar</type>
+    </dependency>
+
     <!-- =========================================================== -->
     <!--     Hibernate                                               -->
     <!-- =========================================================== -->
@@ -136,20 +123,57 @@
 
     <dependency>
       <groupId>org.hibernate.orm</groupId>
-      <artifactId>hibernate-spatial</artifactId>
+      <artifactId>hibernate-jcache</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.hibernate.orm</groupId>
-      <artifactId>hibernate-jcache</artifactId>
+      <artifactId>hibernate-spatial</artifactId>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.ehcache/ehcache -->
     <dependency>
-      <groupId>org.ehcache</groupId>
-      <artifactId>ehcache</artifactId>
-      <version>3.10.9</version>
-      <classifier>jakarta</classifier>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+    </dependency>
+
+    <!-- =========================================================== -->
+    <!--     SPRING                                                  -->
+    <!-- =========================================================== -->
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>net.postgis</groupId>
+      <artifactId>postgis-jdbc</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <scope>test</scope>
     </dependency>
     <!--    <dependency>
       <groupId>org.aspectj</groupId>
@@ -171,6 +195,19 @@
     </dependency>
 
     <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>1.21.4</version>
+      <type>jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
       <version>2.0.3</version>
@@ -182,43 +219,6 @@
       <version>2.0.3</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>1.21.4</version>
-      <type>jar</type>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- Used in schemaexporter -->
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>33.5.0-jre</version>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.persistence</groupId>
-      <artifactId>jakarta.persistence-api</artifactId>
-      <version>3.2.0</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate.orm</groupId>
-      <artifactId>hibernate-ant</artifactId>
-      <version>${hibernate-version}</version>
-      <type>jar</type>
-    </dependency>
-
-    <dependency>
-      <groupId>net.postgis</groupId>
-      <artifactId>postgis-jdbc</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-    </dependency>
   </dependencies>
 
   <build>
@@ -228,16 +228,6 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.6.3</version>
         <dependencies>
-          <dependency>
-            <groupId>org.geofence</groupId>
-            <artifactId>geofence-model</artifactId>
-            <version>${geofence-version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.geofence</groupId>
-            <artifactId>geofence-persistence</artifactId>
-            <version>${geofence-version}</version>
-          </dependency>
           <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -255,14 +245,24 @@
             <version>2.24.3</version>
           </dependency>
           <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.30</version>
+            <groupId>org.geofence</groupId>
+            <artifactId>geofence-model</artifactId>
+            <version>${geofence-version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.geofence</groupId>
+            <artifactId>geofence-persistence</artifactId>
+            <version>${geofence-version}</version>
           </dependency>
           <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-ant</artifactId>
             <version>${hibernate-version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.30</version>
           </dependency>
 
         </dependencies>
