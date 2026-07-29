@@ -57,7 +57,6 @@ public class GeofencePersistenceConfig {
 
         Properties props = new Properties();
         props.put("hibernate.hbm2ddl.auto", "update");
-        props.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 
         // WORKAROUND for a GeoTools gt-geojson-core SPI bug (stale Jackson 2 registration on a
         // Jackson 3 class) that otherwise crashes Hibernate's default Jackson auto-discovery.
