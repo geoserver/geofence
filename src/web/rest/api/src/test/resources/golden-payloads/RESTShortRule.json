@@ -1,0 +1,17 @@
+{
+  "id" : 1,
+  "priority" : 10,
+  "userName" : "user1",
+  "roleName" : "role1",
+  "instanceId" : 1,
+  "instanceName" : "instance1",
+  "addressRange" : "10.0.0.0/8",
+  "validAfter" : "2026-01-01",
+  "validBefore" : "2026-12-31",
+  "service" : "WMS",
+  "request" : "GetMap",
+  "subfield" : "sub1",
+  "workspace" : "topp",
+  "layer" : "states",
+  "access" : "ALLOW"
+}

@@ -1,0 +1,15 @@
+{
+  "userName" : "user1",
+  "userAny" : null,
+  "userDefault" : true,
+  "groupName" : "role1",
+  "groupAny" : null,
+  "groupDefault" : true,
+  "instanceId" : null,
+  "instanceName" : "instance1",
+  "instanceAny" : null,
+  "instanceDefault" : true,
+  "workspace" : "topp",
+  "workspaceAny" : null,
+  "workspaceDefault" : true
+}

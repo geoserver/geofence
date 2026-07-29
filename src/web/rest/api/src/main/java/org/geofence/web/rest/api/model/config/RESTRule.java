@@ -23,11 +23,10 @@ import org.geofence.web.rest.api.model.enums.RESTGrantType;
             "validBefore",
             "service",
             "request",
+            "subfield",
             "workspace",
             "layer",
-            "access",
-            "layerDetails",
-            "ruleLimits"
+            "access"
         })
 public class RESTRule {
 

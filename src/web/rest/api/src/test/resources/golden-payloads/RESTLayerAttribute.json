@@ -1,0 +1,5 @@
+{
+  "name" : "attr1",
+  "datatype" : "java.lang.String",
+  "access" : "READWRITE"
+}

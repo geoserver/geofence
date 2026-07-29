@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<user admin="false" enabled="true">
+    <extId>ext-user1</extId>
+    <name>user1</name>
+    <password>secret</password>
+    <fullName>User One</fullName>
+    <emailAddress>user1@example.org</emailAddress>
+    <groups>
+        <group>
+            <id>1</id>
+            <name>group1</name>
+        </group>
+        <group>
+            <id>2</id>
+            <name>group2</name>
+        </group>
+    </groups>
+</user>

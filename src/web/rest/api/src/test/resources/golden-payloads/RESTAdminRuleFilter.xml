@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RESTAdminRuleFilter>
+    <userName>user1</userName>
+    <userDefault>true</userDefault>
+    <groupName>role1</groupName>
+    <groupDefault>true</groupDefault>
+    <instanceName>instance1</instanceName>
+    <instanceDefault>true</instanceDefault>
+    <workspace>topp</workspace>
+    <workspaceDefault>true</workspaceDefault>
+</RESTAdminRuleFilter>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ShortRule>
+    <id>1</id>
+    <priority>10</priority>
+    <userName>user1</userName>
+    <roleName>role1</roleName>
+    <instanceId>1</instanceId>
+    <instanceName>instance1</instanceName>
+    <addressRange>10.0.0.0/8</addressRange>
+    <validAfter>2026-01-01</validAfter>
+    <validBefore>2026-12-31</validBefore>
+    <service>WMS</service>
+    <request>GetMap</request>
+    <subfield>sub1</subfield>
+    <workspace>topp</workspace>
+    <layer>states</layer>
+    <access>ALLOW</access>
+</ShortRule>

@@ -11,7 +11,7 @@ import jakarta.xml.bind.annotation.XmlType;
 
 /** @author ETj (etj at geo-solutions.it) */
 @XmlRootElement(name = "GeofenceConfiguration")
-@XmlType(propOrder = {"userGroupList", "userList", "grUserList", "gsInstanceList", "ruleList"})
+@XmlType(propOrder = {"userGroupList", "userList", "gsInstanceList", "ruleList"})
 public class RESTFullConfiguration {
 
     private RESTFullUserGroupList userGroupList;

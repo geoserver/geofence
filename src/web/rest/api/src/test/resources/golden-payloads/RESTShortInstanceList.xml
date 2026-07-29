@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<GSInstanceList>
+    <Instance>
+        <id>1</id>
+        <name>instance1</name>
+        <url>http://geoserver.example.org/geoserver</url>
+        <description>a test instance</description>
+    </Instance>
+    <Instance>
+        <id>2</id>
+        <name>instance2</name>
+        <url>http://geoserver2.example.org/geoserver</url>
+    </Instance>
+</GSInstanceList>

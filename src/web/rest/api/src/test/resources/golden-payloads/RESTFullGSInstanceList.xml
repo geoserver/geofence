@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<GSInstanceList>
+    <GSInstance>
+        <id>1</id>
+        <name>instance1</name>
+        <description>a test instance</description>
+        <dateCreation>2026-01-01T00:00</dateCreation>
+        <baseURL>http://geoserver.example.org/geoserver</baseURL>
+        <username>admin</username>
+        <password>secret</password>
+    </GSInstance>
+</GSInstanceList>
