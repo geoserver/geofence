@@ -9,7 +9,9 @@ import java.sql.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.geofence.core.model.GSInstance;
@@ -25,11 +27,23 @@ import org.geofence.core.model.enums.InsertPosition;
 import org.geofence.core.model.enums.LayerType;
 import org.geofence.core.model.enums.SpatialFilterType;
 import org.geofence.core.services.InstanceAdminService;
+import org.geofence.core.services.dto.AccessInfo;
+import org.geofence.core.services.dto.AccessTypeDTO;
+import org.geofence.core.services.dto.CatalogModeDTO;
+import org.geofence.core.services.dto.GrantTypeDTO;
+import org.geofence.core.services.dto.LayerAttributeDTO;
+import org.geofence.core.services.dto.RuleFilter;
+import org.geofence.core.services.dto.RuleFilter.IdNameFilter;
+import org.geofence.core.services.dto.RuleFilter.SpecialFilterType;
+import org.geofence.core.services.dto.RuleFilter.TextFilter;
 import org.geofence.core.services.dto.ShortGroup;
 import org.geofence.core.services.dto.ShortInstance;
+import org.geofence.core.services.dto.ShortRule;
 import org.geofence.core.services.exception.NotFoundServiceEx;
 import org.geofence.web.rest.api.exception.BadRequestRestEx;
 import org.geofence.web.rest.api.exception.NotFoundRestEx;
+import org.geofence.web.rest.api.interfaces.params.RESTRuleFilter;
+import org.geofence.web.rest.api.model.RESTAccessInfo;
 import org.geofence.web.rest.api.model.RESTInputRule;
 import org.geofence.web.rest.api.model.RESTLayerAttribute;
 import org.geofence.web.rest.api.model.RESTLayerConstraints;
@@ -37,8 +51,10 @@ import org.geofence.web.rest.api.model.RESTOutputGroup;
 import org.geofence.web.rest.api.model.RESTOutputRule;
 import org.geofence.web.rest.api.model.RESTRulePosition;
 import org.geofence.web.rest.api.model.RESTShortInstance;
+import org.geofence.web.rest.api.model.RESTShortRule;
 import org.geofence.web.rest.api.model.enums.RESTAccessType;
 import org.geofence.web.rest.api.model.enums.RESTAdminGrantType;
+import org.geofence.web.rest.api.model.enums.RESTCatalogMode;
 import org.geofence.web.rest.api.model.enums.RESTGrantType;
 import org.geofence.web.rest.api.model.enums.RESTLayerType;
 import org.geofence.web.rest.api.model.enums.RESTSpatialFilterType;
@@ -81,6 +97,138 @@ public class RESTMapper {
 
     public static AccessType map(RESTAccessType in) {
         return in == null ? null : AccessType.valueOf(in.name());
+    }
+
+    public static RESTGrantType map(GrantTypeDTO in) {
+        return in == null ? null : RESTGrantType.valueOf(in.name());
+    }
+
+    public static RESTAccessType map(AccessTypeDTO in) {
+        return in == null ? null : RESTAccessType.valueOf(in.name());
+    }
+
+    public static RESTCatalogMode map(CatalogModeDTO in) {
+        return in == null ? null : RESTCatalogMode.valueOf(in.name());
+    }
+
+    public static RESTLayerAttribute map(LayerAttributeDTO in) {
+        RESTLayerAttribute out = new RESTLayerAttribute();
+        out.setName(in.getName());
+        out.setDatatype(in.getDatatype());
+        out.setAccess(map(in.getAccess()));
+        return out;
+    }
+
+    public static RESTAccessInfo map(AccessInfo in) {
+        RESTAccessInfo out = new RESTAccessInfo();
+        out.setGrant(map(in.getGrant()));
+        out.setAdminRights(in.getAdminRights());
+        out.setAreaWkt(in.getAreaWkt());
+        out.setClipAreaWkt(in.getClipAreaWkt());
+        out.setCatalogMode(map(in.getCatalogMode()));
+        out.setDefaultStyle(in.getDefaultStyle());
+        out.setCqlFilterRead(in.getCqlFilterRead());
+        out.setCqlFilterWrite(in.getCqlFilterWrite());
+        out.setAllowedStyles(in.getAllowedStyles());
+        if (in.getAttributes() != null) {
+            out.setAttributes(in.getAttributes().stream().map(RESTMapper::map).collect(Collectors.toSet()));
+        }
+        return out;
+    }
+
+    public static RESTShortRule map(ShortRule in) {
+        RESTShortRule out = new RESTShortRule();
+        out.setId(in.getId());
+        out.setPriority(in.getPriority());
+        out.setUserName(in.getUserName());
+        out.setRoleName(in.getRoleName());
+        out.setInstanceId(in.getInstanceId());
+        out.setInstanceName(in.getInstanceName());
+        out.setAddressRange(in.getAddressRange());
+        out.setValidAfter(in.getValidAfter());
+        out.setValidBefore(in.getValidBefore());
+        out.setService(in.getService());
+        out.setRequest(in.getRequest());
+        out.setSubfield(in.getSubfield());
+        out.setWorkspace(in.getWorkspace());
+        out.setLayer(in.getLayer());
+        out.setAccess(map(in.getAccess()));
+        return out;
+    }
+
+    /**
+     * Builds a {@link RuleFilter} from a {@link RESTRuleFilter} - shared by the admin CRUD rule-listing endpoint and
+     * the runtime rule-evaluation endpoint.
+     */
+    public static RuleFilter buildFilter(RESTRuleFilter query) throws BadRequestRestEx {
+
+        // coalesce deprecated "any" flag
+        if (query.dateDefault == null) query.dateDefault = query.dateAny;
+        if (query.groupDefault == null) query.groupDefault = query.groupAny;
+        if (query.instanceDefault == null) query.instanceDefault = query.instanceAny;
+        if (query.ipAddressDefault == null) query.ipAddressDefault = query.ipAddressAny;
+        if (query.layerDefault == null) query.layerDefault = query.layerAny;
+        if (query.requestDefault == null) query.requestDefault = query.requestAny;
+        if (query.serviceDefault == null) query.serviceDefault = query.serviceAny;
+        if (query.subfieldDefault == null) query.subfieldDefault = query.subfieldAny;
+        if (query.userDefault == null) query.userDefault = query.userAny;
+        if (query.workspaceDefault == null) query.workspaceDefault = query.workspaceAny;
+
+        RuleFilter filter = new RuleFilter(SpecialFilterType.ANY, true);
+
+        setFilter(filter.getUser(), query.userName, query.userDefault);
+        setFilter(filter.getRole(), query.groupName, query.groupDefault);
+        setFilter(filter.getInstance(), query.instanceId, query.instanceName, query.instanceDefault);
+        setFilter(filter.getSourceAddress(), query.ipAddress, query.ipAddressDefault);
+        setFilter(filter.getDate(), query.date, query.dateDefault);
+        setFilter(filter.getService(), query.serviceName, query.serviceDefault);
+        setFilter(filter.getRequest(), query.requestName, query.requestDefault);
+        setFilter(filter.getSubfield(), query.subfieldName, query.subfieldDefault);
+        setFilter(filter.getWorkspace(), query.workspace, query.workspaceDefault);
+        setFilter(filter.getLayer(), query.layer, query.layerDefault);
+        return filter;
+    }
+
+    private static void setFilter(IdNameFilter filter, Long id, String name, Boolean includeDefault)
+            throws BadRequestRestEx {
+
+        if (id != null && name != null) {
+            throw new BadRequestRestEx("Id and name can't be both defined (id:" + id + " name:" + name + ")");
+        }
+
+        if (id != null) {
+            filter.setId(id);
+            if (includeDefault != null) {
+                filter.setIncludeDefault(includeDefault);
+            }
+        } else if (name != null) {
+            filter.setName(name);
+            if (includeDefault != null) {
+                filter.setIncludeDefault(includeDefault);
+            }
+        } else {
+            if (BooleanUtils.isTrue(includeDefault)) {
+                filter.setType(SpecialFilterType.DEFAULT);
+            } else {
+                filter.setType(SpecialFilterType.ANY);
+            }
+        }
+    }
+
+    private static void setFilter(TextFilter filter, String name, Boolean includeDefault) {
+
+        if (name != null) {
+            filter.setText(name);
+            if (includeDefault != null) {
+                filter.setIncludeDefault(includeDefault);
+            }
+        } else {
+            if (BooleanUtils.isTrue(includeDefault)) {
+                filter.setType(SpecialFilterType.DEFAULT);
+            } else {
+                filter.setType(SpecialFilterType.ANY);
+            }
+        }
     }
 
     public static RESTLayerType map(LayerType in) {

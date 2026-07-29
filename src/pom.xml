@@ -332,6 +332,16 @@
         <artifactId>jersey-server</artifactId>
         <version>${jersey.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.core</groupId>
+        <artifactId>jersey-client</artifactId>
+        <version>${jersey.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.ext</groupId>
+        <artifactId>jersey-proxy-client</artifactId>
+        <version>${jersey.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.glassfish.jersey.media</groupId>

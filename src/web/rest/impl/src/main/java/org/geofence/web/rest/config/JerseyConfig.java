@@ -8,6 +8,7 @@ package org.geofence.web.rest.config;
 /** @author etj */
 import org.geofence.web.rest.impl.RESTAdminRuleServiceImpl;
 import org.geofence.web.rest.impl.RESTBatchServiceImpl;
+import org.geofence.web.rest.impl.RESTRuleReaderServiceImpl;
 import org.geofence.web.rest.impl.RESTRuleServiceImpl;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.jaxb.internal.XmlJaxbElementProvider;
@@ -24,6 +25,7 @@ public class JerseyConfig extends ResourceConfig {
         register(RESTRuleServiceImpl.class);
         register(RESTAdminRuleServiceImpl.class);
         register(RESTBatchServiceImpl.class);
+        register(RESTRuleReaderServiceImpl.class);
 
         // providers
         register(XmlJaxbElementProvider.class);

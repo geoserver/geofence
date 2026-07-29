@@ -13,6 +13,7 @@ import java.util.Map;
 import org.geofence.web.rest.api.interfaces.RESTAdminRuleService;
 import org.geofence.web.rest.api.interfaces.RESTBatchService;
 import org.geofence.web.rest.api.interfaces.RESTGSInstanceService;
+import org.geofence.web.rest.api.interfaces.RESTRuleReaderService;
 import org.geofence.web.rest.api.interfaces.RESTRuleService;
 import org.geofence.web.rest.api.interfaces.RESTUserGroupService;
 import org.geofence.web.rest.api.interfaces.RESTUserService;
@@ -72,6 +73,10 @@ public class GeoFenceClient {
 
     public RESTBatchService getBatchService() {
         return getService(RESTBatchService.class, "batch");
+    }
+
+    public RESTRuleReaderService getRuleReaderService() {
+        return getService(RESTRuleReaderService.class, "rulereader");
     }
 
     // ==========================================================================

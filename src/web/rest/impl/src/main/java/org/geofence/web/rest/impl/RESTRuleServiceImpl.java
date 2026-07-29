@@ -16,7 +16,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.geofence.core.model.LayerAttribute;
@@ -24,9 +23,6 @@ import org.geofence.core.model.LayerDetails;
 import org.geofence.core.model.Rule;
 import org.geofence.core.model.enums.InsertPosition;
 import org.geofence.core.services.dto.RuleFilter;
-import org.geofence.core.services.dto.RuleFilter.IdNameFilter;
-import org.geofence.core.services.dto.RuleFilter.SpecialFilterType;
-import org.geofence.core.services.dto.RuleFilter.TextFilter;
 import org.geofence.core.services.exception.BadRequestServiceEx;
 import org.geofence.core.services.exception.NotFoundServiceEx;
 import org.geofence.web.rest.api.exception.BadRequestRestEx;
@@ -337,7 +333,7 @@ public class RESTRuleServiceImpl extends BaseRESTServiceImpl implements RESTRule
             @BeanParam RESTRuleFilter query)
             throws BadRequestRestEx, InternalErrorRestEx {
 
-        RuleFilter filter = buildFilter(query);
+        RuleFilter filter = RESTMapper.buildFilter(query);
 
         try {
             // TODO handle full param
@@ -349,81 +345,11 @@ public class RESTRuleServiceImpl extends BaseRESTServiceImpl implements RESTRule
         }
     }
 
-    protected RuleFilter buildFilter(RESTRuleFilter query) throws BadRequestRestEx {
-
-        // coalesce deprecated "any" flag
-        if (query.dateDefault == null) query.dateDefault = query.dateAny;
-        if (query.groupDefault == null) query.groupDefault = query.groupAny;
-        if (query.instanceDefault == null) query.instanceDefault = query.instanceAny;
-        if (query.ipAddressDefault == null) query.ipAddressDefault = query.ipAddressAny;
-        if (query.layerDefault == null) query.layerDefault = query.layerAny;
-        if (query.requestDefault == null) query.requestDefault = query.requestAny;
-        if (query.serviceDefault == null) query.serviceDefault = query.serviceAny;
-        if (query.subfieldDefault == null) query.subfieldDefault = query.subfieldAny;
-        if (query.userDefault == null) query.userDefault = query.userAny;
-        if (query.workspaceDefault == null) query.workspaceDefault = query.workspaceAny;
-
-        RuleFilter filter = new RuleFilter(SpecialFilterType.ANY, true);
-
-        setFilter(filter.getUser(), query.userName, query.userDefault);
-        setFilter(filter.getRole(), query.groupName, query.groupDefault);
-        setFilter(filter.getInstance(), query.instanceId, query.instanceName, query.instanceDefault);
-        setFilter(filter.getSourceAddress(), query.ipAddress, query.ipAddressDefault);
-        setFilter(filter.getDate(), query.date, query.dateDefault);
-        setFilter(filter.getService(), query.serviceName, query.serviceDefault);
-        setFilter(filter.getRequest(), query.requestName, query.requestDefault);
-        setFilter(filter.getSubfield(), query.subfieldName, query.subfieldDefault);
-        setFilter(filter.getWorkspace(), query.workspace, query.workspaceDefault);
-        setFilter(filter.getLayer(), query.layer, query.layerDefault);
-        return filter;
-    }
-
-    private void setFilter(IdNameFilter filter, Long id, String name, Boolean includeDefault) throws BadRequestRestEx {
-
-        if (id != null && name != null) {
-            throw new BadRequestRestEx("Id and name can't be both defined (id:" + id + " name:" + name + ")");
-        }
-
-        if (id != null) {
-            filter.setId(id);
-            if (includeDefault != null) {
-                filter.setIncludeDefault(includeDefault);
-            }
-        } else if (name != null) {
-            filter.setName(name);
-            if (includeDefault != null) {
-                filter.setIncludeDefault(includeDefault);
-            }
-        } else {
-            if (BooleanUtils.isTrue(includeDefault)) {
-                filter.setType(SpecialFilterType.DEFAULT);
-            } else {
-                filter.setType(SpecialFilterType.ANY);
-            }
-        }
-    }
-
-    private void setFilter(TextFilter filter, String name, Boolean includeDefault) {
-
-        if (name != null) {
-            filter.setText(name);
-            if (includeDefault != null) {
-                filter.setIncludeDefault(includeDefault);
-            }
-        } else {
-            if (BooleanUtils.isTrue(includeDefault)) {
-                filter.setType(SpecialFilterType.DEFAULT);
-            } else {
-                filter.setType(SpecialFilterType.ANY);
-            }
-        }
-    }
-
     @Override
     public long count(RESTRuleFilter query) throws BadRequestRestEx, InternalErrorRestEx {
 
         try {
-            return ruleAdminService.count(buildFilter(query));
+            return ruleAdminService.count(RESTMapper.buildFilter(query));
         } catch (Exception ex) {
             LOGGER.error(ex);
             throw new InternalErrorRestEx(ex.getMessage());
