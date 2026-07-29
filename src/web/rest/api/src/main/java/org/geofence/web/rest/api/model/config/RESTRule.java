@@ -133,7 +133,7 @@ public class RESTRule {
     }
 
     public String getValidAfterString() {
-        return validAfter == null ? null : validAfter.toString();
+        return validAfter == null ? null : validAfter.toInstant().toString();
     }
 
     public RESTRule setValidAfter(Date validAfter) {
@@ -146,7 +146,7 @@ public class RESTRule {
     }
 
     public String getValidBeforeString() {
-        return validBefore == null ? null : validBefore.toString();
+        return validBefore == null ? null : validBefore.toInstant().toString();
     }
 
     public RESTRule setValidBefore(Date validBefore) {

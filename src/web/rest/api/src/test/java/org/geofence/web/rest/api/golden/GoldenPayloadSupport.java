@@ -19,6 +19,7 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.TimeZone;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
 
@@ -42,6 +43,12 @@ public final class GoldenPayloadSupport {
 
     private static final Path GOLDEN_DIR = Path.of("src/test/resources/golden-payloads");
 
+    // Date fields (e.g. RESTRule's validAfter/validBefore) render through JAXB's default java.util.Date binding
+    // and through plain Date.toString() getters, both of which use the JVM's default time zone - pinned to UTC here
+    // so the recorded/compared payloads don't depend on what time zone the machine running the test happens to be
+    // in (a dev laptop in CET produced different golden files than a UTC CI runner otherwise).
+    private static final TimeZone GOLDEN_TIME_ZONE = TimeZone.getTimeZone("UTC");
+
     private static final ObjectMapper JSON = new ObjectMapper()
             .registerModule(new JakartaXmlBindAnnotationModule())
             .enable(SerializationFeature.INDENT_OUTPUT);
@@ -49,16 +56,26 @@ public final class GoldenPayloadSupport {
     private GoldenPayloadSupport() {}
 
     public static String toXml(Object value) {
-        StringWriter w = new StringWriter();
-        JAXB.marshal(value, w);
-        return w.toString();
+        TimeZone previous = TimeZone.getDefault();
+        TimeZone.setDefault(GOLDEN_TIME_ZONE);
+        try {
+            StringWriter w = new StringWriter();
+            JAXB.marshal(value, w);
+            return w.toString();
+        } finally {
+            TimeZone.setDefault(previous);
+        }
     }
 
     public static String toJson(Object value) {
+        TimeZone previous = TimeZone.getDefault();
+        TimeZone.setDefault(GOLDEN_TIME_ZONE);
         try {
             return JSON.writeValueAsString(value);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        } finally {
+            TimeZone.setDefault(previous);
         }
     }
 

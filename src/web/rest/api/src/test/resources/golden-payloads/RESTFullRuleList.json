@@ -10,11 +10,11 @@
     "validBefore" : 1798761600000,
     "service" : "WMS",
     "request" : "GetMap",
+    "subfield" : "sub1",
     "workspace" : "topp",
     "layer" : "states",
     "access" : "ALLOW",
-    "subfield" : "sub1",
-    "validAfterString" : "Thu Jan 01 01:00:00 CET 2026",
-    "validBeforeString" : "Fri Jan 01 01:00:00 CET 2027"
+    "validAfterString" : "2026-01-01T00:00:00Z",
+    "validBeforeString" : "2027-01-01T00:00:00Z"
   } ]
 }

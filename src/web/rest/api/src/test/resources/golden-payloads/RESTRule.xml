@@ -6,8 +6,8 @@
     <rolename>role1</rolename>
     <instance>instance1</instance>
     <addressRange>10.0.0.0/8</addressRange>
-    <validAfter>2026-01-01T01:00:00+01:00</validAfter>
-    <validBefore>2027-01-01T01:00:00+01:00</validBefore>
+    <validAfter>2026-01-01T00:00:00Z</validAfter>
+    <validBefore>2027-01-01T00:00:00Z</validBefore>
     <service>WMS</service>
     <request>GetMap</request>
     <subfield>sub1</subfield>
