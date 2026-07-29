@@ -5,12 +5,15 @@
 
 package org.geofence.core.db.datasource;
 
+import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.io.Closeable;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import javax.sql.DataSource;
@@ -27,12 +30,20 @@ public class ReloadableDataSource implements DataSource, Closeable {
 
     private final AtomicReference<HikariDataSource> delegate = new AtomicReference<>();
 
-    public void reconfigure(String url, String username, String password, String driverClassName) {
-        HikariDataSource newDataSource = new HikariDataSource();
-        newDataSource.setJdbcUrl(url);
-        newDataSource.setUsername(username);
-        newDataSource.setPassword(password);
-        newDataSource.setDriverClassName(driverClassName);
+    public void reconfigure(
+            String url,
+            String username,
+            String password,
+            String driverClassName,
+            Map<String, String> hikariProperties) {
+        Properties props = new Properties();
+        props.setProperty("jdbcUrl", url);
+        props.setProperty("username", username);
+        props.setProperty("password", password);
+        props.setProperty("driverClassName", driverClassName);
+        props.putAll(hikariProperties);
+
+        HikariDataSource newDataSource = new HikariDataSource(new HikariConfig(props));
 
         HikariDataSource old = delegate.getAndSet(newDataSource);
         if (old != null) {

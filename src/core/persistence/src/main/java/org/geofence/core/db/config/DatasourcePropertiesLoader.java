@@ -10,7 +10,9 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -18,6 +20,13 @@ import java.util.logging.Logger;
 
 /**
  * Resolves and loads {@code geofence.datasource.*} settings from a {@code geofence-datasource.properties} file.
+ *
+ * <p>Any {@code geofence.hibernate.*} property in the same file is passed through to the JPA/Hibernate properties (with
+ * the {@code geofence.hibernate.} prefix stripped), e.g. {@code geofence.hibernate.hbm2ddl.auto=validate}. Likewise any
+ * {@code geofence.datasource.hikari.*} property is passed through to {@link com.zaxxer.hikari.HikariConfig} (prefix
+ * stripped), e.g. {@code geofence.datasource.hikari.keepaliveTime=30000} - property names must match a real Hikari
+ * setting, an unrecognized one fails fast at startup. Together these replace the ad-hoc property overriding the old
+ * Spring {@code PropertyOverrideConfigurer}-based setup allowed.
  *
  * <p>Location is determined as follows:
  *
@@ -38,6 +47,9 @@ public class DatasourcePropertiesLoader {
     private static final Logger LOGGER = Logger.getLogger(DatasourcePropertiesLoader.class.getName());
 
     public static final String DEFAULT_FILENAME = "geofence-datasource.properties";
+
+    private static final String HIBERNATE_PREFIX = "geofence.hibernate.";
+    private static final String HIKARI_PREFIX = "geofence.datasource.hikari.";
 
     public DatasourceSettings load(Optional<GeoFenceConfigDirectoryProvider> configDirProvider) {
         String filename = systemProperty("GEOFENCE_DATASOURCE_FILE").orElse(DEFAULT_FILENAME);
@@ -118,7 +130,18 @@ public class DatasourcePropertiesLoader {
             + "geofence.datasource.url=jdbc:postgresql://localhost:5432/geofence\n"
             + "geofence.datasource.username=geofence\n"
             + "geofence.datasource.password=geofence\n"
-            + "geofence.datasource.driver=org.postgresql.Driver\n";
+            + "geofence.datasource.driver=org.postgresql.Driver\n"
+            + "\n"
+            + "# Optional: any geofence.hibernate.* property is passed through to Hibernate/JPA, with the\n"
+            + "# prefix stripped, e.g.:\n"
+            + "# geofence.hibernate.hbm2ddl.auto=validate\n"
+            + "# geofence.hibernate.default_schema=public\n"
+            + "\n"
+            + "# Optional: any geofence.datasource.hikari.* property is passed through to the connection pool\n"
+            + "# (HikariCP), with the prefix stripped - must be a real Hikari property name, an unrecognized one\n"
+            + "# fails fast at startup. keepaliveTime periodically pings idle pooled connections so a dead one\n"
+            + "# (e.g. after a DB restart) is detected and evicted instead of causing a transaction failure later.\n"
+            + "# geofence.datasource.hikari.keepaliveTime=30000\n";
 
     private DatasourceSettings loadFrom(File file) {
         Properties props = new Properties();
@@ -132,7 +155,19 @@ public class DatasourcePropertiesLoader {
                 requireProperty(props, "geofence.datasource.url", file),
                 requireProperty(props, "geofence.datasource.username", file),
                 requireProperty(props, "geofence.datasource.password", file),
-                requireProperty(props, "geofence.datasource.driver", file));
+                requireProperty(props, "geofence.datasource.driver", file),
+                propertiesWithPrefix(props, HIBERNATE_PREFIX),
+                propertiesWithPrefix(props, HIKARI_PREFIX));
+    }
+
+    private Map<String, String> propertiesWithPrefix(Properties props, String prefix) {
+        Map<String, String> result = new LinkedHashMap<>();
+        for (String name : props.stringPropertyNames()) {
+            if (name.startsWith(prefix)) {
+                result.put(name.substring(prefix.length()), props.getProperty(name));
+            }
+        }
+        return result;
     }
 
     private String requireProperty(Properties props, String key, File file) {

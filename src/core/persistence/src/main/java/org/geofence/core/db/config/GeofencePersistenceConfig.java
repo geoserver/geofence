@@ -35,15 +35,25 @@ public class GeofencePersistenceConfig {
     //    }
 
     @Bean
-    public ReloadableDataSource dataSource(Optional<GeoFenceConfigDirectoryProvider> configDirProvider) {
+    public DatasourceSettings datasourceSettings(Optional<GeoFenceConfigDirectoryProvider> configDirProvider) {
+        return new DatasourcePropertiesLoader().load(configDirProvider);
+    }
+
+    @Bean
+    public ReloadableDataSource dataSource(DatasourceSettings settings) {
         ReloadableDataSource dataSource = new ReloadableDataSource();
-        DatasourceSettings settings = new DatasourcePropertiesLoader().load(configDirProvider);
-        dataSource.reconfigure(settings.url(), settings.username(), settings.password(), settings.driverClassName());
+        dataSource.reconfigure(
+                settings.url(),
+                settings.username(),
+                settings.password(),
+                settings.driverClassName(),
+                settings.hikariProperties());
         return dataSource;
     }
 
     @Bean(name = "geofenceEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+            DataSource dataSource, DatasourceSettings settings) {
 
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
 
@@ -62,6 +72,7 @@ public class GeofencePersistenceConfig {
         // Jackson 3 class) that otherwise crashes Hibernate's default Jackson auto-discovery.
         // Remove once GeoTools fixes it upstream.
         props.put("hibernate.type.json_format_mapper", new JacksonJsonFormatMapper(new ObjectMapper()));
+        props.putAll(settings.hibernateProperties());
 
         emf.setJpaProperties(props);
 

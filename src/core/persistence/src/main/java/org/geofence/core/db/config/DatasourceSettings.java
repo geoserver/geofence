@@ -5,4 +5,12 @@
 
 package org.geofence.core.db.config;
 
-public record DatasourceSettings(String url, String username, String password, String driverClassName) {}
+import java.util.Map;
+
+public record DatasourceSettings(
+        String url,
+        String username,
+        String password,
+        String driverClassName,
+        Map<String, String> hibernateProperties,
+        Map<String, String> hikariProperties) {}
