@@ -5,25 +5,30 @@
 
 package org.geofence.web.rest.api.interfaces;
 
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import org.geofence.web.rest.api.exception.BadRequestRestEx;
 import org.geofence.web.rest.api.exception.InternalErrorRestEx;
 import org.geofence.web.rest.api.exception.NotFoundRestEx;
 import org.geofence.web.rest.api.model.RESTBatch;
-import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /** @author Emanuele Tajariol (etj at geo-solutions.it) */
-@Path("/batch")
+@RequestMapping("/batch")
 public interface RESTBatchService {
-    @POST
-    @Path("/exec")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    Response exec(@FormDataParam("batch") RESTBatch batch) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
-    /** Similar to exec, but not transaction. Used internally. */
+    /**
+     * Also reachable as {@code multipart/form-data} (a "batch" part) via {@code RESTBatchServiceImpl .execMultipart} -
+     * not declared here since one interface method can't be mapped to two different request content types.
+     */
+    @PostMapping(
+            path = "/exec",
+            consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    ResponseEntity<String> exec(@RequestBody RESTBatch batch)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+
+    /** Similar to exec, but not transactional. Used internally. */
     void runBatch(RESTBatch batch) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 }

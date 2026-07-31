@@ -5,8 +5,6 @@
 
 package org.geofence.web.rest.impl;
 
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.geofence.web.rest.api.exception.BadRequestRestEx;
@@ -26,11 +24,18 @@ import org.geofence.web.rest.api.model.RESTInputInstance;
 import org.geofence.web.rest.api.model.RESTInputRule;
 import org.geofence.web.rest.api.model.RESTInputUser;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 
 /** @author ETj (etj at geo-solutions.it) */
 @Service
+@RestController
 public class RESTBatchServiceImpl extends BaseRESTServiceImpl implements InitializingBean, RESTBatchService
 //        implements RESTUserGroupService
 {
@@ -43,16 +48,30 @@ public class RESTBatchServiceImpl extends BaseRESTServiceImpl implements Initial
     //    private final static String OP_ADDGROUP = "addGroup";
     //    private final static String OP_DELGROUP = "delGroup";
 
+    @Autowired
     private RESTUserService restUserService;
+
+    @Autowired
     private RESTUserGroupService restUserGroupService;
+
+    @Autowired
     private RESTGSInstanceService restInstanceService;
+
+    @Autowired
     private RESTRuleService restRuleService;
 
     @Transactional(value = "geofenceTransactionManager")
     @Override
-    public Response exec(RESTBatch batch) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public ResponseEntity<String> exec(RESTBatch batch) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         runBatch(batch);
-        return Response.status(Status.OK).entity("OK\n").build();
+        return ResponseEntity.ok("OK\n");
+    }
+
+    /** Legacy {@code multipart/form-data} entry point (a "batch" part), for callers not yet sending JSON/XML bodies. */
+    @PostMapping(path = "/exec", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> execMultipart(@RequestPart("batch") RESTBatch batch)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        return exec(batch);
     }
 
     public void runBatch(RESTBatch batch) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {

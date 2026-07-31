@@ -98,6 +98,8 @@
     <spring.version>7.0.5</spring.version>
     <spring.security.version>7.0.3</spring.security.version>
     <spring.security.oauth2.version>2.5.2.RELEASE</spring.security.oauth2.version>
+    <!-- matches core/persistence's own already-pinned jackson-databind version, for consistency -->
+    <jackson.version>2.22.0</jackson.version>
     <spring.ldap.version>4.0.1</spring.ldap.version>
     <spring-integration.version>5.5.18</spring-integration.version>
 
@@ -117,7 +119,6 @@
     <commons-beanutils-version>1.9.4</commons-beanutils-version>
     <commons-codec-version>1.17.1</commons-codec-version>
     <cxf-version>3.3.2</cxf-version>
-    <jersey.version>3.1.11</jersey.version>
 
     <!--
         5.4.3 jts mismatch w geolatte
@@ -149,6 +150,39 @@
 
   <dependencyManagement>
     <dependencies>
+
+      <!-- =========================================================== -->
+      <!--     AOP ALLIANCE                                            -->
+      <!-- =========================================================== -->
+      <!-- spring-aop doesn't declare this itself (as of Spring 7) but HttpServiceProxyFactory's client proxy is
+           built via Spring's ProxyFactory/JdkDynamicAopProxy, which needs org.aopalliance.intercept.Interceptor
+           on the classpath at runtime. -->
+
+      <dependency>
+        <groupId>aopalliance</groupId>
+        <artifactId>aopalliance</artifactId>
+        <version>1.0</version>
+      </dependency>
+
+      <!-- =========================================================== -->
+      <!--     JACKSON                                                 -->
+      <!-- =========================================================== -->
+      <!-- Deliberately NOT a jackson-bom import: that would also manage jackson-annotations reactor-wide, and
+           core/persistence already pins jackson-databind to its own explicit version (see that module's own pom) -
+           an unrelated, independently-managed jackson-annotations version pin would silently mismatch against it.
+           These two entries cover only what's actually needed elsewhere (web/rest/client, web/rest/impl,
+           web/rest/api's tests), matching core/persistence's own version for consistency. -->
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.module</groupId>
+        <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
       <dependency>
         <groupId>com.sun.xml.ws</groupId>
         <artifactId>jaxws-ri</artifactId>
@@ -222,12 +256,6 @@
         <groupId>jakarta.annotation</groupId>
         <artifactId>jakarta.annotation-api</artifactId>
         <version>2.1.1</version>
-      </dependency>
-
-      <dependency>
-        <groupId>jakarta.ws.rs</groupId>
-        <artifactId>jakarta.ws.rs-api</artifactId>
-        <version>3.1.0</version>
       </dependency>
 
       <!-- =========================================================== -->
@@ -384,6 +412,13 @@
         <artifactId>geofence-services-impl</artifactId>
         <version>${geofence-version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.geofence</groupId>
+        <artifactId>geofence-web-app</artifactId>
+        <version>${geofence-version}</version>
+        <classifier>classes</classifier>
+      </dependency>
       <dependency>
         <groupId>org.geotools</groupId>
         <artifactId>gt-api</artifactId>
@@ -458,44 +493,6 @@
         <artifactId>jaxb-runtime</artifactId>
         <version>3.0.2</version>
       </dependency>
-      <dependency>
-        <groupId>org.glassfish.jersey.core</groupId>
-        <artifactId>jersey-client</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.glassfish.jersey.core</groupId>
-        <artifactId>jersey-common</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.glassfish.jersey.core</groupId>
-        <artifactId>jersey-server</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.glassfish.jersey.ext</groupId>
-        <artifactId>jersey-proxy-client</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.glassfish.jersey.media</groupId>
-        <artifactId>jersey-media-jaxb</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.glassfish.jersey.media</groupId>
-        <artifactId>jersey-media-json-jackson</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.glassfish.jersey.media</groupId>
-        <artifactId>jersey-media-multipart</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-
       <!--      <dependency>
         <groupId>org.aspectj</groupId>
         <artifactId>aspectjrt</artifactId>
@@ -820,6 +817,9 @@
           <debug>true</debug>
           <encoding>UTF-8</encoding>
           <showDeprecation>true</showDeprecation>
+          <!-- retains method parameter names in bytecode - Spring MVC's @RequestParam/@PathVariable use them via
+               reflection when no explicit name= is given -->
+          <parameters>true</parameters>
         </configuration>
       </plugin>
 

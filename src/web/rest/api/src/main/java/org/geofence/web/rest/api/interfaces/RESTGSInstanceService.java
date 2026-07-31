@@ -5,17 +5,6 @@
 
 package org.geofence.web.rest.api.interfaces;
 
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.DefaultValue;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import org.geofence.web.rest.api.exception.BadRequestRestEx;
 import org.geofence.web.rest.api.exception.ConflictRestEx;
 import org.geofence.web.rest.api.exception.InternalErrorRestEx;
@@ -23,52 +12,71 @@ import org.geofence.web.rest.api.exception.NotFoundRestEx;
 import org.geofence.web.rest.api.model.RESTInputInstance;
 import org.geofence.web.rest.api.model.RESTOutputInstance;
 import org.geofence.web.rest.api.model.RESTShortInstanceList;
-import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /** @author Emanuele Tajariol (etj at geo-solutions.it) */
-@Path("/instance")
+@RequestMapping("/instance")
 public interface RESTGSInstanceService {
 
     /** @return a sample user list */
-    @GET
-    @Path("/")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @GetMapping(
+            path = "/",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     RESTShortInstanceList getList(
-            @QueryParam("nameLike") String nameLike,
-            @QueryParam("page") Integer page,
-            @QueryParam("entries") Integer entries)
+            @RequestParam(name = "nameLike", required = false) String nameLike,
+            @RequestParam(name = "page", required = false) Integer page,
+            @RequestParam(name = "entries", required = false) Integer entries)
             throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
-    @GET
-    @Path("/count/{nameLike}")
-    long count(@PathParam("nameLike") String nameLike);
+    @GetMapping("/count/{nameLike}")
+    long count(@PathVariable("nameLike") String nameLike);
 
-    @GET
-    @Path("/id/{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    RESTOutputInstance get(@PathParam("id") Long id) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+    @GetMapping(
+            path = "/id/{id}",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    RESTOutputInstance get(@PathVariable("id") Long id) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
-    @GET
-    @Path("/name/{name")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    RESTOutputInstance get(@PathParam("name") String name) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+    @GetMapping(
+            path = "/name/{name}",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    RESTOutputInstance get(@PathVariable("name") String name)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
-    @POST
-    @Path("/")
-    @Produces({MediaType.TEXT_PLAIN, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    Response insert(@FormDataParam("instance") RESTInputInstance instance)
+    /**
+     * Also reachable as {@code multipart/form-data} (an "instance" part) via
+     * {@code RESTInstanceServiceImpl.insertMultipart} - not declared here since one interface method can't be mapped to
+     * two different request content types.
+     */
+    @PostMapping(
+            path = "/",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    ResponseEntity<Long> insert(@RequestBody RESTInputInstance instance)
             throws BadRequestRestEx, ConflictRestEx, InternalErrorRestEx;
 
-    @PUT
-    @Path("/id/{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    void update(@PathParam("id") Long id, @FormDataParam("instance") RESTInputInstance instance)
+    /** Also reachable as {@code multipart/form-data} - see {@link #insert(RESTInputInstance)}. */
+    @PutMapping(
+            path = "/id/{id}",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    void update(@PathVariable("id") Long id, @RequestBody RESTInputInstance instance)
             throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
-    @PUT
-    @Path("/name/{name}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    void update(@PathParam("name") String name, @FormDataParam("instance") RESTInputInstance instance)
+    /** Also reachable as {@code multipart/form-data} - see {@link #insert(RESTInputInstance)}. */
+    @PutMapping(
+            path = "/name/{name}",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    void update(@PathVariable("name") String name, @RequestBody RESTInputInstance instance)
             throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     /**
@@ -81,9 +89,9 @@ public interface RESTGSInstanceService {
      * @throws ConflictRestEx (HTTP code 409) if any rule refers to the instance and cascade is false
      * @throws InternalErrorRestEx (HTTP code 500)
      */
-    @DELETE
-    @Path("/id/{id}")
-    Response delete(@PathParam("id") Long id, @QueryParam("cascade") @DefaultValue("false") boolean cascade)
+    @DeleteMapping("/id/{id}")
+    ResponseEntity<String> delete(
+            @PathVariable("id") Long id, @RequestParam(name = "cascade", defaultValue = "false") boolean cascade)
             throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     /**
@@ -96,8 +104,8 @@ public interface RESTGSInstanceService {
      * @throws ConflictRestEx (HTTP code 409) if any rule refers to the instance and cascade is false
      * @throws InternalErrorRestEx (HTTP code 500)
      */
-    @DELETE
-    @Path("/name/{name}")
-    Response delete(@PathParam("name") String name, @QueryParam("cascade") @DefaultValue("false") boolean cascade)
+    @DeleteMapping("/name/{name}")
+    ResponseEntity<String> delete(
+            @PathVariable("name") String name, @RequestParam(name = "cascade", defaultValue = "false") boolean cascade)
             throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx;
 }

@@ -5,27 +5,27 @@
 
 package org.geofence.web.rest.api.interfaces.params;
 
-import jakarta.ws.rs.QueryParam;
+import org.geofence.web.rest.api.annotations.FilterParam;
 
 /** @author etj */
 public class RESTAdminRuleFilter {
 
     public RESTAdminRuleFilter() {}
 
-    public @QueryParam("userName") String userName;
-    public @Deprecated @QueryParam("userAny") Boolean userAny;
-    public @QueryParam("userDefault") Boolean userDefault;
+    public @FilterParam("userName") String userName;
+    public @Deprecated @FilterParam("userAny") Boolean userAny;
+    public @FilterParam("userDefault") Boolean userDefault;
 
-    public @QueryParam("groupName") String groupName;
-    public @Deprecated @QueryParam("groupAny") Boolean groupAny;
-    public @QueryParam("groupDefault") Boolean groupDefault;
+    public @FilterParam("groupName") String groupName;
+    public @Deprecated @FilterParam("groupAny") Boolean groupAny;
+    public @FilterParam("groupDefault") Boolean groupDefault;
 
-    public @Deprecated @QueryParam("instanceId") Long instanceId;
-    public @QueryParam("instanceName") String instanceName;
-    public @Deprecated @QueryParam("instanceAny") Boolean instanceAny;
-    public @QueryParam("instanceDefault") Boolean instanceDefault;
+    public @Deprecated @FilterParam("instanceId") Long instanceId;
+    public @FilterParam("instanceName") String instanceName;
+    public @Deprecated @FilterParam("instanceAny") Boolean instanceAny;
+    public @FilterParam("instanceDefault") Boolean instanceDefault;
 
-    public @QueryParam("workspace") String workspace;
-    public @Deprecated @QueryParam("workspaceAny") Boolean workspaceAny;
-    public @QueryParam("workspaceDefault") Boolean workspaceDefault;
+    public @FilterParam("workspace") String workspace;
+    public @Deprecated @FilterParam("workspaceAny") Boolean workspaceAny;
+    public @FilterParam("workspaceDefault") Boolean workspaceDefault;
 }

@@ -5,11 +5,6 @@
 
 package org.geofence.web.rest.impl;
 
-import jakarta.ws.rs.BeanParam;
-import jakarta.ws.rs.DefaultValue;
-import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -41,12 +36,21 @@ import org.geofence.web.rest.utils.GeomUtils;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.io.ParseException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 
 /** @author ETj (etj at geo-solutions.it) */
 @Service
+@RestController
 public class RESTRuleServiceImpl extends BaseRESTServiceImpl implements RESTRuleService {
 
     private static final Logger LOGGER = LogManager.getLogger(RESTRuleServiceImpl.class);
@@ -74,7 +78,8 @@ public class RESTRuleServiceImpl extends BaseRESTServiceImpl implements RESTRule
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, value = "geofenceTransactionManager")
-    public Response insert(RESTInputRule inputRule) throws NotFoundRestEx, BadRequestRestEx, InternalErrorRestEx {
+    public ResponseEntity<Long> insert(RESTInputRule inputRule)
+            throws NotFoundRestEx, BadRequestRestEx, InternalErrorRestEx {
 
         if (inputRule.getPosition() == null || inputRule.getPosition().getPosition() == null) {
             throw new BadRequestRestEx("Bad position: " + inputRule.getPosition());
@@ -96,7 +101,7 @@ public class RESTRuleServiceImpl extends BaseRESTServiceImpl implements RESTRule
                 ruleAdminService.setDetails(id, details);
             }
 
-            return Response.status(Status.CREATED).tag(id.toString()).entity(id).build();
+            return ResponseEntity.status(HttpStatus.CREATED).eTag(id.toString()).body(id);
         } catch (BadRequestServiceEx ex) {
             LOGGER.error(ex.getMessage());
             throw new BadRequestRestEx(ex.getMessage());
@@ -104,6 +109,13 @@ public class RESTRuleServiceImpl extends BaseRESTServiceImpl implements RESTRule
             LOGGER.error(ex.getMessage(), ex);
             throw new InternalErrorRestEx(ex.getMessage(), ex);
         }
+    }
+
+    /** Legacy {@code multipart/form-data} entry point (a "rule" part), for callers not yet sending JSON/XML bodies. */
+    @PostMapping(path = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Long> insertMultipart(@RequestPart("rule") RESTInputRule rule)
+            throws NotFoundRestEx, BadRequestRestEx, InternalErrorRestEx {
+        return insert(rule);
     }
 
     @Override
@@ -301,15 +313,22 @@ public class RESTRuleServiceImpl extends BaseRESTServiceImpl implements RESTRule
         }
     }
 
+    /** Legacy {@code multipart/form-data} entry point (a "rule" part), for callers not yet sending JSON/XML bodies. */
+    @PutMapping(path = "/id/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void updateMultipart(@PathVariable("id") Long id, @RequestPart("rule") RESTInputRule rule)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        update(id, rule);
+    }
+
     @Override
-    public Response delete(Long id) throws NotFoundRestEx, InternalErrorRestEx {
+    public ResponseEntity<String> delete(Long id) throws NotFoundRestEx, InternalErrorRestEx {
         try {
             if (!ruleAdminService.delete(id)) {
                 LOGGER.warn("Rule not found: " + id);
                 throw new NotFoundRestEx("Rule not found: " + id);
             }
 
-            return Response.status(Status.OK).entity("OK\n").build();
+            return ResponseEntity.ok("OK\n");
 
         } catch (GeoFenceRestEx ex) { // already handled
             throw ex;
@@ -326,11 +345,7 @@ public class RESTRuleServiceImpl extends BaseRESTServiceImpl implements RESTRule
     // ==========================================================================
 
     @Override
-    public RESTOutputRuleList get(
-            @QueryParam("page") Integer page,
-            @QueryParam("entries") Integer entries,
-            @QueryParam("full") @DefaultValue("false") boolean full,
-            @BeanParam RESTRuleFilter query)
+    public RESTOutputRuleList get(Integer page, Integer entries, boolean full, RESTRuleFilter query)
             throws BadRequestRestEx, InternalErrorRestEx {
 
         RuleFilter filter = RESTMapper.buildFilter(query);
@@ -357,7 +372,8 @@ public class RESTRuleServiceImpl extends BaseRESTServiceImpl implements RESTRule
     }
 
     @Override
-    public Response move(String rulesIds, Integer targetPriority) throws BadRequestRestEx, InternalErrorRestEx {
+    public ResponseEntity<String> move(String rulesIds, Integer targetPriority)
+            throws BadRequestRestEx, InternalErrorRestEx {
 
         try {
             List<Rule> rules = findRules(rulesIds);
@@ -373,7 +389,7 @@ public class RESTRuleServiceImpl extends BaseRESTServiceImpl implements RESTRule
                     priority++;
                 }
             }
-            return Response.status(Status.OK).entity("OK\n").build();
+            return ResponseEntity.ok("OK\n");
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new InternalErrorRestEx(ex.getMessage());

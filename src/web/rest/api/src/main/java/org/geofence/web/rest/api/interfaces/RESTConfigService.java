@@ -5,54 +5,55 @@
 
 package org.geofence.web.rest.api.interfaces;
 
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DefaultValue;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.MediaType;
 import org.geofence.web.rest.api.exception.BadRequestRestEx;
 import org.geofence.web.rest.api.exception.InternalErrorRestEx;
 import org.geofence.web.rest.api.exception.NotFoundRestEx;
 import org.geofence.web.rest.api.model.RESTBatch;
-import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /** @author Emanuele Tajariol (etj at geo-solutions.it) */
-@Path("/config")
+@RequestMapping("/config")
 public interface RESTConfigService {
-    @GET
-    @Path("/backup")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    RESTBatch backup(@QueryParam("includeGFUsers") @DefaultValue("False") Boolean includeGRUsers);
+    @GetMapping(
+            path = "/backup",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    RESTBatch backup(@RequestParam(name = "includeGRUsers", defaultValue = "false") Boolean includeGRUsers);
 
-    @PUT
-    @Path("/restore")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    void restore(@FormDataParam("batch") RESTBatch batch) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+    /**
+     * Also reachable as {@code multipart/form-data} (a "batch" part) via {@code RESTConfigServiceImpl
+     * .restoreMultipart} - not declared here since one interface method can't be mapped to two different request
+     * content types.
+     */
+    @PutMapping(
+            path = "/restore",
+            consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    void restore(@RequestBody RESTBatch batch) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
-    @PUT
-    @Path("/cleanup")
+    @PutMapping("/cleanup")
     void cleanup() throws InternalErrorRestEx;
 
-    @GET
-    @Path("/backup/groups")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @GetMapping(
+            path = "/backup/groups",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     RESTBatch backupGroups();
 
-    @GET
-    @Path("/backup/users")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @GetMapping(
+            path = "/backup/users",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     RESTBatch backupUsers();
 
-    @GET
-    @Path("/backup/instances")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @GetMapping(
+            path = "/backup/instances",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     RESTBatch backupInstances();
 
-    @GET
-    @Path("/backup/rules")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @GetMapping(
+            path = "/backup/rules",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     RESTBatch backupRules();
 }

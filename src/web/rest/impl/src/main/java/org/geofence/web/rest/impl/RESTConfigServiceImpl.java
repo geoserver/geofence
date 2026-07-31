@@ -50,19 +50,35 @@ import org.geofence.web.rest.api.util.RESTBatchOperationFactory;
 import org.geofence.web.rest.utils.InstanceCleaner;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 
 /** @author ETj (etj at geo-solutions.it) */
 @Service
+@RestController
 public class RESTConfigServiceImpl implements RESTConfigService {
 
     private static final Logger LOGGER = LogManager.getLogger(RESTConfigServiceImpl.class);
 
+    @Autowired
     private UserAdminService userAdminService;
+
+    @Autowired
     private UserGroupAdminService userGroupAdminService;
+
+    @Autowired
     private RuleAdminService ruleAdminService;
+
+    @Autowired
     private InstanceAdminService instanceAdminService;
+
+    @Autowired
     private RESTBatchService restBatchService;
+
+    @Autowired
     private InstanceCleaner instanceCleaner;
 
     @Autowired
@@ -219,6 +235,13 @@ public class RESTConfigServiceImpl implements RESTConfigService {
 
         instanceCleaner.removeAll();
         restBatchService.runBatch(batch);
+    }
+
+    /** Legacy {@code multipart/form-data} entry point (a "batch" part), for callers not yet sending JSON/XML bodies. */
+    @PutMapping(path = "/restore", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void restoreMultipart(@RequestPart("batch") RESTBatch batch)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        restore(batch);
     }
 
     @Override

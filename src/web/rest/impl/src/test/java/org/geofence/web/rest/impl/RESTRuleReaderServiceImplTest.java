@@ -31,7 +31,7 @@ public class RESTRuleReaderServiceImplTest extends RESTBaseTest {
         rule.setUsername(userName);
         rule.setWorkspace(workspace);
         rule.setLayer(layer);
-        return (Long) restRuleService.insert(rule).getEntity();
+        return (Long) restRuleService.insert(rule).getBody();
     }
 
     @Test

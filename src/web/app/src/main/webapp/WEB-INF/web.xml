@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
 
-    <!-- annotation-based Spring context: GeofenceRESTConfig component-scans org.geofence.web.rest (REST impls,
-         JerseyConfig) and imports GeofenceServiceConfig (the core engine, itself importing GeofencePersistenceConfig) -->
+    <!-- annotation-based Spring context: GeofenceRESTConfig component-scans org.geofence.web.rest (the REST impls)
+         and imports GeofenceServiceConfig (the core engine, itself importing GeofencePersistenceConfig) -->
     <context-param>
         <param-name>contextClass</param-name>
         <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
@@ -42,34 +42,28 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <!-- Standard Context -->
-    
-    <servlet>
-        <servlet-name>jersey</servlet-name>
-        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-
-        <init-param>
-            <param-name>jakarta.ws.rs.Application</param-name>
-            <param-value>org.geofence.web.rest.config.JerseyConfig</param-value>
-        </init-param>
-
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>jersey</servlet-name>
-        <url-pattern>/rest/*</url-pattern>
-    </servlet-mapping>    
-    
-
     <!-- *****************************************************************************************  -->
     <!-- **                                DISPATCHER                                           **  -->
     <!-- *****************************************************************************************  -->
-<!--    <servlet>
+    <servlet>
         <servlet-name>dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>-->
+        <init-param>
+            <param-name>contextClass</param-name>
+            <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+        </init-param>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>org.geofence.web.DispatcherConfig</param-value>
+        </init-param>
+        <multipart-config/>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>
 
     <!-- CXF Servlet -->
 <!--    <servlet>

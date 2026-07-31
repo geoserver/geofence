@@ -5,19 +5,7 @@
 
 package org.geofence.web.rest.api.interfaces;
 
-import jakarta.ws.rs.BeanParam;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.DefaultValue;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import org.geofence.web.rest.api.annotations.FilterBean;
 import org.geofence.web.rest.api.exception.BadRequestRestEx;
 import org.geofence.web.rest.api.exception.InternalErrorRestEx;
 import org.geofence.web.rest.api.exception.NotFoundRestEx;
@@ -25,45 +13,65 @@ import org.geofence.web.rest.api.interfaces.params.RESTAdminRuleFilter;
 import org.geofence.web.rest.api.model.RESTInputAdminRule;
 import org.geofence.web.rest.api.model.RESTOutputAdminRule;
 import org.geofence.web.rest.api.model.RESTOutputAdminRuleList;
-import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-/** @author Emanuele Tajariol (etj at geo-solutions.it) */
-@Path("/adminrules")
+/**
+ * The {@code @FilterBean RESTAdminRuleFilter} parameters are resolved from query-string parameters using the filter
+ * type's own {@code @FilterParam}-annotated fields (see {@code QueryParamBeanArgumentResolver}).
+ *
+ * @author Emanuele Tajariol (etj at geo-solutions.it)
+ */
+@RequestMapping("/adminrules")
 public interface RESTAdminRuleService {
-    @POST
-    @Path("/")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    Response insert(@FormDataParam("rule") RESTInputAdminRule rule) throws BadRequestRestEx, NotFoundRestEx;
 
-    @GET
-    @Path("/id/{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    RESTOutputAdminRule get(@PathParam("id") Long id) throws BadRequestRestEx, NotFoundRestEx;
+    /**
+     * Also reachable as {@code multipart/form-data} (a "rule" part) via
+     * {@code RESTAdminRuleServiceImpl.insertMultipart} - not declared here since one interface method can't be mapped
+     * to two different request content types.
+     */
+    @PostMapping(
+            path = "/",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    ResponseEntity<Long> insert(@RequestBody RESTInputAdminRule rule) throws BadRequestRestEx, NotFoundRestEx;
 
-    @PUT
-    @Path("/id/{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    void update(@PathParam("id") Long id, @FormDataParam("rule") RESTInputAdminRule rule)
+    @GetMapping(
+            path = "/id/{id}",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    RESTOutputAdminRule get(@PathVariable("id") Long id) throws BadRequestRestEx, NotFoundRestEx;
+
+    /** Also reachable as {@code multipart/form-data} - see {@link #insert(RESTInputAdminRule)}. */
+    @PutMapping(
+            path = "/id/{id}",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    void update(@PathVariable("id") Long id, @RequestBody RESTInputAdminRule rule)
             throws BadRequestRestEx, NotFoundRestEx;
 
-    @DELETE
-    @Path("/id/{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    Response delete(@PathParam("id") Long id) throws BadRequestRestEx, NotFoundRestEx;
+    @DeleteMapping(
+            path = "/id/{id}",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    ResponseEntity<String> delete(@PathVariable("id") Long id) throws BadRequestRestEx, NotFoundRestEx;
 
-    @GET
-    @Path("/")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @GetMapping(
+            path = "/",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     RESTOutputAdminRuleList get(
-            @QueryParam("page") Integer page,
-            @QueryParam("entries") Integer entries,
-            @QueryParam("full") @DefaultValue("false") boolean full,
-            @BeanParam RESTAdminRuleFilter query)
+            @RequestParam(name = "page", required = false) Integer page,
+            @RequestParam(name = "entries", required = false) Integer entries,
+            @RequestParam(name = "full", defaultValue = "false") boolean full,
+            @FilterBean RESTAdminRuleFilter query)
             throws BadRequestRestEx, InternalErrorRestEx;
 
-    @GET
-    @Path("/count")
-    long count(@BeanParam RESTAdminRuleFilter query);
+    @GetMapping("/count")
+    long count(@FilterBean RESTAdminRuleFilter query);
 }

@@ -5,17 +5,6 @@
 
 package org.geofence.web.rest.api.interfaces;
 
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.DefaultValue;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import org.geofence.web.rest.api.exception.BadRequestRestEx;
 import org.geofence.web.rest.api.exception.ConflictRestEx;
 import org.geofence.web.rest.api.exception.InternalErrorRestEx;
@@ -23,10 +12,19 @@ import org.geofence.web.rest.api.exception.NotFoundRestEx;
 import org.geofence.web.rest.api.model.RESTInputUser;
 import org.geofence.web.rest.api.model.RESTOutputUser;
 import org.geofence.web.rest.api.model.RESTShortUserList;
-import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /** @author Emanuele Tajariol (etj at geo-solutions.it) */
-@Path("/user")
+@RequestMapping("/user")
 public interface RESTUserService {
 
     /**
@@ -40,13 +38,13 @@ public interface RESTUserService {
      * @throws BadRequestRestEx (HTTP code 400) if page/entries do no match
      * @throws InternalErrorRestEx (HTTP code 500)
      */
-    @GET
-    @Path("/")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @GetMapping(
+            path = "/",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     RESTShortUserList getList(
-            @QueryParam("nameLike") String nameLike,
-            @QueryParam("page") Integer page,
-            @QueryParam("entries") Integer entries)
+            @RequestParam(name = "nameLike", required = false) String nameLike,
+            @RequestParam(name = "page", required = false) Integer page,
+            @RequestParam(name = "entries", required = false) Integer entries)
             throws BadRequestRestEx, InternalErrorRestEx;
 
     /**
@@ -55,13 +53,11 @@ public interface RESTUserService {
      * @param nameLike An optional LIKE filter on the username.
      * @throws InternalErrorRestEx (HTTP code 500)
      */
-    @GET
-    @Path("/count/{nameLike}")
-    long count(@PathParam("nameLike") String nameLike);
+    @GetMapping("/count/{nameLike}")
+    long count(@PathVariable("nameLike") String nameLike);
 
-    @GET
-    @Path("/count")
-    long count2(@QueryParam("nameLike") String nameLike);
+    @GetMapping("/count")
+    long count2(@RequestParam(name = "nameLike", required = false) String nameLike);
 
     /**
      * Returns a single user.
@@ -70,13 +66,15 @@ public interface RESTUserService {
      * @throws NotFoundRestEx (HTTP code 404) if no user with given name exists
      * @throws InternalErrorRestEx (HTTP code 500)
      */
-    @GET
-    @Path("/name/{name}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    RESTOutputUser get(@PathParam("name") String name) throws NotFoundRestEx, InternalErrorRestEx;
+    @GetMapping(
+            path = "/name/{name}",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    RESTOutputUser get(@PathVariable("name") String name) throws NotFoundRestEx, InternalErrorRestEx;
 
     /**
-     * Inserts a new GSUser.
+     * Inserts a new GSUser. Also reachable as {@code multipart/form-data} (a "user" part) via
+     * {@code RESTUserServiceImpl.insertMultipart} - not declared here since one interface method can't be mapped to two
+     * different request content types.
      *
      * @param user the GSUser as payload
      * @return the id of the newly created user, in plain text
@@ -84,14 +82,15 @@ public interface RESTUserService {
      * @throws NotFoundRestEx (HTTP code 404) if the profile is not found
      * @throws InternalErrorRestEx (HTTP code 500)
      */
-    @POST
-    @Path("/")
-    @Produces({MediaType.TEXT_PLAIN, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    Response insert(@FormDataParam("user") RESTInputUser user)
+    @PostMapping(
+            path = "/",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    ResponseEntity<Long> insert(@RequestBody RESTInputUser user)
             throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx, ConflictRestEx;
 
     /**
-     * Updates a GSUser.
+     * Updates a GSUser. Also reachable as {@code multipart/form-data} - see {@link #insert(RESTInputUser)}.
      *
      * @param id The id of the user to update
      * @param user The new GSUser data as payload
@@ -99,13 +98,13 @@ public interface RESTUserService {
      * @throws NotFoundRestEx (HTTP code 404) if the old user or the profile is not found
      * @throws InternalErrorRestEx (HTTP code 500)
      */
-    @PUT
-    @Path("/id/{id}")
-    void update(@PathParam("id") Long id, @FormDataParam("user") RESTInputUser user)
-            throws BadRequestRestEx, NotFoundRestEx;
+    @PutMapping(
+            path = "/id/{id}",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    void update(@PathVariable("id") Long id, @RequestBody RESTInputUser user) throws BadRequestRestEx, NotFoundRestEx;
 
     /**
-     * Updates a GSUser.
+     * Updates a GSUser. Also reachable as {@code multipart/form-data} - see {@link #insert(RESTInputUser)}.
      *
      * @param name The name of the user to update
      * @param user The new GSUser data as payload
@@ -113,9 +112,10 @@ public interface RESTUserService {
      * @throws NotFoundRestEx (HTTP code 404) if the old user or the profile is not found
      * @throws InternalErrorRestEx (HTTP code 500)
      */
-    @PUT
-    @Path("/name/{name}")
-    void update(@PathParam("name") String name, @FormDataParam("user") RESTInputUser user)
+    @PutMapping(
+            path = "/name/{name}",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    void update(@PathVariable("name") String name, @RequestBody RESTInputUser user)
             throws BadRequestRestEx, NotFoundRestEx;
 
     /**
@@ -128,9 +128,9 @@ public interface RESTUserService {
      * @throws if the user is used in a rule and cascade is false
      * @throws InternalErrorRestEx (HTTP code 500)
      */
-    @DELETE
-    @Path("/name/{name}")
-    Response delete(@PathParam("name") String name, @QueryParam("cascade") @DefaultValue("false") boolean cascade)
+    @DeleteMapping("/name/{name}")
+    ResponseEntity<String> delete(
+            @PathVariable("name") String name, @RequestParam(name = "cascade", defaultValue = "false") boolean cascade)
             throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     // =========================================================================
@@ -146,9 +146,8 @@ public interface RESTUserService {
      * @throws NotFoundRestEx (HTTP code 404) if the user or the group are not found
      * @throws InternalErrorRestEx (HTTP code 500)
      */
-    @PUT
-    @Path("/name/{userName}/group/name/{groupName}")
-    void addIntoGroup(@PathParam("userName") String userName, @PathParam("groupName") String groupName)
+    @PutMapping("/name/{userName}/group/name/{groupName}")
+    void addIntoGroup(@PathVariable("userName") String userName, @PathVariable("groupName") String groupName)
             throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     // =========================================================================
@@ -164,8 +163,7 @@ public interface RESTUserService {
      * @throws NotFoundRestEx (HTTP code 404) if the user or the group are not found
      * @throws InternalErrorRestEx (HTTP code 500)
      */
-    @DELETE
-    @Path("/name/{userName}/group/name/{groupName}")
-    void removeFromGroup(@PathParam("userName") String userName, @PathParam("groupName") String groupName)
+    @DeleteMapping("/name/{userName}/group/name/{groupName}")
+    void removeFromGroup(@PathVariable("userName") String userName, @PathVariable("groupName") String groupName)
             throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 }

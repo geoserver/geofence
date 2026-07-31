@@ -5,8 +5,6 @@
 
 package org.geofence.web.rest.impl;
 
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,10 +28,19 @@ import org.geofence.web.rest.api.model.RESTOutputUser;
 import org.geofence.web.rest.api.model.RESTShortUser;
 import org.geofence.web.rest.api.model.RESTShortUserList;
 import org.geofence.web.rest.api.model.util.IdName;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 
 /** @author ETj (etj at geo-solutions.it) */
 @Service
+@RestController
 public class RESTUserServiceImpl extends BaseRESTServiceImpl implements RESTUserService {
 
     private static final Logger LOGGER = LogManager.getLogger(RESTUserServiceImpl.class);
@@ -42,7 +49,7 @@ public class RESTUserServiceImpl extends BaseRESTServiceImpl implements RESTUser
     //    private UserGroupAdminService userGroupAdminService;
 
     @Override
-    public Response delete(String username, boolean cascade)
+    public ResponseEntity<String> delete(String username, boolean cascade)
             throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
             if (cascade) {
@@ -64,7 +71,7 @@ public class RESTUserServiceImpl extends BaseRESTServiceImpl implements RESTUser
                 throw new NotFoundRestEx("ILLEGAL STATE -- User not found: " + user);
             }
 
-            return Response.status(Status.OK).entity("OK\n").build();
+            return ResponseEntity.ok("OK\n");
 
         } catch (GeoFenceRestEx ex) { // already handled
             throw ex;
@@ -92,7 +99,7 @@ public class RESTUserServiceImpl extends BaseRESTServiceImpl implements RESTUser
     }
 
     @Override
-    public Response insert(RESTInputUser user)
+    public ResponseEntity<Long> insert(RESTInputUser user)
             throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx, ConflictRestEx {
 
         boolean exists;
@@ -142,10 +149,9 @@ public class RESTUserServiceImpl extends BaseRESTServiceImpl implements RESTUser
 
             Long ret = userAdminService.insert(u);
 
-            return Response.status(Status.CREATED)
-                    .tag(ret.toString())
-                    .entity(ret)
-                    .build();
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .eTag(ret.toString())
+                    .body(ret);
 
         } catch (GeoFenceRestEx ex) {
             // already handled
@@ -162,6 +168,13 @@ public class RESTUserServiceImpl extends BaseRESTServiceImpl implements RESTUser
         }
     }
 
+    /** Legacy {@code multipart/form-data} entry point (a "user" part), for callers not yet sending JSON/XML bodies. */
+    @PostMapping(path = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Long> insertMultipart(@RequestPart("user") RESTInputUser user)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx, ConflictRestEx {
+        return insert(user);
+    }
+
     @Override
     public void update(String name, RESTInputUser user) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
@@ -171,6 +184,13 @@ public class RESTUserServiceImpl extends BaseRESTServiceImpl implements RESTUser
             LOGGER.warn("User not found: " + name);
             throw new NotFoundRestEx("User not found: " + name);
         }
+    }
+
+    /** Legacy {@code multipart/form-data} entry point (a "user" part), for callers not yet sending JSON/XML bodies. */
+    @PutMapping(path = "/name/{name}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void updateMultipartByName(@PathVariable("name") String name, @RequestPart("user") RESTInputUser user)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        update(name, user);
     }
 
     @Override
@@ -227,6 +247,13 @@ public class RESTUserServiceImpl extends BaseRESTServiceImpl implements RESTUser
             LOGGER.error(ex);
             throw new InternalErrorRestEx(ex.getMessage());
         }
+    }
+
+    /** Legacy {@code multipart/form-data} entry point (a "user" part), for callers not yet sending JSON/XML bodies. */
+    @PutMapping(path = "/id/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void updateMultipartById(@PathVariable("id") Long id, @RequestPart("user") RESTInputUser user)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        update(id, user);
     }
 
     @Override

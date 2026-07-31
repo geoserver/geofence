@@ -5,14 +5,11 @@
 
 package org.geofence.web.rest.impl;
 
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.geofence.core.model.GSInstance;
 import org.geofence.core.model.util.PwEncoder;
-import org.geofence.core.services.InstanceAdminService;
 import org.geofence.core.services.dto.RuleFilter;
 import org.geofence.core.services.dto.RuleFilter.SpecialFilterType;
 import org.geofence.core.services.dto.ShortInstance;
@@ -27,14 +24,22 @@ import org.geofence.web.rest.api.interfaces.RESTGSInstanceService;
 import org.geofence.web.rest.api.model.RESTInputInstance;
 import org.geofence.web.rest.api.model.RESTOutputInstance;
 import org.geofence.web.rest.api.model.RESTShortInstanceList;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 
 /** @author ETj (etj at geo-solutions.it) */
 @Service
+@RestController
 public class RESTInstanceServiceImpl extends BaseRESTServiceImpl implements RESTGSInstanceService {
 
     private static final Logger LOGGER = LogManager.getLogger(RESTInstanceServiceImpl.class);
-    private InstanceAdminService instanceAdminService;
 
     @Override
     public RESTShortInstanceList getList(String nameLike, Integer page, Integer entries) {
@@ -77,7 +82,8 @@ public class RESTInstanceServiceImpl extends BaseRESTServiceImpl implements REST
     }
 
     @Override
-    public Response insert(RESTInputInstance instance) throws NotFoundRestEx, InternalErrorRestEx, ConflictRestEx {
+    public ResponseEntity<Long> insert(RESTInputInstance instance)
+            throws NotFoundRestEx, InternalErrorRestEx, ConflictRestEx {
 
         // check that no group with same name exists
         boolean exists;
@@ -105,12 +111,21 @@ public class RESTInstanceServiceImpl extends BaseRESTServiceImpl implements REST
             insert.setPassword(instance.getPassword());
 
             Long id = instanceAdminService.insert(insert);
-            return Response.status(Status.CREATED).tag(id.toString()).entity(id).build();
+            return ResponseEntity.status(HttpStatus.CREATED).eTag(id.toString()).body(id);
 
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new InternalErrorRestEx(ex.getMessage());
         }
+    }
+
+    /**
+     * Legacy {@code multipart/form-data} entry point (an "instance" part), for callers not yet sending JSON/XML bodies.
+     */
+    @PostMapping(path = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Long> insertMultipart(@RequestPart("instance") RESTInputInstance instance)
+            throws NotFoundRestEx, InternalErrorRestEx, ConflictRestEx {
+        return insert(instance);
     }
 
     @Override
@@ -123,6 +138,14 @@ public class RESTInstanceServiceImpl extends BaseRESTServiceImpl implements REST
             LOGGER.warn("GSInstance not found: " + name);
             throw new NotFoundRestEx("GSInstance not found: " + name);
         }
+    }
+
+    /** Legacy {@code multipart/form-data} entry point - see {@link #insertMultipart(RESTInputInstance)}. */
+    @PutMapping(path = "/name/{name}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void updateMultipartByName(
+            @PathVariable("name") String name, @RequestPart("instance") RESTInputInstance instance)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        update(name, instance);
     }
 
     @Override
@@ -165,8 +188,16 @@ public class RESTInstanceServiceImpl extends BaseRESTServiceImpl implements REST
         }
     }
 
+    /** Legacy {@code multipart/form-data} entry point - see {@link #insertMultipart(RESTInputInstance)}. */
+    @PutMapping(path = "/id/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void updateMultipartById(@PathVariable("id") Long id, @RequestPart("instance") RESTInputInstance instance)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        update(id, instance);
+    }
+
     @Override
-    public Response delete(Long id, boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public ResponseEntity<String> delete(Long id, boolean cascade)
+            throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
             if (cascade) {
                 ruleAdminService.deleteRulesByInstance(id);
@@ -185,7 +216,7 @@ public class RESTInstanceServiceImpl extends BaseRESTServiceImpl implements REST
                 throw new NotFoundRestEx("GSInstance not found: " + id);
             }
 
-            return Response.status(Status.OK).entity("OK\n").build();
+            return ResponseEntity.ok("OK\n");
 
         } catch (GeoFenceRestEx ex) { // already handled
             throw ex;
@@ -199,12 +230,13 @@ public class RESTInstanceServiceImpl extends BaseRESTServiceImpl implements REST
     }
 
     @Override
-    public Response delete(String name, boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public ResponseEntity<String> delete(String name, boolean cascade)
+            throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
             long id = instanceAdminService.get(name).getId();
             this.delete(id, cascade);
 
-            return Response.status(Status.OK).entity("OK\n").build();
+            return ResponseEntity.ok("OK\n");
         } catch (NotFoundServiceEx ex) {
             LOGGER.warn("GSInstance not found: " + name);
             throw new NotFoundRestEx("GSInstance not found: " + name);
@@ -228,12 +260,5 @@ public class RESTInstanceServiceImpl extends BaseRESTServiceImpl implements REST
         ret.setPassword(PwEncoder.encode(i.getPassword()));
         ret.setCreationDate(i.getDateCreation().toString());
         return ret;
-    }
-
-    // ==========================================================================
-    // ==========================================================================
-
-    public void setInstanceAdminService(InstanceAdminService instanceAdminService) {
-        this.instanceAdminService = instanceAdminService;
     }
 }

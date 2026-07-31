@@ -7,7 +7,6 @@ package org.geofence.web.rest.impl;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import jakarta.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -20,6 +19,7 @@ import org.geofence.web.rest.api.model.RESTInputUser;
 import org.geofence.web.rest.api.model.RESTOutputUser;
 import org.geofence.web.rest.api.model.util.IdName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.ResponseEntity;
 
 /** @author ETj (etj at geo-solutions.it) */
 public class RESTUserServiceImplTest extends RESTBaseTest {
@@ -29,8 +29,8 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
     public void testInsert() {
         RESTInputGroup group = new RESTInputGroup();
         group.setName("g1");
-        Response res = restUserGroupService.insert(group);
-        long gid1 = (Long) res.getEntity();
+        ResponseEntity<Long> res = restUserGroupService.insert(group);
+        long gid1 = res.getBody();
 
         RESTInputUser user = new RESTInputUser();
         user.setName("user0");
@@ -38,8 +38,8 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
         user.setGroups(new ArrayList<>());
         user.getGroups().add(new IdName("g1"));
 
-        Response userResp = restUserService.insert(user);
-        Long id = (Long) userResp.getEntity();
+        ResponseEntity<Long> userResp = restUserService.insert(user);
+        Long id = userResp.getBody();
 
         {
             RESTOutputUser out = restUserService.get("user0");
@@ -52,8 +52,8 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
     public void testInsertDup() {
         RESTInputGroup group = new RESTInputGroup();
         group.setName("g1");
-        Response res = restUserGroupService.insert(group);
-        long gid1 = (Long) res.getEntity();
+        ResponseEntity<Long> res = restUserGroupService.insert(group);
+        long gid1 = res.getBody();
 
         {
             RESTInputUser user = new RESTInputUser();
@@ -62,8 +62,8 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
             user.setGroups(new ArrayList<>());
             user.getGroups().add(new IdName("g1"));
 
-            Response userResp = restUserService.insert(user);
-            Long id = (Long) userResp.getEntity();
+            ResponseEntity<Long> userResp = restUserService.insert(user);
+            Long id = userResp.getBody();
         }
 
         LOGGER.info("Inserting dup");
@@ -75,8 +75,8 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
             user.getGroups().add(new IdName("g1"));
 
             try {
-                Response userResp = restUserService.insert(user);
-                Long id = (Long) userResp.getEntity();
+                ResponseEntity<Long> userResp = restUserService.insert(user);
+                Long id = userResp.getBody();
                 fail("409 not trapped");
             } catch (ConflictRestEx e) {
                 LOGGER.info("Exception properly trapped");
@@ -90,8 +90,8 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
             for (String name : Arrays.asList("g1", "g2", "g3", "g4")) {
                 RESTInputGroup group1 = new RESTInputGroup();
                 group1.setName(name);
-                Response res = restUserGroupService.insert(group1);
-                long gid1 = (Long) res.getEntity();
+                ResponseEntity<Long> res = restUserGroupService.insert(group1);
+                long gid1 = res.getBody();
                 LOGGER.info("Created group id:" + gid1 + " name:" + name);
             }
         }
@@ -106,8 +106,8 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
             user.setGroups(new ArrayList<>());
             user.getGroups().add(new IdName("g1"));
 
-            Response userResp = restUserService.insert(user);
-            uid = (Long) userResp.getEntity();
+            ResponseEntity<Long> userResp = restUserService.insert(user);
+            uid = userResp.getBody();
         }
 
         { // check user

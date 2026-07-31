@@ -5,30 +5,29 @@
 
 package org.geofence.web.rest.api.exception;
 
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
-
 /**
- * Used as a catchall when forwarding exceptions
+ * Used as a catchall when forwarding exceptions. Carries a plain numeric HTTP status instead of depending on any
+ * particular REST framework's response type, so this module (and its exception hierarchy) has no server-framework
+ * coupling - the actual HTTP response is built from {@link #getStatus()}/{@link #getMessage()} wherever the request is
+ * actually dispatched.
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public abstract class GeoFenceRestEx extends WebApplicationException {
+public abstract class GeoFenceRestEx extends RuntimeException {
 
-    private String message;
+    private final int status;
 
-    public GeoFenceRestEx(String message, Response response, Throwable cause) {
-        super(cause, response);
-        this.message = message;
+    protected GeoFenceRestEx(String message, int status, Throwable cause) {
+        super(message, cause);
+        this.status = status;
     }
 
-    public GeoFenceRestEx(String message, Response response) {
-        super(response);
-        this.message = message;
+    protected GeoFenceRestEx(String message, int status) {
+        super(message);
+        this.status = status;
     }
 
-    @Override
-    public String getMessage() {
-        return message;
+    public int getStatus() {
+        return status;
     }
 }

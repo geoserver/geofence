@@ -5,18 +5,10 @@
 
 package org.geofence.web.rest.api.exception;
 
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-
 /** @author ETj (etj at geo-solutions.it) */
 public class ConflictRestEx extends GeoFenceRestEx {
 
     public ConflictRestEx(String message) {
-        super(
-                message,
-                Response.status(Status.CONFLICT)
-                        .type("text/plain")
-                        .entity(message)
-                        .build());
+        super(message, 409);
     }
 }

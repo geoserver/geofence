@@ -5,78 +5,61 @@
 
 package org.geofence.web.rest.client;
 
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.WebTarget;
-import java.util.HashMap;
-import java.util.Map;
-import org.geofence.web.rest.api.interfaces.RESTAdminRuleService;
-import org.geofence.web.rest.api.interfaces.RESTBatchService;
-import org.geofence.web.rest.api.interfaces.RESTGSInstanceService;
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.geofence.web.rest.api.interfaces.RESTRuleReaderService;
-import org.geofence.web.rest.api.interfaces.RESTRuleService;
-import org.geofence.web.rest.api.interfaces.RESTUserGroupService;
-import org.geofence.web.rest.api.interfaces.RESTUserService;
-import org.glassfish.jersey.client.proxy.WebResourceFactory;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.support.RestClientAdapter;
+import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
-/** @author ETj (etj at geo-solutions.it) */
+/**
+ * Builds a {@link RESTRuleReaderService} proxy over {@code restUrl} via Spring's {@code HttpServiceProxyFactory} -
+ * {@code RESTRuleReaderService}'s own {@code @HttpExchange}/{@code @PostExchange} annotations (the same ones the server
+ * side uses for dispatch) drive the request URL, body, and response mapping directly, with no per-call code here.
+ *
+ * @author ETj (etj at geo-solutions.it)
+ */
 public class GeoFenceClient {
 
     private String username = null;
     private String password = null;
     private String restUrl = null;
 
-    private final Map<Class, Object> services = new HashMap<>();
+    private RESTRuleReaderService ruleReaderService;
 
     public GeoFenceClient() {}
 
     // ==========================================================================
 
-    protected <T> T getService(Class<T> clazz, String endpoint) {
+    public synchronized RESTRuleReaderService getRuleReaderService() {
+        if (ruleReaderService == null) {
+            if (restUrl == null) throw new IllegalStateException("GeoFence URL not set");
+            requireAbsoluteUrl(restUrl);
 
-        if (services.containsKey(clazz)) return (T) services.get(clazz);
-
-        if (restUrl == null) throw new IllegalStateException("GeoFence URL not set");
-
-        synchronized (services) {
-            Client client = ClientBuilder.newClient();
-            WebTarget target = client.target(restUrl).path(endpoint);
-
-            T proxy = WebResourceFactory.newResource(clazz, target);
-
-            services.put(clazz, proxy);
-            return proxy;
+            RestClient restClient = RestClient.builder().baseUrl(restUrl).build();
+            RestClientAdapter adapter = RestClientAdapter.create(restClient);
+            HttpServiceProxyFactory factory =
+                    HttpServiceProxyFactory.builderFor(adapter).build();
+            ruleReaderService = factory.createClient(RESTRuleReaderService.class);
         }
+        return ruleReaderService;
     }
 
-    //    //==========================================================================
-    //
-    public RESTUserGroupService getUserGroupService() {
-        return getService(RESTUserGroupService.class, "groups");
-    }
-
-    public RESTUserService getUserService() {
-        return getService(RESTUserService.class, "users");
-    }
-
-    public RESTGSInstanceService getGSInstanceService() {
-        return getService(RESTGSInstanceService.class, "instances");
-    }
-
-    public RESTRuleService getRuleService() {
-        return getService(RESTRuleService.class, "rules");
-    }
-
-    public RESTAdminRuleService getAdminRuleService() {
-        return getService(RESTAdminRuleService.class, "adminrules");
-    }
-
-    public RESTBatchService getBatchService() {
-        return getService(RESTBatchService.class, "batch");
-    }
-
-    public RESTRuleReaderService getRuleReaderService() {
-        return getService(RESTRuleReaderService.class, "rulereader");
+    /**
+     * Rejects a URL with no scheme/host upfront: left unchecked, Apache HttpClient5 (the {@link RestClient}'s
+     * underlying transport here) fails on a schemeless base URL with a bare {@code NullPointerException} deep in its
+     * routing code, only once a request is actually attempted - not a useful error to surface to a caller.
+     */
+    private static void requireAbsoluteUrl(String url) {
+        URI uri;
+        try {
+            uri = new URI(url);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("Invalid GeoFence REST URL: " + url, e);
+        }
+        if (uri.getScheme() == null || uri.getHost() == null) {
+            throw new IllegalArgumentException("Invalid GeoFence REST URL: " + url);
+        }
     }
 
     // ==========================================================================

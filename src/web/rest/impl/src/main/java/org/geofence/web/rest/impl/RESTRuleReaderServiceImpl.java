@@ -17,9 +17,11 @@ import org.geofence.web.rest.api.model.RESTAccessInfo;
 import org.geofence.web.rest.api.model.RESTShortRuleList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
 
 /** @author ETj (etj at geo-solutions.it) */
 @Service
+@RestController
 public class RESTRuleReaderServiceImpl implements RESTRuleReaderService {
 
     @Autowired

@@ -7,7 +7,6 @@ package org.geofence.web.rest.impl;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import jakarta.ws.rs.core.Response;
 import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +16,7 @@ import org.geofence.web.rest.api.model.RESTInputUser;
 import org.geofence.web.rest.api.model.RESTOutputUser;
 import org.geofence.web.rest.api.model.util.IdName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.ResponseEntity;
 
 /** @author ETj (etj at geo-solutions.it) */
 public class RESTUserGroupServiceImplTest extends RESTBaseTest {
@@ -26,8 +26,8 @@ public class RESTUserGroupServiceImplTest extends RESTBaseTest {
     public void testInsert() {
         RESTInputGroup group = new RESTInputGroup();
         group.setName("g1");
-        Response res = restUserGroupService.insert(group);
-        long gid1 = (Long) res.getEntity();
+        ResponseEntity<Long> res = restUserGroupService.insert(group);
+        long gid1 = res.getBody();
 
         RESTInputUser user = new RESTInputUser();
         user.setName("user0");
@@ -35,8 +35,8 @@ public class RESTUserGroupServiceImplTest extends RESTBaseTest {
         user.setGroups(new ArrayList<>());
         user.getGroups().add(new IdName("g1"));
 
-        Response userResp = restUserService.insert(user);
-        Long id = (Long) userResp.getEntity();
+        ResponseEntity<Long> userResp = restUserService.insert(user);
+        Long id = userResp.getBody();
 
         {
             RESTOutputUser out = restUserService.get("user0");

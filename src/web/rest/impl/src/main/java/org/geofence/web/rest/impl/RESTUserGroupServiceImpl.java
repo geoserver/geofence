@@ -5,8 +5,6 @@
 
 package org.geofence.web.rest.impl;
 
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,10 +23,19 @@ import org.geofence.web.rest.api.interfaces.RESTUserGroupService;
 import org.geofence.web.rest.api.model.RESTInputGroup;
 import org.geofence.web.rest.api.model.RESTOutputGroup;
 import org.geofence.web.rest.api.model.config.RESTFullUserGroupList;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 
 /** @author ETj (etj at geo-solutions.it) */
 @Service
+@RestController
 public class RESTUserGroupServiceImpl extends BaseRESTServiceImpl implements RESTUserGroupService {
 
     private static final Logger LOGGER = LogManager.getLogger(RESTUserGroupServiceImpl.class);
@@ -65,7 +72,8 @@ public class RESTUserGroupServiceImpl extends BaseRESTServiceImpl implements RES
     }
 
     @Override
-    public Response insert(RESTInputGroup userGroup) throws NotFoundRestEx, InternalErrorRestEx, ConflictRestEx {
+    public ResponseEntity<Long> insert(RESTInputGroup userGroup)
+            throws NotFoundRestEx, InternalErrorRestEx, ConflictRestEx {
 
         // check that no group with same name exists
         boolean exists;
@@ -91,12 +99,21 @@ public class RESTUserGroupServiceImpl extends BaseRESTServiceImpl implements RES
             insert.setName(userGroup.getName());
 
             Long id = userGroupAdminService.insert(insert);
-            return Response.status(Status.CREATED).tag(id.toString()).entity(id).build();
+            return ResponseEntity.status(HttpStatus.CREATED).eTag(id.toString()).body(id);
 
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new InternalErrorRestEx(ex.getMessage());
         }
+    }
+
+    /**
+     * Legacy {@code multipart/form-data} entry point (a "userGroup" part), for callers not yet sending JSON/XML bodies.
+     */
+    @PostMapping(path = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Long> insertMultipart(@RequestPart("userGroup") RESTInputGroup userGroup)
+            throws NotFoundRestEx, InternalErrorRestEx, ConflictRestEx {
+        return insert(userGroup);
     }
 
     @Override
@@ -137,8 +154,18 @@ public class RESTUserGroupServiceImpl extends BaseRESTServiceImpl implements RES
         }
     }
 
+    /**
+     * Legacy {@code multipart/form-data} entry point (a "userGroup" part), for callers not yet sending JSON/XML bodies.
+     */
+    @PutMapping(path = "/name/{name}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void updateMultipart(@PathVariable("name") String name, @RequestPart("userGroup") RESTInputGroup group)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        update(name, group);
+    }
+
     @Override
-    public Response delete(String name, boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public ResponseEntity<String> delete(String name, boolean cascade)
+            throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
             if (cascade) {
                 ruleAdminService.deleteRulesByRole(name);
@@ -159,7 +186,7 @@ public class RESTUserGroupServiceImpl extends BaseRESTServiceImpl implements RES
                 throw new NotFoundRestEx("Role not found: " + name);
             }
 
-            return Response.status(Status.OK).entity("OK\n").build();
+            return ResponseEntity.ok("OK\n");
 
         } catch (GeoFenceRestEx ex) { // already handled
             throw ex;

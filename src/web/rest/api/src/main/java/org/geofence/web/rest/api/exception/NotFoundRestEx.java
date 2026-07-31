@@ -5,9 +5,6 @@
 
 package org.geofence.web.rest.api.exception;
 
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-
 /** @author ETj (etj at geo-solutions.it) */
 public class NotFoundRestEx extends GeoFenceRestEx {
 
@@ -15,11 +12,6 @@ public class NotFoundRestEx extends GeoFenceRestEx {
     private static final long serialVersionUID = 1263563388095079971L;
 
     public NotFoundRestEx(String message) {
-        super(
-                message,
-                Response.status(Status.NOT_FOUND)
-                        .type("text/plain")
-                        .entity(message)
-                        .build());
+        super(message, 404);
     }
 }

@@ -112,20 +112,6 @@
 
     <!-- =============================================================== -->
     <dependency>
-      <groupId>org.glassfish.jersey.containers</groupId>
-      <artifactId>jersey-container-servlet</artifactId>
-      <version>3.1.5</version>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish.jersey.core</groupId>
-      <artifactId>jersey-server</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish.jersey.inject</groupId>
-      <artifactId>jersey-hk2</artifactId>
-      <version>3.1.5</version>
-    </dependency>
-    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-aop</artifactId>
     </dependency>
@@ -175,6 +161,17 @@
     <finalName>geofence</finalName>
 
     <plugins>
+      <!-- Attaches a plain -classes.jar artifact alongside the war, so other modules (e.g. geofence-rest-test, a
+           thin wrapper webapp adding just a test-data seeder on top) can depend on this module's own classes
+           (AuthenticationFilter, DispatcherConfig) as an ordinary jar dependency instead of a war overlay. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <attachClasses>true</attachClasses>
+        </configuration>
+      </plugin>
+
       <!-- Run the application using "mvn jetty:run" -->
       <plugin>
         <groupId>org.eclipse.jetty</groupId>

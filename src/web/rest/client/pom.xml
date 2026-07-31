@@ -22,9 +22,16 @@
 
   <dependencies>
 
+    <!-- spring-aop doesn't declare this itself (as of Spring 7); the JDK dynamic proxy above needs it directly -->
     <dependency>
-      <groupId>jakarta.ws.rs</groupId>
-      <artifactId>jakarta.ws.rs-api</artifactId>
+      <groupId>aopalliance</groupId>
+      <artifactId>aopalliance</artifactId>
+    </dependency>
+
+    <!-- RestClient's default Jackson message converter needs this on the classpath -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
     </dependency>
 
     <!-- ================================================================-->
@@ -40,20 +47,25 @@
       <artifactId>geofence-rest-api</artifactId>
     </dependency>
 
+    <!-- HttpServiceProxyFactory's client proxy is a JDK dynamic proxy built via Spring AOP -->
     <dependency>
-      <groupId>org.glassfish.jersey.core</groupId>
-      <artifactId>jersey-client</artifactId>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
     </dependency>
 
+    <!-- HttpServiceProxyFactory.Builder's default argument resolvers need a ConversionService from spring-context -->
     <dependency>
-      <groupId>org.glassfish.jersey.ext</groupId>
-      <artifactId>jersey-proxy-client</artifactId>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
     </dependency>
 
+    <!-- RestClient/RestClientAdapter/HttpServiceProxyFactory - builds a RESTRuleReaderService proxy directly from
+         its own @HttpExchange annotations. -->
     <dependency>
-      <groupId>org.glassfish.jersey.media</groupId>
-      <artifactId>jersey-media-json-jackson</artifactId>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
