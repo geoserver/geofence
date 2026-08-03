@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -52,13 +53,19 @@ public class DatasourcePropertiesLoader {
     private static final String HIKARI_PREFIX = "geofence.datasource.hikari.";
 
     public DatasourceSettings load(Optional<GeoFenceConfigDirectoryProvider> configDirProvider) {
+        return load(configDirProvider, Optional.empty());
+    }
+
+    public DatasourceSettings load(
+            Optional<GeoFenceConfigDirectoryProvider> configDirProvider,
+            Optional<DatasourcePasswordDecoder> passwordDecoder) {
         String filename = systemProperty("GEOFENCE_DATASOURCE_FILE").orElse(DEFAULT_FILENAME);
         File configDirCandidate = configDirCandidate(filename, configDirProvider);
         List<File> candidates = candidateFiles(filename, configDirCandidate);
 
         for (File candidate : candidates) {
             if (candidate.isFile()) {
-                return loadFrom(candidate);
+                return loadFrom(candidate, passwordDecoder);
             }
         }
 
@@ -129,6 +136,10 @@ public class DatasourcePropertiesLoader {
             + "\n"
             + "geofence.datasource.url=jdbc:postgresql://localhost:5432/geofence\n"
             + "geofence.datasource.username=geofence\n"
+            + "# Plain text here. When GeoFence runs embedded in GeoServer, the value may instead be encrypted with\n"
+            + "# GeoServer's config-password encryption (same scheme as store connection passwords) and is decrypted\n"
+            + "# transparently on startup. To have a clear-text password encrypted at rest, prefix it with 'plain:'\n"
+            + "# (e.g. plain:mysecret): on next startup GeoFence encrypts it and rewrites this line with the result.\n"
             + "geofence.datasource.password=geofence\n"
             + "geofence.datasource.driver=org.postgresql.Driver\n"
             + "\n"
@@ -143,7 +154,7 @@ public class DatasourcePropertiesLoader {
             + "# (e.g. after a DB restart) is detected and evicted instead of causing a transaction failure later.\n"
             + "# geofence.datasource.hikari.keepaliveTime=30000\n";
 
-    private DatasourceSettings loadFrom(File file) {
+    private DatasourceSettings loadFrom(File file, Optional<DatasourcePasswordDecoder> passwordDecoder) {
         Properties props = new Properties();
         try (FileInputStream in = new FileInputStream(file)) {
             props.load(in);
@@ -151,13 +162,73 @@ public class DatasourcePropertiesLoader {
             throw new IllegalStateException("Could not read " + file.getAbsolutePath(), e);
         }
 
+        String password = requireProperty(props, "geofence.datasource.password", file);
+        if (passwordDecoder.isPresent()) {
+            DatasourcePasswordDecoder.Result result = passwordDecoder.get().decode(password);
+            password = result.plaintext();
+            result.valueToPersist().ifPresent(v -> rewritePasswordProperty(file, v));
+        }
+
         return new DatasourceSettings(
                 requireProperty(props, "geofence.datasource.url", file),
                 requireProperty(props, "geofence.datasource.username", file),
-                requireProperty(props, "geofence.datasource.password", file),
+                password,
                 requireProperty(props, "geofence.datasource.driver", file),
                 propertiesWithPrefix(props, HIBERNATE_PREFIX),
                 propertiesWithPrefix(props, HIKARI_PREFIX));
+    }
+
+    /**
+     * Rewrites the {@code geofence.datasource.password} line in-place, preserving every other line (comments, ordering,
+     * other properties). Best-effort: a write failure is logged and swallowed, since the in-memory (already-decrypted)
+     * password still lets startup proceed - it just means the clear value stays in the file.
+     */
+    private void rewritePasswordProperty(File file, String newValue) {
+        try {
+            List<String> lines = Files.readAllLines(file.toPath());
+            boolean replaced = false;
+            for (int i = 0; i < lines.size(); i++) {
+                if (isPasswordAssignment(lines.get(i))) {
+                    lines.set(i, "geofence.datasource.password=" + newValue);
+                    replaced = true;
+                    break;
+                }
+            }
+            if (!replaced) {
+                LOGGER.log(
+                        Level.WARNING,
+                        "Could not find a geofence.datasource.password line to rewrite in {0}; leaving it as-is",
+                        file.getAbsolutePath());
+                return;
+            }
+            Files.write(file.toPath(), lines);
+            LOGGER.log(
+                    Level.INFO,
+                    "Encrypted the plaintext datasource password and saved it back to {0}",
+                    file.getAbsolutePath());
+        } catch (IOException e) {
+            LOGGER.log(
+                    Level.WARNING,
+                    "Could not persist the encrypted datasource password to " + file.getAbsolutePath()
+                            + "; continuing with the in-memory value",
+                    e);
+        }
+    }
+
+    private boolean isPasswordAssignment(String line) {
+        String trimmed = line.stripLeading();
+        if (trimmed.startsWith("#") || trimmed.startsWith("!")) {
+            return false;
+        }
+        String key = "geofence.datasource.password";
+        if (!trimmed.startsWith(key)) {
+            return false;
+        }
+        String rest = trimmed.substring(key.length());
+        // guard against a longer key like geofence.datasource.passwordFoo: the char after the key must be a
+        // properties key/value separator
+        return !rest.isEmpty()
+                && (rest.charAt(0) == '=' || rest.charAt(0) == ':' || Character.isWhitespace(rest.charAt(0)));
     }
 
     private Map<String, String> propertiesWithPrefix(Properties props, String prefix) {

@@ -11,6 +11,10 @@
 geofence.datasource.driver=org.postgresql.Driver
 geofence.datasource.url=jdbc:postgresql://localhost:5432/geofence
 geofence.datasource.username=geofence
+# Plain text here. When GeoFence runs embedded in GeoServer, the value may instead be encrypted with
+# GeoServer's config-password encryption (same scheme as store connection passwords) and is decrypted
+# transparently on startup. To have a clear-text password encrypted at rest, prefix it with 'plain:'
+# (e.g. plain:mysecret): on next startup GeoFence encrypts it and rewrites this line with the result.
 geofence.datasource.password=geofence
 
 # Optional: any geofence.hibernate.* property is passed through to Hibernate/JPA, with the

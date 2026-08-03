@@ -35,8 +35,10 @@ public class GeofencePersistenceConfig {
     //    }
 
     @Bean
-    public DatasourceSettings datasourceSettings(Optional<GeoFenceConfigDirectoryProvider> configDirProvider) {
-        return new DatasourcePropertiesLoader().load(configDirProvider);
+    public DatasourceSettings datasourceSettings(
+            Optional<GeoFenceConfigDirectoryProvider> configDirProvider,
+            Optional<DatasourcePasswordDecoder> passwordDecoder) {
+        return new DatasourcePropertiesLoader().load(configDirProvider, passwordDecoder);
     }
 
     @Bean
