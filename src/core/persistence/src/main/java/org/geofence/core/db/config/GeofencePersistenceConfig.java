@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManagerFactory;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sql.DataSource;
 import org.geofence.core.db.datasource.DynamicRoutingDataSource;
 import org.geofence.core.db.datasource.ReloadableDataSource;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -20,13 +23,25 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages = "org.geofence.core.db")
+// lazyInit: DB connection built on first use, not at startup - see GeofenceServiceConfig.
+@ComponentScan(basePackages = "org.geofence.core.db", lazyInit = true)
 public class GeofencePersistenceConfig {
 
-    private DynamicRoutingDataSource routingDataSource;
+    private static final Logger LOGGER = Logger.getLogger(GeofencePersistenceConfig.class.getName());
 
-    public GeofencePersistenceConfig() {
-        routingDataSource = new DynamicRoutingDataSource();
+    private final DynamicRoutingDataSource routingDataSource;
+
+    // Eager probe (this @Configuration class isn't itself lazy) so a missing/invalid datasource config is logged at
+    // startup, even though datasourceSettings() below stays @Lazy so GeoServer itself doesn't fail to start.
+    public GeofencePersistenceConfig(
+            Optional<GeoFenceConfigDirectoryProvider> configDirProvider,
+            Optional<DatasourcePasswordDecoder> passwordDecoder) {
+        this.routingDataSource = new DynamicRoutingDataSource();
+        try {
+            new DatasourcePropertiesLoader().load(configDirProvider, passwordDecoder);
+        } catch (RuntimeException e) {
+            LOGGER.log(Level.WARNING, "GeoFence embedded engine will be unavailable until this is fixed", e);
+        }
     }
 
     //    @Bean
@@ -35,6 +50,7 @@ public class GeofencePersistenceConfig {
     //    }
 
     @Bean
+    @Lazy
     public DatasourceSettings datasourceSettings(
             Optional<GeoFenceConfigDirectoryProvider> configDirProvider,
             Optional<DatasourcePasswordDecoder> passwordDecoder) {
@@ -42,6 +58,7 @@ public class GeofencePersistenceConfig {
     }
 
     @Bean
+    @Lazy
     public ReloadableDataSource dataSource(DatasourceSettings settings) {
         ReloadableDataSource dataSource = new ReloadableDataSource();
         dataSource.reconfigure(
@@ -53,9 +70,12 @@ public class GeofencePersistenceConfig {
         return dataSource;
     }
 
-    @Bean(name = "geofenceEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-            DataSource dataSource, DatasourceSettings settings) {
+    // Returns EntityManagerFactory rather than the LocalContainerEntityManagerFactoryBean built below: the latter
+    // implements LoadTimeWeaverAware, which Spring eagerly instantiates regardless of @Lazy. afterPropertiesSet()
+    // replaces Spring's own FactoryBean lifecycle management.
+    @Bean(name = "geofenceEntityManagerFactory", destroyMethod = "close")
+    @Lazy
+    public EntityManagerFactory entityManagerFactory(DataSource dataSource, DatasourceSettings settings) {
 
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
 
@@ -78,10 +98,13 @@ public class GeofencePersistenceConfig {
 
         emf.setJpaProperties(props);
 
-        return emf;
+        emf.afterPropertiesSet();
+
+        return emf.getObject();
     }
 
     @Bean(name = "geofenceTransactionManager")
+    @Lazy
     public PlatformTransactionManager geofenceTransactionManager(
             @Qualifier("geofenceEntityManagerFactory") EntityManagerFactory emf) {
 

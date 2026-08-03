@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages = "org.geofence.core.services")
+// lazyInit: engine boots on first use, not at context startup, so a host with no datasource configured can still
+// start. Eager consumers must inject these @Lazy to preserve that.
+@ComponentScan(basePackages = "org.geofence.core.services", lazyInit = true)
 @Import(GeofencePersistenceConfig.class)
 public class GeofenceServiceConfig {}

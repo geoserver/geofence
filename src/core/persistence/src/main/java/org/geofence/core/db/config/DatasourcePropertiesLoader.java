@@ -178,11 +178,7 @@ public class DatasourcePropertiesLoader {
                 propertiesWithPrefix(props, HIKARI_PREFIX));
     }
 
-    /**
-     * Rewrites the {@code geofence.datasource.password} line in-place, preserving every other line (comments, ordering,
-     * other properties). Best-effort: a write failure is logged and swallowed, since the in-memory (already-decrypted)
-     * password still lets startup proceed - it just means the clear value stays in the file.
-     */
+    /** Rewrites just the password line in-place, preserving everything else. Best-effort: a write failure only logs. */
     private void rewritePasswordProperty(File file, String newValue) {
         try {
             List<String> lines = Files.readAllLines(file.toPath());
