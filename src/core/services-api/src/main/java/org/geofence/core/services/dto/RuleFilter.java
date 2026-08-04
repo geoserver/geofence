@@ -451,6 +451,14 @@ public class RuleFilter implements Cloneable {
             this.type = type.getRelatedType();
         }
 
+        public IdNameFilter setFrom(IdNameFilter other) {
+            this.id = other.id;
+            this.name = other.name;
+            this.type = other.type;
+            this.includeDefault = other.includeDefault;
+            return this;
+        }
+
         public Long getId() {
             return id;
         }

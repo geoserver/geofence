@@ -22,6 +22,7 @@ import org.geofence.core.model.enums.GrantType;
 import org.geofence.core.model.enums.SpatialFilterType;
 import org.geofence.core.services.dto.AccessInfo;
 import org.geofence.core.services.dto.GrantTypeDTO;
+import org.geofence.core.services.dto.PermsResult;
 import org.geofence.core.services.dto.RuleFilter;
 import org.geofence.core.services.dto.RuleFilter.IdNameFilter;
 import org.geofence.core.services.dto.RuleFilter.SpecialFilterType;
@@ -32,6 +33,8 @@ import org.geofence.core.services.spi.UserResolver;
 import org.geofence.core.services.util.AccessInfoInternal;
 import org.geofence.core.services.util.DtoMapper;
 import org.geofence.core.services.util.FilterUtils;
+import org.geofence.core.services.util.PermsResultBuilder;
+import org.geofence.core.services.util.PermsResultInternal;
 import org.geotools.api.referencing.FactoryException;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.api.referencing.operation.MathTransform;
@@ -134,6 +137,66 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         AccessInfo ret = new AccessInfo(GrantTypeDTO.ALLOW);
         ret.setAdminRights(getAdminAuth(filter));
         return ret;
+    }
+
+    @Override
+    public PermsResult getPermissionFilter(RuleFilter ruleFilter) {
+        RuleFilter discoveryFilter = validatePermissionRuleFilter(ruleFilter);
+
+        Map<String, List<Rule>> groupedRules = getRules(discoveryFilter);
+
+        PermsResultInternal accumulatedPerms = new PermsResultInternal();
+
+        for (Entry<String, List<Rule>> ruleGroup : groupedRules.entrySet()) {
+            String role = ruleGroup.getKey();
+            List<Rule> rules = ruleGroup.getValue();
+
+            PermsResultInternal groupPerms = PermsResultBuilder.computePerms(rules);
+
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Perm filter for user " + discoveryFilter.getUser().getText() + "@" + role + " --> "
+                        + groupPerms.getCqlFilter());
+            }
+
+            accumulatedPerms.or(groupPerms);
+        }
+
+        return accumulatedPerms.toPermsResult();
+    }
+
+    private RuleFilter validatePermissionRuleFilter(RuleFilter ruleFilter) {
+        // discovery query: these must not scope to a specific resource
+        assertFilterAny(ruleFilter.getService(), "service");
+        assertFilterAny(ruleFilter.getRequest(), "request");
+        assertFilterAny(ruleFilter.getSubfield(), "subfield");
+        assertFilterAny(ruleFilter.getWorkspace(), "workspace");
+        assertFilterAny(ruleFilter.getLayer(), "layer");
+
+        // user may be DEFAULT (anonymous) or NAMEVALUE+includeDefault
+        if (ruleFilter.getUser().getType() != RuleFilter.FilterType.DEFAULT
+                && !(ruleFilter.getUser().getType() == RuleFilter.FilterType.NAMEVALUE
+                        && ruleFilter.getUser().isIncludeDefault()))
+            throw new IllegalArgumentException("User filter not acceptable: " + ruleFilter.getUser());
+
+        // role may be ANY (resolved from the user's groups) or NAMEVALUE (explicit CSV list)
+        if (ruleFilter.getRole().getType() != RuleFilter.FilterType.ANY
+                && ruleFilter.getRole().getType() != RuleFilter.FilterType.NAMEVALUE)
+            throw new IllegalArgumentException("Role filter not acceptable: " + ruleFilter.getRole());
+
+        RuleFilter discoveryFilter = new RuleFilter(SpecialFilterType.ANY);
+        discoveryFilter.getInstance().setFrom(ruleFilter.getInstance());
+        discoveryFilter.getSourceAddress().setFrom(ruleFilter.getSourceAddress());
+        discoveryFilter.getDate().setFrom(ruleFilter.getDate());
+        discoveryFilter.getUser().setFrom(ruleFilter.getUser());
+        discoveryFilter.getRole().setFrom(ruleFilter.getRole());
+
+        return discoveryFilter;
+    }
+
+    private void assertFilterAny(TextFilter filter, String fieldname) {
+        if (filter.getType() != RuleFilter.FilterType.ANY) {
+            throw new IllegalArgumentException("Filter should not specify a " + fieldname);
+        }
     }
 
     private AccessInfoInternal enlargeAccessInfo(AccessInfoInternal baseAccess, AccessInfoInternal moreAccess) {

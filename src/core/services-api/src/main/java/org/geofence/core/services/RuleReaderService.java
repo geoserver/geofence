@@ -7,6 +7,7 @@ package org.geofence.core.services;
 
 import java.util.List;
 import org.geofence.core.services.dto.AccessInfo;
+import org.geofence.core.services.dto.PermsResult;
 import org.geofence.core.services.dto.RuleFilter;
 import org.geofence.core.services.dto.ShortRule;
 
@@ -19,6 +20,15 @@ public interface RuleReaderService {
 
     /** Return info on resource accessibility. */
     AccessInfo getAccessInfo(RuleFilter filter);
+
+    /**
+     * Returns a closed representation (a CQL filter plus the flattened accessible-resources set) of every resource the
+     * filter's user/role is granted at least some access to.
+     *
+     * <p>{@code filter}'s service/request/subfield/workspace/layer must all be {@code ANY} - this is a discovery query
+     * over the resources a user can see, not an access check on a specific one.
+     */
+    PermsResult getPermissionFilter(RuleFilter filter);
 
     /**
      * info about admin authorization on a given workspace.
