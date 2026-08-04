@@ -24,7 +24,7 @@
 
   <modules>
     <module>rest</module>
-    <!--<module>ldap</module>-->
+    <module>ldap</module>
     <module>app</module>
   </modules>
 

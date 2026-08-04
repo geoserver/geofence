@@ -4,15 +4,16 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
 
-    <!-- annotation-based Spring context: GeofenceRESTConfig component-scans org.geofence.web.rest (the REST impls)
-         and imports GeofenceServiceConfig (the core engine, itself importing GeofencePersistenceConfig) -->
+    <!-- annotation-based Spring context: WebAppConfig imports GeofenceRESTConfig (component-scans org.geofence.web.rest,
+         the REST impls, and imports GeofenceServiceConfig - the core engine, itself importing GeofencePersistenceConfig)
+         plus GeofenceUserDaoConfig (LDAP support, opt-in for this standalone webapp) -->
     <context-param>
         <param-name>contextClass</param-name>
         <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
     </context-param>
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>org.geofence.web.rest.config.GeofenceRESTConfig</param-value>
+        <param-value>org.geofence.web.WebAppConfig</param-value>
     </context-param>
 
     <!-- Log4j configuration -->

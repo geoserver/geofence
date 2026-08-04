@@ -44,11 +44,6 @@ public class GeofencePersistenceConfig {
         }
     }
 
-    //    @Bean
-    //    public DataSource dataSource() {
-    //        return this.routingDataSource;
-    //    }
-
     @Bean
     @Lazy
     public DatasourceSettings datasourceSettings(

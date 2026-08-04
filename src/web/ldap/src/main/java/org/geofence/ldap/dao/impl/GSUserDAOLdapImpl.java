@@ -9,13 +9,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
-import org.geofence.core.dao.GSUserDAO;
+import org.geofence.core.db.dao.GSUserDAO;
 import org.geofence.core.model.GSUser;
 import org.geofence.core.model.UserGroup;
 import org.geofence.ldap.utils.LdapUtils;
-
 
 /**
  * GSUserDAO implementation, using an LDAP server as a primary source.
@@ -23,9 +21,8 @@ import org.geofence.ldap.utils.LdapUtils;
  * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-
-public class GSUserDAOLdapImpl // 
-        extends LDAPBaseDAO<GSUserDAO, GSUser> // 
+public class GSUserDAOLdapImpl //
+extends LDAPBaseDAO<GSUser> //
         implements GSUserDAO {
 
     private UserGroupDAOLdapImpl userGroupDAOLdapImpl;
@@ -38,9 +35,7 @@ public class GSUserDAOLdapImpl //
 
     private int maxLevelGroupsSearch = Integer.MAX_VALUE;
 
-    /**
-     *
-     */
+    /** */
     public GSUserDAOLdapImpl() {
         super();
         // set default search base and filter for users
@@ -59,7 +54,7 @@ public class GSUserDAOLdapImpl //
 
         String dn = user.getExtId();
         String userName = user.getName();
-        
+
         if (memberFilter != null) {
             filterStr = MessageFormat.format(memberFilter, dn, userName);
         } else if (StringUtils.isNotBlank(dn)) {
@@ -80,7 +75,7 @@ public class GSUserDAOLdapImpl //
                 filterStr = LdapUtils.createLDAPFilterEqual("member", exp, userGroupDAOLdapImpl.getAttributesMapper());
             }
         }
-        
+
         List<UserGroup> groups = userGroupDAOLdapImpl.search(filterStr);
 
         if (enableHierarchicalGroups && nestedMemberFilter != null) {
@@ -96,7 +91,7 @@ public class GSUserDAOLdapImpl //
             List<UserGroup> newGroups = new ArrayList<UserGroup>();
             newGroups.addAll(groups);
             String filter = MessageFormat.format(nestedMemberFilter, group.getExtId(), group.getName());
-            for(UserGroup parentGroup : (List<UserGroup>)userGroupDAOLdapImpl.search(filter)) {
+            for (UserGroup parentGroup : (List<UserGroup>) userGroupDAOLdapImpl.search(filter)) {
                 if (!newGroups.contains(parentGroup)) {
                     newGroups.add(parentGroup);
                     newGroups = addParentGroups(newGroups, parentGroup, level + 1);
@@ -110,8 +105,7 @@ public class GSUserDAOLdapImpl //
     @Override
     public GSUser getFull(String name) {
         GSUser user = searchByName(name);
-        if (user == null)
-            return null;
+        if (user == null) return null;
 
         return fillWithGroups(user);
     }
@@ -132,8 +126,7 @@ public class GSUserDAOLdapImpl //
         String filter = LdapUtils.createLDAPFilterEqual("username", name, getAttributesMapper());
         List<GSUser> users = search(filter);
 
-        if (users.isEmpty())
-            return null;
+        if (users.isEmpty()) return null;
         else if (users.size() > 1)
             throw new IllegalArgumentException(
                     "Given filter (" + name + ") returns too many users (" + users.size() + ")");
@@ -159,59 +152,60 @@ public class GSUserDAOLdapImpl //
     public void setEnableHierarchicalGroups(boolean enableHierarchicalGroups) {
         this.enableHierarchicalGroups = enableHierarchicalGroups;
     }
-                
+
     @Override
-    public List<GSUser> search(String nameLike, Integer page, Integer entries, boolean fetchGroups) throws IllegalArgumentException {
+    public List<GSUser> search(String nameLike, Integer page, Integer entries, boolean fetchGroups)
+            throws IllegalArgumentException {
         // filtering needed -- we'll perform filtering by hand, and contextually
         // pagination will be evaluated, in order to save memory and time
 
         nameLike = sanitizeLike(nameLike);
         FilterType filterType = getFilterType(nameLike);
 
-        if (filterType==FilterType.NONE) {
+        if (filterType == FilterType.NONE) {
             return paginate(findAll(), entries, page);
         }
 
         String nameFilter = StringUtils.strip(nameLike, "%").toLowerCase();
-        
+
         int firstIndex = getFirstPaginationIndex(entries, page);
         int lastIndex = getLastPaginationIndex(entries, page);
-        
+
         List<GSUser> ret = new LinkedList<>();
-        int index = 0;        
-        for (GSUser user : findAll()) { 
-            if(filterMatches(user.getName().toLowerCase(), filterType, nameFilter)) {
-                if(++index > firstIndex ) {
-                    ret.add(user); 
+        int index = 0;
+        for (GSUser user : findAll()) {
+            if (filterMatches(user.getName().toLowerCase(), filterType, nameFilter)) {
+                if (++index > firstIndex) {
+                    ret.add(user);
                 }
-                
-                if(index >= lastIndex) {
+
+                if (index >= lastIndex) {
                     break;
                 }
             }
         }
-        
+
         return ret;
     }
-        
+
     @Override
     public long countByNameLike(String nameLike) {
-        nameLike = sanitizeLike(nameLike);        
+        nameLike = sanitizeLike(nameLike);
         FilterType filterType = getFilterType(nameLike);
 
-        if (filterType==FilterType.NONE) {
+        if (filterType == FilterType.NONE) {
             return findAll().size();
         }
 
         String nameFilter = StringUtils.strip(nameLike, "%").toLowerCase();
-        
-        int cnt = 0;        
-        for (GSUser user : findAll()) { 
-            if(filterMatches(user.getName().toLowerCase(), filterType, nameFilter)) {
+
+        int cnt = 0;
+        for (GSUser user : findAll()) {
+            if (filterMatches(user.getName().toLowerCase(), filterType, nameFilter)) {
                 ++cnt;
             }
         }
-        
+
         return cnt;
     }
 }

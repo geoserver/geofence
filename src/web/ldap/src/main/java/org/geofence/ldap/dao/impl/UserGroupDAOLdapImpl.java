@@ -7,7 +7,7 @@ package org.geofence.ldap.dao.impl;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
-import org.geofence.core.dao.UserGroupDAO;
+import org.geofence.core.db.dao.UserGroupDAO;
 import org.geofence.core.model.UserGroup;
 import org.geofence.ldap.utils.LdapUtils;
 
@@ -18,12 +18,10 @@ import org.geofence.ldap.utils.LdapUtils;
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 public class UserGroupDAOLdapImpl //
-        extends LDAPBaseDAO<UserGroupDAO, UserGroup> // 
-        implements UserGroupDAO
-{
+extends LDAPBaseDAO<UserGroup> //
+        implements UserGroupDAO {
 
-    public UserGroupDAOLdapImpl()
-    {
+    public UserGroupDAOLdapImpl() {
         super();
         // set default search base and filter for groups
         setSearchBase("ou=Groups");
@@ -32,18 +30,16 @@ public class UserGroupDAOLdapImpl //
 
     @Override
     public UserGroup get(String name) {
-    
+
         String filter = LdapUtils.createLDAPFilterEqual("groupname", name, getAttributesMapper());
         List<UserGroup> groups = search(filter);
 
-        if (groups.isEmpty())
-            return null;
+        if (groups.isEmpty()) return null;
         else if (groups.size() > 1)
             throw new IllegalArgumentException(
                     "Given filter (" + name + ") returns too many groups (" + groups.size() + ")");
-        else
-            return groups.get(0);
-    }            
+        else return groups.get(0);
+    }
 
     @Override
     public List<UserGroup> search(String nameLike, Integer page, Integer entries) throws IllegalArgumentException {
@@ -53,7 +49,7 @@ public class UserGroupDAOLdapImpl //
         nameLike = sanitizeLike(nameLike);
         FilterType filterType = getFilterType(nameLike);
 
-        if (filterType==FilterType.NONE) {
+        if (filterType == FilterType.NONE) {
             return paginate(findAll(), entries, page);
         }
 
@@ -61,42 +57,42 @@ public class UserGroupDAOLdapImpl //
 
         int firstIndex = getFirstPaginationIndex(entries, page);
         int lastIndex = getLastPaginationIndex(entries, page);
-        
+
         List<UserGroup> ret = new LinkedList<>();
-        int index = 0;        
+        int index = 0;
         for (UserGroup user : findAll()) {
-            if(filterMatches(user.getName().toLowerCase(), filterType, nameFilter)) {            
-                if(++index > firstIndex ) {
-                    ret.add(user); 
+            if (filterMatches(user.getName().toLowerCase(), filterType, nameFilter)) {
+                if (++index > firstIndex) {
+                    ret.add(user);
                 }
-                
-                if(index >= lastIndex) {
+
+                if (index >= lastIndex) {
                     break;
                 }
             }
         }
-        
+
         return ret;
     }
-    
+
     @Override
     public long countByNameLike(String nameLike) {
         nameLike = sanitizeLike(nameLike);
         FilterType filterType = getFilterType(nameLike);
 
-        if (filterType==FilterType.NONE) {
+        if (filterType == FilterType.NONE) {
             return findAll().size();
         }
 
         String nameFilter = StringUtils.strip(nameLike, "%").toLowerCase();
-        
-        int cnt = 0;        
-        for (UserGroup user : findAll()) { 
-            if(filterMatches(user.getName().toLowerCase(), filterType, nameFilter)) {
+
+        int cnt = 0;
+        for (UserGroup user : findAll()) {
+            if (filterMatches(user.getName().toLowerCase(), filterType, nameFilter)) {
                 ++cnt;
             }
         }
-        
+
         return cnt;
-    }    
+    }
 }

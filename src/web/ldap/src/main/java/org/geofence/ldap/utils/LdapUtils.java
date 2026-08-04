@@ -4,25 +4,18 @@
  */
 package org.geofence.ldap.utils;
 
-import org.geofence.ldap.LdapAttributesMapper;
-
-import org.springframework.ldap.core.AttributesMapper;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.geofence.ldap.LdapAttributesMapper;
+import org.springframework.ldap.core.AttributesMapper;
 
-/**
- * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"
- */
-public class LdapUtils
-{
+/** @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it" */
+public class LdapUtils {
     private static Logger LOGGER = LogManager.getLogger(LdapUtils.class);
 
-    public static String createLDAPFilterEqual(String propertyName, String value, AttributesMapper mapper)
-    {
+    public static String createLDAPFilterEqual(String propertyName, String value, AttributesMapper mapper) {
         if (mapper instanceof LdapAttributesMapper) {
-            propertyName = ((LdapAttributesMapper) mapper)
-                    .getLdapAttribute(propertyName);
+            propertyName = ((LdapAttributesMapper) mapper).getLdapAttribute(propertyName);
         }
         return propertyName + "=" + value;
     }

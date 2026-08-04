@@ -66,11 +66,6 @@
       <artifactId>log4j-slf4j-impl</artifactId>
     </dependency>
 
-    <!--    <dependency>
-      <groupId>org.geofence</groupId>
-      <artifactId>geofence-ldap</artifactId>
-    </dependency>-->
-
     <!-- =============================================================== -->
     <!-- 4J UTILS -->
     <!-- =============================================================== -->
@@ -187,12 +182,27 @@
             <idleTimeout>10000</idleTimeout>
           </httpConnector>
           <stopPort>9192</stopPort>
-          <stopKey>GEOSERVER_JETTY_STOPKEY</stopKey>          
+          <stopKey>GEOSERVER_JETTY_STOPKEY</stopKey>
         </configuration>
       </plugin>
 
-
     </plugins>
   </build>
+
+  <profiles>
+    <!-- Adds LDAP-backed GSUserDAO/UserGroupDAO support (see org.geofence.ldap.config.GeofenceUserDaoConfig).
+         Off by default: the dependency is genuinely optional (WebAppConfig resolves it at runtime via
+         reflection, not a compile-time import, precisely so the module builds fine without this profile) -
+         activate with -Pldap to pull it in. -->
+    <profile>
+      <id>ldap</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geofence</groupId>
+          <artifactId>geofence-ldap</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 
 </project>
