@@ -178,105 +178,21 @@
         <artifactId>jetty-maven-plugin</artifactId>
         <version>11.0.26</version>
         <configuration>
-          <webAppConfig>
+          <webApp>
             <contextPath>/geofence</contextPath>
-          </webAppConfig>
-          <connectors>
-            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-              <port>9191</port>
-              <maxIdleTime>60000</maxIdleTime>
-            </connector>
-          </connectors>
-          <reload>manual</reload>
-          <systemProperties></systemProperties>
-
+            <war>${project.build.directory}/geofence.war</war>
+          </webApp>
+          <httpConnector>
+            <port>9191</port>
+            <idleTimeout>10000</idleTimeout>
+          </httpConnector>
+          <stopPort>9192</stopPort>
+          <stopKey>GEOSERVER_JETTY_STOPKEY</stopKey>          
         </configuration>
       </plugin>
 
-      <!--            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.6.1</version>
-                <executions>
-                    <execution>
-                        <id>copy-spatial-dependencies</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                             configure the plugin here 
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.hibernatespatial</groupId>
-                                    <artifactId>hibernate-spatial-postgis</artifactId>                                    
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.hibernatespatial</groupId>
-                                    <artifactId>hibernate-spatial-oracle</artifactId>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.hibernatespatial</groupId>
-                                    <artifactId>hibernate-spatial-h2-geodb</artifactId>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${project.build.directory}/geofence/spatial-lib/</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>-->
 
     </plugins>
   </build>
-  <!-- =========================================================== -->
-  <!--     HIBERNATE-SPATIAL                                       -->
-  <!-- =========================================================== -->
 
-  <!-- These deps should be mutually exclusive or hibernate won't know which one to use for
-         mapping geometry types:
-         http://www.hibernatespatial.org/hibernate-spatial-h2-geodb/usage.html - DEAD URL
-         http://web.archive.org/web/20130830010044/http://www.hibernatespatial.org/hibernate-spatial-h2-geodb/usage.html
-         
-         also check
-         
-         https://github.com/geoserver/geofence/issues/97
-    -->
-  <!--    <profiles>
-        <profile>
-            <id>postgis</id>            
-            <dependencies>
-                <dependency>
-                    <groupId>org.hibernatespatial</groupId>
-                    <artifactId>hibernate-spatial-postgis</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>h2</id>    
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.hibernatespatial</groupId>
-                    <artifactId>hibernate-spatial-h2-geodb</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>org.opengeo</groupId>
-                    <artifactId>geodb</artifactId>
-                    <version>0.9</version>
-                </dependency>                
-            </dependencies>
-        </profile>
-        <profile>
-            <id>oracle</id>            
-            <dependencies>
-                <dependency>
-                    <groupId>org.hibernatespatial</groupId>
-                    <artifactId>hibernate-spatial-oracle</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>-->
 </project>
