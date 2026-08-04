@@ -8,10 +8,14 @@ package org.geofence.web.rest.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.geofence.web.rest.api.exception.BadRequestRestEx;
 import org.geofence.web.rest.api.interfaces.RESTRuleReaderService;
 import org.geofence.web.rest.api.interfaces.params.RESTRuleFilter;
 import org.geofence.web.rest.api.model.RESTInputRule;
+import org.geofence.web.rest.api.model.RESTPermsResult;
 import org.geofence.web.rest.api.model.RESTRulePosition;
 import org.geofence.web.rest.api.model.RESTShortRuleList;
 import org.geofence.web.rest.api.model.enums.RESTGrantType;
@@ -82,5 +86,28 @@ public class RESTRuleReaderServiceImplTest extends RESTBaseTest {
 
         RESTShortRuleList rules = restRuleReaderService.getMatchingRules(filter);
         assertEquals(2, rules.getRuleList().size());
+    }
+
+    @Test
+    public void testGetPermissionFilter() {
+        insertRule("user0", "topp", "states", RESTGrantType.ALLOW);
+
+        RESTRuleFilter filter = new RESTRuleFilter();
+        filter.userName = "user0";
+        filter.userDefault = true;
+
+        RESTPermsResult result = restRuleReaderService.getPermissionFilter(filter);
+        assertNotNull(result);
+        assertTrue(result.getAccessibleResources().contains("topp:states"));
+    }
+
+    @Test
+    public void testGetPermissionFilterRejectsWorkspaceScopedFilter() {
+        RESTRuleFilter filter = new RESTRuleFilter();
+        filter.userName = "user0";
+        filter.userDefault = true;
+        filter.workspace = "topp"; // must stay unset (ANY) for getPermissionFilter
+
+        assertThrows(BadRequestRestEx.class, () -> restRuleReaderService.getPermissionFilter(filter));
     }
 }

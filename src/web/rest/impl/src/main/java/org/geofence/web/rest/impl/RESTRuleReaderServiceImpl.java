@@ -8,12 +8,14 @@ package org.geofence.web.rest.impl;
 import java.util.List;
 import org.geofence.core.services.RuleReaderService;
 import org.geofence.core.services.dto.AccessInfo;
+import org.geofence.core.services.dto.PermsResult;
 import org.geofence.core.services.dto.RuleFilter;
 import org.geofence.core.services.dto.ShortRule;
 import org.geofence.web.rest.api.exception.BadRequestRestEx;
 import org.geofence.web.rest.api.interfaces.RESTRuleReaderService;
 import org.geofence.web.rest.api.interfaces.params.RESTRuleFilter;
 import org.geofence.web.rest.api.model.RESTAccessInfo;
+import org.geofence.web.rest.api.model.RESTPermsResult;
 import org.geofence.web.rest.api.model.RESTShortRuleList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,5 +50,17 @@ public class RESTRuleReaderServiceImpl implements RESTRuleReaderService {
         RESTShortRuleList out = new RESTShortRuleList(rules.size());
         rules.forEach(rule -> out.add(RESTMapper.map(rule)));
         return out;
+    }
+
+    @Override
+    public RESTPermsResult getPermissionFilter(RESTRuleFilter query) throws BadRequestRestEx {
+        RuleFilter filter = RESTMapper.buildFilter(query);
+        PermsResult permsResult;
+        try {
+            permsResult = ruleReaderService.getPermissionFilter(filter);
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestRestEx("Bad filter: " + e.getMessage());
+        }
+        return RESTMapper.map(permsResult);
     }
 }

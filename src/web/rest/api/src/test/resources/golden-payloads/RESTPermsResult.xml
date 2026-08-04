@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PermsResult>
+    <accessibleResources>
+        <resource>topp:roads</resource>
+        <resource>topp:states</resource>
+    </accessibleResources>
+    <cqlFilter>workspace = 'topp' AND layer = 'states'</cqlFilter>
+</PermsResult>

@@ -32,6 +32,7 @@ import org.geofence.core.services.dto.AccessTypeDTO;
 import org.geofence.core.services.dto.CatalogModeDTO;
 import org.geofence.core.services.dto.GrantTypeDTO;
 import org.geofence.core.services.dto.LayerAttributeDTO;
+import org.geofence.core.services.dto.PermsResult;
 import org.geofence.core.services.dto.RuleFilter;
 import org.geofence.core.services.dto.RuleFilter.IdNameFilter;
 import org.geofence.core.services.dto.RuleFilter.SpecialFilterType;
@@ -49,6 +50,7 @@ import org.geofence.web.rest.api.model.RESTLayerAttribute;
 import org.geofence.web.rest.api.model.RESTLayerConstraints;
 import org.geofence.web.rest.api.model.RESTOutputGroup;
 import org.geofence.web.rest.api.model.RESTOutputRule;
+import org.geofence.web.rest.api.model.RESTPermsResult;
 import org.geofence.web.rest.api.model.RESTRulePosition;
 import org.geofence.web.rest.api.model.RESTShortInstance;
 import org.geofence.web.rest.api.model.RESTShortRule;
@@ -133,6 +135,13 @@ public class RESTMapper {
         if (in.getAttributes() != null) {
             out.setAttributes(in.getAttributes().stream().map(RESTMapper::map).collect(Collectors.toSet()));
         }
+        return out;
+    }
+
+    public static RESTPermsResult map(PermsResult in) {
+        RESTPermsResult out = new RESTPermsResult();
+        out.setCqlFilter(in.getCqlFilter());
+        out.setAccessibleResources(in.getAccessibleResources());
         return out;
     }
 

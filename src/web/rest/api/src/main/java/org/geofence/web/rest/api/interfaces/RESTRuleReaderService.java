@@ -8,6 +8,7 @@ package org.geofence.web.rest.api.interfaces;
 import org.geofence.web.rest.api.exception.BadRequestRestEx;
 import org.geofence.web.rest.api.interfaces.params.RESTRuleFilter;
 import org.geofence.web.rest.api.model.RESTAccessInfo;
+import org.geofence.web.rest.api.model.RESTPermsResult;
 import org.geofence.web.rest.api.model.RESTShortRuleList;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,4 +50,14 @@ public interface RESTRuleReaderService {
             contentType = MediaType.APPLICATION_JSON_VALUE,
             accept = MediaType.APPLICATION_JSON_VALUE)
     RESTShortRuleList getMatchingRules(@RequestBody RESTRuleFilter filter) throws BadRequestRestEx;
+
+    /**
+     * Discovery query: returns a closed representation of every resource the filter's user/role has at least some
+     * access to. {@code filter}'s service/request/subfield/workspace/layer must all be left unset (ANY).
+     */
+    @PostExchange(
+            url = "/permissionfilter",
+            contentType = MediaType.APPLICATION_JSON_VALUE,
+            accept = MediaType.APPLICATION_JSON_VALUE)
+    RESTPermsResult getPermissionFilter(@RequestBody RESTRuleFilter filter) throws BadRequestRestEx;
 }

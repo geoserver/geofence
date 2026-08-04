@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Stream;
 import org.geofence.web.rest.api.interfaces.params.RESTAdminRuleFilter;
 import org.geofence.web.rest.api.interfaces.params.RESTRuleFilter;
@@ -31,6 +33,7 @@ import org.geofence.web.rest.api.model.RESTOutputInstance;
 import org.geofence.web.rest.api.model.RESTOutputRule;
 import org.geofence.web.rest.api.model.RESTOutputRuleList;
 import org.geofence.web.rest.api.model.RESTOutputUser;
+import org.geofence.web.rest.api.model.RESTPermsResult;
 import org.geofence.web.rest.api.model.RESTRulePosition;
 import org.geofence.web.rest.api.model.RESTShortInstance;
 import org.geofence.web.rest.api.model.RESTShortInstanceList;
@@ -121,6 +124,7 @@ public class RESTGoldenPayloadTest {
         list.add(new Fixture("RESTLayerAttribute", buildLayerAttribute("attr1")));
         list.add(new Fixture("RESTLayerConstraints", buildLayerConstraints()));
         list.add(new Fixture("RESTAccessInfo", buildAccessInfo()));
+        list.add(new Fixture("RESTPermsResult", buildPermsResult()));
         list.add(new Fixture("RESTShortRule", buildShortRule()));
         list.add(new Fixture("RESTShortRuleList", buildShortRuleList()));
         list.add(new Fixture("RESTRuleFilter", buildRuleFilter()));
@@ -502,6 +506,16 @@ public class RESTGoldenPayloadTest {
         attrs.add(buildLayerAttribute("attr1"));
         info.setAttributes(attrs);
         return info;
+    }
+
+    private RESTPermsResult buildPermsResult() {
+        RESTPermsResult result = new RESTPermsResult();
+        result.setCqlFilter("workspace = 'topp' AND layer = 'states'");
+        SortedSet<String> resources = new TreeSet<>();
+        resources.add("topp:states");
+        resources.add("topp:roads");
+        result.setAccessibleResources(resources);
+        return result;
     }
 
     private RESTShortRule buildShortRule() {

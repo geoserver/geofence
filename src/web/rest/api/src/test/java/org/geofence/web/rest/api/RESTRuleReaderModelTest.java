@@ -13,9 +13,11 @@ import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
+import java.util.TreeSet;
 import org.geofence.web.rest.api.interfaces.params.RESTRuleFilter;
 import org.geofence.web.rest.api.model.RESTAccessInfo;
 import org.geofence.web.rest.api.model.RESTLayerAttribute;
+import org.geofence.web.rest.api.model.RESTPermsResult;
 import org.geofence.web.rest.api.model.RESTShortRule;
 import org.geofence.web.rest.api.model.RESTShortRuleList;
 import org.geofence.web.rest.api.model.enums.RESTAccessType;
@@ -118,5 +120,17 @@ public class RESTRuleReaderModelTest {
         assertEquals(RESTGrantType.ALLOW, outR1.getAccess());
 
         assertEquals(RESTGrantType.DENY, out.getRuleList().get(1).getAccess());
+    }
+
+    @Test
+    public void testPermsResultRoundTrip() {
+        RESTPermsResult result = new RESTPermsResult();
+        result.setCqlFilter("workspace = 'topp' AND layer = 'states'");
+        result.setAccessibleResources(new TreeSet<>(Set.of("topp:states", "topp:roads")));
+
+        RESTPermsResult out = roundTrip(result, RESTPermsResult.class);
+
+        assertEquals("workspace = 'topp' AND layer = 'states'", out.getCqlFilter());
+        assertEquals(Set.of("topp:states", "topp:roads"), out.getAccessibleResources());
     }
 }
