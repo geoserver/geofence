@@ -172,7 +172,7 @@ public class RESTUserGroupServiceImpl extends BaseRESTServiceImpl implements RES
             } else {
                 RuleFilter filter = new RuleFilter(SpecialFilterType.ANY);
                 filter.setRole(name);
-                filter.getUser().setIncludeDefault(false);
+                filter.getRole().setIncludeDefault(false);
                 long cnt = ruleAdminService.count(filter);
                 if (cnt > 0) {
                     throw new ConflictRestEx("Existing rules reference the role " + name);

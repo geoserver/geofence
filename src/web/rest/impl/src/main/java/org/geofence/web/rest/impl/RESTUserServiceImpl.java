@@ -215,6 +215,10 @@ public class RESTUserServiceImpl extends BaseRESTServiceImpl implements RESTUser
                 old.setEmailAddress(user.getEmailAddress());
             }
 
+            if (user.getFullName() != null) {
+                old.setFullName(user.getFullName());
+            }
+
             if (user.isAdmin() != null) {
                 old.setAdmin(user.isAdmin());
             }

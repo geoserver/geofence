@@ -167,4 +167,21 @@ public class RESTUserServiceImplTest extends RESTBaseTest {
             assertTrue(set.contains("g4"));
         }
     }
+
+    @Test
+    public void testUpdateFullName() {
+        final String USERNAME = "user0";
+
+        RESTInputUser user = new RESTInputUser();
+        user.setName(USERNAME);
+        user.setEnabled(Boolean.TRUE);
+        Long uid = restUserService.insert(user).getBody();
+
+        RESTInputUser update = new RESTInputUser();
+        update.setFullName("Full Name");
+        restUserService.update(uid, update);
+
+        RESTOutputUser out = restUserService.get(USERNAME);
+        assertEquals("Full Name", out.getFullName());
+    }
 }

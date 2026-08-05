@@ -12,8 +12,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.geofence.web.rest.api.exception.ConflictRestEx;
 import org.geofence.web.rest.api.model.RESTInputGroup;
+import org.geofence.web.rest.api.model.RESTInputRule;
 import org.geofence.web.rest.api.model.RESTInputUser;
 import org.geofence.web.rest.api.model.RESTOutputUser;
+import org.geofence.web.rest.api.model.RESTRulePosition;
+import org.geofence.web.rest.api.model.enums.RESTGrantType;
 import org.geofence.web.rest.api.model.util.IdName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +62,45 @@ public class RESTUserGroupServiceImplTest extends RESTBaseTest {
             RESTInputGroup group2 = new RESTInputGroup();
             group2.setName("g1");
             restUserGroupService.insert(group2);
+            fail("409 not trapped");
+        } catch (ConflictRestEx e) {
+            LOGGER.info("Exception properly trapped");
+        }
+    }
+
+    @Test
+    public void testDeleteUnreferencedGroupNoCascade() {
+        RESTInputGroup group = new RESTInputGroup();
+        group.setName("g1");
+        restUserGroupService.insert(group);
+
+        // a catch-all rule (no rolename) must NOT count as referencing "g1" - the reference check needs
+        // includeDefault=false on the *role* filter component, not (as the bug had it) on the user one
+        RESTInputRule catchAll = new RESTInputRule();
+        catchAll.setGrant(RESTGrantType.DENY);
+        catchAll.setPosition(new RESTRulePosition(RESTRulePosition.RESTPositionReference.offsetFromBottom, 0));
+        restRuleService.insert(catchAll);
+
+        // no rule specifically references "g1" - a non-cascade delete must succeed, not falsely 409
+        restUserGroupService.delete("g1", false);
+
+        assertEquals(0, restUserGroupService.count("g1"));
+    }
+
+    @Test
+    public void testDeleteReferencedGroupNoCascadeConflicts() {
+        RESTInputGroup group = new RESTInputGroup();
+        group.setName("g1");
+        restUserGroupService.insert(group);
+
+        RESTInputRule rule = new RESTInputRule();
+        rule.setRolename("g1");
+        rule.setGrant(RESTGrantType.ALLOW);
+        rule.setPosition(new RESTRulePosition(RESTRulePosition.RESTPositionReference.offsetFromBottom, 0));
+        restRuleService.insert(rule);
+
+        try {
+            restUserGroupService.delete("g1", false);
             fail("409 not trapped");
         } catch (ConflictRestEx e) {
             LOGGER.info("Exception properly trapped");
