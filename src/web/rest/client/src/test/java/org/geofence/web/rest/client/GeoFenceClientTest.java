@@ -16,21 +16,25 @@ import java.util.List;
 import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.geofence.web.rest.api.interfaces.params.RESTAdminRuleFilter;
 import org.geofence.web.rest.api.interfaces.params.RESTRuleFilter;
 import org.geofence.web.rest.api.model.RESTAccessInfo;
+import org.geofence.web.rest.api.model.RESTBatch;
+import org.geofence.web.rest.api.model.RESTInputAdminRule;
 import org.geofence.web.rest.api.model.RESTInputGroup;
 import org.geofence.web.rest.api.model.RESTInputInstance;
 import org.geofence.web.rest.api.model.RESTInputRule;
 import org.geofence.web.rest.api.model.RESTInputUser;
+import org.geofence.web.rest.api.model.RESTOutputAdminRule;
 import org.geofence.web.rest.api.model.RESTOutputRule;
 import org.geofence.web.rest.api.model.RESTOutputRuleList;
 import org.geofence.web.rest.api.model.RESTRulePosition;
 import org.geofence.web.rest.api.model.RESTShortRuleList;
+import org.geofence.web.rest.api.model.enums.RESTAdminGrantType;
 import org.geofence.web.rest.api.model.enums.RESTGrantType;
 import org.geofence.web.rest.api.model.util.IdName;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
@@ -38,13 +42,10 @@ import org.junit.jupiter.api.TestInfo;
  * Live-server integration test - skipped (via {@link Assumptions}) if no GeoFence server is reachable at
  * {@code createClient()}'s URL, same as before this class's Jersey-to-Spring-{@code HttpServiceProxyFactory} rewrite.
  *
- * <p>The active tests only exercise {@link org.geofence.web.rest.api.interfaces.RESTRuleReaderService} - the only
- * service {@link GeoFenceClient} still exposes, matching its only real caller (GeoServer's
- * {@code RestRuleReaderService}). The admin-CRUD tests below ({@code testUserGroups}, {@code testGroupsRule},
- * {@code testReassign}, {@code testBaseRule}) predate the rewrite; they're kept (adapted to {@link GeoFenceAdminClient}
- * and the Spring-MVC-era interface signatures) but {@link Disabled} until {@code GeoFenceAdminClient}'s write services
- * are implemented - they compile against its still-stubbed getters, and will run again once those getters return real
- * proxies.
+ * <p>The first three tests only exercise {@link org.geofence.web.rest.api.interfaces.RESTRuleReaderService} - the only
+ * service {@link GeoFenceClient} exposes, matching its only real caller (GeoServer's {@code RestRuleReaderService}).
+ * The admin-CRUD tests below ({@code testUserGroups}, {@code testGroupsRule}, {@code testReassign},
+ * {@code testBaseRule}) exercise {@link GeoFenceAdminClient}'s hand-rolled {@code RestClient} adapters.
  *
  * @author ETj (etj at geo-solutions.it)
  */
@@ -147,7 +148,6 @@ public class GeoFenceClientTest {
     // Admin-CRUD round-trips - re-enable once GeoFenceAdminClient's write services are implemented (they currently
     // throw UnsupportedOperationException, so these would fail; kept compiling against the stubbed getters).
 
-    @Disabled("GeoFenceAdminClient write services not implemented yet")
     @Test
     public void testUserGroups() {
         GeoFenceAdminClient client = createAdminClient();
@@ -165,7 +165,6 @@ public class GeoFenceClientTest {
         assertEquals(1, client.getUserGroupService().count("%p01"), "Bad group number");
     }
 
-    @Disabled("GeoFenceAdminClient write services not implemented yet")
     @Test
     public void testGroupsRule() {
         GeoFenceAdminClient client = createAdminClient();
@@ -222,12 +221,12 @@ public class GeoFenceClientTest {
         rf1.groupDefault = false;
         assertEquals(
                 2, client.getRuleService().get(null, null, true, rf1).getList().size());
+        // groupDefault=true also includes the catch-all DENY rule (rolename unset - a "default" rule for any group)
         rf1.groupDefault = true;
         assertEquals(
-                2, client.getRuleService().get(null, null, true, rf1).getList().size());
+                3, client.getRuleService().get(null, null, true, rf1).getList().size());
     }
 
-    @Disabled("GeoFenceAdminClient write services not implemented yet")
     @Test
     public void testReassign() {
         GeoFenceAdminClient client = createAdminClient();
@@ -270,7 +269,6 @@ public class GeoFenceClientTest {
         assertEquals(1, client.getUserService().get("pippo").getGroups().size());
     }
 
-    @Disabled("GeoFenceAdminClient write services not implemented yet")
     @Test
     public void testBaseRule() {
         GeoFenceAdminClient client = createAdminClient();
@@ -317,5 +315,171 @@ public class GeoFenceClientTest {
         assertEquals(workspace, outRule.getWorkspace());
         assertEquals(layer, outRule.getLayer());
         assertEquals(RESTGrantType.ALLOW, outRule.getGrant());
+    }
+
+    /**
+     * Covers the {@code GeoFenceAdminClient} methods the tests above don't exercise: update/delete/getList on
+     * instances, groups, users and rules, {@code move}, the full {@code RESTAdminRuleService} CRUD, and
+     * {@code RESTConfigService}/{@code RESTBatchService}'s remaining bodyless-response endpoints.
+     */
+    @Test
+    public void testRemainingAdminOperations() {
+        GeoFenceAdminClient client = createAdminClient();
+
+        // --- instances: insert/getList/get/update/delete ---
+        RESTInputInstance instance = new RESTInputInstance();
+        instance.setName("instanceA");
+        instance.setBaseURL("http://localhost/a");
+        instance.setUsername("username");
+        instance.setPassword("password");
+        Long instanceId = client.getGSInstanceService().insert(instance).getBody();
+        assertNotNull(instanceId);
+
+        assertEquals(
+                1,
+                client.getGSInstanceService()
+                        .getList(null, null, null)
+                        .getList()
+                        .size());
+        assertEquals("instanceA", client.getGSInstanceService().get(instanceId).getName());
+        assertEquals("instanceA", client.getGSInstanceService().get("instanceA").getName());
+
+        // name is intentionally omitted - RESTInstanceServiceImpl.update(Long, ...) rejects a non-null name in the
+        // payload (id-based update can't rename), unlike every other partial-update endpoint in this API
+        RESTInputInstance updatedInstance = new RESTInputInstance();
+        updatedInstance.setBaseURL("http://localhost/updated");
+        updatedInstance.setUsername("username");
+        updatedInstance.setPassword("password");
+        client.getGSInstanceService().update(instanceId, updatedInstance);
+        assertEquals(
+                "http://localhost/updated",
+                client.getGSInstanceService().get(instanceId).getBaseURL());
+
+        client.getGSInstanceService().delete(instanceId, false);
+        assertEquals(0, client.getGSInstanceService().count("%"));
+
+        // --- groups: get/update/delete ---
+        RESTInputGroup group = new RESTInputGroup();
+        group.setName("groupA");
+        group.setEnabled(true);
+        client.getUserGroupService().insert(group);
+        assertTrue(client.getUserGroupService().get("groupA").isEnabled());
+
+        // name is intentionally omitted - update() rejects a non-null name in the payload, same as GSInstance's
+        RESTInputGroup groupUpdate = new RESTInputGroup();
+        groupUpdate.setEnabled(false);
+        client.getUserGroupService().update("groupA", groupUpdate);
+        assertFalse(client.getUserGroupService().get("groupA").isEnabled());
+
+        client.getUserGroupService().delete("groupA", false);
+        assertEquals(0, client.getUserGroupService().count("%"));
+
+        // --- users: getList/update/delete ---
+        RESTInputUser user = new RESTInputUser();
+        user.setName("userA");
+        user.setEnabled(true);
+        client.getUserService().insert(user);
+        assertEquals(
+                1,
+                client.getUserService().getList(null, null, null).getUserList().size());
+
+        // name is intentionally omitted - update() rejects a non-null name in the payload, same as GSInstance's
+        RESTInputUser userUpdate = new RESTInputUser();
+        userUpdate.setEnabled(false);
+        client.getUserService().update("userA", userUpdate);
+        assertFalse(client.getUserService().get("userA").isEnabled());
+
+        client.getUserService().delete("userA", false);
+        assertEquals(0, client.getUserService().count("%"));
+
+        // --- rules: get/update/delete/move ---
+        RESTInputRule rule1 = new RESTInputRule();
+        rule1.setLayer("layerA");
+        rule1.setGrant(RESTGrantType.ALLOW);
+        rule1.setPosition(new RESTRulePosition(RESTRulePosition.RESTPositionReference.offsetFromTop, 0));
+        Long rule1Id = client.getRuleService().insert(rule1).getBody();
+
+        RESTInputRule rule2 = new RESTInputRule();
+        rule2.setLayer("layerB");
+        rule2.setGrant(RESTGrantType.ALLOW);
+        rule2.setPosition(new RESTRulePosition(RESTRulePosition.RESTPositionReference.offsetFromBottom, 0));
+        Long rule2Id = client.getRuleService().insert(rule2).getBody();
+
+        assertEquals(
+                2,
+                client.getRuleService()
+                        .get(null, null, false, new RESTRuleFilter())
+                        .getList()
+                        .size());
+
+        // grant/position are intentionally omitted - update() rejects a non-null value for either (both have their
+        // own dedicated move/grant-change semantics elsewhere), unlike every other field which is a plain partial
+        // update
+        RESTInputRule ruleUpdate = new RESTInputRule();
+        ruleUpdate.setLayer("layerA-renamed");
+        client.getRuleService().update(rule1Id, ruleUpdate);
+        assertEquals("layerA-renamed", client.getRuleService().get(rule1Id).getLayer());
+
+        // move rule2 to priority 1 - rule1 (currently at priority 1) shifts down
+        client.getRuleService().move(String.valueOf(rule2Id), 1);
+        assertEquals(1, client.getRuleService().get(rule2Id).getPriority().intValue());
+
+        client.getRuleService().delete(rule2Id);
+        assertEquals(
+                1,
+                client.getRuleService()
+                        .get(null, null, false, new RESTRuleFilter())
+                        .getList()
+                        .size());
+
+        // clean up before the backup section below - RESTBatchOperation.payload is a still-unresolved JSON
+        // polymorphism gap (tracked separately), which a non-empty rules/groups/users/instances backup would hit
+        client.getRuleService().delete(rule1Id);
+
+        // --- admin rules: full CRUD ---
+        RESTInputAdminRule adminRule = new RESTInputAdminRule();
+        adminRule.setRolename("adminRoleA");
+        adminRule.setGrant(RESTAdminGrantType.ADMIN);
+        adminRule.setPosition(new RESTRulePosition(RESTRulePosition.RESTPositionReference.offsetFromTop, 0));
+        Long adminRuleId = client.getAdminRuleService().insert(adminRule).getBody();
+        assertNotNull(adminRuleId);
+
+        RESTOutputAdminRule outAdminRule = client.getAdminRuleService().get(adminRuleId);
+        assertEquals("adminRoleA", outAdminRule.getRolename());
+        assertEquals(RESTAdminGrantType.ADMIN, outAdminRule.getGrant());
+
+        assertEquals(1, client.getAdminRuleService().count(new RESTAdminRuleFilter()));
+        assertEquals(
+                1,
+                client.getAdminRuleService()
+                        .get(null, null, false, new RESTAdminRuleFilter())
+                        .getList()
+                        .size());
+
+        // position is intentionally omitted - update() rejects a non-null position (moving is a separate concern)
+        RESTInputAdminRule adminRuleUpdate = new RESTInputAdminRule();
+        adminRuleUpdate.setRolename("adminRoleA-renamed");
+        adminRuleUpdate.setGrant(RESTAdminGrantType.USER);
+        client.getAdminRuleService().update(adminRuleId, adminRuleUpdate);
+        assertEquals(
+                "adminRoleA-renamed",
+                client.getAdminRuleService().get(adminRuleId).getRolename());
+        assertEquals(
+                RESTAdminGrantType.USER,
+                client.getAdminRuleService().get(adminRuleId).getGrant());
+
+        client.getAdminRuleService().delete(adminRuleId);
+        assertEquals(0, client.getAdminRuleService().count(new RESTAdminRuleFilter()));
+
+        // --- config: backup endpoints (empty instance, so no polymorphic RESTBatchOperation payloads to trip up
+        // JSON (de)serialization - see the RESTBatchService polymorphism gap tracked separately) ---
+        assertNotNull(client.getConfigService().backup(false));
+        assertNotNull(client.getConfigService().backupGroups());
+        assertNotNull(client.getConfigService().backupUsers());
+        assertNotNull(client.getConfigService().backupInstances());
+        assertNotNull(client.getConfigService().backupRules());
+
+        // --- batch: exec with an empty batch ---
+        assertNotNull(client.getBatchService().exec(new RESTBatch()));
     }
 }

@@ -5,6 +5,7 @@
 
 package org.geofence.core.db.dao.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,6 +31,7 @@ public class GSInstanceDAOImpl extends BaseDAOImpl<GSInstance, Long> implements 
 
     @Override
     public void persist(GSInstance entity) {
+        if (entity.getDateCreation() == null) entity.setDateCreation(LocalDateTime.now());
         super.persist(entity);
     }
 

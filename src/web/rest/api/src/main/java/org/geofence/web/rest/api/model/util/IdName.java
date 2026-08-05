@@ -41,14 +41,23 @@ public class IdName {
         return name;
     }
 
+    /**
+     * Plain field assignment, no side effect on {@code name}. This class doubles as both a query filter ("look this up
+     * by id, or else by name" - exactly one set, enforced by the {@link #IdName(Long)}/{@link #IdName(String)}
+     * convenience constructors used for that case) and a resolved reference (both fields legitimately set at once, e.g.
+     * a rule's instance echoed back with its real id and name together). A setter that clears the other field would
+     * make the second shape unrepresentable: Jackson (unlike JAXB unmarshalling, which never calls a setter for an
+     * absent element) calls every setter, including with nulls, so whichever of {@code id}/{@code name} a clearing
+     * setter processed last would always win and silently wipe the other - order depending on incidental JSON key
+     * order, not on which fields the source object actually had set.
+     */
     public void setId(Long id) {
         this.id = id;
-        this.name = null;
     }
 
+    /** See {@link #setId(Long)}. */
     public void setName(String name) {
         this.name = name;
-        this.id = null;
     }
 
     @Override

@@ -22,6 +22,7 @@ import org.geofence.core.services.InstanceAdminService;
 import org.geofence.core.services.RuleAdminService;
 import org.geofence.core.services.UserAdminService;
 import org.geofence.core.services.UserGroupAdminService;
+import org.geofence.core.services.dto.RuleFilter;
 import org.geofence.core.services.dto.ShortGroup;
 import org.geofence.core.services.exception.NotFoundServiceEx;
 import org.geofence.web.rest.api.exception.BadRequestRestEx;
@@ -139,7 +140,10 @@ public class RESTConfigServiceImpl implements RESTConfigService {
     }
 
     protected RESTBatch collectRules(RESTBatch backup) {
-        for (Rule rule : ruleAdminService.getListFull(null, null, null)) {
+        // unlike the collectXxx() siblings above (nameLike-based, so a plain null is a valid "no filter"), getListFull
+        // requires a real RuleFilter - passing null NPEs downstream in FilterUtils.getFilteredRules(), which calls
+        // filter.getUser()/getSourceAddress() unconditionally
+        for (Rule rule : ruleAdminService.getListFull(new RuleFilter(RuleFilter.SpecialFilterType.ANY), null, null)) {
             RESTBatchOperation op = RESTBatchOperationFactory.createRuleInputOp();
             RESTInputRule input = new RESTInputRule();
             op.setPayload(input);

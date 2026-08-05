@@ -5,8 +5,6 @@
 
 package org.geofence.web.rest.client;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import org.geofence.web.rest.api.interfaces.RESTRuleReaderService;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.support.RestClientAdapter;
@@ -33,33 +31,13 @@ public class GeoFenceClient {
 
     public synchronized RESTRuleReaderService getRuleReaderService() {
         if (ruleReaderService == null) {
-            if (restUrl == null) throw new IllegalStateException("GeoFence URL not set");
-            requireAbsoluteUrl(restUrl);
-
-            RestClient restClient = RestClient.builder().baseUrl(restUrl).build();
+            RestClient restClient = RestClients.build(restUrl, username, password);
             RestClientAdapter adapter = RestClientAdapter.create(restClient);
             HttpServiceProxyFactory factory =
                     HttpServiceProxyFactory.builderFor(adapter).build();
             ruleReaderService = factory.createClient(RESTRuleReaderService.class);
         }
         return ruleReaderService;
-    }
-
-    /**
-     * Rejects a URL with no scheme/host upfront: left unchecked, Apache HttpClient5 (the {@link RestClient}'s
-     * underlying transport here) fails on a schemeless base URL with a bare {@code NullPointerException} deep in its
-     * routing code, only once a request is actually attempted - not a useful error to surface to a caller.
-     */
-    private static void requireAbsoluteUrl(String url) {
-        URI uri;
-        try {
-            uri = new URI(url);
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException("Invalid GeoFence REST URL: " + url, e);
-        }
-        if (uri.getScheme() == null || uri.getHost() == null) {
-            throw new IllegalArgumentException("Invalid GeoFence REST URL: " + url);
-        }
     }
 
     // ==========================================================================
