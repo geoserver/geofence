@@ -13,10 +13,6 @@
   }, {
     "id" : 2,
     "priority" : 20,
-    "grant" : "USER",
-    "username" : null,
-    "rolename" : null,
-    "instance" : null,
-    "workspace" : null
+    "grant" : "USER"
   } ]
 }

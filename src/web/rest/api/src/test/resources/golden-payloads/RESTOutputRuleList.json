@@ -34,18 +34,6 @@
   }, {
     "id" : 2,
     "priority" : 20,
-    "grant" : "DENY",
-    "username" : null,
-    "rolename" : null,
-    "instance" : null,
-    "ipaddress" : null,
-    "validafter" : null,
-    "validbefore" : null,
-    "service" : null,
-    "request" : null,
-    "subfield" : null,
-    "workspace" : null,
-    "layer" : null,
-    "constraints" : null
+    "grant" : "DENY"
   } ]
 }

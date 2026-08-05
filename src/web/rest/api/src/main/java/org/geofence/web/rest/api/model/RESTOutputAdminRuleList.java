@@ -5,6 +5,7 @@
 
 package org.geofence.web.rest.api.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class RESTOutputAdminRuleList implements Iterable<RESTOutputAdminRule> {
     }
 
     @XmlElement(name = "adminrule")
+    @JsonSerialize(contentUsing = NonNullFieldsSerializer.class)
     public List<RESTOutputAdminRule> getList() {
         return list;
     }
