@@ -7,6 +7,7 @@ package org.geofence.web.rest.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -20,6 +21,7 @@ import org.geofence.web.rest.api.interfaces.params.RESTAdminRuleFilter;
 import org.geofence.web.rest.api.interfaces.params.RESTRuleFilter;
 import org.geofence.web.rest.api.model.RESTAccessInfo;
 import org.geofence.web.rest.api.model.RESTBatch;
+import org.geofence.web.rest.api.model.RESTBatchOperation;
 import org.geofence.web.rest.api.model.RESTInputAdminRule;
 import org.geofence.web.rest.api.model.RESTInputGroup;
 import org.geofence.web.rest.api.model.RESTInputInstance;
@@ -432,10 +434,6 @@ public class GeoFenceClientTest {
                         .getList()
                         .size());
 
-        // clean up before the backup section below - RESTBatchOperation.payload is a still-unresolved JSON
-        // polymorphism gap (tracked separately), which a non-empty rules/groups/users/instances backup would hit
-        client.getRuleService().delete(rule1Id);
-
         // --- admin rules: full CRUD ---
         RESTInputAdminRule adminRule = new RESTInputAdminRule();
         adminRule.setRolename("adminRoleA");
@@ -471,15 +469,71 @@ public class GeoFenceClientTest {
         client.getAdminRuleService().delete(adminRuleId);
         assertEquals(0, client.getAdminRuleService().count(new RESTAdminRuleFilter()));
 
-        // --- config: backup endpoints (empty instance, so no polymorphic RESTBatchOperation payloads to trip up
-        // JSON (de)serialization - see the RESTBatchService polymorphism gap tracked separately) ---
-        assertNotNull(client.getConfigService().backup(false));
-        assertNotNull(client.getConfigService().backupGroups());
-        assertNotNull(client.getConfigService().backupUsers());
-        assertNotNull(client.getConfigService().backupInstances());
-        assertNotNull(client.getConfigService().backupRules());
+        // --- config: backup with real content of every RESTBatchOperation.payload type (users/groups/instances/
+        // rules) - exercises the custom RESTBatchOperationDeserializer end to end, not just an empty batch ---
+        RESTInputGroup backupGroup = new RESTInputGroup();
+        backupGroup.setName("backupGroup");
+        backupGroup.setEnabled(true);
+        client.getUserGroupService().insert(backupGroup);
 
-        // --- batch: exec with an empty batch ---
-        assertNotNull(client.getBatchService().exec(new RESTBatch()));
+        RESTInputUser backupUser = new RESTInputUser();
+        backupUser.setName("backupUser");
+        backupUser.setEnabled(true);
+        client.getUserService().insert(backupUser);
+
+        RESTInputInstance backupInstance = new RESTInputInstance();
+        backupInstance.setName("backupInstance");
+        backupInstance.setBaseURL("http://localhost/backup");
+        backupInstance.setUsername("username");
+        backupInstance.setPassword("password");
+        client.getGSInstanceService().insert(backupInstance);
+
+        RESTBatch groupsBackup = client.getConfigService().backupGroups();
+        assertEquals(1, groupsBackup.getList().size());
+        assertInstanceOf(RESTInputGroup.class, groupsBackup.getList().get(0).getPayload());
+        assertEquals(
+                "backupGroup", ((RESTInputGroup) groupsBackup.getList().get(0).getPayload()).getName());
+
+        RESTBatch usersBackup = client.getConfigService().backupUsers();
+        assertEquals(1, usersBackup.getList().size());
+        assertInstanceOf(RESTInputUser.class, usersBackup.getList().get(0).getPayload());
+
+        RESTBatch instancesBackup = client.getConfigService().backupInstances();
+        assertEquals(1, instancesBackup.getList().size());
+        assertInstanceOf(
+                RESTInputInstance.class, instancesBackup.getList().get(0).getPayload());
+
+        RESTBatch rulesBackup = client.getConfigService().backupRules();
+        assertEquals(1, rulesBackup.getList().size());
+        assertInstanceOf(RESTInputRule.class, rulesBackup.getList().get(0).getPayload());
+        assertEquals(
+                "layerA-renamed", ((RESTInputRule) rulesBackup.getList().get(0).getPayload()).getLayer());
+
+        RESTBatch fullBackup = client.getConfigService().backup(false);
+        assertEquals(4, fullBackup.getList().size());
+
+        // --- config: restore - wipe everything, then rebuild it from the backup just taken ---
+        client.removeAll();
+        client.getConfigService().restore(fullBackup);
+        assertEquals(1, client.getUserGroupService().count("backupGroup"));
+        assertEquals(1, client.getUserService().count("backupUser"));
+        assertEquals(1, client.getGSInstanceService().count("backupInstance"));
+
+        // --- batch: exec - a distinct code path from restore(), checked independently with a fresh operation ---
+        RESTInputRule execRule = new RESTInputRule();
+        execRule.setLayer("execLayer");
+        execRule.setGrant(RESTGrantType.ALLOW);
+        execRule.setPosition(new RESTRulePosition(RESTRulePosition.RESTPositionReference.offsetFromBottom, 0));
+        RESTBatchOperation execOp = new RESTBatchOperation();
+        execOp.setService(RESTBatchOperation.ServiceName.rules);
+        execOp.setType(RESTBatchOperation.TypeName.insert);
+        execOp.setPayload(execRule);
+        RESTBatch execBatch = new RESTBatch();
+        execBatch.add(execOp);
+        client.getBatchService().exec(execBatch);
+
+        RESTRuleFilter execFilter = new RESTRuleFilter();
+        execFilter.layer = "execLayer";
+        assertEquals(1, client.getRuleService().count(execFilter));
     }
 }

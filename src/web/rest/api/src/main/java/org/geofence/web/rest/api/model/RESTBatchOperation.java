@@ -5,6 +5,7 @@
 
 package org.geofence.web.rest.api.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
@@ -14,6 +15,7 @@ import jakarta.xml.bind.annotation.XmlType;
 /** @author ETj (etj at geo-solutions.it) */
 @XmlRootElement(name = "Operation")
 @XmlType(propOrder = {"payload"})
+@JsonDeserialize(using = RESTBatchOperationDeserializer.class)
 public class RESTBatchOperation {
 
     public enum ServiceName {

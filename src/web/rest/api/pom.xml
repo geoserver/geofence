@@ -22,6 +22,13 @@
 
   <dependencies>
 
+    <!-- compile scope, not test-only: RESTBatchOperation's custom @JsonDeserialize needs it to resolve
+         payload's concrete type by hand (mirrors @XmlElements' role for XML) -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>jakarta.xml.bind</groupId>
       <artifactId>jakarta.xml.bind-api</artifactId>
@@ -31,13 +38,7 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
     </dependency>
-
     <!-- test-only: golden-payload checks need the same JAXB-annotation-driven JSON mapping the app serves -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
