@@ -3,7 +3,7 @@
  * application directory.
  */
 
-package org.geoserver.csv2geofence.config.model.internal;
+package org.geofence.misc.csv2geofence.config.model.internal;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,9 +23,8 @@ public class RunInfo {
 
     private File outputFile;
     private boolean sendRequested;
-//    private boolean groupAlignRequested = false;
+    //    private boolean groupAlignRequested = false;
     private boolean deleteObsoleteRules = false;
-
 
     public File getConfigurationFile() {
         return configurationFile;
@@ -67,13 +66,13 @@ public class RunInfo {
         this.sendRequested = sendRequested;
     }
 
-//    public boolean isGroupAlignRequested() {
-//        return groupAlignRequested;
-//    }
-//
-//    public void setGroupAlignRequested(boolean groupAlignRequested) {
-//        this.groupAlignRequested = groupAlignRequested;
-//    }
+    //    public boolean isGroupAlignRequested() {
+    //        return groupAlignRequested;
+    //    }
+    //
+    //    public void setGroupAlignRequested(boolean groupAlignRequested) {
+    //        this.groupAlignRequested = groupAlignRequested;
+    //    }
 
     public boolean isDeleteObsoleteRules() {
         return deleteObsoleteRules;
@@ -82,5 +81,4 @@ public class RunInfo {
     public void setDeleteObsoleteRules(boolean deleteObsoleteRules) {
         this.deleteObsoleteRules = deleteObsoleteRules;
     }
-
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) 2026 Open Source Geospatial Foundation - all rights reserved
+     This code is licensed under the GPL 2.0 license, available at the root
+     application directory. -->
+<Configuration status="INFO" context="csv2geofence">
+  <Appenders>
+
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%-5p %d{yyyy-MM-dd HH:mm:ss.SSS} %-15c{1}::%-25M %3L %x - %m%n"/>
+    </Console>
+
+  </Appenders>
+
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="Console"/>
+    </Root>
+
+    <Logger name="org.geofence.misc.csv2geofence" level="debug"/>
+    <Logger name="org.springframework" level="warn"/>
+  </Loggers>
+
+</Configuration>

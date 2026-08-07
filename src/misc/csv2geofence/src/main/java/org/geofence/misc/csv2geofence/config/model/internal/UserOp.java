@@ -3,7 +3,7 @@
  * application directory.
  */
 
-package org.geoserver.csv2geofence.config.model.internal;
+package org.geofence.misc.csv2geofence.config.model.internal;
 
 import java.util.List;
 
@@ -62,12 +62,11 @@ public class UserOp {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName()+"["
+        return getClass().getSimpleName() + "["
                 + type
-                +" user " + userName
-                + (fullName != null? " ("+fullName+") ":"")
-                + (mailAddress != null? "<"+mailAddress+">":"")
-                + " in groups " + groups+"]";
+                + " user " + userName
+                + (fullName != null ? " (" + fullName + ") " : "")
+                + (mailAddress != null ? "<" + mailAddress + ">" : "")
+                + " in groups " + groups + "]";
     }
-
 }

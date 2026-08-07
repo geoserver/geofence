@@ -3,12 +3,9 @@
  * application directory.
  */
 
-package org.geoserver.csv2geofence.config.model.internal;
+package org.geofence.misc.csv2geofence.config.model.internal;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class RuleOp {
 
     String groupName;
@@ -23,9 +20,7 @@ public class RuleOp {
         this.layerName = layerName;
     }
 
-    /**
-     * Case sensitive group name
-     */
+    /** Case sensitive group name */
     public String getGroupName() {
         return groupName;
     }
@@ -44,10 +39,6 @@ public class RuleOp {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName()+"["
-                +"group:" + groupName
-                + " layer:" + layerName
-                + " verb:" + verb+"]";
+        return getClass().getSimpleName() + "[" + "group:" + groupName + " layer:" + layerName + " verb:" + verb + "]";
     }
-
 }

@@ -3,47 +3,38 @@
  * application directory.
  */
 
-package org.geoserver.csv2geofence;
+package org.geofence.misc.csv2geofence;
 
-import org.geoserver.csv2geofence.impl.UserFileLoader;
-import org.geoserver.csv2geofence.config.model.Configuration;
+import static org.junit.Assert.*;
+
+import jakarta.xml.bind.JAXB;
 import java.io.File;
-import javax.xml.bind.JAXB;
+import org.geofence.misc.csv2geofence.config.model.Configuration;
+import org.geofence.misc.csv2geofence.impl.UserFileLoader;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class UserLoaderTest extends BaseTest {
 
-    public UserLoaderTest() {
-    }
+    public UserLoaderTest() {}
 
     @BeforeClass
-    public static void setUpClass() {
-    }
+    public static void setUpClass() {}
 
     @AfterClass
-    public static void tearDownClass() {
-    }
+    public static void tearDownClass() {}
 
     @Before
-    public void setUp() {
-    }
+    public void setUp() {}
 
     @After
-    public void tearDown() {
-    }
+    public void tearDown() {}
 
-    /**
-     * Test of load method, of class UserFileLoader.
-     */
+    /** Test of load method, of class UserFileLoader. */
     @Test
     public void testLoad() throws Exception {
         System.out.println("load");
@@ -54,6 +45,4 @@ public class UserLoaderTest extends BaseTest {
         File userFile = loadFile("ldif.csv");
         instance.load(userFile);
     }
-
-
 }

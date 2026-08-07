@@ -3,18 +3,17 @@
  * application directory.
  */
 
-package org.geoserver.csv2geofence.impl;
+package org.geofence.misc.csv2geofence.impl;
 
-import org.geoserver.csv2geofence.config.model.internal.UserOp;
-import org.geofence.services.rest.model.RESTBatchOperation;
-import org.geofence.services.rest.model.RESTInputUser;
-import org.geofence.services.rest.model.util.IdName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import org.geofence.misc.csv2geofence.config.model.internal.UserOp;
+import org.geofence.web.rest.api.model.RESTBatchOperation;
+import org.geofence.web.rest.api.model.RESTInputUser;
+import org.geofence.web.rest.api.model.util.IdName;
 
 /**
  * Transforms UserOps into RESTBatchoperations
@@ -23,7 +22,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class UsersProcessor {
 
-    private final static Logger LOGGER = LogManager.getLogger(UsersProcessor.class);
+    private static final Logger LOGGER = LogManager.getLogger(UsersProcessor.class);
 
     public List<RESTBatchOperation> buildUserBatchOps(List<UserOp> ops, Map<String, String> availableGroups) {
         List<RESTBatchOperation> ret = new ArrayList<RESTBatchOperation>(ops.size());
@@ -42,7 +41,7 @@ public class UsersProcessor {
         RESTBatchOperation restOp = new RESTBatchOperation();
         restOp.setService(RESTBatchOperation.ServiceName.users);
 
-        switch(userOp.getType()) {
+        switch (userOp.getType()) {
             case INSERT:
                 restOp.setType(RESTBatchOperation.TypeName.insert);
 
@@ -78,8 +77,9 @@ public class UsersProcessor {
                 break;
 
             default:
-                LOGGER.error("Unexpected operation type '"+userOp.getType()+"' for operation " + userOp);
-                throw new IllegalStateException("Unexpected operation type '"+userOp.getType()+"' for operation " + userOp);                
+                LOGGER.error("Unexpected operation type '" + userOp.getType() + "' for operation " + userOp);
+                throw new IllegalStateException(
+                        "Unexpected operation type '" + userOp.getType() + "' for operation " + userOp);
         }
 
         return restOp;
@@ -89,13 +89,11 @@ public class UsersProcessor {
         List<IdName> ret = new ArrayList<IdName>(userOp.getGroups().size());
         for (String groupName : userOp.getGroups()) {
             String groupRealName = availableGroups.get(groupName.toUpperCase());
-            if(groupRealName == null)
-                throw new IllegalStateException("Can't find group name '"+groupName+"' for " + userOp);
+            if (groupRealName == null)
+                throw new IllegalStateException("Can't find group name '" + groupName + "' for " + userOp);
 
             ret.add(new IdName(groupRealName));
         }
         return ret;
     }
-
-
 }

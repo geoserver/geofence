@@ -3,15 +3,12 @@
  * application directory.
  */
 
-package org.geoserver.csv2geofence.config.model;
+package org.geofence.misc.csv2geofence.config.model;
 
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlType;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
-@XmlType(propOrder={"restUrl","username","password"})
+/** @author ETj (etj at geo-solutions.it) */
+@XmlType(propOrder = {"restUrl", "username", "password"})
 public class GeofenceConfig {
     private String restUrl;
     private String username;
@@ -40,5 +37,4 @@ public class GeofenceConfig {
     public void setPassword(String password) {
         this.password = password;
     }
-
 }

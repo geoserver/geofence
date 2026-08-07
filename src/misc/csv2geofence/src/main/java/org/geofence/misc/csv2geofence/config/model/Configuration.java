@@ -3,12 +3,9 @@
  * application directory.
  */
 
-package org.geoserver.csv2geofence.config.model;
+package org.geofence.misc.csv2geofence.config.model;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class Configuration {
 
     private UserFileConfig userFileConfig;
@@ -40,5 +37,4 @@ public class Configuration {
     public void setRuleFileConfig(RuleFileConfig ruleFileConfig) {
         this.ruleFileConfig = ruleFileConfig;
     }
-
 }

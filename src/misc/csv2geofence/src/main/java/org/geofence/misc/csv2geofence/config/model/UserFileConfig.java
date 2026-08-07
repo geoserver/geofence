@@ -3,12 +3,9 @@
  * application directory.
  */
 
-package org.geoserver.csv2geofence.config.model;
+package org.geofence.misc.csv2geofence.config.model;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class UserFileConfig {
 
     private Character fieldSeparator = ',';
@@ -27,9 +24,7 @@ public class UserFileConfig {
 
     private boolean hasHeaders = true;
 
-    /**
-     * Separator between fields in a CSV file. Usually it's "'"
-     */
+    /** Separator between fields in a CSV file. Usually it's "'" */
     public Character getFieldSeparator() {
         return fieldSeparator;
     }
@@ -38,9 +33,7 @@ public class UserFileConfig {
         this.fieldSeparator = fieldSeparator;
     }
 
-    /**
-     * Separator between groups.
-     */
+    /** Separator between groups. */
     public Character getStringSeparator() {
         return stringSeparator;
     }
@@ -49,11 +42,7 @@ public class UserFileConfig {
         this.stringSeparator = stringSeparator;
     }
 
-
-    /**
-     * Regular expression that filters valid user.
-     * Not matching users will be ignored.
-     */
+    /** Regular expression that filters valid user. Not matching users will be ignored. */
     public String getValidUsernameRegEx() {
         return validUsernameRegEx;
     }
@@ -62,10 +51,7 @@ public class UserFileConfig {
         this.validUsernameRegEx = validUsernameRegEx;
     }
 
-    /**
-     * Regular expression that filters valid groups.
-     * Not matching groups will be ignored.
-     */
+    /** Regular expression that filters valid groups. Not matching groups will be ignored. */
     public String getValidGroupRegEx() {
         return validGroupRegEx;
     }
@@ -74,9 +60,7 @@ public class UserFileConfig {
         this.validGroupRegEx = validGroupRegEx;
     }
 
-    /**
-     * 1-based index of the CSV column containing the username.
-     */
+    /** 1-based index of the CSV column containing the username. */
     public int getUserNameIndex() {
         return userNameIndex;
     }
@@ -85,9 +69,7 @@ public class UserFileConfig {
         this.userNameIndex = userNameIndex;
     }
 
-    /**
-     * 1-based index of the CSV column containing the group list.
-     */
+    /** 1-based index of the CSV column containing the group list. */
     public int getGroupNameIndex() {
         return groupNameIndex;
     }
@@ -96,9 +78,7 @@ public class UserFileConfig {
         this.groupNameIndex = groupNameIndex;
     }
 
-    /**
-     * Tells if the first CSV line contains headers and should be skipped.
-     */
+    /** Tells if the first CSV line contains headers and should be skipped. */
     public boolean isHasHeaders() {
         return hasHeaders;
     }
@@ -107,9 +87,7 @@ public class UserFileConfig {
         this.hasHeaders = hasHeaders;
     }
 
-    /**
-     * 1-based index of the CSV column containing the operation to be performed.
-     */
+    /** 1-based index of the CSV column containing the operation to be performed. */
     public int getOperationTypeIndex() {
         return operationTypeIndex;
     }
@@ -118,9 +96,7 @@ public class UserFileConfig {
         this.operationTypeIndex = operationTypeIndex;
     }
 
-    /**
-     * 1-based index of the CSV column containing the user full name.
-     */
+    /** 1-based index of the CSV column containing the user full name. */
     public Integer getUserFullNameIndex() {
         return userFullNameIndex;
     }
@@ -129,9 +105,7 @@ public class UserFileConfig {
         this.userFullNameIndex = userFullNameIndex;
     }
 
-    /**
-     * 1-based index of the CSV column containing the user mail address.
-     */
+    /** 1-based index of the CSV column containing the user mail address. */
     public Integer getUserMailIndex() {
         return userMailIndex;
     }
@@ -139,6 +113,4 @@ public class UserFileConfig {
     public void setUserMailIndex(Integer userMailIndex) {
         this.userMailIndex = userMailIndex;
     }
-
-
 }

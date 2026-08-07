@@ -3,7 +3,7 @@
  * application directory.
  */
 
-package org.geoserver.csv2geofence;
+package org.geofence.misc.csv2geofence;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -11,8 +11,6 @@ import java.net.URL;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import org.apache.logging.log4j.spi.LoggerFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -20,29 +18,25 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public abstract class BaseTest {
 
-    private final static Logger LOGGER = LogManager.getLogger(BaseTest.class);
+    private static final Logger LOGGER = LogManager.getLogger(BaseTest.class);
+
     @Rule
     public TestName _testName = new TestName();
+
     private static File testDataDir = null;
     private File classDir;
     private File tempDir;
 
-    public BaseTest() {
-    }
+    public BaseTest() {}
 
     @BeforeClass
-    public static void setUpClass() {
-    }
+    public static void setUpClass() {}
 
     @AfterClass
-    public static void tearDownClass() {
-    }
+    public static void tearDownClass() {}
 
     @Before
     public void setUp() {
@@ -64,15 +58,15 @@ public abstract class BaseTest {
     }
 
     @After
-    public void tearDown() {
-    }
-    
+    public void tearDown() {}
+
     protected synchronized File getTempDir() {
-        if( ! tempDir.exists()) // create dir lazily
-            tempDir.mkdir();
+        if (!tempDir.exists()) // create dir lazily
+        tempDir.mkdir();
 
         return tempDir;
     }
+
     protected File loadFile(String name) {
         try {
             URL url = this.getClass().getClassLoader().getResource(name);

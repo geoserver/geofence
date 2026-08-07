@@ -3,21 +3,20 @@
  * application directory.
  */
 
-package org.geoserver.csv2geofence;
+package org.geofence.misc.csv2geofence;
 
-import org.geoserver.csv2geofence.config.model.Configuration;
-import org.geoserver.csv2geofence.config.model.GeofenceConfig;
-import org.geoserver.csv2geofence.config.model.RuleFileConfig;
-import org.geoserver.csv2geofence.config.model.RuleFileConfig.ServiceRequest.Type;
-import org.geoserver.csv2geofence.config.model.UserFileConfig;
-import java.io.File;
-import javax.xml.bind.JAXB;
-import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- * Unit test for simple App.
- */
+import jakarta.xml.bind.JAXB;
+import java.io.File;
+import org.geofence.misc.csv2geofence.config.model.Configuration;
+import org.geofence.misc.csv2geofence.config.model.GeofenceConfig;
+import org.geofence.misc.csv2geofence.config.model.RuleFileConfig;
+import org.geofence.misc.csv2geofence.config.model.RuleFileConfig.ServiceRequest.Type;
+import org.geofence.misc.csv2geofence.config.model.UserFileConfig;
+import org.junit.Test;
+
+/** Unit test for simple App. */
 public class ConfigTest extends BaseTest {
 
     @Test
@@ -35,7 +34,7 @@ public class ConfigTest extends BaseTest {
         userFileConfig.setValidUsernameRegEx("[A-Z0-9]*");
         userFileConfig.setGroupNameIndex(5);
         userFileConfig.setValidGroupRegEx("ASTRIUM.*|DATA.*");
-        
+
         RuleFileConfig ruleFileConfig = new RuleFileConfig();
         ruleFileConfig.setFieldSeparator(",");
 
@@ -80,5 +79,4 @@ public class ConfigTest extends BaseTest {
         assertNotNull(cfg.getRuleFileConfig().getRuleMapping().get("N"));
         assertEquals(0, cfg.getRuleFileConfig().getRuleMapping().get("N").size());
     }
-
 }

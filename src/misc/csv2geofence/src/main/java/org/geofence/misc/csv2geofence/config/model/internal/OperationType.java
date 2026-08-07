@@ -3,12 +3,11 @@
  * application directory.
  */
 
-package org.geoserver.csv2geofence.config.model.internal;
+package org.geofence.misc.csv2geofence.config.model.internal;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public enum OperationType {
-    INSERT,UPDATE,DELETE;
+    INSERT,
+    UPDATE,
+    DELETE;
 }

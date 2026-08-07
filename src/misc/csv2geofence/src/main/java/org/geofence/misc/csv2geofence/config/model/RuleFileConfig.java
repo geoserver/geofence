@@ -3,23 +3,19 @@
  * application directory.
  */
 
-package org.geoserver.csv2geofence.config.model;
+package org.geofence.misc.csv2geofence.config.model;
 
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-/**
- *
- * @author ETj (etj at geo-solutions.it)
- */
+/** @author ETj (etj at geo-solutions.it) */
 public class RuleFileConfig {
     private String fieldSeparator = ",";
 
@@ -30,14 +26,14 @@ public class RuleFileConfig {
 
     private List<Group> groups = new ArrayList<Group>();
 
-    private Map<String,List<ServiceRequest>> ruleMapping = new HashMap<String, List<ServiceRequest>>();
+    private Map<String, List<ServiceRequest>> ruleMapping = new HashMap<String, List<ServiceRequest>>();
 
     public String getFieldSeparator() {
         return fieldSeparator;
     }
 
     public void setFieldSeparator(String fieldSeparator) {
-        this.fieldSeparator = fieldSeparator.substring(0,1);
+        this.fieldSeparator = fieldSeparator.substring(0, 1);
     }
 
     public int getLayerNameIndex() {
@@ -64,8 +60,7 @@ public class RuleFileConfig {
         this.offsetFromBottom = offsetFromBottom;
     }
 
-
-    @XmlElement(name="group")
+    @XmlElement(name = "group")
     public List<Group> getGroups() {
         return groups;
     }
@@ -87,29 +82,28 @@ public class RuleFileConfig {
         this.ruleMapping = mapping;
     }
 
-
     public void addServiceMapping(String s, ServiceRequest serviceRequest) {
         List<ServiceRequest> srl = ruleMapping.get(s);
-        if(srl == null) {
+        if (srl == null) {
             srl = new ArrayList<ServiceRequest>();
             ruleMapping.put(s, srl);
         }
         srl.add(serviceRequest);
     }
 
-    @XmlType(propOrder={"service","request","grant"})
+    @XmlType(propOrder = {"service", "request", "grant"})
     public static class ServiceRequest {
 
         public static enum Type {
-            allow, deny;
+            allow,
+            deny;
         }
 
         private String service;
         private String request;
-        private Type   grant;
+        private Type grant;
 
-        public ServiceRequest() {
-        }
+        public ServiceRequest() {}
 
         public ServiceRequest(String service, String request, Type type) {
             this.service = service;
@@ -117,7 +111,7 @@ public class RuleFileConfig {
             this.grant = type;
         }
 
-        @XmlAttribute(required=true)
+        @XmlAttribute(required = true)
         public String getService() {
             return service;
         }
@@ -135,7 +129,7 @@ public class RuleFileConfig {
             this.request = request;
         }
 
-        @XmlAttribute(required=true)
+        @XmlAttribute(required = true)
         public Type getGrant() {
             return grant;
         }
@@ -146,13 +140,11 @@ public class RuleFileConfig {
 
         @Override
         public String toString() {
-            return getClass().getSimpleName()+"["
-                + (service != null?  "service=" + service : "")
-                + (request != null? " request=" + request : "")
-                +  " grant=" + grant + ']';
+            return getClass().getSimpleName() + "["
+                    + (service != null ? "service=" + service : "")
+                    + (request != null ? " request=" + request : "")
+                    + " grant=" + grant + ']';
         }
-
-
 
         public static class Adapter extends XmlAdapter<MyMap, Map<String, List<ServiceRequest>>> {
 
@@ -161,8 +153,7 @@ public class RuleFileConfig {
                 HashMap<String, List<ServiceRequest>> ret = new HashMap<String, List<ServiceRequest>>();
                 for (MyMap.MyEntry entry : v.getEntries()) {
                     List<ServiceRequest> val = entry.getList();
-                    if(val==null)
-                        val = new ArrayList<ServiceRequest>();
+                    if (val == null) val = new ArrayList<ServiceRequest>();
                     ret.put(entry.getKey(), val);
                 }
                 return ret;
@@ -182,7 +173,7 @@ public class RuleFileConfig {
 
             private List<MyEntry> entries = new ArrayList<MyEntry>();
 
-            @XmlElement(name="mapping")
+            @XmlElement(name = "mapping")
             public List<MyEntry> getEntries() {
                 return entries;
             }
@@ -199,8 +190,7 @@ public class RuleFileConfig {
                 String key;
                 List<ServiceRequest> list;
 
-                public MyEntry() {
-                }
+                public MyEntry() {}
 
                 public MyEntry(String key, List<ServiceRequest> list) {
                     this.key = key;
@@ -216,24 +206,22 @@ public class RuleFileConfig {
                     this.key = key;
                 }
 
-                @XmlElement(name="rule")
+                @XmlElement(name = "rule")
                 public List<ServiceRequest> getList() {
                     return list;
                 }
 
                 public void setList(List<ServiceRequest> list) {
                     this.list = list;
-                }                
+                }
             }
         }
-
     }
 
     public static class Group {
         private int index;
 
-        public Group() {
-        }
+        public Group() {}
 
         public Group(int index) {
             this.index = index;
@@ -246,9 +234,5 @@ public class RuleFileConfig {
         public void setIndex(int index) {
             this.index = index;
         }
-
-
     }
-
-
 }

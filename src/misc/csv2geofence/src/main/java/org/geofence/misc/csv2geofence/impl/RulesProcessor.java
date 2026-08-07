@@ -3,22 +3,22 @@
  * application directory.
  */
 
-package org.geoserver.csv2geofence.impl;
+package org.geofence.misc.csv2geofence.impl;
 
-import org.geoserver.csv2geofence.config.model.RuleFileConfig;
-import org.geoserver.csv2geofence.config.model.RuleFileConfig.ServiceRequest;
-import org.geoserver.csv2geofence.config.model.RuleFileConfig.ServiceRequest.Type;
-import org.geoserver.csv2geofence.config.model.internal.RuleOp;
-import org.geofence.core.model.enums.GrantType;
-import org.geofence.services.rest.model.RESTBatchOperation;
-import org.geofence.services.rest.model.RESTInputRule;
-import org.geofence.services.rest.model.util.RESTBatchOperationFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import org.geofence.misc.csv2geofence.config.model.RuleFileConfig;
+import org.geofence.misc.csv2geofence.config.model.RuleFileConfig.ServiceRequest;
+import org.geofence.misc.csv2geofence.config.model.RuleFileConfig.ServiceRequest.Type;
+import org.geofence.misc.csv2geofence.config.model.internal.RuleOp;
+import org.geofence.web.rest.api.model.RESTBatchOperation;
+import org.geofence.web.rest.api.model.RESTInputRule;
+import org.geofence.web.rest.api.model.RESTRulePosition;
+import org.geofence.web.rest.api.model.enums.RESTGrantType;
+import org.geofence.web.rest.api.util.RESTBatchOperationFactory;
 
 /**
  * Transforms RuleOps into RESTBatchoperations
@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class RulesProcessor {
 
-    private final static Logger LOGGER = LogManager.getLogger(RulesProcessor.class);
+    private static final Logger LOGGER = LogManager.getLogger(RulesProcessor.class);
 
     /**
      * @param ops
@@ -35,7 +35,8 @@ public class RulesProcessor {
      * @param ruleMapping
      * @return
      */
-    public List<RESTBatchOperation> buildBatchOps(List<RuleOp> ops, Map<String, String> availableGroups, RuleFileConfig cfg) {
+    public List<RESTBatchOperation> buildBatchOps(
+            List<RuleOp> ops, Map<String, String> availableGroups, RuleFileConfig cfg) {
         List<RESTBatchOperation> ret = new ArrayList<RESTBatchOperation>(ops.size());
 
         for (RuleOp op : ops) {
@@ -53,17 +54,17 @@ public class RulesProcessor {
      * @param ruleMapping
      * @return
      */
-    protected List<RESTBatchOperation> buildBatchOperation(RuleOp ruleOp, Map<String, String> availableGroups, RuleFileConfig ruleFileConfig) {
+    protected List<RESTBatchOperation> buildBatchOperation(
+            RuleOp ruleOp, Map<String, String> availableGroups, RuleFileConfig ruleFileConfig) {
 
-        Map<String,List<RuleFileConfig.ServiceRequest>> ruleMapping = ruleFileConfig.getRuleMapping();
+        Map<String, List<RuleFileConfig.ServiceRequest>> ruleMapping = ruleFileConfig.getRuleMapping();
         int offsetFromBottom = ruleFileConfig.getOffsetFromBottom();
-
 
         List<RESTBatchOperation> ret = new ArrayList<RESTBatchOperation>();
 
         final String reqGroupName = ruleOp.getGroupName();
-        if(! availableGroups.containsKey(reqGroupName.toUpperCase())) {
-            LOGGER.warn("Adding new group '"+reqGroupName+"'" );
+        if (!availableGroups.containsKey(reqGroupName.toUpperCase())) {
+            LOGGER.warn("Adding new group '" + reqGroupName + "'");
             availableGroups.put(reqGroupName.toUpperCase(), reqGroupName);
             RESTBatchOperation op = RESTBatchOperationFactory.createGroupInputOp(reqGroupName);
             ret.add(op);
@@ -71,40 +72,38 @@ public class RulesProcessor {
         final String realGroupName = availableGroups.get(ruleOp.getGroupName().toUpperCase());
 
         List<ServiceRequest> mapping = ruleMapping.get(ruleOp.getVerb());
-        if(mapping == null) {
+        if (mapping == null) {
             LOGGER.error("Unknown verb in " + ruleOp);
             throw new IllegalArgumentException("Unknown verb in " + ruleOp);
 
         } else {
             for (ServiceRequest serviceRequest : mapping) {
-            // running the list in reverse order since we'll add the rules using offsetFromBottom,
-            // so they will result in a reversed order again
-//            for (int i = mapping.size() -1; i>=0; i--) {
-//                ServiceRequest serviceRequest = mapping.get(i);
+                // running the list in reverse order since we'll add the rules using offsetFromBottom,
+                // so they will result in a reversed order again
+                //            for (int i = mapping.size() -1; i>=0; i--) {
+                //                ServiceRequest serviceRequest = mapping.get(i);
                 RESTBatchOperation restOp = new RESTBatchOperation();
                 restOp.setService(RESTBatchOperation.ServiceName.rules);
                 restOp.setType(RESTBatchOperation.TypeName.insert);
 
                 RESTInputRule rule = new RESTInputRule();
-                rule.setGroupName(realGroupName);
+                rule.setRolename(realGroupName);
                 rule.setLayer(ruleOp.getLayerName());
                 rule.setService(serviceRequest.getService());
                 rule.setRequest(serviceRequest.getRequest());
-                if(serviceRequest.getGrant()==Type.allow)
-                    rule.setGrant(GrantType.ALLOW);
-                else if(serviceRequest.getGrant()==Type.deny)
-                    rule.setGrant(GrantType.DENY);
+                if (serviceRequest.getGrant() == Type.allow) rule.setGrant(RESTGrantType.ALLOW);
+                else if (serviceRequest.getGrant() == Type.deny) rule.setGrant(RESTGrantType.DENY);
                 else {
                     throw new IllegalArgumentException("Unexpected grant type in " + serviceRequest + " for " + ruleOp);
                 }
-                rule.setPosition(new RESTInputRule.RESTRulePosition(RESTInputRule.RESTRulePosition.RulePosition.offsetFromBottom, offsetFromBottom));
+                rule.setPosition(new RESTRulePosition(
+                        RESTRulePosition.RESTPositionReference.offsetFromBottom, offsetFromBottom));
 
                 restOp.setPayload(rule);
                 ret.add(restOp);
-            }        
+            }
         }
 
         return ret;
     }
-
 }
