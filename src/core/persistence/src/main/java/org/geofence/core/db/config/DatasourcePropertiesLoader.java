@@ -16,8 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Resolves and loads {@code geofence.datasource.*} settings from a {@code geofence-datasource.properties} file.
@@ -45,7 +46,7 @@ import java.util.logging.Logger;
  */
 public class DatasourcePropertiesLoader {
 
-    private static final Logger LOGGER = Logger.getLogger(DatasourcePropertiesLoader.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(DatasourcePropertiesLoader.class);
 
     public static final String DEFAULT_FILENAME = "geofence-datasource.properties";
 
@@ -64,7 +65,9 @@ public class DatasourcePropertiesLoader {
         List<File> candidates = candidateFiles(filename, configDirCandidate);
 
         for (File candidate : candidates) {
+            LOGGER.debug("Check GEOFENCE_DATASOURCE_FILE --> " + candidate);
             if (candidate.isFile()) {
+                LOGGER.info("Reading GEOFENCE_DATASOURCE_FILE --> " + candidate);
                 return loadFrom(candidate, passwordDecoder);
             }
         }
@@ -124,7 +127,7 @@ public class DatasourcePropertiesLoader {
             return "\nWrote a sample file to " + sample.getAbsolutePath() + " - copy it to "
                     + configDirCandidate.getName() + " in the same directory and fill in real credentials.";
         } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "Could not write sample datasource config to " + sample.getAbsolutePath(), e);
+            LOGGER.log(Level.WARN, "Could not write sample datasource config to " + sample.getAbsolutePath(), e);
             return "";
         }
     }
@@ -192,7 +195,7 @@ public class DatasourcePropertiesLoader {
             }
             if (!replaced) {
                 LOGGER.log(
-                        Level.WARNING,
+                        Level.WARN,
                         "Could not find a geofence.datasource.password line to rewrite in {0}; leaving it as-is",
                         file.getAbsolutePath());
                 return;
@@ -204,7 +207,7 @@ public class DatasourcePropertiesLoader {
                     file.getAbsolutePath());
         } catch (IOException e) {
             LOGGER.log(
-                    Level.WARNING,
+                    Level.WARN,
                     "Could not persist the encrypted datasource password to " + file.getAbsolutePath()
                             + "; continuing with the in-memory value",
                     e);

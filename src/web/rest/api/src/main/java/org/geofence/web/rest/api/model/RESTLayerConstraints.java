@@ -56,7 +56,7 @@ public class RESTLayerConstraints {
     }
 
     public void setAttributes(Collection<RESTLayerAttribute> attributes) {
-        this.attributes = new HashSet<>(attributes);
+        this.attributes = attributes == null ? null : new HashSet<>(attributes);
     }
 
     public String getCqlFilterRead() {

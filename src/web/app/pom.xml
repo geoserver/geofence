@@ -23,6 +23,9 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- override with -Dgeofence.jetty.port=NNNN / -Dgeofence.jetty.stopPort=NNNN when running jetty:run -->
+    <geofence.jetty.port>9191</geofence.jetty.port>
+    <geofence.jetty.stopPort>9192</geofence.jetty.stopPort>
   </properties>
 
   <dependencies>
@@ -156,9 +159,10 @@
     <finalName>geofence</finalName>
 
     <plugins>
-      <!-- Attaches a plain -classes.jar artifact alongside the war, so other modules (e.g. geofence-rest-test, a
-           thin wrapper webapp adding just a test-data seeder on top) can depend on this module's own classes
-           (AuthenticationFilter, DispatcherConfig) as an ordinary jar dependency instead of a war overlay. -->
+      <!-- Attaches a plain -classes.jar artifact alongside the war, so another module can depend on this module's
+           own classes (AuthenticationFilter, DispatcherConfig) as an ordinary jar dependency instead of a war
+           overlay, if one ever needs to again (no current consumer - geofence-rest-test, the one that used to,
+           has been removed in favor of seeding via GeoFenceAdminClient against this webapp directly). -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
@@ -178,10 +182,10 @@
             <war>${project.build.directory}/geofence.war</war>
           </webApp>
           <httpConnector>
-            <port>9191</port>
+            <port>${geofence.jetty.port}</port>
             <idleTimeout>10000</idleTimeout>
           </httpConnector>
-          <stopPort>9192</stopPort>
+          <stopPort>${geofence.jetty.stopPort}</stopPort>
           <stopKey>GEOSERVER_JETTY_STOPKEY</stopKey>
         </configuration>
       </plugin>

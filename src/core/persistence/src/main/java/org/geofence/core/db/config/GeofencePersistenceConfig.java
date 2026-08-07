@@ -4,9 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManagerFactory;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.sql.DataSource;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.geofence.core.db.datasource.DynamicRoutingDataSource;
 import org.geofence.core.db.datasource.ReloadableDataSource;
 import org.hibernate.type.format.jackson.JacksonJsonFormatMapper;
@@ -27,7 +28,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan(basePackages = "org.geofence.core.db", lazyInit = true)
 public class GeofencePersistenceConfig {
 
-    private static final Logger LOGGER = Logger.getLogger(GeofencePersistenceConfig.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(GeofencePersistenceConfig.class);
 
     private final DynamicRoutingDataSource routingDataSource;
 
@@ -40,7 +41,7 @@ public class GeofencePersistenceConfig {
         try {
             new DatasourcePropertiesLoader().load(configDirProvider, passwordDecoder);
         } catch (RuntimeException e) {
-            LOGGER.log(Level.WARNING, "GeoFence embedded engine will be unavailable until this is fixed", e);
+            LOGGER.log(Level.WARN, "GeoFence embedded engine will be unavailable until this is fixed", e);
         }
     }
 

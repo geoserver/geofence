@@ -56,6 +56,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
     @Override
     public long insert(Rule rule) {
+        LOGGER.info("INSERTING RULE " + rule);
         sanitizeFields(rule);
         ruleDAO.persist(rule);
         return rule.getId();
@@ -63,6 +64,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
     @Override
     public long insert(Rule rule, InsertPosition position) {
+        LOGGER.info("INSERTING RULE " + rule + " at " + position);
         sanitizeFields(rule);
         ruleDAO.persist(rule, position);
         return rule.getId();
@@ -70,6 +72,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
     @Override
     public long update(Rule rule) throws NotFoundServiceEx {
+        LOGGER.info("UPDATING RULE " + rule);
         Rule orig = ruleDAO.find(rule.getId());
         if (orig == null) {
             throw new NotFoundServiceEx("Rule not found", rule.getId());
@@ -90,11 +93,13 @@ public class RuleAdminServiceImpl implements RuleAdminService {
      */
     @Override
     public int shift(long priorityStart, long offset) {
+        LOGGER.info("SHIFTING RULES pri:" + priorityStart + " offset:" + offset);
         return ruleDAO.shift(priorityStart, offset);
     }
 
     @Override
     public void swap(long id1, long id2) {
+        LOGGER.info("SwAPPING RULES " + id1 + "<->" + id2);
         ruleDAO.swap(id1, id2);
     }
 
@@ -125,6 +130,8 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
     @Override
     public boolean delete(long id) throws NotFoundServiceEx {
+        LOGGER.info("REMOVING RULE " + id);
+
         Rule rule = ruleDAO.find(id);
 
         if (rule == null) {
@@ -137,6 +144,8 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
     @Override
     public void deleteRulesByUser(String username) throws NotFoundServiceEx {
+        LOGGER.info("REMOVING RULES for user " + username);
+
         Search searchCriteria = ruleDAO.createSearch();
         searchCriteria.addFilterEqual("username", username);
 
@@ -150,6 +159,8 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
     @Override
     public void deleteRulesByRole(String rolename) throws NotFoundServiceEx {
+        LOGGER.info("REMOVING RULES for group " + rolename);
+
         Search searchCriteria = ruleDAO.createSearch();
         searchCriteria.addFilterEqual("rolename", rolename);
 
@@ -162,6 +173,8 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
     @Override
     public void deleteRulesByInstance(long instanceId) throws NotFoundServiceEx {
+        LOGGER.info("REMOVING RULES for instance " + instanceId);
+
         Search searchCriteria = ruleDAO.createSearch();
         Search.JoinInfo instance = searchCriteria.addJoin("instance");
         searchCriteria.addFilterEqual(instance, "id", instanceId);
