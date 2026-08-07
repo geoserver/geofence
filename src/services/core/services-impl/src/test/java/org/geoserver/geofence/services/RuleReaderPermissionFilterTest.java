@@ -5,6 +5,10 @@
 
 package org.geoserver.geofence.services;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import org.geoserver.geofence.core.model.GSInstance;
 import org.geoserver.geofence.core.model.Rule;
@@ -14,6 +18,9 @@ import org.geoserver.geofence.services.dto.PermsResult;
 import org.geoserver.geofence.services.dto.RuleFilter;
 import org.geoserver.geofence.services.dto.RuleFilter.FilterType;
 import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
+import org.geoserver.geofence.services.util.PermsResultBuilder;
+import org.geoserver.geofence.services.util.PermsResultInternal;
+import org.geotools.api.filter.Filter;
 import org.junit.Test;
 
 /**
@@ -582,5 +589,39 @@ public class RuleReaderPermissionFilterTest extends ServiceTestBase {
         assertTrue("CQL should NOT (workspace='secret' AND layer='top_secret') somewhere — got: " + cql,
                 cql.contains("secret") && cql.contains("top_secret") && cql.toUpperCase().contains("NOT"));
     }
-    
+
+    @Test
+    public void testLowerPriorityGlobalDenyDoesNotOverrideHigherPriorityAllows() {
+        // Rule 10: Priority 10 - Broad WMS ALLOW
+        Rule rule10 = new Rule(10, GrantType.ALLOW).setService("WMS");
+
+        // Rule 60: Priority 60 - Specific S1:R1 ALLOW on w1:l1
+        Rule rule60 = new Rule(60, GrantType.ALLOW)
+                .setService("S1")
+                .setRequest("R1")
+                .setWorkspace("w1")
+                .setLayer("l1");
+
+        // Rule 90: Priority 90 - Catch-all DENY (lower priority)
+        Rule rule90 = new Rule(90, GrantType.DENY);
+
+        List<Rule> sortedRules = Arrays.asList(rule10, rule60, rule90);
+
+        PermsResultInternal result = PermsResultBuilder.computePerms(sortedRules);
+
+        Filter filter = result.getFilter();
+        Map<String, Set<String>> resources = result.getAccessibleResources();
+
+        // 1. Verify the CQL Filter is NOT EXCLUDE or NOT (INCLUDE)
+        assertFalse("Filter should NOT be EXCLUDE", Filter.EXCLUDE.equals(filter));
+        assertEquals("Filter should simplify to INCLUDE", Filter.INCLUDE, filter);
+
+        // 2. Verify the human-friendly resource map contains global access
+        assertTrue("Resource map should contain global workspace '*'", resources.containsKey("*"));
+        Set<String> globalLayers = resources.get("*");
+        assertNotNull("Global layers should not be null", globalLayers);
+        assertTrue("Global layers should contain wildcard '*'", globalLayers.contains("*"));
+        assertFalse("Global layers should NOT contain exclusion '!null'", globalLayers.contains("!null"));
+    }
+
 }

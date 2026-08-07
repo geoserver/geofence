@@ -70,14 +70,26 @@ public class PermsResultBuilder {
       
     private static PermsResultInternal buildPerms(List<Rule> finalAllowedRules, List<Rule> activeDenies) {
         Map<String, Set<String>> resources = new HashMap<>();
+        // workspace -> priority of the highest-priority (lowest-numbered) full-workspace ALLOW, so a duplicate
+        // lower-priority grant for the same workspace can't add holes that the winning grant doesn't have
+        Map<String, Long> fullWorkspaceGrantPriority = new HashMap<>();
         for (Rule rule : finalAllowedRules) {
+            if (rule.getWorkspace() != null && rule.getLayer() == null) {
+                fullWorkspaceGrantPriority.merge(rule.getWorkspace(), rule.getPriority(), Math::min);
+            }
+        }
+
+        for (Rule rule : finalAllowedRules) {
+            List<Rule> outrankingDenies = higherPriorityDenies(activeDenies, rule);
+
             if(rule.getWorkspace() == null && rule.getLayer() == null) {
-                // Global grant found
+                // Global grant found: record "*:*" plus any higher-priority DENY as an exclusion, and stop -
+                // it covers every other ALLOW
                 Set<String> globalLayers = resources.computeIfAbsent("*", k -> new HashSet<>());
                 globalLayers.add("*");
 
-                // Add all existing DENY rules as exclusions to the global grant
-                for (Rule deny : activeDenies) {
+                // Add all higher-priority DENY rules as exclusions to the global grant
+                for (Rule deny : outrankingDenies) {
                     String dWs = deny.getWorkspace() == null ? "*" : deny.getWorkspace();
                     String dLy = deny.getLayer() == null ? "*" : deny.getLayer();
 
@@ -90,33 +102,55 @@ public class PermsResultBuilder {
                     }
                 }
                 // Return with the corrected filter
-                return new PermsResultInternal(compactGrants(finalAllowedRules, activeDenies), resources);                
+                return new PermsResultInternal(compactGrants(finalAllowedRules, activeDenies), resources);
             }
-            
+
             String ws = rule.getWorkspace() == null ? "*" : rule.getWorkspace();
             String ly = rule.getLayer() == null ? "*" : rule.getLayer();
-            
+
             Set<String> layers = resources.computeIfAbsent(ws, k -> new HashSet<>());
             layers.add(ly);
-                       
-            // If we just added a workspace-wide grant ("*"), 
+
+            // If we just added a workspace-wide grant ("*"),
             // we must check if there are any high-priority DENY holes to list
             if ("*".equals(ly)) {
+                // list any DENY holes outranking the winning (highest-priority) grant for this workspace -
+                // not just this specific rule, in case of a duplicate lower-priority grant
+                long grantPriority = fullWorkspaceGrantPriority.get(rule.getWorkspace());
                 for (Rule deny : activeDenies) {
                     // If the deny is for this workspace and specifies a layer
-                    if (ws.equals(deny.getWorkspace()) && deny.getLayer() != null) {
+                    if (deny.getPriority() < grantPriority
+                            && ws.equals(deny.getWorkspace())
+                            && deny.getLayer() != null) {
                         layers.add("!" + deny.getLayer()); // Prefix with ! to indicate exclusion
                     }
                 }
             }
-        }  
-        
+        }
+
         return new PermsResultInternal(compactGrants(finalAllowedRules, activeDenies),resources);
+    }
+
+    /**
+     * Denies only take effect on rules evaluated after them (i.e. at a lower priority - a higher priority
+     * number). A DENY that comes after {@code allow} in evaluation order can never affect it: a matching
+     * request would already have been decided by {@code allow} first.
+     */
+    private static List<Rule> higherPriorityDenies(List<Rule> denies, Rule allow) {
+        List<Rule> result = new ArrayList<>();
+        for (Rule deny : denies) {
+            if (deny.getPriority() < allow.getPriority()) {
+                result.add(deny);
+            }
+        }
+        return result;
     }
     
     private static Filter compactGrants(List<Rule> finalAllowedRules, List<Rule> activeDenies) {
         Map<String, Set<String>> workspaceToLayers = new HashMap<>();
-        Set<String> fullWorkspaceGrants = new HashSet<>();
+        // workspace -> priority of the highest-priority (lowest-numbered) ALLOW granting it fully, so only
+        // DENYs outranking THAT rule can punch a hole in it
+        Map<String, Long> fullWorkspaceGrants = new HashMap<>();
         Set<String> crossWorkspaceLayers = new HashSet<>(); // Handles ws=null, layer=X
 
         for (Rule rule : finalAllowedRules) {
@@ -125,15 +159,16 @@ public class PermsResultBuilder {
 
             if (ws == null && layer == null) {
                 Filter globalBase = Filter.INCLUDE;
-                if (!activeDenies.isEmpty()) {
+                List<Rule> outrankingDenies = higherPriorityDenies(activeDenies, rule);
+                if (!outrankingDenies.isEmpty()) {
                     List<Filter> holes = new ArrayList<>();
-                    for (Rule deny : activeDenies) {
+                    for (Rule deny : outrankingDenies) {
                         // Collect every specific DENY to punch holes in the global grant
-                        holes.add(createRuleFilter(deny)); 
+                        holes.add(createRuleFilter(deny));
                     }
-                    globalBase = ff.and(globalBase, ff.not(ff.or(holes)));               
+                    globalBase = ff.and(globalBase, ff.not(ff.or(holes)));
                 }
-                
+
                 // If we found a global grant, this is the most permissive we can be.
                 // We can return this immediately because it covers all other grants.
                 return (Filter) globalBase.accept(new SimplifyingFilterVisitor(), null);
@@ -143,11 +178,11 @@ public class PermsResultBuilder {
                 crossWorkspaceLayers.add(layer);
             } else if (ws != null && layer == null) {
                 // Entire workspace allowed
-                fullWorkspaceGrants.add(ws);
+                fullWorkspaceGrants.merge(ws, rule.getPriority(), Math::min);
             } else {
                 // Specific workspace and layer
                 workspaceToLayers.computeIfAbsent(ws, k -> new HashSet<>()).add(layer);
-            }           
+            }
         }
 
         List<Filter> groupedFilters = new ArrayList<>();
@@ -158,17 +193,16 @@ public class PermsResultBuilder {
         }
 
         // 2. Build filters for fully allowed workspaces (e.g., workspace = 'SITGEO')
-//        for (String ws : fullWorkspaceGrants) {
-//            groupedFilters.add(ff.equals(ff.property("workspace"), ff.literal(ws)));
-//        }
-        for (String ws : fullWorkspaceGrants) {
+        for (Map.Entry<String, Long> grant : fullWorkspaceGrants.entrySet()) {
+            String ws = grant.getKey();
+            long grantPriority = grant.getValue();
             Filter wsFilter = ff.equals(ff.property("workspace"), ff.literal(ws));
 
-            // FIND HOLES: Are there any DENYs that apply specifically to this workspace?
+            // FIND HOLES: Are there any higher-priority DENYs that apply specifically to this workspace?
             List<Filter> holes = new ArrayList<>();
             for (Rule deny : activeDenies) {
                 // If the deny is for this workspace and specifies a layer
-                if (ws.equals(deny.getWorkspace()) && deny.getLayer() != null) {
+                if (deny.getPriority() < grantPriority && ws.equals(deny.getWorkspace()) && deny.getLayer() != null) {
                     holes.add(ff.equals(ff.property("layer"), ff.literal(deny.getLayer())));
                 }
             }
@@ -185,7 +219,7 @@ public class PermsResultBuilder {
         // 3. Build factored filters for workspaces with specific layers
         for (Map.Entry<String, Set<String>> entry : workspaceToLayers.entrySet()) {
             String ws = entry.getKey();
-            if (fullWorkspaceGrants.contains(ws)) continue;
+            if (fullWorkspaceGrants.containsKey(ws)) continue;
 
             Set<String> layers = entry.getValue();
             Filter wsFilter = ff.equals(ff.property("workspace"), ff.literal(ws));
