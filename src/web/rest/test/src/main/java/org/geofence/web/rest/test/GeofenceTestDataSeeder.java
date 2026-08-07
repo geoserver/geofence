@@ -15,9 +15,11 @@ import org.geofence.core.model.GSUser;
 import org.geofence.core.model.LayerAttribute;
 import org.geofence.core.model.LayerDetails;
 import org.geofence.core.model.Rule;
+import org.geofence.core.model.RuleLimits;
 import org.geofence.core.model.UserGroup;
 import org.geofence.core.model.enums.AccessType;
 import org.geofence.core.model.enums.GrantType;
+import org.geofence.core.model.util.EWKTParser;
 import org.geofence.core.services.InstanceAdminService;
 import org.geofence.core.services.RuleAdminService;
 import org.geofence.core.services.UserAdminService;
@@ -25,7 +27,6 @@ import org.geofence.core.services.UserGroupAdminService;
 import org.geofence.core.services.dto.ShortGroup;
 import org.geofence.web.rest.utils.InstanceCleaner;
 import org.locationtech.jts.geom.MultiPolygon;
-import org.locationtech.jts.io.WKTReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -71,37 +72,61 @@ public class GeofenceTestDataSeeder {
     }
 
     /**
-     * Rules matching what {@code GefenceAccessManagerTest} (in geoserver3's geofence extension) actually asserts
-     * against - workspace/layer names below are {@code MockData}'s own constants (CITE_PREFIX/BASIC_POLYGONS,
-     * SF_PREFIX/GENERICENTITY).
+     * Faithful port of the original upstream {@code MainTest} rule fixture (geoserver/geofence,
+     * {@code src/services/core/webtest/.../servicetest/MainTest.java}) - the rule set
+     * {@code GefenceAccessManagerTest}/{@code ServicesTest}/{@code GeofenceAccessManager_WMTSLayerTest} (in
+     * geoserver3's geofence extension) actually assert against. Workspace/layer names are {@code MockData}'s own
+     * constants (cite/sf/topp, BasicPolygons/GenericEntity/states).
+     *
+     * <p>Admin needs no explicit rule - {@code GeofenceAccessManager.isAdmin(user)} bypasses the rule engine entirely
+     * for {@code ROLE_ADMINISTRATOR} users, exactly as upstream relied on too.
      */
     private void seedGeofenceAccessManagerTestRules() throws Exception {
-        // admin -> unconditional ALLOW
-        ruleAdminService.insert(new Rule(1, "admin", null, null, null, null, null, null, null, null, GrantType.ALLOW));
+        long priority = 0;
 
-        // cite -> full ALLOW on its own layer (cite:BasicPolygons)
+        // cite -> full ALLOW on the whole "cite" workspace
         ruleAdminService.insert(
-                new Rule(2, "cite", null, null, null, null, null, null, "cite", "BasicPolygons", GrantType.ALLOW));
+                new Rule(priority++, GrantType.ALLOW).setUsername("cite").setWorkspace("cite"));
 
-        // area -> ALLOW on sf:GenericEntity, restricted to a specific allowed area via LayerDetails below
-        // (setDetails only accepts ALLOW rules - the "limited" semantic comes from the area restriction itself)
-        Rule areaRule = new Rule(3, "area", null, null, null, null, null, null, "sf", "GenericEntity", GrantType.ALLOW);
-        ruleAdminService.insert(areaRule);
-        LayerDetails areaDetails = new LayerDetails();
+        // cite -> WMS GetMap/GetCapabilities/reflect only, on the "sf" workspace
+        ruleAdminService.insert(new Rule(priority++, GrantType.ALLOW)
+                .setUsername("cite")
+                .setService("wms")
+                .setRequest("GetMap")
+                .setWorkspace("sf"));
+        ruleAdminService.insert(new Rule(priority++, GrantType.ALLOW)
+                .setUsername("cite")
+                .setService("wms")
+                .setRequest("GetCapabilities")
+                .setWorkspace("sf"));
+        ruleAdminService.insert(new Rule(priority++, GrantType.ALLOW)
+                .setUsername("cite")
+                .setService("wms")
+                .setRequest("reflect")
+                .setWorkspace("sf"));
+
+        // wmsuser -> WMS only, any workspace/layer
+        ruleAdminService.insert(
+                new Rule(priority++, GrantType.ALLOW).setUsername("wmsuser").setService("wms"));
+
+        // area -> unrestricted access, but LIMITed to a specific allowed area
+        Rule areaRestriction = new Rule(priority++, GrantType.LIMIT).setUsername("area");
+        ruleAdminService.insert(areaRestriction);
+        RuleLimits limits = new RuleLimits();
         MultiPolygon allowedArea =
-                (MultiPolygon) new WKTReader().read("MULTIPOLYGON(((48 62, 48 63, 49 63, 49 62, 48 62)))");
-        areaDetails.setArea(allowedArea);
-        ruleAdminService.setDetails(areaRule.getId(), areaDetails);
+                (MultiPolygon) EWKTParser.parse("SRID=4326;MULTIPOLYGON(((48 62, 48 63, 49 63, 49 62, 48 62)))");
+        limits.setAllowedArea(allowedArea);
+        ruleAdminService.setLimits(areaRestriction.getId(), limits);
+        ruleAdminService.insert(new Rule(priority++, GrantType.ALLOW).setUsername("area"));
 
-        // wmsuser -> full ALLOW on sf:GenericEntity (regardless of service)
-        ruleAdminService.insert(
-                new Rule(4, "wmsuser", null, null, null, null, null, null, "sf", "GenericEntity", GrantType.ALLOW));
-
-        // any user, WMS service -> ALLOW
-        ruleAdminService.insert(new Rule(10, null, null, null, null, "WMS", null, null, null, null, GrantType.ALLOW));
+        // u-states -> full ALLOW, but only on topp:states
+        ruleAdminService.insert(new Rule(priority++, GrantType.ALLOW)
+                .setUsername("u-states")
+                .setWorkspace("topp")
+                .setLayer("states"));
 
         // catch-all -> DENY (lowest priority, evaluated last)
-        ruleAdminService.insert(new Rule(100, null, null, null, null, null, null, null, null, null, GrantType.DENY));
+        ruleAdminService.insert(new Rule(priority++, GrantType.DENY));
     }
 
     /** The original sample data this module's old {@code MainTest} class seeded - kept as-is, at lower priority. */

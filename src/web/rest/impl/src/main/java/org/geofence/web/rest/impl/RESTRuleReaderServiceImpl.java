@@ -6,6 +6,8 @@
 package org.geofence.web.rest.impl;
 
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.geofence.core.services.RuleReaderService;
 import org.geofence.core.services.dto.AccessInfo;
 import org.geofence.core.services.dto.PermsResult;
@@ -25,6 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Service
 @RestController
 public class RESTRuleReaderServiceImpl implements RESTRuleReaderService {
+
+    private static final Logger LOGGER = LogManager.getLogger(RESTRuleReaderServiceImpl.class);
 
     @Autowired
     private RuleReaderService ruleReaderService;
@@ -55,12 +59,14 @@ public class RESTRuleReaderServiceImpl implements RESTRuleReaderService {
     @Override
     public RESTPermsResult getPermissionFilter(RESTRuleFilter query) throws BadRequestRestEx {
         RuleFilter filter = RESTMapper.buildFilter(query);
+        LOGGER.debug("Requesting permissions for " + filter);
         PermsResult permsResult;
         try {
             permsResult = ruleReaderService.getPermissionFilter(filter);
         } catch (IllegalArgumentException e) {
             throw new BadRequestRestEx("Bad filter: " + e.getMessage());
         }
+        LOGGER.debug("Permissions for " + filter + " --> " + permsResult);
         return RESTMapper.map(permsResult);
     }
 }
