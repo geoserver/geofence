@@ -7,9 +7,14 @@ package org.geofence.core.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import org.geofence.core.model.GSInstance;
 import org.geofence.core.model.Rule;
@@ -19,6 +24,9 @@ import org.geofence.core.services.dto.PermsResult;
 import org.geofence.core.services.dto.RuleFilter;
 import org.geofence.core.services.dto.RuleFilter.FilterType;
 import org.geofence.core.services.dto.RuleFilter.SpecialFilterType;
+import org.geofence.core.services.util.PermsResultBuilder;
+import org.geofence.core.services.util.PermsResultInternal;
+import org.geotools.api.filter.Filter;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -605,5 +613,48 @@ public class RuleReaderPermissionFilterTest extends ServiceTestBase {
                         && cql.contains("top_secret")
                         && cql.toUpperCase().contains("NOT"),
                 "CQL should NOT (workspace='secret' AND layer='top_secret') somewhere - got: " + cql);
+    }
+
+    @Test
+    public void testLowerPriorityGlobalDenyDoesNotOverrideHigherPriorityAllows() {
+        PermsResultBuilder builder = new PermsResultBuilder();
+
+        // Rule 10: Priority 10 - Broad WMS ALLOW
+        //        Rule rule10 = new Rule(10, null, null, null, null, "WMS", null, null, null, null, GrantType.ALLOW);
+        Rule rule10 = new Rule(10, GrantType.ALLOW).setService("WMS");
+        //        rule10.setId(1206L);
+
+        // Rule 1209: Priority 60 - Specific S1:R1 ALLOW on w1:l1
+        //        Rule rule60 = new Rule(60, null, null, null, null, "S1", "R1", null, "w1", "l1", GrantType.ALLOW);
+        Rule rule60 = new Rule(60, GrantType.ALLOW)
+                .setService("S1")
+                .setRequest("R1")
+                .setWorkspace("w1")
+                .setLayer("l1");
+        //        rule60.setId(1209L);
+
+        // Rule 1207: Priority 100 - Catch-all DENY (lower priority)
+        //        Rule rule90 = new Rule(90, null, null, null, null, null, null, null, null, null, GrantType.DENY);
+        Rule rule90 = new Rule(90, GrantType.DENY);
+        //        rule90.setId(1207L);
+
+        List<Rule> sortedRules = Arrays.asList(rule10, rule60, rule90);
+
+        // Execute computation
+        PermsResultInternal result = builder.computePerms(sortedRules);
+
+        Filter filter = result.getFilter();
+        var resources = result.getAccessibleResources();
+
+        // 1. Verify the CQL Filter is NOT EXCLUDE or NOT (INCLUDE)
+        assertNotEquals(Filter.EXCLUDE, filter, "Filter should NOT be EXCLUDE");
+        assertEquals(Filter.INCLUDE, filter, "Filter should simplify to INCLUDE");
+
+        // 2. Verify the human-friendly resource map contains global access
+        assertTrue(resources.containsKey("*"), "Resource map should contain global workspace '*'");
+        Set<String> globalLayers = resources.get("*");
+        assertNotNull(globalLayers, "Global layers should not be null");
+        assertTrue(globalLayers.contains("*"), "Global layers should contain wildcard '*'");
+        assertFalse(globalLayers.contains("!null"), "Global layers should NOT contain exclusion '!null'");
     }
 }

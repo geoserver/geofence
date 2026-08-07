@@ -12,9 +12,8 @@
       <AppenderRef ref="Console"/>
     </Root>
 
-    <Logger name="org.geofence.services" level="debug" />
+    <Logger name="org.geofence.core.services" level="debug" />
     <Logger name="org.hibernate" level="warn" />
-    <Logger name="com.trg" level="info" />
   </Loggers>
 
 </Configuration>
