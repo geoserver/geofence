@@ -221,6 +221,12 @@ public class RESTAdminRuleServiceImpl extends BaseRESTServiceImpl implements RES
 
     protected RuleFilter buildFilter(RESTAdminRuleFilter query) throws BadRequestRestEx {
 
+        RESTMapper.warnIfDeprecatedFieldSet("userAny", query.userAny);
+        RESTMapper.warnIfDeprecatedFieldSet("groupAny", query.groupAny);
+        RESTMapper.warnIfDeprecatedFieldSet("instanceId", query.instanceId);
+        RESTMapper.warnIfDeprecatedFieldSet("instanceAny", query.instanceAny);
+        RESTMapper.warnIfDeprecatedFieldSet("workspaceAny", query.workspaceAny);
+
         // coalesce deprecated "any" flag
         if (query.userDefault == null) query.userDefault = query.userAny;
         if (query.groupDefault == null) query.groupDefault = query.groupAny;

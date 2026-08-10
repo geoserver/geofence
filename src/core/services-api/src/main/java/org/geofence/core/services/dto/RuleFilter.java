@@ -8,6 +8,8 @@ package org.geofence.core.services.dto;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A Filter for selecting {@link Rule}s.
@@ -25,6 +27,8 @@ import java.util.stream.Collectors;
  * @author ETj (etj at geo-solutions.it)
  */
 public class RuleFilter implements Cloneable {
+
+    private static final Logger LOGGER = LogManager.getLogger(RuleFilter.class);
 
     public enum FilterType {
         NAMEVALUE,
@@ -154,6 +158,7 @@ public class RuleFilter implements Cloneable {
     }
 
     public RuleFilter setInstance(Long id) {
+        LOGGER.warn("Filtering instance by id is deprecated, prefer filtering by name", new Throwable("trace"));
         instance.setId(id);
         return this;
     }

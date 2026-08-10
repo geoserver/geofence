@@ -171,6 +171,18 @@ public class RESTMapper {
      */
     public static RuleFilter buildFilter(RESTRuleFilter query) throws BadRequestRestEx {
 
+        warnIfDeprecatedFieldSet("dateAny", query.dateAny);
+        warnIfDeprecatedFieldSet("groupAny", query.groupAny);
+        warnIfDeprecatedFieldSet("instanceId", query.instanceId);
+        warnIfDeprecatedFieldSet("instanceAny", query.instanceAny);
+        warnIfDeprecatedFieldSet("ipAddressAny", query.ipAddressAny);
+        warnIfDeprecatedFieldSet("layerAny", query.layerAny);
+        warnIfDeprecatedFieldSet("requestAny", query.requestAny);
+        warnIfDeprecatedFieldSet("serviceAny", query.serviceAny);
+        warnIfDeprecatedFieldSet("subfieldAny", query.subfieldAny);
+        warnIfDeprecatedFieldSet("userAny", query.userAny);
+        warnIfDeprecatedFieldSet("workspaceAny", query.workspaceAny);
+
         // coalesce deprecated "any" flag
         if (query.dateDefault == null) query.dateDefault = query.dateAny;
         if (query.groupDefault == null) query.groupDefault = query.groupAny;
@@ -196,6 +208,13 @@ public class RESTMapper {
         setFilter(filter.getWorkspace(), query.workspace, query.workspaceDefault);
         setFilter(filter.getLayer(), query.layer, query.layerDefault);
         return filter;
+    }
+
+    /** Logs a warning when an incoming REST filter request still carries a deprecated field */
+    static void warnIfDeprecatedFieldSet(String fieldName, Object value) {
+        if (value != null) {
+            LOGGER.warn("Deprecated REST filter field '{}' was set in an incoming request", fieldName);
+        }
     }
 
     private static void setFilter(IdNameFilter filter, Long id, String name, Boolean includeDefault)
