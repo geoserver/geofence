@@ -79,6 +79,32 @@ public class DatasourcePropertiesLoader {
         throw new IllegalStateException("No geofence datasource configuration found. Checked:" + checked + sampleHint);
     }
 
+    /** Re-encrypts the stored password in place if the decoder asks for it; idempotent, no-op if there's no file. */
+    public void encryptStoredPassword(
+            Optional<GeoFenceConfigDirectoryProvider> configDirProvider, DatasourcePasswordDecoder passwordDecoder) {
+        String filename = systemProperty("GEOFENCE_DATASOURCE_FILE").orElse(DEFAULT_FILENAME);
+        for (File candidate : candidateFiles(filename, configDirCandidate(filename, configDirProvider))) {
+            if (candidate.isFile()) {
+                encryptStoredPassword(candidate, passwordDecoder);
+                return;
+            }
+        }
+    }
+
+    private void encryptStoredPassword(File file, DatasourcePasswordDecoder passwordDecoder) {
+        Properties props = new Properties();
+        try (FileInputStream in = new FileInputStream(file)) {
+            props.load(in);
+        } catch (IOException e) {
+            LOGGER.log(Level.WARN, "Could not read " + file.getAbsolutePath(), e);
+            return;
+        }
+        String password = props.getProperty("geofence.datasource.password");
+        if (password != null) {
+            passwordDecoder.decode(password).valueToPersist().ifPresent(v -> rewritePasswordProperty(file, v));
+        }
+    }
+
     /**
      * The config-directory-based candidate, or {@code null} if {@code filename} is absolute or no provider is present.
      */
@@ -107,9 +133,8 @@ public class DatasourcePropertiesLoader {
     }
 
     /**
-     * Best-effort: writes a {@code <filename>.sample} file next to {@code configDirCandidate} if neither the real file
-     * nor a sample already exist there. Never throws - a failure here shouldn't obscure the "no config found" error
-     * it's meant to help with.
+     * Best-effort: writes a {@code <filename>.sample} template next to {@code configDirCandidate} if absent. Never
+     * throws.
      */
     private String writeSampleIfAbsent(File configDirCandidate) {
         File sample = new File(configDirCandidate.getParentFile(), configDirCandidate.getName() + ".sample");
@@ -196,19 +221,16 @@ public class DatasourcePropertiesLoader {
             if (!replaced) {
                 LOGGER.log(
                         Level.WARN,
-                        "Could not find a geofence.datasource.password line to rewrite in {0}; leaving it as-is",
+                        "Missing property geofence.datasource.password to rewrite in {}; leaving it as-is",
                         file.getAbsolutePath());
                 return;
             }
             Files.write(file.toPath(), lines);
-            LOGGER.log(
-                    Level.INFO,
-                    "Encrypted the plaintext datasource password and saved it back to {0}",
-                    file.getAbsolutePath());
+            LOGGER.log(Level.WARN, "Encrypted the geofence plaintext password at {}", file.getAbsolutePath());
         } catch (IOException e) {
             LOGGER.log(
                     Level.WARN,
-                    "Could not persist the encrypted datasource password to " + file.getAbsolutePath()
+                    "Could not persist the geofence encrypted datasource password to " + file.getAbsolutePath()
                             + "; continuing with the in-memory value",
                     e);
         }
@@ -243,7 +265,7 @@ public class DatasourcePropertiesLoader {
     private String requireProperty(Properties props, String key, File file) {
         String value = props.getProperty(key);
         if (value == null) {
-            throw new IllegalStateException("Missing property '" + key + "' in " + file.getAbsolutePath());
+            throw new IllegalStateException("Missing geofence property '" + key + "' in " + file.getAbsolutePath());
         }
         return value;
     }

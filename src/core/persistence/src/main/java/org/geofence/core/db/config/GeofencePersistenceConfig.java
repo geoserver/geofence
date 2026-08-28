@@ -12,6 +12,7 @@ import org.geofence.core.db.datasource.DynamicRoutingDataSource;
 import org.geofence.core.db.datasource.ReloadableDataSource;
 import org.hibernate.type.format.jackson.JacksonJsonFormatMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -31,17 +32,50 @@ public class GeofencePersistenceConfig {
     private static final Logger LOGGER = LogManager.getLogger(GeofencePersistenceConfig.class);
 
     private final DynamicRoutingDataSource routingDataSource;
+    private final Optional<GeoFenceConfigDirectoryProvider> configDirProvider;
+    private final Optional<DatasourcePasswordDecoder> passwordDecoder;
+    private final ConfigurableApplicationContext context;
 
     // Eager probe (this @Configuration class isn't itself lazy) so a missing/invalid datasource config is logged at
     // startup, even though datasourceSettings() below stays @Lazy so GeoServer itself doesn't fail to start.
     public GeofencePersistenceConfig(
             Optional<GeoFenceConfigDirectoryProvider> configDirProvider,
-            Optional<DatasourcePasswordDecoder> passwordDecoder) {
+            Optional<DatasourcePasswordDecoder> passwordDecoder,
+            ConfigurableApplicationContext context) {
+        this.configDirProvider = configDirProvider;
+        this.passwordDecoder = passwordDecoder;
+        this.context = context;
         this.routingDataSource = new DynamicRoutingDataSource();
         try {
-            new DatasourcePropertiesLoader().load(configDirProvider, passwordDecoder);
+            // No passwordDecoder: this early, the security manager isn't ready and would strip the plain: marker.
+            new DatasourcePropertiesLoader().load(configDirProvider);
         } catch (RuntimeException e) {
             LOGGER.log(Level.WARN, "GeoFence embedded engine will be unavailable until this is fixed", e);
+        }
+    }
+
+    /**
+     * Re-reads the datasource file into the live connection pool. Returns false if the new configuration couldn't be
+     * applied, leaving the old pool in place for the caller to decide what to do; true if applied, or if the embedded
+     * engine hasn't started yet and there is nothing to reconfigure.
+     */
+    public boolean reloadDatasource() {
+        if (!context.getBeanFactory().containsSingleton("dataSource")) {
+            return true;
+        }
+        try {
+            DatasourceSettings settings = new DatasourcePropertiesLoader().load(configDirProvider, passwordDecoder);
+            ReloadableDataSource dataSource = context.getBean("dataSource", ReloadableDataSource.class);
+            dataSource.reconfigure(
+                    settings.url(),
+                    settings.username(),
+                    settings.password(),
+                    settings.driverClassName(),
+                    settings.hikariProperties());
+            return true;
+        } catch (RuntimeException e) {
+            LOGGER.log(Level.ERROR, "Could not apply the new GeoFence datasource configuration", e);
+            return false;
         }
     }
 
