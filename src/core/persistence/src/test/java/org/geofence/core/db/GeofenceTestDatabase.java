@@ -26,7 +26,9 @@ public final class GeofenceTestDatabase {
     private static final String POSTGRES_IMAGE = "postgis/postgis:15-3.4";
     private static final String POSTGRES_DB = "geofence_test-test";
     private static final String POSTGRES_USER = "geofence_test";
-    private static final String POSTGRES_PASSWORD = "geofence_test";
+    // SCRAM derives the key with PBKDF2, and a FIPS provider in approved-only mode refuses a password
+    // shorter than 112 bits, so keep this at 14 characters or more
+    private static final String POSTGRES_PASSWORD = "geofence_test_password";
     private static final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
 
     private static boolean configured;
