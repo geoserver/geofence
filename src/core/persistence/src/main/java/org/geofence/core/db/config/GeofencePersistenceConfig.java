@@ -8,7 +8,6 @@ import javax.sql.DataSource;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.geofence.core.db.datasource.DynamicRoutingDataSource;
 import org.geofence.core.db.datasource.ReloadableDataSource;
 import org.hibernate.type.format.jackson.JacksonJsonFormatMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,7 +30,6 @@ public class GeofencePersistenceConfig {
 
     private static final Logger LOGGER = LogManager.getLogger(GeofencePersistenceConfig.class);
 
-    private final DynamicRoutingDataSource routingDataSource;
     private final Optional<GeoFenceConfigDirectoryProvider> configDirProvider;
     private final Optional<DatasourcePasswordDecoder> passwordDecoder;
     private final ConfigurableApplicationContext context;
@@ -45,7 +43,6 @@ public class GeofencePersistenceConfig {
         this.configDirProvider = configDirProvider;
         this.passwordDecoder = passwordDecoder;
         this.context = context;
-        this.routingDataSource = new DynamicRoutingDataSource();
         try {
             // No passwordDecoder: this early, the security manager isn't ready and would strip the plain: marker.
             new DatasourcePropertiesLoader().load(configDirProvider);
