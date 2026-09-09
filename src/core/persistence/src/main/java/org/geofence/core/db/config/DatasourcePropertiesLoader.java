@@ -101,7 +101,27 @@ public class DatasourcePropertiesLoader {
         }
         String password = props.getProperty("geofence.datasource.password");
         if (password != null) {
-            passwordDecoder.decode(password).valueToPersist().ifPresent(v -> rewritePasswordProperty(file, v));
+            decodePassword(passwordDecoder, password, file)
+                    .valueToPersist()
+                    .ifPresent(v -> rewritePasswordProperty(file, v));
+        }
+    }
+
+    /**
+     * A decoder failure (e.g. jasypt's {@code EncryptionOperationNotPossibleException}, which carries no message at
+     * all) is otherwise reported as a bare "threw exception with message: null", naming neither file nor property.
+     */
+    private DatasourcePasswordDecoder.Result decodePassword(
+            DatasourcePasswordDecoder passwordDecoder, String storedPassword, File file) {
+        try {
+            return passwordDecoder.decode(storedPassword);
+        } catch (RuntimeException e) {
+            throw new IllegalStateException(
+                    "Could not decrypt geofence.datasource.password in " + file.getAbsolutePath()
+                            + ": the stored value is marked as encrypted but could not be decrypted (encrypted with a"
+                            + " different key, or truncated?). To set a new one, write it in clear text prefixed with"
+                            + " 'plain:' - it gets encrypted at rest on the next startup.",
+                    e);
         }
     }
 
@@ -192,7 +212,7 @@ public class DatasourcePropertiesLoader {
 
         String password = requireProperty(props, "geofence.datasource.password", file);
         if (passwordDecoder.isPresent()) {
-            DatasourcePasswordDecoder.Result result = passwordDecoder.get().decode(password);
+            DatasourcePasswordDecoder.Result result = decodePassword(passwordDecoder.get(), password, file);
             password = result.plaintext();
             result.valueToPersist().ifPresent(v -> rewritePasswordProperty(file, v));
         }

@@ -6,6 +6,7 @@
 package org.geofence.core.db.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -71,6 +72,21 @@ class DatasourcePropertiesLoaderTest {
         new DatasourcePropertiesLoader().encryptStoredPassword(configDirProvider(), noop);
 
         assertEquals(CONTENT, Files.readString(file));
+    }
+
+    /** A decoder failure carries no message of its own (jasypt throws a bare exception), so the loader must add one. */
+    @Test
+    void loadReportsWhichFileAndPropertyCouldNotBeDecrypted() throws IOException {
+        writeDatasourceFile();
+        DatasourcePasswordDecoder failing = stored -> {
+            throw new IllegalArgumentException();
+        };
+
+        IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> new DatasourcePropertiesLoader()
+                .load(configDirProvider(), Optional.of(failing)));
+
+        assertTrue(thrown.getMessage().contains("geofence.datasource.password"), thrown.getMessage());
+        assertTrue(thrown.getMessage().contains(DatasourcePropertiesLoader.DEFAULT_FILENAME), thrown.getMessage());
     }
 
     private Path writeDatasourceFile() throws IOException {
