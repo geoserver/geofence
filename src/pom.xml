@@ -126,7 +126,7 @@
         -->
     <!--<hibernate-version>5.6.15.Final</hibernate-version>-->
 
-    <postgresql.jdbc.version>42.7.7</postgresql.jdbc.version>
+    <postgresql.jdbc.version>42.7.12</postgresql.jdbc.version>
     <postgis.jdbc.version>2025.1.1</postgis.jdbc.version>
 
     <geronimo-specs-version>1.1</geronimo-specs-version>
