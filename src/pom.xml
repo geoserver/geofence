@@ -951,6 +951,38 @@
 
       </build>
     </profile>
+    <profile>
+      <!-- Static analysis, opt in with -Dqa. Bound to verify, fails the build on findings. -->
+      <id>spotbugs</id>
+      <activation>
+        <property>
+          <name>qa</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <effort>More</effort>
+              <xmlOutput>true</xmlOutput>
+              <maxRank>15</maxRank>
+            </configuration>
+          </plugin>
+
+        </plugins>
+
+      </build>
+    </profile>
   </profiles>
 
 </project>

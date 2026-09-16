@@ -1,0 +1,51 @@
+name: Build
+
+on:
+  push:
+    branches: [main, 3.8.x]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  MAVEN_OPTS: -Xmx2g -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk: [17, 21, 25]
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up JDK ${{ matrix.jdk }}
+        uses: actions/setup-java@v6
+        with:
+          java-version: ${{ matrix.jdk }}
+          distribution: temurin
+
+      - name: Maven repository caching
+        uses: actions/cache@v6
+        with:
+          path: ~/.m2/repository
+          key: gf-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            gf-${{ runner.os }}-maven-
+
+      # Formatting is JDK-independent, so it's checked once in qa.yml rather than on every matrix leg.
+      # spotless.apply.skip also drives pom.fmt.skip, so this switches off both spotless and sortpom.
+      # The persistence tests need Docker (testcontainers); they skip themselves where it is unavailable.
+      - name: Build with Maven
+        run: mvn -B -ntp -U -fae -Dspotless.apply.skip=true -f src/pom.xml clean install
+
+      - name: Remove SNAPSHOT jars from repository
+        if: always()
+        run: find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs -r rm -rf
