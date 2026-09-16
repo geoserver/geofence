@@ -75,11 +75,12 @@ public abstract class LDAPBaseDAO<R> implements BaseDAO<R>, InitializingBean {
     private AttributesMapper attributesMapper;
 
     private LoadingCache<String, List<R>> ldapcache;
-    private long cachesize = 1000;
-    private long cacherefreshsec = 60 * 60; // 1 hour
-    private long cacheexpiresec = 60 * 60; // 1 hour
+    // volatile: set by the container at wiring time, read by request threads - a 64 bit write is not atomic otherwise
+    private volatile long cachesize = 1000;
+    private volatile long cacherefreshsec = 60 * 60; // 1 hour
+    private volatile long cacheexpiresec = 60 * 60; // 1 hour
     private final AtomicLong dumpCnt = new AtomicLong(0);
-    private long cachedumpmodulo = 10;
+    private volatile long cachedumpmodulo = 10;
 
     public LDAPBaseDAO() {}
 

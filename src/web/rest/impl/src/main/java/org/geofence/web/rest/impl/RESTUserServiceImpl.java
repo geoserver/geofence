@@ -5,7 +5,6 @@
 
 package org.geofence.web.rest.impl;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +24,6 @@ import org.geofence.web.rest.api.exception.NotFoundRestEx;
 import org.geofence.web.rest.api.interfaces.RESTUserService;
 import org.geofence.web.rest.api.model.RESTInputUser;
 import org.geofence.web.rest.api.model.RESTOutputUser;
-import org.geofence.web.rest.api.model.RESTShortUser;
 import org.geofence.web.rest.api.model.RESTShortUserList;
 import org.geofence.web.rest.api.model.util.IdName;
 import org.springframework.http.HttpStatus;
@@ -288,37 +286,6 @@ public class RESTUserServiceImpl extends BaseRESTServiceImpl implements RESTUser
     @Override
     public long count2(String nameLike) {
         return count(nameLike);
-    }
-
-    // ==========================================================================
-    public static RESTShortUser toShortUser(GSUser user) {
-        RESTShortUser shu = new RESTShortUser();
-        shu.setId(user.getId());
-        shu.setExtId(user.getExtId());
-        shu.setUserName(user.getName());
-        shu.setEnabled(user.getEnabled());
-
-        return shu;
-    }
-
-    public static RESTOutputUser toOutputUser(GSUser user) {
-        RESTOutputUser ret = new RESTOutputUser();
-        ret.setId(user.getId());
-        ret.setExtId(user.getExtId());
-        ret.setName(user.getName());
-        ret.setEnabled(user.getEnabled());
-        ret.setAdmin(user.isAdmin());
-        ret.setFullName(user.getFullName());
-        ret.setEmailAddress(user.getEmailAddress());
-
-        List<IdName> groups = new ArrayList<IdName>();
-        for (UserGroup group : user.getGroups()) {
-            IdName nameId = new IdName(group.getId(), group.getName());
-            groups.add(nameId);
-        }
-        ret.setGroups(groups);
-
-        return ret;
     }
 
     // ==========================================================================

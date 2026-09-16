@@ -9,6 +9,7 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +29,7 @@ import org.geofence.web.rest.api.model.enums.RESTSpatialFilterType;
             "allowedStyles",
             "attributes"
         })
-public class RESTLayerConstraints {
+public class RESTLayerConstraints implements Serializable {
 
     private RESTLayerType type;
     private String defaultStyle;

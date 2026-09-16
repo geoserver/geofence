@@ -8,11 +8,12 @@ package org.geofence.web.rest.api.model.util;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
+import java.io.Serializable;
 
 /** @author ETj (etj at geo-solutions.it) */
 @XmlRootElement(name = "identifier")
 @XmlType(propOrder = {"id", "name"})
-public class IdName {
+public class IdName implements Serializable {
     private String name;
     private Long id;
 
