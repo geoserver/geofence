@@ -4,6 +4,7 @@
 target
 *iml
 *idea
+.spotless-index
 
 src/gui/core/plugin/mapsui/war/
 src/gui/core/plugin/userui/war/

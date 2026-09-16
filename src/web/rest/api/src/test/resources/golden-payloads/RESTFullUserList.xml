@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<UserList>
+    <User admin="true" enabled="true">
+        <id>1</id>
+        <extId>ext-user1</extId>
+        <name>user1</name>
+        <fullName>User One</fullName>
+        <emailAddress>user1@example.org</emailAddress>
+        <dateCreation>2026-01-01T00:00</dateCreation>
+        <groups>
+            <group>
+                <id>3181548</id>
+                <name>grp1</name>
+            </group>
+            <group>
+                <id>3181549</id>
+                <name>grp2</name>
+            </group>
+        </groups>
+    </User>
+</UserList>

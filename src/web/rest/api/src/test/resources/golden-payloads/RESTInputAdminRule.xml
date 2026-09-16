@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<adminrule grant="ADMIN">
+    <position position="offsetFromTop" value="1"/>
+    <username>user1</username>
+    <rolename>role1</rolename>
+    <instance>
+        <id>1</id>
+        <name>instance1</name>
+    </instance>
+    <workspace>topp</workspace>
+</adminrule>

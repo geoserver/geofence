@@ -1,0 +1,63 @@
+{
+  "UserGroups" : {
+    "UserGroup" : [ {
+      "id" : 1,
+      "name" : "group1",
+      "extId" : "ext-group1",
+      "enabled" : true
+    } ]
+  },
+  "Users" : {
+    "User" : [ {
+      "id" : 1,
+      "extId" : "ext-user1",
+      "name" : "user1",
+      "fullName" : "User One",
+      "password" : null,
+      "emailAddress" : "user1@example.org",
+      "dateCreation" : "2026-01-01T00:00",
+      "groups" : {
+        "group" : [ {
+          "id" : 3181548,
+          "name" : "grp1"
+        }, {
+          "id" : 3181549,
+          "name" : "grp2"
+        } ]
+      },
+      "enabled" : true,
+      "admin" : true
+    } ]
+  },
+  "GSInstances" : {
+    "GSInstance" : [ {
+      "id" : 1,
+      "name" : "instance1",
+      "description" : "a test instance",
+      "dateCreation" : "2026-01-01T00:00",
+      "baseURL" : "http://geoserver.example.org/geoserver",
+      "username" : "admin",
+      "password" : "secret"
+    } ]
+  },
+  "Rules" : {
+    "Rule" : [ {
+      "id" : 1,
+      "priority" : 10,
+      "username" : "user1",
+      "rolename" : "role1",
+      "instance" : "instance1",
+      "addressRange" : "10.0.0.0/8",
+      "validAfter" : 1767225600000,
+      "validBefore" : 1798761600000,
+      "service" : "WMS",
+      "request" : "GetMap",
+      "subfield" : "sub1",
+      "workspace" : "topp",
+      "layer" : "states",
+      "access" : "ALLOW",
+      "validAfterString" : "2026-01-01T00:00:00Z",
+      "validBeforeString" : "2027-01-01T00:00:00Z"
+    } ]
+  }
+}

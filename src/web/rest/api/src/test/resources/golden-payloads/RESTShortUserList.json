@@ -1,0 +1,13 @@
+{
+  "User" : [ {
+    "id" : 111578566,
+    "extId" : "ext-user1",
+    "userName" : "user1",
+    "enabled" : true
+  }, {
+    "id" : 111578567,
+    "extId" : "ext-user2",
+    "userName" : "user2",
+    "enabled" : true
+  } ]
+}

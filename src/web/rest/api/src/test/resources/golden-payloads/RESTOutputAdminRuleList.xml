@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<AdminRuleList>
+    <adminrule grant="ADMIN">
+        <id>1</id>
+        <priority>10</priority>
+        <username>user1</username>
+        <rolename>role1</rolename>
+        <instance>
+            <id>1</id>
+            <name>instance1</name>
+        </instance>
+        <workspace>topp</workspace>
+    </adminrule>
+    <adminrule grant="USER">
+        <id>2</id>
+        <priority>20</priority>
+    </adminrule>
+</AdminRuleList>

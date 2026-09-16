@@ -1,0 +1,6 @@
+{
+  "id" : 1,
+  "name" : "instance1",
+  "url" : "http://geoserver.example.org/geoserver",
+  "description" : "a test instance"
+}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<LayerConstraints>
+    <type>VECTOR</type>
+    <defaultStyle>population</defaultStyle>
+    <cqlFilterRead>READ=1</cqlFilterRead>
+    <cqlFilterWrite>WRITE=1</cqlFilterWrite>
+    <restrictedAreaWkt>SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))</restrictedAreaWkt>
+    <spatialFilterType>INTERSECT</spatialFilterType>
+    <allowedStyles>
+        <style>style1</style>
+        <style>style2</style>
+    </allowedStyles>
+    <attributes>
+        <attribute access="READWRITE">
+            <datatype>java.lang.String</datatype>
+            <name>attr1</name>
+        </attribute>
+    </attributes>
+</LayerConstraints>

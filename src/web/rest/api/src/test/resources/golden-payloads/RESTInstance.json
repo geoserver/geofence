@@ -1,0 +1,9 @@
+{
+  "id" : 1,
+  "name" : "instance1",
+  "description" : "a test instance",
+  "dateCreation" : "2026-01-01T00:00",
+  "baseURL" : "http://geoserver.example.org/geoserver",
+  "username" : "admin",
+  "password" : "secret"
+}

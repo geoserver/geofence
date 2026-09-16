@@ -1,0 +1,14 @@
+{
+  "position" : {
+    "position" : "offsetFromTop",
+    "value" : 1
+  },
+  "grant" : "ADMIN",
+  "username" : "user1",
+  "rolename" : "role1",
+  "instance" : {
+    "id" : 1,
+    "name" : "instance1"
+  },
+  "workspace" : "topp"
+}

@@ -1,0 +1,4 @@
+{
+  "cqlFilter" : "workspace = 'topp' AND layer = 'states'",
+  "resource" : [ "topp:roads", "topp:states" ]
+}
