@@ -1,0 +1,56 @@
+name: QA
+
+on:
+  push:
+    branches: [main, 3.8.x]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  MAVEN_OPTS: -Xmx2g -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS
+
+jobs:
+  QA:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v6
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Maven repository caching
+        uses: actions/cache@v6
+        with:
+          path: ~/.m2/repository
+          key: gf-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            gf-${{ runner.os }}-maven-
+
+      # spotless.action/pom.fmt.action default to 'apply'/'sort', which would silently rewrite sources and poms
+      # instead of failing; sortpom is already configured with verifyFail=stop.
+      # -Dqa enables the spotbugs profile; -fae so every module is reported, not just the first to fail.
+      - name: Build with Maven with full QA checks
+        run: mvn -B -ntp -U -fae -Dspotless.action=check -Dpom.fmt.action=verify -Dqa -DskipTests -f src/pom.xml clean install
+
+      # The Maven log reports only bug counts per module, so keep the reports to see what actually failed.
+      - name: Upload SpotBugs reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: spotbugs-reports
+          path: '**/target/spotbugsXml.xml'
+          if-no-files-found: ignore
+
+      - name: Remove SNAPSHOT jars from repository
+        if: always()
+        run: find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs -r rm -rf
