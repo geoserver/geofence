@@ -1,0 +1,22 @@
+{
+  "User" : [ {
+    "id" : 1,
+    "extId" : "ext-user1",
+    "name" : "user1",
+    "fullName" : "User One",
+    "password" : null,
+    "emailAddress" : "user1@example.org",
+    "dateCreation" : "2026-01-01T00:00",
+    "groups" : {
+      "group" : [ {
+        "id" : 3181548,
+        "name" : "grp1"
+      }, {
+        "id" : 3181549,
+        "name" : "grp2"
+      } ]
+    },
+    "enabled" : true,
+    "admin" : true
+  } ]
+}

@@ -1,0 +1,57 @@
+{
+  "operation" : [ {
+    "payload" : {
+      "rule" : {
+        "position" : {
+          "position" : "fixedPriority",
+          "value" : 10
+        },
+        "grant" : "ALLOW",
+        "username" : "user1",
+        "rolename" : "role1",
+        "instance" : {
+          "id" : 1,
+          "name" : "instance1"
+        },
+        "ipaddress" : "10.0.0.0/8",
+        "validafter" : "2026-01-01",
+        "validbefore" : "2026-12-31",
+        "service" : "WMS",
+        "request" : "GetMap",
+        "subfield" : "sub1",
+        "workspace" : "topp",
+        "layer" : "states",
+        "constraints" : {
+          "type" : "VECTOR",
+          "defaultStyle" : "population",
+          "cqlFilterRead" : "READ=1",
+          "cqlFilterWrite" : "WRITE=1",
+          "restrictedAreaWkt" : "SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))",
+          "spatialFilterType" : "INTERSECT",
+          "style" : [ "style1", "style2" ],
+          "attribute" : [ {
+            "name" : "attr1",
+            "datatype" : "java.lang.String",
+            "access" : "READWRITE"
+          } ]
+        }
+      }
+    },
+    "service" : "rules",
+    "type" : "insert",
+    "id" : 1,
+    "name" : "rule-op",
+    "cascade" : false,
+    "userName" : "bob",
+    "groupName" : "admins"
+  }, {
+    "payload" : null,
+    "service" : "groups",
+    "type" : "delete",
+    "id" : 5,
+    "name" : "group-to-delete",
+    "cascade" : true,
+    "userName" : null,
+    "groupName" : null
+  } ]
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RESTRuleFilter>
+    <userName>user1</userName>
+    <userDefault>true</userDefault>
+    <groupName>role1</groupName>
+    <groupDefault>true</groupDefault>
+    <instanceName>instance1</instanceName>
+    <instanceDefault>true</instanceDefault>
+    <ipAddress>10.0.0.0/8</ipAddress>
+    <ipAddressDefault>true</ipAddressDefault>
+    <date>2026-01-01</date>
+    <dateDefault>true</dateDefault>
+    <serviceName>WMS</serviceName>
+    <serviceDefault>true</serviceDefault>
+    <requestName>GetMap</requestName>
+    <requestDefault>true</requestDefault>
+    <subfieldName>sub1</subfieldName>
+    <subfieldDefault>true</subfieldDefault>
+    <workspace>topp</workspace>
+    <workspaceDefault>true</workspaceDefault>
+    <layer>states</layer>
+    <layerDefault>true</layerDefault>
+</RESTRuleFilter>

@@ -1,0 +1,27 @@
+# Sample datasource configuration file for GeoFence's own database connection.
+#
+# Copy this file to "geofence-datasource.properties" and place it wherever
+# GEOFENCE_DATASOURCE_FILE (system property or env var) points to - an absolute path if set to
+# one, or the current working directory otherwise.
+#
+# All four properties are required; there is no built-in default database.
+
+geofence.datasource.driver=org.postgresql.Driver
+geofence.datasource.url=jdbc:postgresql://localhost:5432/geofence
+geofence.datasource.username=geofence
+# Plain text here. When GeoFence runs embedded in GeoServer, the value may instead be encrypted with
+# GeoServer's config-password encryption (same scheme as store connection passwords) and is decrypted
+# transparently on startup. To have a clear-text password encrypted at rest, prefix it with 'plain:'
+# (e.g. plain:mysecret): on next startup GeoFence encrypts it and rewrites this line with the result.
+geofence.datasource.password=geofence
+
+# Optional: any geofence.hibernate.* property is passed through to Hibernate/JPA, with the
+# prefix stripped, e.g.:
+# geofence.hibernate.hbm2ddl.auto=validate
+# geofence.hibernate.default_schema=public
+
+# Optional: any geofence.datasource.hikari.* property is passed through to the connection pool
+# (HikariCP), with the prefix stripped - must be a real Hikari property name, an unrecognized one
+# fails fast at startup. keepaliveTime periodically pings idle pooled connections so a dead one
+# (e.g. after a DB restart) is detected and evicted instead of causing a transaction failure later.
+# geofence.datasource.hikari.keepaliveTime=30000

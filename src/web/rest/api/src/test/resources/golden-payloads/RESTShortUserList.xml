@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<UserList>
+    <User enabled="true">
+        <id>111578566</id>
+        <extId>ext-user1</extId>
+        <userName>user1</userName>
+    </User>
+    <User enabled="true">
+        <id>111578567</id>
+        <extId>ext-user2</extId>
+        <userName>user2</userName>
+    </User>
+</UserList>

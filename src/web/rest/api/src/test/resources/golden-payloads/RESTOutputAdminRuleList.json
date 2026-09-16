@@ -1,0 +1,18 @@
+{
+  "adminrule" : [ {
+    "id" : 1,
+    "priority" : 10,
+    "grant" : "ADMIN",
+    "username" : "user1",
+    "rolename" : "role1",
+    "instance" : {
+      "id" : 1,
+      "name" : "instance1"
+    },
+    "workspace" : "topp"
+  }, {
+    "id" : 2,
+    "priority" : 20,
+    "grant" : "USER"
+  } ]
+}

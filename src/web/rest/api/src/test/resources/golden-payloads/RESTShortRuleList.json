@@ -1,0 +1,35 @@
+{
+  "ShortRule" : [ {
+    "id" : 1,
+    "priority" : 10,
+    "userName" : "user1",
+    "roleName" : "role1",
+    "instanceId" : 1,
+    "instanceName" : "instance1",
+    "addressRange" : "10.0.0.0/8",
+    "validAfter" : "2026-01-01",
+    "validBefore" : "2026-12-31",
+    "service" : "WMS",
+    "request" : "GetMap",
+    "subfield" : "sub1",
+    "workspace" : "topp",
+    "layer" : "states",
+    "access" : "ALLOW"
+  }, {
+    "id" : 2,
+    "priority" : 20,
+    "userName" : null,
+    "roleName" : null,
+    "instanceId" : null,
+    "instanceName" : null,
+    "addressRange" : null,
+    "validAfter" : null,
+    "validBefore" : null,
+    "service" : null,
+    "request" : null,
+    "subfield" : null,
+    "workspace" : null,
+    "layer" : null,
+    "access" : "DENY"
+  } ]
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Rule grant="ADMIN">
+    <id>1</id>
+    <priority>10</priority>
+    <username>user1</username>
+    <rolename>role1</rolename>
+    <instance>
+        <id>1</id>
+        <name>instance1</name>
+    </instance>
+    <workspace>topp</workspace>
+</Rule>

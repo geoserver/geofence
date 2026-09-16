@@ -1,0 +1,107 @@
+/* (c) 2014 - 2020 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+package org.geofence.core.db.dao.impl;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+import java.io.Serializable;
+import java.util.List;
+import org.geofence.core.db.dao.search.BaseSearch;
+import org.geofence.core.db.dao.search.LongSearch;
+import org.geofence.core.db.dao.search.Search;
+import org.geofence.core.model.Identifiable;
+
+/** The base DAO provides a set of common methods */
+public class BaseDAOImpl<E extends Identifiable, ID extends Serializable> {
+    protected final Class<E> ENTITY;
+
+    protected BaseDAOImpl(Class<E> entity) {
+        this.ENTITY = entity;
+    }
+
+    @PersistenceContext(unitName = "geofenceEntityManagerFactory")
+    private EntityManager em;
+
+    public void setEntityManager(EntityManager em) {
+        this.em = em;
+    }
+
+    public EntityManager em() {
+        return this.em;
+    }
+
+    public Search<E> createSearch() {
+        return new Search<>(em, ENTITY);
+    }
+
+    public LongSearch<E> createLongSearch() {
+        return new LongSearch<>(em, this.ENTITY);
+    }
+
+    public List<E> findAll() {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<E> q = cb.createQuery(ENTITY);
+        Root<E> c = q.from(ENTITY);
+        q.select(c);
+
+        return em.createQuery(q).getResultList();
+    }
+
+    public E find(ID id) {
+        return em().find(ENTITY, id);
+    }
+
+    public void persist(E entity) {
+        em.persist(entity);
+    }
+
+    public E merge(E entity) {
+        return em.merge(entity);
+    }
+
+    public boolean remove(E entity) {
+        return removeById(entity.getId());
+    }
+
+    public boolean removeById(Long id) {
+        E e = em.find(ENTITY, id);
+        if (e == null) {
+            return false;
+        }
+        em.remove(e);
+        return true;
+    }
+
+    public List<E> search(Search<E> search) {
+        return search.getQuery().getResultList();
+    }
+
+    public <OUT> List<OUT> searchExt(BaseSearch<OUT, E> search) {
+        return search.getQuery().getResultList();
+    }
+
+    protected <OUT> OUT searchUnique(BaseSearch<OUT, E> search) {
+        List<OUT> found = searchExt(search);
+        switch (found.size()) {
+            case 0:
+                return null;
+            case 1:
+                return found.get(0);
+            default:
+                throw new IllegalStateException("Result is not unique");
+        }
+    }
+
+    public long count(LongSearch<E> search) {
+        if (search == null) {
+            search = createLongSearch();
+        }
+
+        return search.getCountQuery().getSingleResult();
+    }
+}

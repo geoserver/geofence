@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.geofence</groupId>
+    <artifactId>geofence-web-root</artifactId>
+    <version>3.9-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.geofence</groupId>
+  <artifactId>geofence-web-app</artifactId>
+  <version>3.9-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <name>GeoFence - Web - Webapp</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- override with -Dgeofence.jetty.port=NNNN / -Dgeofence.jetty.stopPort=NNNN when running jetty:run -->
+    <geofence.jetty.port>9191</geofence.jetty.port>
+    <geofence.jetty.stopPort>9192</geofence.jetty.stopPort>
+  </properties>
+
+  <dependencies>
+
+    <!-- =============================================================== -->
+    <!--
+            Next deps are defined in core::dao, but seems not to be transitively
+            imported
+        -->
+    <!-- =============================================================== -->
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+    </dependency>
+
+    <!-- =============================================================== -->
+    <!-- APACHE COMMONS -->
+    <!-- =============================================================== -->
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+    </dependency>
+
+    <!-- =============================================================== -->
+    <!-- Logging                                                         -->
+    <!-- =============================================================== -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+    </dependency>
+
+    <!-- =============================================================== -->
+    <!-- 4J UTILS -->
+    <!-- =============================================================== -->
+    <dependency>
+      <groupId>org.dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+    </dependency>
+
+    <!-- =============================================================== -->
+    <!-- GeoFence -->
+    <!-- =============================================================== -->
+    <dependency>
+      <groupId>org.geofence</groupId>
+      <artifactId>geofence-model</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.geofence</groupId>
+      <artifactId>geofence-rest-impl</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.geofence</groupId>
+      <artifactId>geofence-services-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.geofence</groupId>
+      <artifactId>geofence-services-impl</artifactId>
+    </dependency>
+
+    <!-- =============================================================== -->
+    <!-- HTTP UTILS -->
+    <!-- =============================================================== -->
+    <!--    <dependency>
+      <groupId>org.codehaus.jettison</groupId>
+      <artifactId>jettison</artifactId>
+    </dependency>-->
+
+    <!-- =============================================================== -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+    </dependency>
+    <!-- =============================================================== -->
+    <!-- =============================================================== -->
+    <!-- CLIENT -->
+    <!-- =============================================================== -->
+    <!-- =============================================================== -->
+
+    <!-- SPRING -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <finalName>geofence</finalName>
+
+    <plugins>
+      <!-- Attaches a plain -classes.jar artifact alongside the war, so another module can depend on this module's
+           own classes (AuthenticationFilter, DispatcherConfig) as an ordinary jar dependency instead of a war
+           overlay, if one ever needs to again (no current consumer - geofence-rest-test, the one that used to,
+           has been removed in favor of seeding via GeoFenceAdminClient against this webapp directly). -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <attachClasses>true</attachClasses>
+        </configuration>
+      </plugin>
+
+      <!-- Run the application using "mvn jetty:run" -->
+      <plugin>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>11.0.26</version>
+        <configuration>
+          <webApp>
+            <contextPath>/geofence</contextPath>
+            <war>${project.build.directory}/geofence.war</war>
+          </webApp>
+          <httpConnector>
+            <port>${geofence.jetty.port}</port>
+            <idleTimeout>10000</idleTimeout>
+          </httpConnector>
+          <stopPort>${geofence.jetty.stopPort}</stopPort>
+          <stopKey>GEOSERVER_JETTY_STOPKEY</stopKey>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <profiles>
+    <!-- Adds LDAP-backed GSUserDAO/UserGroupDAO support (see org.geofence.ldap.config.GeofenceUserDaoConfig).
+         Off by default: the dependency is genuinely optional (WebAppConfig resolves it at runtime via
+         reflection, not a compile-time import, precisely so the module builds fine without this profile) -
+         activate with -Pldap to pull it in. -->
+    <profile>
+      <id>ldap</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geofence</groupId>
+          <artifactId>geofence-ldap</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
+</project>

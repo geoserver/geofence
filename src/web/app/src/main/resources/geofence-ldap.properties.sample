@@ -1,0 +1,39 @@
+# Sample LDAP configuration file for backing GSUserDAO/UserGroupDAO with an LDAP directory instead of the database.
+#
+# Copy this file to "geofence-ldap.properties" and place it wherever GEOFENCE_LDAP_FILE (system
+# property or env var) points to - an absolute path if set to one, or the current working
+# directory otherwise.
+#
+# LDAP is entirely optional: if this file is absent, GSUserDAO/UserGroupDAO stay DB-backed, no
+# error, no fallback file needed. If present, geofence.ldap.url and at least one attribute mapping
+# per entity type are required; everything else has a working default (posix-style schema).
+
+geofence.ldap.url=ldap://localhost:10389
+geofence.ldap.base=dc=example,dc=com
+geofence.ldap.userDn=uid=admin,ou=system
+geofence.ldap.password=secret
+
+# Optional: max records returned per LDAP query. Default 100.
+# geofence.ldap.defaultCountLimit=100
+
+# Optional: base DN + filter for user/group search. Defaults shown below.
+# geofence.ldap.user.searchBase=ou=People
+# geofence.ldap.user.searchFilter=objectClass=inetOrgPerson
+# geofence.ldap.group.searchBase=ou=Groups
+# geofence.ldap.group.searchFilter=objectClass=posixGroup
+
+# Required: LDAP attribute names mapped to GeoFence's internal user/group fields. At minimum
+# "username" (user) and "groupname" (group) must be mapped - everything else is optional and only
+# used if your schema actually has it. Values below match a typical posixAccount/posixGroup schema;
+# adjust to your own directory (e.g. "username=cn", "id=distinguishedName" for a groupOfNames-style
+# schema with no numeric uid/gid).
+geofence.ldap.user.attribute.id=uidNumber
+geofence.ldap.user.attribute.username=uid
+geofence.ldap.user.attribute.email=mail
+geofence.ldap.user.attribute.name=givenName
+geofence.ldap.user.attribute.surname=sn
+geofence.ldap.user.attribute.password=userPassword
+
+geofence.ldap.group.attribute.id=gidNumber
+geofence.ldap.group.attribute.groupname=cn
+geofence.ldap.group.attribute.member=memberUid

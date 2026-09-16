@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rule grant="ALLOW">
+    <position position="fixedPriority" value="10"/>
+    <username>user1</username>
+    <rolename>role1</rolename>
+    <instance>
+        <id>1</id>
+        <name>instance1</name>
+    </instance>
+    <ipaddress>10.0.0.0/8</ipaddress>
+    <validafter>2026-01-01</validafter>
+    <validbefore>2026-12-31</validbefore>
+    <service>WMS</service>
+    <request>GetMap</request>
+    <subfield>sub1</subfield>
+    <workspace>topp</workspace>
+    <layer>states</layer>
+    <constraints>
+        <type>VECTOR</type>
+        <defaultStyle>population</defaultStyle>
+        <cqlFilterRead>READ=1</cqlFilterRead>
+        <cqlFilterWrite>WRITE=1</cqlFilterWrite>
+        <restrictedAreaWkt>SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))</restrictedAreaWkt>
+        <spatialFilterType>INTERSECT</spatialFilterType>
+        <allowedStyles>
+            <style>style1</style>
+            <style>style2</style>
+        </allowedStyles>
+        <attributes>
+            <attribute access="READWRITE">
+                <datatype>java.lang.String</datatype>
+                <name>attr1</name>
+            </attribute>
+        </attributes>
+    </constraints>
+</rule>

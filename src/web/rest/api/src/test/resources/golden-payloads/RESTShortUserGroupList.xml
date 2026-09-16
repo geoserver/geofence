@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<UserGroupList>
+    <userGroup>
+        <id>3242</id>
+        <name>g1</name>
+    </userGroup>
+    <userGroup>
+        <id>3243</id>
+        <name>g2</name>
+    </userGroup>
+</UserGroupList>

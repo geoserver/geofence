@@ -1,0 +1,16 @@
+{
+  "id" : 1,
+  "extId" : "ext-user1",
+  "name" : "user1",
+  "fullName" : "User One",
+  "emailAddress" : "user1@example.org",
+  "group" : [ {
+    "id" : 1,
+    "name" : "group1"
+  }, {
+    "id" : 2,
+    "name" : "group2"
+  } ],
+  "enabled" : true,
+  "admin" : false
+}

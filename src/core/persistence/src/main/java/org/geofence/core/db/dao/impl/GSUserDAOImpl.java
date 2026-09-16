@@ -1,0 +1,126 @@
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+package org.geofence.core.db.dao.impl;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.geofence.core.db.dao.GSUserDAO;
+import org.geofence.core.db.dao.search.LongSearch;
+import org.geofence.core.db.dao.search.Search;
+import org.geofence.core.model.GSUser;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Public implementation of the GSUserDAO interface
+ *
+ * @author Emanuele Tajariol (etj at geo-solutions.it)
+ */
+@Transactional(value = "geofenceTransactionManager")
+@Component
+@Order(10)
+public class GSUserDAOImpl extends BaseDAOImpl<GSUser, Long> implements GSUserDAO {
+    private static final Logger LOGGER = LogManager.getLogger(GSUserDAOImpl.class);
+
+    public GSUserDAOImpl() {
+        super(GSUser.class);
+    }
+
+    @Override
+    public void persist(GSUser entity) {
+        LocalDateTime now = LocalDateTime.now();
+        entity.setDateCreation(now);
+        super.persist(entity);
+    }
+
+    @Override
+    public List<GSUser> findAll() {
+        return super.findAll();
+    }
+
+    @Override
+    public GSUser getFull(String name) {
+        Search<GSUser> search = createSearch();
+        search.addFilterEqual("name", name);
+        return searchFull(search);
+    }
+
+    /** Fetch a GSUser with all of its related groups */
+    protected GSUser searchFull(Search<GSUser> search) {
+        search.addFetch("userGroups");
+        // When fetching users with multiple groups, the gsusers list id multiplied for the number of groups found
+        search.setDistinct(true);
+        List<GSUser> users = super.search(search);
+
+        switch (users.size()) {
+            case 0:
+                return null;
+            case 1:
+                return users.get(0);
+            default:
+                throw new IllegalStateException("Found more than one user (search:" + search + ")");
+        }
+    }
+
+    @Override
+    public GSUser merge(GSUser entity) {
+        return super.merge(entity);
+    }
+
+    @Override
+    public boolean remove(GSUser entity) {
+        return super.remove(entity);
+    }
+
+    @Override
+    public boolean removeById(Long id) {
+        return super.removeById(id);
+    }
+
+    @Override
+    public List<GSUser> search(String nameLike, Integer page, Integer entries, boolean fetchGroups)
+            throws IllegalArgumentException {
+
+        if ((page != null && entries == null) || (page == null && entries != null)) {
+            throw new IllegalArgumentException("Page and entries params should be declared together.");
+        }
+
+        Search<GSUser> search = createSearch();
+
+        if (page != null) {
+            search.setMaxResults(entries);
+            search.setPage(page);
+        }
+
+        if (fetchGroups) {
+            search.addFetch("userGroups");
+            search.setDistinct(true);
+        }
+
+        search.addSortAsc("name");
+
+        if (StringUtils.isNotBlank(nameLike)) {
+            search.addFilterILike("name", nameLike);
+        }
+
+        return search(search);
+    }
+
+    @Override
+    public long countByNameLike(String nameLike) {
+        LongSearch<GSUser> search = createLongSearch();
+
+        if (StringUtils.isNotBlank(nameLike)) {
+            search.addFilterILike("name", nameLike);
+        }
+
+        return count(search);
+    }
+}

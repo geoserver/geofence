@@ -1,0 +1,7 @@
+{
+  "name" : "instance1",
+  "description" : "a test instance",
+  "baseURL" : "http://geoserver.example.org/geoserver",
+  "username" : "admin",
+  "password" : "secret"
+}
