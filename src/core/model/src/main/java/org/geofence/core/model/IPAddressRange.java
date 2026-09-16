@@ -10,6 +10,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.util.Objects;
 import org.geofence.core.model.util.SubnetV4Utils;
 
 /** @author ETj (etj at geo-solutions.it) */
@@ -130,13 +131,13 @@ public class IPAddressRange implements Serializable {
             return false;
         }
         final IPAddressRange other = (IPAddressRange) obj;
-        if (this.low != other.low && (this.low == null || !this.low.equals(other.low))) {
+        if (!Objects.equals(this.low, other.low)) {
             return false;
         }
-        if (this.high != other.high && (this.high == null || !this.high.equals(other.high))) {
+        if (!Objects.equals(this.high, other.high)) {
             return false;
         }
-        if (this.size != other.size && (this.size == null || !this.size.equals(other.size))) {
+        if (!Objects.equals(this.size, other.size)) {
             return false;
         }
         return true;

@@ -113,7 +113,11 @@ public class RESTInstance implements Serializable {
         } else if (!baseURL.equals(other.baseURL)) {
             return false;
         }
-        if (id != other.id) {
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!id.equals(other.id)) {
             return false;
         }
         if (name == null) {

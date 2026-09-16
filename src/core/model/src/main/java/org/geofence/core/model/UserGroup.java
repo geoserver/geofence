@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import org.hibernate.annotations.Cache;
@@ -35,7 +36,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
                     name = "gf_usergroup_name_key") // @InternalModel
         })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "usergroup")
-public class UserGroup implements Identifiable {
+public class UserGroup implements Identifiable, Serializable {
+
+    private static final long serialVersionUID = 6971663286107679877L;
 
     /** The id. */
     @Id
