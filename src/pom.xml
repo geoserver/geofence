@@ -95,15 +95,15 @@
 
     <gt.version>36-SNAPSHOT</gt.version>
 
-    <spring.version>7.0.5</spring.version>
-    <spring.security.version>7.0.3</spring.security.version>
+    <spring.version>7.0.9</spring.version>
+    <spring.security.version>7.1.1</spring.security.version>
     <spring.security.oauth2.version>2.5.2.RELEASE</spring.security.oauth2.version>
     <!-- matches core/persistence's own already-pinned jackson-databind version, for consistency -->
     <jackson.version>2.22.0</jackson.version>
     <spring.ldap.version>4.0.1</spring.ldap.version>
     <spring-integration.version>5.5.18</spring-integration.version>
 
-    <hibernate-version>7.4.5.Final</hibernate-version>
+    <hibernate-version>7.4.8.Final</hibernate-version>
 
     <xalan-version>2.7.3</xalan-version>
 
@@ -117,8 +117,7 @@
     <commons-lang-version>2.3</commons-lang-version>
     <commons-collections-version>3.2.2</commons-collections-version>
     <commons-beanutils-version>1.9.4</commons-beanutils-version>
-    <commons-codec-version>1.17.1</commons-codec-version>
-    <cxf-version>3.3.2</cxf-version>
+    <commons-codec-version>1.22.1</commons-codec-version>
 
     <!--
         5.4.3 jts mismatch w geolatte
@@ -137,7 +136,7 @@
 
     <aspectj-version>1.5.4</aspectj-version>
     <ubl-version>2.0</ubl-version>
-    <jetty-version>9.2.13.v20150730</jetty-version>
+    <jetty.version>12.1.13</jetty.version>
 
     <asm-version>2.2.3</asm-version>
 
@@ -342,16 +341,6 @@
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-web</artifactId>
         <version>${log4j-version}</version>
-      </dependency>
-
-      <!-- =========================================================== -->
-      <!--     HTTP UTILS                                              -->
-      <!-- =========================================================== -->
-
-      <dependency>
-        <groupId>org.codehaus.jettison</groupId>
-        <artifactId>jettison</artifactId>
-        <version>1.4.0</version>
       </dependency>
 
       <!-- =========================================================== -->
@@ -607,7 +596,7 @@
       <dependency>
         <groupId>jakarta.servlet</groupId>
         <artifactId>jakarta.servlet-api</artifactId>
-        <version>5.0.0</version>
+        <version>6.1.0</version>
         <scope>provided</scope>
       </dependency>
 
@@ -811,9 +800,9 @@
           <version>0.8.14</version>
         </plugin>
         <plugin>
-          <groupId>org.eclipse.jetty</groupId>
-          <artifactId>jetty-maven-plugin</artifactId>
-          <version>11.0.26</version>
+          <groupId>org.eclipse.jetty.ee11</groupId>
+          <artifactId>jetty-ee11-maven-plugin</artifactId>
+          <version>${jetty.version}</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
