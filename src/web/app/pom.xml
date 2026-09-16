@@ -171,11 +171,10 @@
         </configuration>
       </plugin>
 
-      <!-- Run the application using "mvn jetty:run" -->
+      <!-- Run the application using "mvn jetty:run". Version comes from the root pom's pluginManagement. -->
       <plugin>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <version>11.0.26</version>
+        <groupId>org.eclipse.jetty.ee11</groupId>
+        <artifactId>jetty-ee11-maven-plugin</artifactId>
         <configuration>
           <webApp>
             <contextPath>/geofence</contextPath>
